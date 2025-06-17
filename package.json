@@ -1,5 +1,7 @@
 {
-  "name": "elepay-docs",
+  "name": "@elepay/docs",
+  "title": "Elepay Docs",
+  "description": "Documentation for Elepay, a payment platform.",
   "version": "0.0.0",
   "private": true,
   "scripts": {
