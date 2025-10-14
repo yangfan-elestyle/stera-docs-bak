@@ -1,0 +1,19 @@
+---
+title: PayPal
+---
+
+# iOS App の Callback URL Scheme について
+
+elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+
+それ以外にも、あなたのアプリの  *Bundle ID*  から始まる PayPal 専用  *URL Scheme*  を追加してください。  
+[「elepay 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **PayPal**  項目を確認してください。
+
+# iOS 9 及び以降のシステムについて
+
+PayPal アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+
+```xml
+<string>com.paypal.ppclient.touch.v1</string>
+<string>com.paypal.ppclient.touch.v2</string>
+```

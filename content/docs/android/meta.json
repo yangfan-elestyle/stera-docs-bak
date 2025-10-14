@@ -1,0 +1,21 @@
+{
+  "title": "Android platform",
+  "description": "The docs for Android platform",
+  "icon": "Smartphone",
+  "root": true,
+  "pages": [
+    "---Introduction---",
+    "index",
+    "---API References---",
+    "elepay",
+    "---決済方法---",
+    "pays-Overview",
+    "pays-paypay",
+    "pays-linepay",
+    "pays-merpay",
+    "pays-rakuten",
+    "pays-googlepay",
+    "pays-alipay",
+    "pays-wechatpay"
+  ]
+}

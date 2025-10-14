@@ -1,0 +1,30 @@
+---
+title: Overview
+---
+
+モバイル SDK（iOS、Android）をご利用する際に、各支払い方法の設定に関しては、本ページで記載します。
+
+> ◯：個別設定が必要、△：elepay 共通の設定をすれば結構です、X：特別の設定がありません
+
+# iOS 開発設置
+
+| Payment                                                                  | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
+| ------------------------------------------------------------------------ | ---------- | --------------------------- | --------------------- |
+| [PayPay](https://developer.elepay.io/docs/paypay)                        | △          | ◯ \*1                       | ー                    |
+| [LinePay](https://developer.elepay.io/docs/line-pay)                     | △          | ◯ \*1                       | ー                    |
+| [メルペイ](https://developer.elepay.io/docs/merpay)                      | △          | X                           | ー                    |
+| [d 払い](https://developer.elepay.io/docs/docomo-payd%E6%89%95%E3%81%84) | X          | X                           | ー                    |
+| [au PAY](https://developer.elepay.io/docs/au-pay)                        | △          | ◯ \*1                       | ー                    |
+| [楽天ペイ](https://developer.elepay.io/docs/rakuten-pay)                 | △          | ◯                           | ー                    |
+| [Paidy](https://developer.elepay.io/docs/paidy)                          | X          | X                           | ー                    |
+| [atone](https://developer.elepay.io/docs/atone)                          | X          | X                           | ー                    |
+| [WeChat Pay](https://developer.elepay.io/docs/wechatpay)                 | ◯          | ◯                           | ー                    |
+| [Alipay](https://developer.elepay.io/docs/alipay)                        | △          | ◯                           | ー                    |
+| [Union Pay（銀聯雲閃付）](https://developer.elepay.io/docs/unionpay)     | △          | ◯                           | ◯                     |
+| [PayPal](https://developer.elepay.io/docs/paypal)                        | X          | ◯                           | ー                    |
+| [Apple Pay](https://developer.elepay.io/docs/apple-pay)                  | X          | X                           | ◯                     |
+| [Credit Card](https://developer.elepay.io/docs/credit-card)              | X          | X                           | ー                    |
+
+---
+
+1：从 ElepaySDK for iOS v3.2.1 开始，无需将各支付方式应用的 Scheme 添加到 LSApplicationQueriesSchemes 即可使用。如果实际未安装支付应用，SDK 将返回错误代码"10110"。

@@ -1,0 +1,26 @@
+---
+title: Google Pay
+---
+
+elepay SDK のセットアップ時に、`googlePayEnvironment`を指定します。
+
+> 📘 Google Pay をご利用の際、Google 社への申請が必要となります。申請するには、TEST/PRODUCTION それぞれの環境でビルドしたアプリを提出する可能性があります。
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "" // test key or live key
+  googlePayEnvironment = GooglePayEnvironment.TEST // or GooglePayEnvironment.PRODUCTION
+)
+Elepay.setup(configuration)
+```
+
+Google Pay は Google Play Service に依存するので、ご利用の際 Google Play Service の使用可否を検証する必要があります。  
+SDK には、下記の Google Pay の使用可否に関するメソッドを提供しております。
+
+```kotlin
+// Googgle Payの利用は可能かどうかをチェックするメソッド。
+fun checkIfGooglePayIsReadyToUse(
+    activity: Activity,
+    resultHandler: (Boolean) -> Unit
+)
+```

@@ -1,0 +1,52 @@
+---
+title: Apple Pay
+---
+
+# 概要
+
+Apple Pay の実装方法を紹介します。
+
+# 仕組み
+
+Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済方法です。
+
+# Apple Pay の設定について
+
+[Apple Pay の設定方法](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay_requirements)を参照してください。
+
+1.  Apple Merchant ID を登録します  
+    Apple Pay をご利用するには、Apple Merchant ID を登録する必要があります。
+2.  Apply Pay 証明書の作成  
+    支払い情報を暗号化するために、証明書が必要です。  
+    以下の手順で証明書の作成します。  
+    (1) elepay の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。  
+    (2) 入手した CSR ファイルで Apple Developer Site にアップロードし、ステップ１で登録した Apple Merchant ID を利用し、証明書を作成します。  
+    (3) 証明書を elepay にアップロードします。
+3.  Xcode に統合する  
+    Xcode よりプロジェクトを開き、Capabilities のタブに Apple Pay のスイッチをオンにします。この際に、デベロッパーアカウントのログインを要求されることがあります。オンにした後、ステップ１で作られた Merchant ID のチェックボックスを有効することで、Apple Pay の設定は完了します。
+
+詳細は[Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)  を参照してください。
+
+# Apple Pay (中国銀聯) 専用証明書の作成について
+
+**(「中国銀聯 Apple Pay」を申し込んだ場合のみ、このステップが必要です)**
+
+- [Apple Developer](https://developer.apple.com/account)  から、Certificate Signing Request (CSR)ファイルを作成してください。以下のガイドを参考してください。
+
+![](/docs/Apple_Developer1.png)
+
+- CSR ファイルを作成する時、必ず「Let me specify key pair information」項目をチェックしてください。
+
+![](/docs/Apple_Developer2.png)
+
+- 「Key Pair Information」画面で、Algorithm を「ECC」に指定し、Key Size を「256 bits」に指定してください。
+
+![](/docs/Apple_Developer3.png)
+
+- 作成した CSR ファイルを developer.apple.com にアップロードする時、  
+  「Will payments associated with this Merchant ID be processed exclusively in China?」を「No」を選択してください。
+
+![](/docs/Apple_Developer4.png)
+
+- 作成した証明書(.cer)をダウンロードして、個人情報交換ファイル(.p12)を空文字列のパースワード でエクスポートしてください。
+- elepay の「開発設定」→「Apple Pay」→「Apple Pay Certificate （中国）」に、上記証明書(.cer)と個人情報交換ファイル(.p12)をアップロードしてください。

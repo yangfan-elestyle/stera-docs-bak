@@ -1,0 +1,30 @@
+{
+  "title": "iOS platform",
+  "description": "The docs for iOS platform",
+  "icon": "Apple",
+  "root": true,
+  "pages": [
+    "---Introduction---",
+    "index",
+    "---API References---",
+    "api-Overview",
+    "api-Elepay",
+    "api-ElepayPaymentConfiguration",
+    "api-ElepayResult",
+    "api-ElepayError",
+    "api-ElepayLocalization",
+    "api-ElepayLanguageCode",
+    "api-ElepayCardParams",
+    "---決済方法---",
+    "pays-Overview",
+    "pays-paypay",
+    "pays-linepay",
+    "pays-aupay",
+    "pays-rakuten",
+    "pays-applepay",
+    "pays-paypal",
+    "pays-alipay",
+    "pays-wechatpay",
+    "pays-unionpay"
+  ]
+}
