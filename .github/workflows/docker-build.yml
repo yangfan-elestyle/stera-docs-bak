@@ -1,0 +1,22 @@
+name: Build and Push Docker Image to GHCR
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-push:
+    name: Build and Push to GHCR
+    runs-on: self-hosted
+    permissions:
+      actions: read
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and push Docker image
+        uses: elepay-io/.github/.github/actions/docker-build@master
+        with:
+          enable_cross_platform: 'false'
+          image_name: ${{ github.repository }}
