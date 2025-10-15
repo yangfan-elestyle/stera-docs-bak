@@ -5,10 +5,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  trailingSlash: true,
-  output: 'export',
-  basePath: process.env.ELE_DOCS_BASE_PATH,
-  images: { unoptimized: true },
+  output: 'standalone',
 };
 
 export default withMDX(config);

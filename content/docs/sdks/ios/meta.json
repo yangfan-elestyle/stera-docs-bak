@@ -1,10 +1,7 @@
 {
-  "title": "iOS platform",
-  "description": "The docs for iOS platform",
-  "icon": "Apple",
+  "title": "Elepay iOS SDK",
   "root": true,
   "pages": [
-    "---Introduction---",
     "index",
     "---API References---",
     "api-Overview",

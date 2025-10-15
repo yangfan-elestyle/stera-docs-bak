@@ -5,8 +5,7 @@
     "installation",
     "---Get started---",
     "get-started/index",
-    "---開発ガイド---",
-    "sdks",
-    "openapi"
+    "---Development---",
+    "sdks"
   ]
 }

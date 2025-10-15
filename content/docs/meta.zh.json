@@ -3,10 +3,9 @@
   "pages": [
     "index",
     "installation",
-    "---Get started---",
+    "---开始---",
     "get-started/index",
-    "---開発ガイド---",
-    "sdks",
-    "openapi"
+    "---开发指南---",
+    "sdks"
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "title": "Elepay Server SDK",
+  "root": true,
+  "pages": [
+    "index"
+  ]
+}

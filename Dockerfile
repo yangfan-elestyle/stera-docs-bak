@@ -1,0 +1,45 @@
+FROM oven/bun AS base
+
+FROM base AS deps
+
+WORKDIR /app
+
+COPY package.json bun.lock source.config.ts ./
+RUN bun install --frozen-lockfile
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN bun run build
+
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+
+RUN mkdir .next
+RUN chown nextjs:bun .next
+
+COPY --from=builder --chown=nextjs:bun /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:bun /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:bun /app/openapi.yaml ./openapi.yaml
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+ENV DOCS_BASE_URL=https://docs.elepay.io:3000
+
+CMD ["bun", "server.js"]
