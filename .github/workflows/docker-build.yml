@@ -22,3 +22,8 @@ jobs:
         with:
           enable_cross_platform: 'false'
           image_name: ${{ github.repository }}
+          
+      - name: Deploy to server
+        uses: elepay-io/.github/.github/actions/deploy-docker@master
+        with:
+          pat_token: ${{ secrets.DEPLOY_PAT_TOKEN }}
