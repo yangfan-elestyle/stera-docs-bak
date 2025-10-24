@@ -1,0 +1,11 @@
+{
+  "pages": [
+    "index",
+    "charges",
+    "test-card",
+    "refunds",
+    "custom",
+    "pays",
+    "error-code"
+  ]
+}

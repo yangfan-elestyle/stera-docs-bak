@@ -1,6 +1,5 @@
 {
   "title": "Elepay JavaScript SDK",
-  "root": true,
   "pages": [
     "index"
   ]

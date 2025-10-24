@@ -1,6 +1,5 @@
 {
   "title": "Elepay Android SDK",
-  "root": true,
   "pages": [
     "index",
     "---API References---",

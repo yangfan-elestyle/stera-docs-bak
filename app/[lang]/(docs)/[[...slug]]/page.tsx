@@ -5,7 +5,7 @@ import {
   DocsPage,
   DocsTitle,
 } from 'fumadocs-ui/page';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
@@ -18,11 +18,23 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const page = source.getPage(slug, lang);
   if (!page) notFound();
 
+  // Handle redirect if specified in frontmatter
+  if (page.data.redirect) {
+    redirect(`/${lang}${page.data.redirect}`);
+  }
+
   const MDX = page.data.body;
+
+  // Filter TOC based on tocMaxDepth from frontmatter
+  const tocMaxDepth = page.data.tocMaxDepth;
+  const filteredToc =
+    tocMaxDepth !== undefined
+      ? page.data.toc.filter((item) => item.depth <= tocMaxDepth)
+      : page.data.toc;
 
   return (
     <DocsPage
-      toc={page.data.toc}
+      toc={filteredToc}
       full={page.data.full}
       tableOfContent={{ style: 'clerk' }}
     >

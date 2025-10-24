@@ -1,7 +1,11 @@
 {
-  "title": "Elepay Server SDK",
-  "root": true,
+  "title": "Server",
+  "defaultOpen": false,
   "pages": [
-    "index"
+    "api-guide",
+    "webhook",
+    "extra-setting",
+    "terminals",
+    "[ExternalLink][OpenAPI Reference](../../openapi)"
   ]
 }

@@ -1,18 +1,10 @@
 {
-  "title": "Elepay iOS SDK",
-  "root": true,
+  "title": "iOS",
+  "defaultOpen": false,
   "pages": [
-    "index",
-    "---API References---",
-    "api-Overview",
-    "api-Elepay",
-    "api-ElepayPaymentConfiguration",
-    "api-ElepayResult",
-    "api-ElepayError",
-    "api-ElepayLocalization",
-    "api-ElepayLanguageCode",
-    "api-ElepayCardParams",
-    "---決済方法---",
+    "app-clips"
+  ],
+  "_nothing": [
     "pays-Overview",
     "pays-paypay",
     "pays-linepay",

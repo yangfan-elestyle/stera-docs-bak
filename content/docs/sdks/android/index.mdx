@@ -1,8 +1,8 @@
 ---
-title: Quick Start
+title: Android
 ---
 
-**elepay Android SDK**  は elepay を Android アプリに導入するための SDK です。  
+**elepay Android SDK**  は elepay を Android アプリに導入するための SDK です。
 このガイドでは、 elepay の SDK を Android アプリと連携する方法について詳しく説明します。
 
 # 対応バージョン
@@ -22,7 +22,7 @@ maven {
 }
 ```
 
-同  `build.gradle`  ファイルの  `dependency`  に以下のコードを追加してください。  
+同  `build.gradle`  ファイルの  `dependency`  に以下のコードを追加してください。
 (latest-version)は[リリースページ](https://github.com/elestyle/elepay-android/releases)をご参照ください
 
 ```groovy
@@ -31,24 +31,25 @@ maven {
 implementation 'jp.elestyle.androidapp:elepay:(latest-version)'
 ```
 
-> 🚧 常に新しいバージョンを使用することを推奨します。  
+> 🚧 常に新しいバージョンを使用することを推奨します。
+>
 > gradle build tool 3.6.0 (Android Studio 3.6 に対応)以降を利用する場合、elepay Android SDK 1.7.0 以降が必要となります。
 
 > 🚧 Android Support Library ご利用の方へ
 >
-> **elepay Android SDK**  は  [Android X](https://developer.android.com/jetpack/androidx/)  のみ対応しています。  
-> Google 社は 2018 年以降  [Android support library](https://developer.android.com/topic/libraries/support-library/)  の[開発を停止](https://android-developers.googleblog.com/2018/05/hello-world-androidx.html)しますので、  
+> **elepay Android SDK**  は  [Android X](https://developer.android.com/jetpack/androidx/)  のみ対応しています。
+> Google 社は 2018 年以降  [Android support library](https://developer.android.com/topic/libraries/support-library/)  の[開発を停止](https://android-developers.googleblog.com/2018/05/hello-world-androidx.html)しますので、
 > [Android support library](https://developer.android.com/topic/libraries/support-library/)  をご利用する場合は、[Android X](https://developer.android.com/jetpack/androidx/)  に変更するのはお勧めです。
 >
 > 変更手順に関して、Google 社の[マイグレーション手順](https://developer.android.com/jetpack/androidx/migrate)をご参照ください。
 
 # 実装
 
-## 1\. Android システム権限
+## 1. Android システム権限
 
 UnionPay や Alipay を利用するには、以下のパーミッションを  `AndroidManifest.xml`  に追加する必要があります。
 
-> 📘 全てのパーミッションではなく、利用状況に応じて追加してください。  
+> 📘 全てのパーミッションではなく、利用状況に応じて追加してください。
 > 例：カードをスキャンする仕様がなければ、カメラに関するパーミッションは不要です。
 
 ```xml
@@ -68,7 +69,7 @@ UnionPay や Alipay を利用するには、以下のパーミッションを  
 <uses-feature android:name="android.hardware.nfc.hce"/>
 ```
 
-## 2\. セットアップ
+## 2. セットアップ
 
 支払いの処理を行う前に、 elepay SDK をセットアップします。
 
@@ -79,16 +80,16 @@ val configuration = ElepayConfiguration(
 Elepay.setup(configuration)
 ```
 
-`appKey`  を申請するためには、elepay アカウントが必要となります。  
+`appKey`  を申請するためには、elepay アカウントが必要となります。
 詳しくは[API ガイド](https://developer.elepay.io/docs/api)をご参照ください。
 
 > 📘 本配置処理はアプリの  `Application`  クラスまたはスタート  `Activity`  で行われるのが推薦します。
 
-## 3\. 支払いの処理
+## 3. 支払いの処理
 
 ### チャージ処理
 
-チャージのデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createcharge)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。  
+チャージのデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createcharge)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
 `Elepay.processPayment(chargeJsonData, fromActivity, resultHandler)`
 
 | パラメータ名   | 説明                                                                                                                                         |
@@ -99,7 +100,7 @@ Elepay.setup(configuration)
 
 ### ソース処理
 
-ソースのデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createsource)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。  
+ソースのデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createsource)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
 `Elepay.processSource(sourceJsonData, fromActivity, resultHandler)`
 
 | パラメータ名   | 説明                                                                                                                                     |
@@ -112,7 +113,7 @@ Elepay.setup(configuration)
 
 > 📘 checkout は elepay Android SDK 1.9.0 及びその以上のバージョンが必要となります。
 
-checkout のデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createcode)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。  
+checkout のデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createcode)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
 `Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
 
 | パラメータ名     | 説明                                                                                                                                        |
@@ -123,7 +124,7 @@ checkout のデータオブジェクト（サーバーにより作成された�
 
 > 📘 引数の詳細は API ドキュメントをご参照ください。
 
-## 4\. 結果の処理
+## 4. 結果の処理
 
 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、下記のようにひとつにまとめることが可能になります。また、1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。
 
@@ -147,7 +148,7 @@ elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定す�
 >
 > 上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`は elepay 専用 URL Scheme に書き換えてください。取得方法は「[iOS / Android SDK 用 URL Scheme の取得](https://developer.elepay.io/docs/ios-android-sdk%E7%94%A8url-scheme%E3%81%AE%E5%8F%96%E5%BE%97)」までご参照ください。
 
-処理の結果は、上記の  `resultHandler`  コールバックの引数  `ElepayResult`  に含まれます。  
+処理の結果は、上記の  `resultHandler`  コールバックの引数  `ElepayResult`  に含まれます。
 `ElepayResult`  は  `Succeeded` 、`Failed`  と  `Canceled`  に別れますが、詳細は API のドキュメントをご参照ください。
 
 ```kotlin
@@ -163,7 +164,7 @@ Elepay.processPayment(chargeData = result.jsonObject, fromActivity = activity) {
 
 ### エラー処理について
 
-elepay Android SDK から戻されたエラーには、エンドユーザとして処理すべきのものが含まれます。エラータイプと[エラーコード](https://developer.elepay.io/docs/error-code)をチェックし、ユーザに適切な案内を提供することを推奨します。  
+elepay Android SDK から戻されたエラーには、エンドユーザとして処理すべきのものが含まれます。エラータイプと[エラーコード](https://developer.elepay.io/docs/error-code)をチェックし、ユーザに適切な案内を提供することを推奨します。
 例：
 
 ```kotlin
@@ -198,8 +199,8 @@ when (paymentRes) {
 
 ## UI のテーマ指定
 
-elepay SDK はシステムのテーマに応じて UI を表示します。  
-`ElepayTheme`で定義した`Light`と`Dark`を利用し、UI のテーマを指定することができます。  
+elepay SDK はシステムのテーマに応じて UI を表示します。
+`ElepayTheme`で定義した`Light`と`Dark`を利用し、UI のテーマを指定することができます。
 指定する方法は下記となります。
 
 - elepay SDK を初期化する時に、ElepayConfiguration の`elepayTheme`を指定します。
@@ -220,7 +221,7 @@ Elepay.changeTheme(theme = ElepayTheme.Light)
 
 > 注意
 >
-> 1.  Elepay のテーマを指定すると、システムよりアプリの Configuation データは変更されるため、elepay の支払い処理を呼び出す Activity は再起動される場合があります。  
+> 1.  Elepay のテーマを指定すると、システムよりアプリの Configuation データは変更されるため、elepay の支払い処理を呼び出す Activity は再起動される場合があります。
 >     Activity 再起動を回避するには、`AndroidManifest.xml`に elepay の支払い処理を呼び出す Activity の`android:configChanges`に`uiMode`を追加する必要があります。
 > 2.  `changeTheme`は支払い処理の前にコールするのみ有効です。
 
@@ -257,9 +258,9 @@ elepay SDK UI の色は個別にカスタマイズすることができます。
 
 ![3000](/docs/f726d1e-asdf.png 'asdf.png')
 
-> 注意  
-> `Light`テーマの色をカスタマイズする場合は、プロジェクトの`res/values/colors.xml`に上記の値を指定します。  
-> `Dark`テーマの色をカスタマイズする場合は、プロジェクトの`res/values-night/colors.xml`に上記の値を指定します。  
+> 注意
+> `Light`テーマの色をカスタマイズする場合は、プロジェクトの`res/values/colors.xml`に上記の値を指定します。
+> `Dark`テーマの色をカスタマイズする場合は、プロジェクトの`res/values-night/colors.xml`に上記の値を指定します。
 > `ElepayTheme.System`をご利用する場合、`res/values/colors.xml`と`res/values-night/colors.xml`両方とも値を指定する可能性がありますので、実際の状況に応じてご使用ください。
 
 # 多言語
