@@ -1,6 +1,7 @@
 {
-  "title": "Elepay JavaScript SDK",
+  "title": "JavaScript",
+  "defaultOpen": false,
   "pages": [
-    "index"
+    "api-reference"
   ]
 }

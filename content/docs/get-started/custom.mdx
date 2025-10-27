@@ -16,11 +16,11 @@ elepay の Customer 機能を利用して顧客を作成することで、継続
 
 ## 2. 顧客の作成
 
-お客様のサーバー側の処理が API の [Customer作成](https://developer.elepay.io/reference/createcustomer) 機能を呼び出し、利用者とリンクする顧客を作成します。複数支払方法を登録する場合、既存の顧客を利用してください。
+お客様のサーバー側の処理が API の [Customer作成](/openapi/customer/createCustomer) 機能を呼び出し、利用者とリンクする顧客を作成します。複数支払方法を登録する場合、既存の顧客を利用してください。
 
 ## 3. Source オブジェクトの新規生成
 
-お客様のサーバー側の処理が API の [Source作成](https://developer.elepay.io/reference/createsource) 機能を呼び出し、Source オブジェクトを作成します。
+お客様のサーバー側の処理が API の [Source作成](/openapi/customer/createSource) 機能を呼び出し、Source オブジェクトを作成します。
 
 ## 4. Source オブジェクト
 
@@ -40,7 +40,7 @@ elepayサーバー戻した Source オブジェクトをクライアント側の
 
 ## 8. 継続的に課金を行います
 
-CustomerId と SourceId を利用して、お客様のサーバー側の処理が API の [Charge作成](https://developer.elepay.io/reference/createcharge) 機能を呼び出し、決済処理を行います。
+CustomerId と SourceId を利用して、お客様のサーバー側の処理が API の [Charge作成](/openapi/charge/createCharge) 機能を呼び出し、決済処理を行います。
 
 > 📘 登録できる支払方法
 >
@@ -48,7 +48,7 @@ CustomerId と SourceId を利用して、お客様のサーバー側の処理�
 >
 > - クレジットカード
 > - Paidy
->   下記の支払方法は別の申し込みが必要
+>   > 下記の支払方法は別の申し込みが必要
 > - PayPay
 > - merpay
 > - Aupay

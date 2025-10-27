@@ -1,6 +1,0 @@
----
-title: PAYPAL
----
-
-
-[PAYPAL](../)

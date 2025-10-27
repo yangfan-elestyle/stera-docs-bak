@@ -1,6 +1,0 @@
----
-title: MERPAY
----
-
-
-[MERPAY](../)

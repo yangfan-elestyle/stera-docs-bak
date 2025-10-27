@@ -72,7 +72,7 @@ Set `DOCS_BASE_URL` environment variable for external domain preview (affects OG
 
 Documentation uses language-suffixed files:
 
-```
+```text
 index.mdx       # Default Japanese (fallback when no translation exists)
 meta.json       # Japanese navigation
 index.en.mdx    # English translation
@@ -84,6 +84,7 @@ meta.zh.json    # Chinese navigation
 ### Language Configuration
 
 Languages are defined in `lib/i18n.ts`:
+
 - Default language: `ja` (Japanese)
 - Supported languages: `ja`, `en`, `zh`
 - Fallback language: `ja`
@@ -103,6 +104,7 @@ Languages are defined in `lib/i18n.ts`:
 4. Never edit generated files directly — they will be overwritten
 
 The generation script (`scripts/generate-openapi.ts`):
+
 - Deletes existing `(generated)` directory
 - Uses `fumadocs-openapi` to generate pages grouped by tag
 - Includes descriptions from OpenAPI spec
@@ -134,6 +136,7 @@ The generation script (`scripts/generate-openapi.ts`):
 ### Fumadocs Integration
 
 The documentation system uses Fumadocs with:
+
 - **Loader** (`lib/source.ts`): Configures docs source with i18n support
 - **Plugins**:
   - `lucideIconsPlugin()` — Icon support in navigation
@@ -151,6 +154,7 @@ The documentation system uses Fumadocs with:
 ### Search
 
 Search API (`app/api/search/route.ts`) uses:
+
 - `fumadocs-core/search` utilities
 - Orama database with Japanese/Chinese tokenizers (`@orama/tokenizers`)
 - Stopwords filtering (`@orama/stopwords`)
@@ -158,6 +162,7 @@ Search API (`app/api/search/route.ts`) uses:
 ### Middleware
 
 `middleware.ts` uses `createI18nMiddleware` from Fumadocs to:
+
 - Handle language routing
 - Exclude static assets and API routes
 - Redirect based on language preference

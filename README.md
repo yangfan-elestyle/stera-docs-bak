@@ -2,7 +2,7 @@
 
 ## 多语言
 
-```
+```text
 index.mdx       -- 默认是日语，如果没有对应的翻译时，默认采用日语
 meta.json       -- 日语
 index.zh.mdx    -- 中文

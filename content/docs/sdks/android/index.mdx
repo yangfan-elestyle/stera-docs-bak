@@ -1,5 +1,5 @@
 ---
-title: Android
+title: Android Quick Start
 ---
 
 **elepay Android SDK**  は elepay を Android アプリに導入するための SDK です。
@@ -81,7 +81,6 @@ Elepay.setup(configuration)
 ```
 
 `appKey`  を申請するためには、elepay アカウントが必要となります。
-詳しくは[API ガイド](https://developer.elepay.io/docs/api)をご参照ください。
 
 > 📘 本配置処理はアプリの  `Application`  クラスまたはスタート  `Activity`  で行われるのが推薦します。
 
@@ -89,7 +88,7 @@ Elepay.setup(configuration)
 
 ### チャージ処理
 
-チャージのデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createcharge)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
+チャージのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
 `Elepay.processPayment(chargeJsonData, fromActivity, resultHandler)`
 
 | パラメータ名   | 説明                                                                                                                                         |
@@ -100,7 +99,7 @@ Elepay.setup(configuration)
 
 ### ソース処理
 
-ソースのデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createsource)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
+ソースのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
 `Elepay.processSource(sourceJsonData, fromActivity, resultHandler)`
 
 | パラメータ名   | 説明                                                                                                                                     |
@@ -113,7 +112,7 @@ Elepay.setup(configuration)
 
 > 📘 checkout は elepay Android SDK 1.9.0 及びその以上のバージョンが必要となります。
 
-checkout のデータオブジェクト（サーバーにより作成されたもの、詳しくは[API リファレンス](https://developer.elepay.io/reference#createcode)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
+checkout のデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
 `Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
 
 | パラメータ名     | 説明                                                                                                                                        |
@@ -146,7 +145,7 @@ elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定す�
 
 > 🚧 必ずお忘れずに
 >
-> 上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`は elepay 専用 URL Scheme に書き換えてください。取得方法は「[iOS / Android SDK 用 URL Scheme の取得](https://developer.elepay.io/docs/ios-android-sdk%E7%94%A8url-scheme%E3%81%AE%E5%8F%96%E5%BE%97)」までご参照ください。
+> 上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`は elepay 専用 URL Scheme に書き換えてください。取得方法は「[iOS / Android SDK 用 URL Scheme の取得](/sdks/url-scheme)」までご参照ください。
 
 処理の結果は、上記の  `resultHandler`  コールバックの引数  `ElepayResult`  に含まれます。
 `ElepayResult`  は  `Succeeded` 、`Failed`  と  `Canceled`  に別れますが、詳細は API のドキュメントをご参照ください。
@@ -164,7 +163,7 @@ Elepay.processPayment(chargeData = result.jsonObject, fromActivity = activity) {
 
 ### エラー処理について
 
-elepay Android SDK から戻されたエラーには、エンドユーザとして処理すべきのものが含まれます。エラータイプと[エラーコード](https://developer.elepay.io/docs/error-code)をチェックし、ユーザに適切な案内を提供することを推奨します。
+elepay Android SDK から戻されたエラーには、エンドユーザとして処理すべきのものが含まれます。エラータイプと[エラーコード](/get-started/error-code)をチェックし、ユーザに適切な案内を提供することを推奨します。
 例：
 
 ```kotlin
@@ -289,4 +288,4 @@ Elepay.changeLanguageKey(LangaugeKey.English)
 
 # 各支払方法の設定に関して
 
-[決済方法](https://developer.elepay.io/docs/summary)ページをご参考ください。
+[決済方法](/get-started/pays#summary)ページをご参考ください。

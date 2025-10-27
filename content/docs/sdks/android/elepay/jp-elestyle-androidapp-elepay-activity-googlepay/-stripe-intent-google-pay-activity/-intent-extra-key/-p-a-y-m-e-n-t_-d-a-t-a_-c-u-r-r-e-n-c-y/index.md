@@ -1,6 +1,0 @@
----
-title: PAYMENT_DATA_CURRENCY
----
-
-
-[PAYMENT_DATA_CURRENCY](../)

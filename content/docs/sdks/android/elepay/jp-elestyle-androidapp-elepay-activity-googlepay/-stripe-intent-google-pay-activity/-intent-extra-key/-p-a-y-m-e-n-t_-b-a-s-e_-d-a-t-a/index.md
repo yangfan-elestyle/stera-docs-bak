@@ -1,6 +1,0 @@
----
-title: PAYMENT_BASE_DATA
----
-
-
-[PAYMENT_BASE_DATA](../)

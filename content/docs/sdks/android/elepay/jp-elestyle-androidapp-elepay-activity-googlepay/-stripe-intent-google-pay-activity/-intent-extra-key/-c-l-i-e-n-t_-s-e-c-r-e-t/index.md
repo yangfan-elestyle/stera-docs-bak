@@ -1,6 +1,0 @@
----
-title: CLIENT_SECRET
----
-
-
-[CLIENT_SECRET](../)

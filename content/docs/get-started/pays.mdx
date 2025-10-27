@@ -3,28 +3,29 @@ title: 決済方法
 tocMaxDepth: 3
 ---
 
+# 概要 [#summary]
+
 モバイル SDK（iOS、Android）をご利用する際に、各支払い方法の設定に関しては、本ページで記載します。
 
 > ◯：個別設定が必要、△：elepay 共通の設定をすれば結構です、X：特別の設定がありません
 
 ## iOS 開発設置
 
-| Payment                                                                  | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
-| ------------------------------------------------------------------------ | ---------- | --------------------------- | --------------------- |
-| [PayPay](https://developer.elepay.io/docs/paypay)                        | △          | ◯ \*1                       | ー                    |
-| [LinePay](https://developer.elepay.io/docs/line-pay)                     | △          | ◯ \*1                       | ー                    |
-| [メルペイ](https://developer.elepay.io/docs/merpay)                      | △          | X                           | ー                    |
-| [d 払い](https://developer.elepay.io/docs/docomo-payd%E6%89%95%E3%81%84) | X          | X                           | ー                    |
-| [au PAY](https://developer.elepay.io/docs/au-pay)                        | △          | ◯ \*1                       | ー                    |
-| [楽天ペイ](https://developer.elepay.io/docs/rakuten-pay)                 | △          | ◯                           | ー                    |
-| [Paidy](https://developer.elepay.io/docs/paidy)                          | X          | X                           | ー                    |
-| [atone](https://developer.elepay.io/docs/atone)                          | X          | X                           | ー                    |
-| [WeChat Pay](https://developer.elepay.io/docs/wechatpay)                 | ◯          | ◯                           | ー                    |
-| [Alipay](https://developer.elepay.io/docs/alipay)                        | △          | ◯                           | ー                    |
-| [Union Pay（銀聯雲閃付）](https://developer.elepay.io/docs/unionpay)     | △          | ◯                           | ◯                     |
-| [PayPal](https://developer.elepay.io/docs/paypal)                        | X          | ◯                           | ー                    |
-| [Apple Pay](https://developer.elepay.io/docs/apple-pay)                  | X          | X                           | ◯                     |
-| [Credit Card](https://developer.elepay.io/docs/credit-card)              | X          | X                           | ー                    |
+| Payment                              | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
+| ------------------------------------ | ---------- | --------------------------- | --------------------- |
+| [PayPay](#paypay)                    | △          | ◯ \*1                       | ー                    |
+| [メルペイ](#merpay)                  | △          | X                           | ー                    |
+| d 払い                               | X          | X                           | ー                    |
+| [au PAY](#au-pay)                    | △          | ◯ \*1                       | ー                    |
+| [楽天ペイ](#rpay)                    | △          | ◯                           | ー                    |
+| Paidy                                | X          | X                           | ー                    |
+| atone                                | X          | X                           | ー                    |
+| [WeChat Pay](#wechat-pay)            | ◯          | ◯                           | ー                    |
+| [Alipay](#alipay)                    | △          | ◯                           | ー                    |
+| [Union Pay（銀聯雲閃付）](#unionpay) | △          | ◯                           | ◯                     |
+| [PayPal](#paypal)                    | X          | ◯                           | ー                    |
+| [Apple Pay](#apple-pay)              | X          | X                           | ◯                     |
+| Credit Card                          | X          | X                           | ー                    |
 
 ---
 
@@ -36,7 +37,7 @@ tocMaxDepth: 3
 
 #### GoAllpay
 
-GoAllpay をご利用する場合、プロジェクトの設定に GoAllpay SDK の情報追加が必要となります。  
+GoAllpay をご利用する場合、プロジェクトの設定に GoAllpay SDK の情報追加が必要となります。
 詳細の設定方法は GoAllpaySDK のドキュメント[（中国語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_CH.md)、[（英語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_EN.md)にご参考ください。
 
 配置方法:
@@ -65,26 +66,25 @@ dependencies {
 
 ### 各決済方法の開発設定
 
-| Payment                                                                  | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
-| ------------------------------------------------------------------------ | -------------------------------------- | --------------------------------- |
-| [PayPay](https://developer.elepay.io/docs/paypay)                        | ◯                                      | X                                 |
-| [LinePay](https://developer.elepay.io/docs/line-pay)                     | ◯                                      | X                                 |
-| [メルペイ](https://developer.elepay.io/docs/merpay)                      | ◯                                      | X                                 |
-| [d 払い](https://developer.elepay.io/docs/docomo-payd%E6%89%95%E3%81%84) | X                                      | X                                 |
-| [au PAY](https://developer.elepay.io/docs/au-pay)                        | ◯                                      | X                                 |
-| [楽天ペイ](https://developer.elepay.io/docs/rakuten-pay)                 | X                                      | ◯                                 |
-| [Paidy](https://developer.elepay.io/docs/paidy)                          | X                                      | X                                 |
-| [atone](https://developer.elepay.io/docs/atone)                          | X                                      | X                                 |
-| [WeChat Pay](https://developer.elepay.io/docs/wechatpay)                 | ◯                                      | ◯                                 |
-| [Alipay](https://developer.elepay.io/docs/alipay)                        | X                                      | ◯                                 |
-| [Union Pay（銀聯雲閃付）](https://developer.elepay.io/docs/unionpay)     | X                                      | X                                 |
-| [PayPal](https://developer.elepay.io/docs/paypal)                        | X                                      | X                                 |
-| [Apple Pay](https://developer.elepay.io/docs/apple-pay)                  | X                                      | X                                 |
-| [Credit Card](https://developer.elepay.io/docs/credit-card)              | X                                      | X                                 |
+| Payment                              | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
+| ------------------------------------ | -------------------------------------- | --------------------------------- |
+| [PayPay](#paypay)                    | ◯                                      | X                                 |
+| [メルペイ](#merpay)                  | ◯                                      | X                                 |
+| d 払い                               | X                                      | X                                 |
+| [au PAY](#au-pay)                    | ◯                                      | X                                 |
+| [楽天ペイ](#rpay)                    | X                                      | ◯                                 |
+| Paidy                                | X                                      | X                                 |
+| atone                                | X                                      | X                                 |
+| [WeChat Pay](#wechat-pay)            | ◯                                      | ◯                                 |
+| [Alipay](#alipay)                    | X                                      | ◯                                 |
+| [Union Pay（銀聯雲閃付）](#unionpay) | X                                      | X                                 |
+| [PayPal](#paypal)                    | X                                      | X                                 |
+| [Apple Pay](#apple-pay)              | X                                      | X                                 |
+| Credit Card                          | X                                      | X                                 |
 
 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、下記のようにひとつにまとめることが可能になります。また、1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。
 
-> 📘 elepay 専用の URL Scheme の取得方法は「[iOS / Android SDK 用 URL Scheme の取得](https://developer.elepay.io/docs/ios-android-sdk-url-scheme)」へご参照ください。
+> 📘 elepay 専用の URL Scheme の取得方法は「[iOS / Android SDK 用 URL Scheme の取得](/sdks/url-scheme)」へご参照ください。
 
 ```xml
 <activity
@@ -110,7 +110,7 @@ elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定す�
 
 ##### iOS 9 及び以降のシステムについて
 
-ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から  [エラーコード](https://developer.elepay.io/docs/error-code) 「10110」が返信します。
+ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から  [エラーコード](/get-started/error-code) 「10110」が返信します。
 
 ElepaySDK for iOS v3.2.1 以前の場合、PayPay アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
@@ -120,11 +120,11 @@ ElepaySDK for iOS v3.2.1 以前の場合、PayPay アプリに遷移するため
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
 
 #### Android
 
-> 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](https://developer.elepay.io/docs/summary)へご参照ください。
+> 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
 
 PayPay を使うために、elepay アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
@@ -146,11 +146,11 @@ PayPay を使うために、elepay アカウントの「アプリ設定」ペー
 
 scheme より起動される Activity をカスタマイズする場合は、`jp.elestyle.androidapp.elepay.activity.paypay.PayPayActivity`から継承する必要があります。
 
-### メルペイ
+### メルペイ [#merpay]
 
 #### Android
 
-> 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](https://developer.elepay.io/docs/summary)へご参照ください。
+> 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
 
 Merpay を使うために、elepay アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
@@ -177,7 +177,7 @@ Merpay を使うために、elepay アカウントの「アプリ設定」ペー
 
 ##### iOS 9 及び以降のシステムについて
 
-ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から  [エラーコード](https://developer.elepay.io/docs/error-code) 「10110」が返信します。
+ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から  [エラーコード](/get-started/error-code) 「10110」が返信します。
 
 ElepaySDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
@@ -187,9 +187,9 @@ ElepaySDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するため
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
 
-### 楽天ペイ
+### 楽天ペイ [#rpay]
 
 #### iOS
 
@@ -205,7 +205,7 @@ RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
 
 #### Android
 
@@ -229,15 +229,15 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 
 [Apple Pay の設定方法](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay_requirements)を参照してください。
 
-1.  Apple Merchant ID を登録します  
+1.  Apple Merchant ID を登録します
     Apple Pay をご利用するには、Apple Merchant ID を登録する必要があります。
-2.  Apply Pay 証明書の作成  
-    支払い情報を暗号化するために、証明書が必要です。  
-    以下の手順で証明書の作成します。  
-    (1) elepay の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。  
-    (2) 入手した CSR ファイルで Apple Developer Site にアップロードし、ステップ１で登録した Apple Merchant ID を利用し、証明書を作成します。  
+2.  Apply Pay 証明書の作成
+    支払い情報を暗号化するために、証明書が必要です。
+    以下の手順で証明書の作成します。
+    (1) elepay の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。
+    (2) 入手した CSR ファイルで Apple Developer Site にアップロードし、ステップ１で登録した Apple Merchant ID を利用し、証明書を作成します。
     (3) 証明書を elepay にアップロードします。
-3.  Xcode に統合する  
+3.  Xcode に統合する
     Xcode よりプロジェクトを開き、Capabilities のタブに Apple Pay のスイッチをオンにします。この際に、デベロッパーアカウントのログインを要求されることがあります。オンにした後、ステップ１で作られた Merchant ID のチェックボックスを有効することで、Apple Pay の設定は完了します。
 
 詳細は[Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)  を参照してください。
@@ -258,7 +258,7 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 
 ![](/docs/Apple_Developer3.png)
 
-- 作成した CSR ファイルを developer.apple.com にアップロードする時、  
+- 作成した CSR ファイルを developer.apple.com にアップロードする時、
   「Will payments associated with this Merchant ID be processed exclusively in China?」を「No」を選択してください。
 
 ![](/docs/Apple_Developer4.png)
@@ -316,9 +316,9 @@ fun checkIfGooglePayIsReadyToUse(
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
 
-それ以外にも、あなたのアプリの  *Bundle ID*  から始まる PayPal 専用  *URL Scheme*  を追加してください。  
+それ以外にも、あなたのアプリの  *Bundle ID*  から始まる PayPal 専用  *URL Scheme*  を追加してください。
 [「elepay 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **PayPal**  項目を確認してください。
 
 ##### iOS 9 及び以降のシステムについて
@@ -346,13 +346,13 @@ Alipay アプリに遷移するために、Xcode の  **PROJECT** → **TARGE
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
 
 #### Android
 
 アリペイを使うために、[アリペイの sdk](https://doc.open.alipay.com/doc2/detail.htm?treeId=54&articleId=104509&docType=1)をダウンロードし、プロジェクトの libs フォルダーに配置します。
 
-> 📘 アリペイの sdk 名はこのような形になります。  
+> 📘 アリペイの sdk 名はこのような形になります。
 > alipaySdk-15.6.8-20191021122455-noUtdid.aar
 
 そして、アプリの`build.gradle`に、アリペイ sdk の依存関係を追加します。
@@ -370,9 +370,9 @@ dependencies {
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
 
-それ以外にも、WeChat 専用の  *URL Scheme* （`wx`から始まるもの）が必要です。  
+それ以外にも、WeChat 専用の  *URL Scheme* （`wx`から始まるもの）が必要です。
 [「elepay 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **WeChat Pay**  項目を確認してください。なお、WeChat Pay が未開通の場合、該当項目は表示しません。
 
 ##### iOS 9 及び以降のシステムについて
@@ -386,7 +386,7 @@ WeChat Pay アプリに遷移するために、Xcode の  **PROJECT** → **T
 
 #### Android
 
-WeChat Pay は、wechat ライブラリに依存するので、wechat sdk の denpendency を`build.gradle`に追加します。  
+WeChat Pay は、wechat ライブラリに依存するので、wechat sdk の denpendency を`build.gradle`に追加します。
 最新の wechat のバージョンはお勧めしますが、最新版のバージョンは[wechat sdk maven](https://bintray.com/wechat-sdk-team/maven)にご参照ください。
 
 ```groovy
@@ -411,7 +411,7 @@ WeChat Pay は、`パッケージ名.wxapi.WXPayEntryActivity`を探すため、
     android:targetActivity="jp.elestyle.androidapp.elepay.activity.wxapi.WXPayEntryActivity" />
 ```
 
-### Union Pay（銀聯雲閃付）
+### Union Pay（銀聯雲閃付）[#unionpay]
 
 #### iOS
 
@@ -429,4 +429,4 @@ Union Pay 関連アプリに遷移するために、Xcode の  **PROJECT** →
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](https://developer.elepay.io/docs/ios-sdk#section-1-url-scheme-%E3%81%AE%E8%BF%BD%E5%8A%A0)をご参照ください。
+elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。

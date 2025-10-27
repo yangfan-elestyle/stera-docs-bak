@@ -3,17 +3,5 @@
   "defaultOpen": false,
   "pages": [
     "app-clips"
-  ],
-  "_nothing": [
-    "pays-Overview",
-    "pays-paypay",
-    "pays-linepay",
-    "pays-aupay",
-    "pays-rakuten",
-    "pays-applepay",
-    "pays-paypal",
-    "pays-alipay",
-    "pays-wechatpay",
-    "pays-unionpay"
   ]
 }

@@ -1,5 +1,5 @@
 ---
-title: Quick Start
+title: iOS Quick Start
 ---
 
 **elepay iOS SDK**  は elepay を iOS アプリに導入するための SDK です。  
@@ -14,7 +14,7 @@ title: Quick Start
 
 # インストール方法
 
-## 1\. Cocoapod によるインストール
+## 1. Cocoapod によるインストール
 
 1.  Podfile に  `ElepaySDK`  を追加します。  
     **ご注意：Cocoapods 1.10.0 以上をご利用ください。**
@@ -58,7 +58,7 @@ pod 'Braintree'
 
 5.  `pod install`  を実行します。
 
-## 2\. Swift Package Manager (SPM)によるインストール
+## 2. Swift Package Manager (SPM)によるインストール
 
 **elepay iOS SDK**  は 3.1.1 から SPM に対応しました。
 **elepay iOS SDK Chinese Payments Plugin**  は 2.0.2 から SPM に対応しました。
@@ -75,7 +75,7 @@ pod 'Braintree'
 4.  PayPal を利用する場合は、`Braintree`  を追加してください。
     ご注意：`Braintree`  の最新版 5.x.x は iOS 11 の対応が終了したため、4.x.x をご利用ください。また、4.x.x は SPM に対応していないため、Cocoapods で導入するか、手動でインストールしてください。
 
-## 3\. 手動インストール
+## 3. 手動インストール
 
 7 ステップで、 elepay SDK for iOS をアプリに導入できます。
 
@@ -84,7 +84,7 @@ pod 'Braintree'
 3.  ターゲット設定に、`ElePay.framework`  を「Embedded Binaries」に追加します。
 4.  Objective-C のプロジェクトで Apple Pay を利用する場合、ターゲット設定に  `PassKit.framework`  を「Embedded Binaries」に追加する必要があります。
 
-## 4\. Objective-C プロジェクトで利用する場合
+## 4. Objective-C プロジェクトで利用する場合
 
 > 📘 Objective-C で開発する場合
 >
@@ -93,13 +93,13 @@ pod 'Braintree'
 
 # 実装
 
-## 1\. URL Scheme の追加
+## 1. URL Scheme の追加
 
 Xcode で、**PROJECT**  ＞  **TARGETS**  項目＞  **Info**  タグにある  **URL Types**  を開いて、elepay 専用  *URL Scheme*  を追加してください。
 
 ### elepay 共通の設定
 
-elepay 専用の URL Scheme の取得方法は「[iOS / Android SDK 用 URL Scheme の取得](https://developer.elepay.io/docs/ios-android-sdk-url-scheme)」へご参照ください。
+elepay 専用の URL Scheme の取得方法は「[iOS / Android SDK 用 URL Scheme の取得](/sdks/url-scheme)」へご参照ください。
 
 ![](/docs/URL_Scheme.png)
 
@@ -111,11 +111,11 @@ elepay 専用の URL Scheme の取得方法は「[iOS / Android SDK 用 URL Sche
 >
 > 複数の  **TARGETS**  が存在する場合、全てのターゲットの  *URL Type*  に、上記の  *URL Scheme*  を追加してください。
 
-## 2\. 各支払方法の設定に関して
+## 2. 各支払方法の設定に関して
 
-[決済方法](https://developer.elepay.io/docs/%E6%A6%82%E8%A6%81)ページをご参考ください。
+[決済方法](/get-started/pays)ページをご参考ください。
 
-## 3\. elepay の初期化
+## 3. elepay の初期化
 
 プロジェクトの  `application(_:didFinishLaunchingWithOptions:)`  関数に、以下の初期化コードを追加します。
 
@@ -127,7 +127,7 @@ Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
 >
 > `ELEPAY_APP_PUBLIC_KEY`  を[「elepay 管理画面」](https://dashboard.elepay.io/)で発行したものに変更してください
 
-## 4\. callback の設定
+## 4. callback の設定
 
 `application(_:open:options:) -> Bool`  関数に, 以下のコードを追加します。
 
@@ -144,7 +144,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 }
 ```
 
-## 5\. 支払い処理（都度決済）
+## 5. 支払い処理（都度決済）
 
 ### お客様サーバー側処理
 
@@ -161,7 +161,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 
 以下３つの中で使いやすいメソッドをご利用ください。
 
-#### 1\. JSON String でチャージする場合：
+#### 1. JSON String でチャージする場合：
 
 ```swift
 _ = Elepay.handlePayment(
@@ -186,7 +186,7 @@ _ = Elepay.handlePayment(
 | viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
 | completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
 
-#### 2\. JSON Data でチャージする場合：
+#### 2. JSON Data でチャージする場合：
 
 ```swift
 _ = Elepay.handlePayment(
@@ -211,7 +211,7 @@ _ = Elepay.handlePayment(
 | viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
 | completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
 
-#### 3\. JSON Dictionary でチャージする場合：
+#### 3. JSON Dictionary でチャージする場合：
 
 ```swift
 _ = Elepay.handlePayment(
@@ -236,7 +236,7 @@ _ = Elepay.handlePayment(
 | viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                           |
 | completion     | 決済の結果を通知するコールバックです。                                                                                                                       |
 
-## 6\. 支払い処理（定期払い・ウォレット決済）
+## 6. 支払い処理（定期払い・ウォレット決済）
 
 ### お客様サーバー側処理
 
@@ -249,7 +249,7 @@ _ = Elepay.handlePayment(
 
 以下３つの中で使いやすいメソッドをご利用ください。
 
-#### 1\. JSON String でソースを取得した場合：
+#### 1. JSON String でソースを取得した場合：
 
 ```swift
 _ = Elepay.handleSource(
@@ -274,7 +274,7 @@ _ = Elepay.handleSource(
 | viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
 | completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
 
-#### 2\. JSON Data でソースを取得した場合：
+#### 2. JSON Data でソースを取得した場合：
 
 ```swift
 _ = Elepay.handleSource(
@@ -299,7 +299,7 @@ _ = Elepay.handleSource(
 | viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
 | completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
 
-#### 3\. JSON Dictionary でソースを取得した場合：
+#### 3. JSON Dictionary でソースを取得した場合：
 
 ```swift
 _ = Elepay.handleSource(
@@ -335,7 +335,6 @@ Checkout 機能を利用すると、決済方法選択画面の開発を省く�
 ### サーバー側処理
 
 **elepay API**  のコード API からチェックアウト用のペイロードを作成します。
-詳細は  [API リファレンス](https://developer.elepay.io/reference#createcode)をご参照ください。
 
 ### ネーティブ App 側処理
 
@@ -344,7 +343,7 @@ Checkout 機能を利用すると、決済方法選択画面の開発を省く�
 ペイロードのタイプに合わせて３つのメソッドを提供します。
 サンプルコードとメソッドの説明は下記です。
 
-#### 1\. JSON String でチェックアウトする場合：
+#### 1. JSON String でチェックアウトする場合：
 
 ```swift
 Elepay.checkout(
@@ -368,7 +367,7 @@ Elepay.checkout(
 | from               | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                      |
 | resultHandler      | 決済の結果を通知するコールバックです。                                                                                                                  |
 
-#### 2\. JSON Data でチェックアウトする場合：
+#### 2. JSON Data でチェックアウトする場合：
 
 ```swift
 Elepay.checkout(
@@ -392,7 +391,7 @@ Elepay.checkout(
 | from             | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                    |
 | resultHandler    | 決済の結果を通知するコールバックです。                                                                                                                |
 
-#### 3\. JSON Dictionary でチェックアウトする場合：
+#### 3. JSON Dictionary でチェックアウトする場合：
 
 ```swift
 Elepay.checkout(
@@ -446,7 +445,7 @@ case let .failed(let codeId, let error):
 }
 ```
 
-[エラーコード](https://developer.elepay.io/docs/error-code)  にエラーコードリストをご参照ください。
+[エラーコード](/get-started/error-code)  にエラーコードリストをご参照ください。
 
 ## 注意事項
 
@@ -454,16 +453,16 @@ case let .failed(let codeId, let error):
 >
 > アプリ内の支払い結果は、ユーザーへの結果照会のみでご使用ください。実際の課金結果は必ずサーバー上の callback API を経由し、elepay サーバーから送信されたデータでご確認ください。 *詳しくは elepay API ガイドをご確認ください。*
 
-### 1\. Apple Pay について
+### 1. Apple Pay について
 
 1.  Apple Pay を実装するときは、Xcode の  **PROJECT** → **TARGETS**  にある  **Capabilities**  タグをクリックして、Apple Pay を「ON」に設定してください。
 
 ![](/docs/xcodee_applepay.png)
 
 2.  Apple Pay の証明書を[「elepay 管理画面」-「開発設定」-「Apple Pay」](https://dashboard.elepay.io/)にアップロードしてください。
-    証明書の作成方法は[こちらのドキュメント](https://developer.elepay.io/docs/apple-pay#section-ios-)でご参照ください。
+    証明書の作成方法は[こちらのドキュメント](/get-started/pays#apple-pay)でご参照ください。
 
-### 2\. LSApplicationQueriesSchemes（iOS 9 及び以降のシステム）について
+### 2. LSApplicationQueriesSchemes（iOS 9 及び以降のシステム）について
 
 各決済アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
@@ -476,7 +475,7 @@ case let .failed(let codeId, let error):
 
 #### 各支払方法の設定に関して
 
-[決済方法](https://developer.elepay.io/docs/summary)ページをご参考ください。
+[決済方法](/get-started/pays)ページをご参考ください。
 
 # 多言語
 
