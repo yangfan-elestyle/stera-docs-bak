@@ -1,7 +1,5 @@
 {
   "title": "JavaScript",
   "defaultOpen": false,
-  "pages": [
-    "api-reference"
-  ]
+  "pages": ["api-reference"]
 }

@@ -1,0 +1,17 @@
+---
+title: FAQ for Android
+---
+
+## How does the elepay Android SDK support Google Play's 16KB requirement?
+
+The elepay Android SDK already supports the 16KB alignment requirement; however, APKs for the x86_64 architecture require separate handling. Since there are almost no physical x86_64 devices in the market, please exclude x86_64 using the following approach:
+
+```kotlin
+android {
+    defaultConfig {
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a") // Remove "x86_64"
+        }
+    }
+}
+```

@@ -1,7 +1,4 @@
 {
   "title": "FAQ",
-  "pages": [
-    "faq-ios",
-    "faq-android"
-  ]
+  "pages": ["faq-ios", "faq-android"]
 }

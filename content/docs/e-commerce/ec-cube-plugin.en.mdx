@@ -1,0 +1,79 @@
+---
+title: EC-CUBE Plugin
+---
+
+## Overview
+
+elepay provides a dedicated plugin for EC-CUBE.
+
+At present, only the “EC-CUBE Downloadable Version” is supported.  
+The support timeline for the “EC-CUBE Cloud Version” is undecided.
+
+## Installing the Plugin
+
+This section explains how to install the elepay for EC-CUBE plugin.
+
+1.  Download the plugin  
+    Download the latest plugin ZIP from the release pages below.  
+    [elepay for EC-CUBE v4](https://github.com/elestyle/elepay-eccube4-plugin/releases)　(up to 4.2)  
+    [elepay for EC-CUBE v3](https://github.com/elestyle/elepay-eccube3-plugin/releases)
+
+> 📘 Note
+>
+> Do not extract the downloaded ZIP file.
+>
+> v4.2 is not yet supported. Please use the latest v4.1.x.
+
+2.  Log in to the EC-CUBE admin console with administrator privileges.  
+    Click “Owners Store” → “Plugin List” → “User’s Own Plugin” → “Upload to add new”.
+
+![](/docs/127bc35-image-20200503-030214.png)
+
+3.  On the “Upload New Plugin” screen, upload the ZIP file downloaded in Step 1.
+
+![](/docs/0352534-image-20200503-030342.png)
+
+4.  In the list of installed plugins, click the “▶︎” button for “elepay eccube plugin” to enable it.
+
+![](/docs/3cfce70-image-20200503-083844.png)
+
+5.  When the plugin’s “Status” shows “Enabled,” it is ready for use.
+
+![](/docs/c3c0abb-image-20200503-083916.png)
+
+This completes the plugin installation.
+
+## Initial Setup
+
+This section explains how to perform the initial setup.
+
+1.  In the EC-CUBE admin console, go to “Owners Store” → “Plugin List” → “elepay eccube plugin” and click the gear icon (⚙).
+
+![](/docs/d71b394-image-20200503-083957.png)
+
+2.  Enter the development keys you obtained from the elepay dashboard into “Public Key” and “Secret Key.”
+
+    For how to obtain elepay development keys, see “[Overview](/get-started)”.
+
+> ❗️ Warning: When using development keys for the test environment (keys starting with pk*test* or sk*test*), no actual payment is processed. Even if the order status shows “Paid,” do not ship any goods.
+
+![](/docs/95be5f1-image-20210406-042557.png)
+
+3.  Copy the Webhook URL.
+
+![](/docs/0e0b3d7-image-20210405-085539.png)
+
+4.  In the elepay dashboard, go to “Developer Settings” → “Webhook,” and click “New.”
+
+![](/docs/9ad476a-image-20210405-084536.png)
+
+5.  Paste the Webhook URL copied in Step 3 into “URL,” check “Payment Succeeded” under “Event Type,” then click “OK.”
+
+![](/docs/bac37d4-image-20210405-085341.png)
+
+All settings are now complete.  
+Buyers will see the list of elepay payment methods on the EC-CUBE payment method selection screen.
+
+> 📘 Only the payment methods enabled in elepay are displayed. Methods not supported by the browser or device are automatically hidden.
+
+![](/docs/fb43665-image-20200503-085731.png)

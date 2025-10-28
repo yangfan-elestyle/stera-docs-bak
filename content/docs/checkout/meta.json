@@ -1,8 +1,4 @@
 {
   "title": "Checkout",
-  "pages": [
-    "index",
-    "elepay-hosted",
-    "qrwidget"
-  ]
+  "pages": ["index", "elepay-hosted", "qrwidget"]
 }

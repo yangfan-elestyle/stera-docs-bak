@@ -29,7 +29,7 @@ API を利用するには、ユーザー登録を行い、APIキーを取得す�
 > Basic認証では、ユーザ名とパスワードの組みをコロン ":" でつなぎ、Base64でエンコードして送信する。
 >
 > 1.  下記ようにシークレットキーと「空白」をコロン ":" でつなぎます
->     > `sk_live_xxxxxxxxxxxxxxxxxxxxx:`
+>     > `{SK_LIVE_KEY_HERE}:`
 > 2.  この値をBase64でエンコードします
 >     > `c2tfbGl2ZV94eHh4eHh4eHh4eHh4eHh4eHh4eHg6`
 > 3.  エンコードされた値下記のように HTTP Basic 認証ヘッダーとして送信します
@@ -39,7 +39,7 @@ API を利用するには、ユーザー登録を行い、APIキーを取得す�
 >
 > Bearer認証を利用したい場合、HTTP Basic 認証ヘッダーの代わりに下記ようなHTTP Bearer認証ヘッダーを使用してください。
 >
-> > `Authorization: Bearer sk_live_xxxxxxxxxxxxxxxxxxxxx`
+> > `Authorization: Bearer {SK_LIVE_KEY_HERE}`
 
 # プロトコル
 

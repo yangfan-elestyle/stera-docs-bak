@@ -1,0 +1,49 @@
+---
+title: 支付处理
+---
+
+通过使用 elepay 的 Charge 功能，可以让支付流程安全、顺畅。用户只需在移动端或网页上点击几次即可完成支付。Charge 功能建议使用 Client SDK。我们也提供 Server SDK 以便于开发者，但也可以不使用它而直接对接 RESTful API。
+
+支付流程示意
+
+![](/docs/5d9f652de8efdde609dd924855c16cc8a5f839b60f081b9781b13c5dc0e81302-charge.png)
+
+# 使用 API 发起支付
+
+## 1. 在移动端下单
+
+用户在移动应用或网页中下单。
+
+## 2. 发起支付请求
+
+您的服务端调用 [创建 Charge](/openapi/charge/createCharge) 接口，请求发起支付。
+
+## 3. 生成 Charge 对象
+
+elepay 服务器根据支付请求创建 Charge 对象，并返回给您的服务端。
+
+## 4. 传递 Charge 对象
+
+您的服务端将 Charge 对象传递给客户端的 Client SDK。
+
+## 5. 执行支付
+
+客户端的 Client SDK 使用 Charge 对象执行支付。
+
+## 6. 返回支付结果
+
+处理完成后，所选支付渠道的服务器会返回支付结果。
+
+## 7. 接收 Webhook 事件
+
+若支付成功，elepay 会向已在 Webhook 中配置的 URL 发送 `charge.captured` 事件通知。
+
+## 8. 获取与处理支付状态
+
+建议在服务端增加获取支付状态的逻辑。若因故未收到 Webhook 事件通知，可使用 [获取 Charge 状态](/openapi/charge/retrieveChargeStatus) 接口查询状态，并据此处理支付结果。
+
+# 在管理后台中查看
+
+可在管理后台的“支払い管理 / 支払い一覧”中查看支付记录。关于退款，请参阅[退款处理](/get-started/refunds)。
+
+![](/docs/f40064d-______elepay.png)

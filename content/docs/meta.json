@@ -6,7 +6,7 @@
     "...get-started",
     "---SDK ガイド---",
     "sdks/ios",
-    "sdks/android",
+    "[Android](/sdks/android)",
     "sdks/javascript",
     "sdks/server",
     "sdks/other-sdk",

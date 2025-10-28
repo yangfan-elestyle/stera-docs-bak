@@ -1,0 +1,69 @@
+---
+title: WooCommerce Plugin
+---
+
+## 概述
+
+elepay 提供适用于 WooCommerce 的专用插件。
+
+## 插件安装
+
+下面介绍 elepay for WooCommerce 插件的安装方法。
+
+1.  下载插件  
+    请从以下发行页面以 ZIP 方式下载最新插件。  
+    [elepay for WooCommerce](https://github.com/elestyle/woocommerce-gateway-elepay/releases)
+
+> 📘 请不要解压已下载的 ZIP 文件。
+
+2.  以管理员身份登录 WordPress 管理后台。  
+    点击“插件”→“安装插件”。
+
+![](/docs/adcc6f4-image-20210901-022542.png)
+
+3.  在“添加插件”页面，上传在步骤 1 下载的 ZIP 文件。
+
+![](/docs/bd3442f-image-20210901-025522.png)
+
+4.  在安装结果页面，点击“启用插件”。
+
+![](/docs/cc04219-image-20210901-025604.png)
+
+5.  当在“插件”列表中看到“elepay Plug-in for WooCommerce”时，即可使用。
+
+![](/docs/1459aae-image-20210901-025655.png)
+
+至此，插件安装完成。
+
+## 初始设置
+
+下面介绍插件的初始设置方法。
+
+1.  在 WordPress 管理后台，依次进入“设置”→“支付”→“elepay 支付 - 二维码支付”→点击“管理”。
+
+![](/docs/90c1229-image-20210901-025839.png)
+
+2.  在“启用/禁用”中勾选“启用 elepay”，并将从 elepay 管理后台获取的开发密钥分别填入“Public Key”和“Secret Key”。最后点击“保存更改”。
+
+    关于如何获取 elepay 开发密钥，请参见“[概要](/get-started)”。
+
+> ❗️ 警告：使用测试环境的开发密钥（以 pk_test 或 sk_test 开头）时，不会发生真实扣款。即使订单状态显示为“已支付”，也请切勿发货。
+
+![](/docs/69e2d28-image-20210901-031006.png)
+
+3.  复制 Webhook 链接。
+
+![](/docs/cd45b44-image-20210901-030500.png)
+
+4.  在 elepay 管理后台进入“开发设置”→“Webhook”，点击“新建”。
+
+![](/docs/2762d21-image-20210405-084536.png)
+
+5.  将步骤 3 复制的 Webhook 链接粘贴到“URL”，在下方“事件类型”中勾选“支付成功”，然后点击“OK”。
+
+![](/docs/36c9403-image-20210405-085341.png)
+
+至此，所有设置已完成。  
+在 EC-CUBE 的支付方式选择页面，买家可以看到 elepay 的可用支付方式。
+
+> 📘 只会显示在 elepay 中已启用的支付方式。不受浏览器或设备支持的方式会自动隐藏。

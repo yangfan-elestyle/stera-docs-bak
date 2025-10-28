@@ -1,0 +1,219 @@
+---
+title: Api 参考
+---
+
+## Elepay
+
+**Kind**: global class
+
+### new Elepay(key, options)
+
+初始化 SDK。
+
+**Returns**: `Elepay` - Elepay 实例
+
+| 参数           | 类型     | 说明                                                                               |
+| -------------- | -------- | ---------------------------------------------------------------------------------- |
+| key            | `string` | 必填。Publishable Key                                                              |
+| options        | `object` | 可选。其他选项                                                                     |
+| options.locale | `string` | 语言设置。默认 `auto`（依据浏览器自动识别）。可设置 `ja`、`en`、`zh-CN`、`zh-TW`。 |
+
+### elepay.handleCharge(charge) ⇒ `Promise`
+
+传入 Charge 对象以进行支付处理。
+
+**Kind**: `Elepay` 的实例方法  
+**Returns**: `Promise` - 支付处理结果的 Promise。对于需要 `frontUrl` 的方式，将通过 `frontUrl` 返回结果。
+
+| 参数   | 类型     | 说明                             |
+| ------ | -------- | -------------------------------- |
+| charge | `object` | 必填。由服务端创建的 Charge 对象 |
+
+**Example**
+
+```js
+elepay
+  .handleCharge(chargeObject)
+  .then(function (result) {
+    // 正常处理
+    if (result.type === 'cancel') {
+      // 支付取消
+    } else if (result.type === 'success') {
+      // 支付成功
+    }
+  })
+  .catch(function (err) {
+    // 错误处理
+  });
+```
+
+### elepay.handleSource(source) ⇒ `Promise`
+
+传入 Source 对象以进行授权处理。
+
+**Kind**: `Elepay` 的实例方法  
+**Returns**: `Promise` - 授权处理结果的 Promise。对于需要 `frontUrl` 的方式，将通过 `frontUrl` 返回结果。
+
+| 参数   | 类型     | 说明                             |
+| ------ | -------- | -------------------------------- |
+| source | `object` | 必填。由服务端创建的 Source 对象 |
+
+**Example**
+
+```js
+elepay
+  .handleSource(source)
+  .then(function (result) {
+    // 正常处理
+    if (result.type === 'cancel') {
+      // 取消
+    } else if (result.type === 'success') {
+      // 授权成功
+    }
+  })
+  .catch(function (err) {
+    // 错误处理
+  });
+```
+
+### elepay.createCodeWidget(options) ⇒ `CodesWidget`
+
+创建 EasyQR 小部件。
+
+**Kind**: `Elepay` 的实例方法
+**Returns**: `CodesWidget` - EasyQR 小部件实例
+
+| 参数                          | 类型    | 说明                                       |
+| ----------------------------- | ------- | ------------------------------------------ |
+| options                       | object  | 小部件选项                                 |
+| options.container             | string  | 目标 DOM 元素的 CSS 选择器                 |
+| options.direction             | string  | 布局：vertical（默认）或 horizontal        |
+| options.icon                  | boolean | 为 true 时显示品牌图标的二维码。默认 false |
+| options.parts.amount          | boolean | 为 true 时显示金额。默认 true              |
+| options.parts.paymentLogo     | boolean | 为 true 时显示支付方式图标。默认 true      |
+| options.parts.tip             | boolean | 为 true 时显示提示信息。默认 true          |
+| options.theme.primaryColor    | boolean | 主色                                       |
+| options.theme.borderColor     | boolean | 边框颜色。null：无边框                     |
+| options.theme.backgroundColor | boolean | 背景色。默认白色                           |
+
+**Example**
+
+```js
+var widget = elepay.createCodeWidget({
+  container: '#widget',
+});
+widget.on('success', () => {
+  // 支付完成后的处理
+});
+widget.on('expired', () => {
+  // 生成新的 EasyQR 码等
+});
+widget.show('cod_028123beb9f8c853fa845f4');
+```
+
+### elepay.checkout(code) ⇒ `Promise`
+
+执行 EasyCheckout。
+
+**Kind**: `Elepay` 的实例方法
+**Returns**: `Promise` - Checkout 流程的 Promise。仅需在出错时处理。
+
+| 参数 | 类型     | 说明                                |
+| ---- | -------- | ----------------------------------- |
+| code | `object` | 必填。由服务端创建的 EasyQR 对象 ID |
+
+**Example**
+
+```js
+elepay.checkout('cod_028123beb9f8c853fa845f4').catch(function (err) {
+  // 错误处理
+});
+```
+
+## CodesWidget
+
+EasyQR 小部件类。
+
+**Kind**: global class
+
+### codesWidget.show(code)
+
+展示 EasyQR 小部件。
+
+**Kind**: `CodesWidget` 的实例方法
+
+| 参数 | 类型   | 说明                                |
+| ---- | ------ | ----------------------------------- |
+| code | object | 必填。由服务端创建的 EasyQR 对象 ID |
+
+**Example**
+
+```js
+widget.show('cod_028123beb9f8c853fa845f4');
+```
+
+### codesWidget.destroy()
+
+销毁 EasyQR 小部件。
+
+**Kind**: `CodesWidget` 的实例方法
+
+### "success" (ev, codeObject)
+
+支付完成事件。
+
+**Kind**: 由 `CodesWidget` 触发的事件
+
+| 参数       | 类型   | 说明            |
+| ---------- | ------ | --------------- |
+| ev         | object | 事件            |
+| ev.type    | string | success         |
+| codeObject | object | EasyQR 代码对象 |
+
+**Example**
+
+```js
+widget.on('success', function (ev, codeObject) {
+  // 支付完成后的处理
+});
+```
+
+### "expired" (ev, codeObject)
+
+EasyQR 码过期事件。
+
+**Kind**: 由 `CodesWidget` 触发的事件
+
+| 参数       | 类型   | 说明            |
+| ---------- | ------ | --------------- |
+| ev         | object | 事件            |
+| ev.type    | string | expired         |
+| codeObject | object | EasyQR 代码对象 |
+
+**Example**
+
+```js
+widget.on('expired', function (ev, codeObject) {
+  // 生成新的 EasyQR 码等
+});
+```
+
+### "error" (ev, error)
+
+错误事件。
+
+**Kind**: 由 `CodesWidget` 触发的事件
+
+| 参数    | 类型   | 说明     |
+| ------- | ------ | -------- |
+| ev      | object | 事件     |
+| ev.type | string | error    |
+| error   | Error  | 错误对象 |
+
+**Example**
+
+```js
+widget.on('error', function (ev, err) {
+  // 错误处理
+});
+```

@@ -1,0 +1,127 @@
+---
+title: Webhook
+---
+
+# 概述
+
+为便于与您的系统集成，elepay 提供用于处理异步通知的 Webhook 及相关工具。
+
+## Webhook
+
+Webhook 是指通过 HTTP 将某个服务中发生的事件通知发送到外部 URL 的机制。
+
+![](/docs/5594a16-Untitled_Diagram_1.png)
+
+## 工具
+
+我们提供包括 Webhook 通知发送、请求日志、响应格式校验等在内的开发工具。详情请参阅开发工具页面。
+
+# 使用指南
+
+## 使用场景
+
+通过 Webhook，elepay 可在如下事件发生时向任意 URL 发送通知：
+
+- 支付成功
+- 退款成功
+
+只需在 elepay 管理后台添加目标 URL，即可自动接收上述事件通知。
+
+![](/docs/0db64b6-Webhook______elepay.png)
+
+## 配置
+
+登录 elepay 管理后台。在如下页面添加 Webhook 发送目标，输入 URL、选择事件类型，最后点击添加。可配置多个 Webhook 端点。
+
+![](/docs/bc5025c-123123123.png)
+
+### 1. Webhook URL
+
+在「开发设置 / Webhook」中指定用于接收通知的 URL。
+
+### 2. Test 模式与 Live 模式
+
+同时支持 Test 与 Live 两种模式。通过控制台顶部的 Test/Live 切换来分别管理两套配置。
+
+### 3. Webhook 事件
+
+elepay 定义了 Webhook 通知的事件类型。发生以下事件时会发送相应的通知。
+
+#### 请求
+
+所有 elepay Webhook 均以 POST 请求发送，请求体包含事件的 JSON 数据。
+
+#### 事件列表
+
+以下为 elepay 实际发送的事件类型。事件类型保存在 JSON 的 `type` 字段中。
+
+| 类型                 | 说明           |
+| -------------------- | -------------- |
+| `charge.succeeded`   | 支付成功       |
+| `charge.revoked`     | 支付撤销       |
+| `refund.succeeded`   | 退款成功       |
+| `source.activated`   | 预授权成功     |
+| `source.inactivated` | 预授权失效     |
+| `reader.activated`   | 读卡器配对完成 |
+
+下面是 1800 日元支付成功时发送的示例事件数据：
+
+```json
+{
+  "id": "evt_la06CoQAiPojSgJKe5gt3nwq",
+  "object": "event",
+  "createTime": 1543944030817,
+  "liveMode": false,
+  "type": "charge.succeeded",
+  "data": {
+    "object": {
+      // Charge 对象
+    }
+  }
+}
+```
+
+`data` 字段包含事件的详细内容，其结构与 API 返回的 JSON 一致。
+
+## 接收通知
+
+### 正常处理
+
+成功接收通知后，请返回 HTTP 2xx 状态码。
+
+### 异常处理
+
+接收失败时，请务必返回 HTTP 4xx 或 5xx 状态码。elepay 将自动重试：先以 1 分钟间隔重试 3 次，之后以 10 分钟间隔再重试 2 次。
+
+若仍无法成功，请通过同步 API 对账以同步支付结果。
+
+| 重试   | 次数    | 间隔            |
+| ------ | ------- | --------------- |
+| 1–3 次 | 共 3 次 | 每 1 分钟 1 次  |
+| 4–5 次 | 共 2 次 | 每 10 分钟 1 次 |
+
+### 正当性
+
+来自 elepay 服务器的所有 Webhook 都包含 `elepay-signature` 头。内容示例如下：
+
+```text
+格式：
+elepay-signature: t=[时间戳],sign=[签名值]
+
+示例：
+elepay-signature: t=1581064080,sign=100dcc3d839c89cd91ecdd23d7305b2fdb8ae73b498c27efd812b25fc86ec702
+```
+
+> 📘 受框架影响，HTTP 头可能不会保留全小写的 `elepay-signature`。此时请尝试使用 `Elepay-Signature`。
+
+**正当性校验逻辑**
+
+签名通过时间戳与校验密钥，使用 HMAC‑SHA256 算法生成。您可在管理后台的 Webhook 详情页面查看或重新生成该密钥。
+
+![](/docs/585eb50-Webhook_______elepay.png)
+
+1. 从请求头中取出时间戳与签名值。
+2. 读取请求体数据。
+3. 构造字符串：`<步骤1时间戳> + "." + <步骤2内容>`。
+4. 使用校验密钥对步骤 3 的字符串进行 HMAC‑SHA256 签名。
+5. 将步骤 4 的结果与步骤 1 的签名值对比以校验正当性。
