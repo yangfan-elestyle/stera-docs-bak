@@ -7,17 +7,8 @@ const config = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    // Allow external images used in MDX content
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.cloudimg.io',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.s3.amazonaws.com',
-      },
-    ],
+    // Disable Next.js image optimizer to avoid `_next/image` route issues
+    unoptimized: true,
   },
 };
 
