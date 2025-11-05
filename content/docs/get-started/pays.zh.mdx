@@ -300,6 +300,31 @@ fun checkIfGooglePayIsReadyToUse(
 )
 ```
 
+##### Google Pay 开发
+
+1. minSdkVersion 满足要求官方要求：https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+2. 配置 AndroidManifest.xml
+
+```
+<application>
+  ...
+  <meta-data
+    android:name="com.google.android.gms.wallet.api.enabled"
+    android:value="true" />
+</application>
+```
+
+##### Google Pay PRODUCTION 验证
+
+根据 Google Pay 官方要求，PRODUCTION 环境下的 Google Pay 一定需要 Google Play Release 签名。并需要以下操作流程：
+
+1. 申请 google pay api 能力
+   a. https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration
+2. 一定需要通过 Google Play store 下载 app 并测试（release 签名后本地安装是不行的。）
+   a. https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+   b. release 签名打包并且上传 Google Play store 后，通过测试人员账号下载并测试 Google Pay 能力。
+3. 一定需要使用 GooglePayEnvironment.PRODUCTION 参数，而不是 GooglePayEnvironment.TEST 参数。
+
 ##### TEST／PRODUCTION 的差异
 
 当 `googlePayExistingPaymentRequired` 为 true 时：

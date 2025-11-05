@@ -1,0 +1,11 @@
+{
+  "title": "端末アプリの設定",
+  "defaultOpen": false,
+  "pages": [
+    "regarding-the-device-binding",
+    "wait-settings",
+    "smart-one-shop-release",
+    "shop-app-settings",
+    "about-the-installation"
+  ]
+}

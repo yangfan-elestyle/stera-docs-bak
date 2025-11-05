@@ -1,0 +1,9 @@
+{
+  "title": "Basic function settings",
+  "defaultOpen": false,
+  "pages": [
+    "order-and-refund-processing",
+    "about-product-editing",
+    "changing-the-display-order"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "title": "基本功能设置",
+  "defaultOpen": false,
+  "pages": [
+    "order-and-refund-processing",
+    "about-product-editing",
+    "changing-the-display-order"
+  ]
+}

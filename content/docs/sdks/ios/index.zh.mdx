@@ -2,7 +2,7 @@
 title: iOS Quick Start
 ---
 
-**elepay iOS SDK** 是将 elepay 集成到 iOS 应用的开发包。  
+**elepay iOS SDK** 是将 elepay 集成到 iOS 应用的开发包。<br />
 本文将详细说明如何将 iOS 应用与 elepay SDK 对接。
 
 # 支持版本
@@ -60,7 +60,7 @@ pod 'Braintree'
 
 ## 2. 通过 Swift Package Manager（SPM）安装
 
-**elepay iOS SDK** 自 3.1.1 起支持 SPM。  
+**elepay iOS SDK** 自 3.1.1 起支持 SPM。<br />
 **elepay iOS SDK Chinese Payments Plugin** 自 2.0.2 起支持 SPM。
 
 1. 通过 SPM 添加 ElepaySDK。  
@@ -148,7 +148,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 
 ### 业务服务端处理
 
-通过 **elepay API** 的 Charge 接口 `/api/charges` 发起单次支付。  
+通过 **elepay API** 的 Charge 接口 `/api/charges` 发起单次支付。<br />
 鉴于该接口需要认证，请将密钥保存在您控制的服务器上，并由该服务器发起请求。
 
 > ❗️ 安全：
@@ -252,7 +252,7 @@ _ = Elepay.handlePayment(
 
 将 **elepay API** 代码接口返回的载荷传入 **elepay SDK**，由 SDK 完成 Checkout 处理。
 
-根据载荷类型提供三种方法：  
+根据载荷类型提供三种方法：<br />
 示例与方法说明如下。
 
 #### 1. 以 JSON 字符串进行 Checkout：

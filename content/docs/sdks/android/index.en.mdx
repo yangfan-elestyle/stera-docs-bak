@@ -2,7 +2,7 @@
 title: Android Quick Start
 ---
 
-The **elepay Android SDK** integrates elepay into Android apps.  
+The **elepay Android SDK** integrates elepay into Android apps.<br />
 This guide explains in detail how to connect your Android app with the elepay SDK.
 
 # Supported versions
@@ -22,7 +22,7 @@ maven {
 }
 ```
 
-Add the following to the `dependency` section of the same `build.gradle` file.  
+Add the following to the `dependency` section of the same `build.gradle` file.<br />
 See the [releases page](https://github.com/elestyle/elepay-android/releases) for the (latest-version).
 
 ```groovy
@@ -88,7 +88,7 @@ You need an elepay account to request an `appKey`.
 
 ### Charge processing
 
-After creating a charge data object, pass it to the method below to complete payment processing:  
+After creating a charge data object, pass it to the method below to complete payment processing:<br />
 `Elepay.processPayment(chargeJsonData, fromActivity, resultHandler)`
 
 | Parameter name | Description                                                                                                                       |
@@ -99,7 +99,7 @@ After creating a charge data object, pass it to the method below to complete pay
 
 ### Source processing
 
-After creating a source data object, pass it to the method below to complete processing:  
+After creating a source data object, pass it to the method below to complete processing:<br />
 `Elepay.processSource(sourceJsonData, fromActivity, resultHandler)`
 
 | Parameter name | Description                                                                                                                      |
@@ -112,7 +112,7 @@ After creating a source data object, pass it to the method below to complete pro
 
 > 📘 Checkout requires elepay Android SDK 1.9.0 or later.
 
-After creating a checkout data object, pass it to the method below to complete the flow:  
+After creating a checkout data object, pass it to the method below to complete the flow:<br />
 `Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
 
 | Parameter name   | Description                                                                                                                        |
@@ -143,7 +143,7 @@ Add the callback `Activity` to your `AndroidManifest.xml` and register the URL s
 >
 > In the snippet above, replace the `scheme` of `<data android:scheme="ep1234567890abcdef" />` with the elepay‑specific URL scheme. For how to obtain it, see “[Obtain URL Scheme for iOS / Android SDK](/sdks/url-scheme)”.
 
-The processing result is contained in the `ElepayResult` argument of the `resultHandler` callback above.  
+The processing result is contained in the `ElepayResult` argument of the `resultHandler` callback above.<br />
 `ElepayResult` has `Succeeded`, `Failed`, and `Canceled`. See the API docs for details.
 
 ```kotlin
@@ -193,7 +193,7 @@ when (paymentRes) {
 
 ## Specify UI theme
 
-You can change the SDK UI theme using the following setting.  
+You can change the SDK UI theme using the following setting.<br />
 You can also change the theme at runtime via the SDK API.
 
 ```kotlin

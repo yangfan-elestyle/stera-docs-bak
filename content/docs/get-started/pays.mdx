@@ -300,6 +300,31 @@ fun checkIfGooglePayIsReadyToUse(
 )
 ```
 
+##### Google Pay 開発
+
+1. `minSdkVersion` が公式要件を満たしていること：https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+2. `AndroidManifest.xml` の設定：
+
+```
+<application>
+  ...
+  <meta-data
+    android:name="com.google.android.gms.wallet.api.enabled"
+    android:value="true" />
+</application>
+```
+
+##### Google Pay PRODUCTION 検証
+
+Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play のリリース署名が必須です。次の手順に従ってください。
+
+1. Google Pay API の利用申請。
+   a. https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration
+2. 必ず Google Play ストアからアプリをダウンロードしてテストします（リリース署名済み APK のローカルインストールは不可）。
+   a. https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+   b. リリース鍵で署名し Google Play ストアにアップロード後、テスターアカウントでダウンロードして Google Pay 機能を検証します。
+3. `GooglePayEnvironment.TEST` ではなく `GooglePayEnvironment.PRODUCTION` を使用します。
+
 ##### TEST／PRODUCTION の違い
 
 `googlePayExistingPaymentRequired` が true に設定されている場合：

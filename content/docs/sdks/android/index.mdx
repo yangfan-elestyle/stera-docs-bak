@@ -2,7 +2,7 @@
 title: Android Quick Start
 ---
 
-**elepay Android SDK**  は elepay を Android アプリに導入するための SDK です。
+**elepay Android SDK**  は elepay を Android アプリに導入するための SDK です。<br />
 このガイドでは、 elepay の SDK を Android アプリと連携する方法について詳しく説明します。
 
 # 対応バージョン
@@ -22,7 +22,7 @@ maven {
 }
 ```
 
-同  `build.gradle`  ファイルの  `dependency`  に以下のコードを追加してください。
+同  `build.gradle`  ファイルの  `dependency`  に以下のコードを追加してください。<br />
 (latest-version)は[リリースページ](https://github.com/elestyle/elepay-android/releases)をご参照ください
 
 ```groovy
@@ -88,7 +88,7 @@ Elepay.setup(configuration)
 
 ### チャージ処理
 
-チャージのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
+チャージのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。<br />
 `Elepay.processPayment(chargeJsonData, fromActivity, resultHandler)`
 
 | パラメータ名   | 説明                                                                                                                                         |
@@ -99,7 +99,7 @@ Elepay.setup(configuration)
 
 ### ソース処理
 
-ソースのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
+ソースのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。<br />
 `Elepay.processSource(sourceJsonData, fromActivity, resultHandler)`
 
 | パラメータ名   | 説明                                                                                                                                     |
@@ -112,7 +112,7 @@ Elepay.setup(configuration)
 
 > 📘 checkout は elepay Android SDK 1.9.0 及びその以上のバージョンが必要となります。
 
-checkout のデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。
+checkout のデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。<br />
 `Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
 
 | パラメータ名     | 説明                                                                                                                                        |
@@ -198,8 +198,8 @@ when (paymentRes) {
 
 ## UI のテーマ指定
 
-elepay SDK はシステムのテーマに応じて UI を表示します。
-`ElepayTheme`で定義した`Light`と`Dark`を利用し、UI のテーマを指定することができます。
+elepay SDK はシステムのテーマに応じて UI を表示します。<br />
+`ElepayTheme`で定義した`Light`と`Dark`を利用し、UI のテーマを指定することができます。<br />
 指定する方法は下記となります。
 
 - elepay SDK を初期化する時に、ElepayConfiguration の`elepayTheme`を指定します。

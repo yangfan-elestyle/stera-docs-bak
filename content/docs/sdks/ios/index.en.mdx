@@ -2,7 +2,7 @@
 title: iOS Quick Start
 ---
 
-The **elepay iOS SDK** is an SDK for integrating elepay into iOS apps.  
+The **elepay iOS SDK** is an SDK for integrating elepay into iOS apps.<br />
 This guide explains in detail how to connect your iOS app with the elepay SDK.
 
 # Supported versions
@@ -60,7 +60,7 @@ pod 'Braintree'
 
 ## 2. Install via Swift Package Manager (SPM)
 
-**elepay iOS SDK** supports SPM from 3.1.1.
+**elepay iOS SDK** supports SPM from 3.1.1.<br />
 **elepay iOS SDK Chinese Payments Plugin** supports SPM from 2.0.2.
 
 1. Add ElepaySDK via SPM.  
@@ -148,7 +148,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 
 ### Your server‑side processing
 
-Start a one‑time payment using the **elepay API** charge API `/api/charges`.
+Start a one‑time payment using the **elepay API** charge API `/api/charges`.<br />
 Because this API requires authentication, store the authentication secret key on a server you control and make the request from that server.
 
 > ❗️ Security:
@@ -252,7 +252,7 @@ Create a checkout payload using the **elepay API** code API.
 
 Send the checkout payload obtained from the **elepay API** code API to the **elepay SDK** and let the SDK complete the checkout process.
 
-Three methods are provided depending on the payload type.  
+Three methods are provided depending on the payload type.<br />
 Sample code and method descriptions are as follows.
 
 #### 1. Checkout with a JSON string

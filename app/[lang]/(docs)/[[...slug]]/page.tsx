@@ -1,4 +1,9 @@
-import { getPageImage, source } from '@/lib/source';
+import {
+  getFilteredFooterItems,
+  getPageImage,
+  isPageVisibleForHost,
+  source,
+} from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
@@ -6,6 +11,7 @@ import {
   DocsTitle,
 } from 'fumadocs-ui/page';
 import { notFound, redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
@@ -17,6 +23,11 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const { slug, lang } = await props.params;
   const page = source.getPage(slug, lang);
   if (!page) notFound();
+
+  // Enforce host-based visibility to prevent direct access via URL
+  const hdrs = await headers();
+  const host = hdrs.get('host') ?? '';
+  if (!isPageVisibleForHost(page, lang, host)) notFound();
 
   // Handle redirect if specified in frontmatter
   if (page.data.redirect) {
@@ -32,11 +43,19 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       ? page.data.toc.filter((item) => item.depth <= tocMaxDepth)
       : page.data.toc;
 
+  // Read last modified timestamp
+  const lastModified = page.data.lastModified as number | undefined;
+
+  // Compute footer items
+  const footerItems = getFilteredFooterItems(page, lang, host);
+
   return (
     <DocsPage
       toc={filteredToc}
       full={page.data.full}
       tableOfContent={{ style: 'clerk' }}
+      lastUpdate={lastModified}
+      footer={{ items: footerItems }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>

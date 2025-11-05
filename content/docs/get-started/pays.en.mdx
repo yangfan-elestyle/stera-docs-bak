@@ -299,6 +299,31 @@ fun checkIfGooglePayIsReadyToUse(
 )
 ```
 
+##### Google Pay development
+
+1. Ensure `minSdkVersion` meets the official requirements: https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+2. Configure `AndroidManifest.xml`:
+
+```
+<application>
+  ...
+  <meta-data
+    android:name="com.google.android.gms.wallet.api.enabled"
+    android:value="true" />
+</application>
+```
+
+##### Google Pay PRODUCTION verification
+
+Per Google Pay requirements, PRODUCTION must use a Google Play release-signed build. Follow this process:
+
+1. Apply for Google Pay API integration.
+   a. https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration
+2. You must download the app from Google Play Store and test it (a locally installed release-signed APK is not accepted).
+   a. https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+   b. After signing with your release key and uploading to Google Play, download with a tester account and verify Google Pay functionality.
+3. Use `GooglePayEnvironment.PRODUCTION`, not `GooglePayEnvironment.TEST`.
+
 ##### Differences between TEST and PRODUCTION
 
 When `googlePayExistingPaymentRequired` is true:

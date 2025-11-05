@@ -1,14 +1,17 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
-import { source } from '@/lib/source';
+import { getFilteredTreeByHost, source } from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 
 export default async function Layout({
   params,
   children,
 }: LayoutProps<'/[lang]'>) {
   const { lang } = await params;
-  const tree = source.pageTree[lang];
+  const hdrs = await headers();
+  const host = hdrs.get('host') ?? '';
+  const tree = getFilteredTreeByHost(lang, host);
 
   if (!tree) {
     return notFound();
