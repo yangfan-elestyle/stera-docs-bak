@@ -1,6 +1,10 @@
 {
   "title": "基本功能设置",
   "defaultOpen": false,
+  "visibleOnHosts": [
+    "docs-smcc.stg.elepay.localhost",
+    "docs-smcc.stg.elepay.dev"
+  ],
   "pages": [
     "order-and-refund-processing",
     "about-product-editing",

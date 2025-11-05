@@ -1,6 +1,10 @@
 {
   "title": "终端应用设置",
   "defaultOpen": false,
+  "visibleOnHosts": [
+    "docs-smcc.stg.elepay.localhost",
+    "docs-smcc.stg.elepay.dev"
+  ],
   "pages": [
     "regarding-the-device-binding",
     "wait-settings",

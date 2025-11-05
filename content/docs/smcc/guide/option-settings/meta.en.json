@@ -1,6 +1,10 @@
 {
   "title": "Optional feature settings",
   "defaultOpen": false,
+  "visibleOnHosts": [
+    "docs-smcc.stg.elepay.localhost",
+    "docs-smcc.stg.elepay.dev"
+  ],
   "pages": [
     "issuing-coupon-codes",
     "campaign-settings",
