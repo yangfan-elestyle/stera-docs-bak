@@ -4,7 +4,10 @@ FROM base AS deps
 
 WORKDIR /app
 
-COPY package.json bun.lock source.config.ts ./
+ARG GH_PACKAGES_TOKEN
+ENV GH_PACKAGES_TOKEN=${GH_PACKAGES_TOKEN}
+
+COPY package.json bun.lock bunfig.toml source.config.ts ./
 RUN bun install --frozen-lockfile
 
 FROM base AS builder

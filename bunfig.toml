@@ -1,0 +1,2 @@
+[install.scopes]
+elepay-io = { token = "$GH_PACKAGES_TOKEN", url = "https://npm.pkg.github.com" }

@@ -22,6 +22,7 @@ jobs:
         with:
           enable_cross_platform: 'false'
           image_name: ${{ github.repository }}
+          build_args: GH_PACKAGES_TOKEN=${{ secrets.PACKAGE_READ_TOKEN }}
 
       - name: Deploy to server
         uses: elepay-io/.github/.github/actions/deploy-docker@master
