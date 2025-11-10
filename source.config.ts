@@ -11,8 +11,8 @@ import { z } from 'zod';
 const customFrontmatterSchema = frontmatterSchema.extend({
   tocMaxDepth: z.number().int().positive().optional(),
   redirect: z.string().optional(),
-  // Host visibility: keep only whitelist via `visibleOnHosts`
-  visibleOnHosts: z.array(z.string()).optional(),
+  // Tenant visibility: whitelist via `visibleOnTenant` (values are tenant keys like "smcc")
+  visibleOnTenant: z.array(z.string()).optional(),
 });
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
@@ -25,9 +25,9 @@ export const docs = defineDocs({
     },
   },
   meta: {
-    // Allow folder-level visibility control in meta.json
+    // Allow folder-level tenant visibility control in meta.json
     schema: metaSchema.extend({
-      visibleOnHosts: z.array(z.string()).optional(),
+      visibleOnTenant: z.array(z.string()).optional(),
     }),
   },
 });

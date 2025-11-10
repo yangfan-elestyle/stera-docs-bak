@@ -2,7 +2,7 @@
 title: Payment Processing
 ---
 
-By using elepay’s Charge feature, you can keep the payment flow safe and smooth. End users can complete payment with just a few taps in a mobile app or on a web page. For the Charge feature, please use the Client SDK. Although a Server SDK is provided to improve developer convenience, you can also integrate directly with the RESTful API without using it.
+By using <EText name="elepay" />’s Charge feature, you can keep the payment flow safe and smooth. End users can complete payment with just a few taps in a mobile app or on a web page. For the Charge feature, please use the Client SDK. Although a Server SDK is provided to improve developer convenience, you can also integrate directly with the RESTful API without using it.
 
 Payment flow overview
 
@@ -20,7 +20,7 @@ Your server calls the API for [Create Charge](/openapi/charge/createCharge) and 
 
 ## 3. Create a Charge object
 
-The elepay server creates a Charge object for the payment request and returns it to your server.
+The <EText name="elepay" /> server creates a Charge object for the payment request and returns it to your server.
 
 ## 4. Pass the Charge object
 
@@ -36,7 +36,7 @@ When processing finishes, the specified payment channel server returns the payme
 
 ## 7. Receive webhook event
 
-If the payment succeeds, elepay sends a `charge.captured` event notification to the URL configured for your webhook.
+If the payment succeeds, <EText name="elepay" /> sends a `charge.captured` event notification to the URL configured for your webhook.
 
 ## 8. Retrieve and handle payment status
 
@@ -46,4 +46,4 @@ We recommend adding logic on your server to retrieve the payment status. If, for
 
 You can review payment records under “支払い管理 / 支払い一覧” in the dashboard. For refunds, see [Refund Processing](/get-started/refunds).
 
-![](/docs/f40064d-______elepay.png)
+<EImg src="image.get-started.charge.img" />

@@ -2,7 +2,8 @@
 title: 返金処理
 ---
 
-elepay では返金機能も提供しています。お客様のサーバー側の処理で API を利用して返金することも可能です。
+<EText name="elepay" /> では返金機能も提供しています。お客様のサーバー側の処理で
+API を利用して返金することも可能です。
 
 # API を利用して返金
 
@@ -12,12 +13,15 @@ elepay では返金機能も提供しています。お客様のサーバー側�
 
 ## 2. 戻り値の判断
 
-elepay サーバーは、返金リクエストに対して Refund オブジェクトを返します。<br />
-返金リクエストを正しく受け取った場合、Refund オブジェクトの failure_msg は Null になります。
+<EText name="elepay" /> サーバーは、返金リクエストに対して Refund
+オブジェクトを返します。
+<br />
+返金リクエストを正しく受け取った場合、Refund オブジェクトの failure_msg は Null
+になります。
 
 ## 3. Webhook イベントの受信
 
-返金が成功した場合、elepay は Webhook に設定された URL に
+返金が成功した場合、<EText name="elepay" /> は Webhook に設定された URL に
 
 `refund.succeeded` イベントの通知を送信します。
 
@@ -25,8 +29,8 @@ elepay サーバーは、返金リクエストに対して Refund オブジェ�
 
 「支払い管理 / 支払い一覧 」にて指定された支払いレコードを返金することができます。
 
-![](/docs/e0fa380-______elepay.png)
-![](/docs/7d1820f-______elepay.png)
+<EImg src="image.get-started.refunds.img1" />
+<EImg src="image.get-started.refunds.img2" />
 
 > 📘 返金可能な期限
 >

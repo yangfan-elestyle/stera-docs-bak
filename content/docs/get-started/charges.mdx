@@ -2,7 +2,11 @@
 title: 支払い処理
 ---
 
-elepay の Charge 機能を利用して支払いプロセスを安全かつスムーズに進めることができます。利用者は、モバイルアプリかウェブページで支払いの際に数回クリックをするだけで、手間をかけずに素早く支払いを行うことができます。elepay の Charge 機能は Client SDK を利用してください。Server SDK も開発者の利便性を上昇するために提供していますが、利用しなくでも RESTFul API を直接連携してご対応いただけます。
+<EText name="elepay" /> の Charge
+機能を利用して支払いプロセスを安全かつスムーズに進めることができます。利用者は、モバイルアプリかウェブページで支払いの際に数回クリックをするだけで、手間をかけずに素早く支払いを行うことができます。
+<EText name="elepay" /> の Charge 機能は Client SDK を利用してください。Server
+SDK も開発者の利便性を上昇するために提供していますが、利用しなくでも RESTFul API
+を直接連携してご対応いただけます。
 
 支払いの流れのイメージ
 
@@ -20,7 +24,8 @@ elepay の Charge 機能を利用して支払いプロセスを安全かつス�
 
 ## 3. Charge オブジェクトの新規生成
 
-elepay サーバーが支払いリクエストに対して Charge オブジェクトを新規生成し、サーバー側に返します。
+<EText name="elepay" /> サーバーが支払いリクエストに対して Charge
+オブジェクトを新規生成し、サーバー側に返します。
 
 ## 4. Charge オブジェクト
 
@@ -36,7 +41,7 @@ elepay サーバーが支払いリクエストに対して Charge オブジェ�
 
 ## 7. Webhook イベントの受信
 
-支払いが成功の場合、elepay は Webhook に設定された URL に `charge.captured` イベントの通知を送信します。
+支払いが成功の場合、<EText name="elepay" /> は Webhook に設定された URL に `charge.captured` イベントの通知を送信します。
 
 ## 8. 支払いステータスの取得と処理
 
@@ -46,4 +51,4 @@ elepay サーバーが支払いリクエストに対して Charge オブジェ�
 
 管理画面の「支払い管理 / 支払い一覧 」にて支払いレコードを確認することができます。返金については [返金処理](/get-started/refunds) をご覧ください。
 
-![](/docs/f40064d-______elepay.png)
+<EImg src="image.get-started.charge.img" />

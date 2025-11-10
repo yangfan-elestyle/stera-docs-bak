@@ -1,14 +1,14 @@
 /*
- 简化版：批量为 meta.json 与 MDX frontmatter 追加/合并 `visibleOnHosts`。
+ 批量为 meta.json 与 MDX frontmatter 追加/合并 `visibleOnTenant`。
 
  用法：
-   bun run scripts/batch-visible-hosts.ts \
+   bun run scripts/batch-visible-tenants.ts \
      --path content/docs/smcc                 # 可以是文件或文件夹
-     --hosts docs-smcc.stg.elepay.localhost,docs-smcc.stg.elepay.dev
+     --tenants smcc,other                     # 逗号分隔
 
  规则：
  - 仅处理两类文件：meta.json（含 meta.xx.json）与 .mdx。
- - 若文件已有 `visibleOnHosts`：执行“追加合并”（去重，不覆盖）。
+ - 若文件已有 `visibleOnTenant`：执行“追加合并”（去重，不覆盖）。
  - 若无：自动新增字段/frontmatter。
  - 如果传入的是文件夹，则递归处理；如果是文件，则只处理该文件。
 */
@@ -18,13 +18,13 @@ import path from 'path';
 
 interface CliOptions {
   targetPath: string;
-  hosts: string[];
+  tenants: string[];
 }
 
 function parseArgs(argv: string[]): CliOptions {
   const opts: CliOptions = {
     targetPath: '',
-    hosts: [],
+    tenants: [],
   };
 
   for (let i = 2; i < argv.length; i++) {
@@ -41,9 +41,9 @@ function parseArgs(argv: string[]): CliOptions {
         opts.targetPath = value.trim();
         i += shift;
         break;
-      case '--hosts':
-        if (!value) throw new Error('--hosts requires a value');
-        opts.hosts = value
+      case '--tenants':
+        if (!value) throw new Error('--tenants requires a value');
+        opts.tenants = value
           .split(',')
           .map((v) => v.trim())
           .filter(Boolean);
@@ -62,10 +62,8 @@ function parseArgs(argv: string[]): CliOptions {
       'Missing --path. Example: --path content/docs/smcc or --path content/docs/smcc/guide/terminal-settings/meta.zh.json',
     );
   }
-  if (opts.hosts.length === 0) {
-    throw new Error(
-      'Missing --hosts. Example: --hosts a.example.com,b.example.com',
-    );
+  if (opts.tenants.length === 0) {
+    throw new Error('Missing --tenants. Example: --tenants smcc');
   }
   return opts;
 }
@@ -86,17 +84,12 @@ function unique<T>(arr: T[]): T[] {
   return Array.from(new Set(arr));
 }
 
-function normalizeHost(host: string): string {
-  try {
-    const url = new URL(host.startsWith('http') ? host : `http://${host}`);
-    return url.hostname.toLowerCase();
-  } catch {
-    return host.toLowerCase();
-  }
+function normalizeTenant(tenant: string): string {
+  return tenant.toLowerCase();
 }
 
 // ---------- meta.json updater ----------
-async function updateMetaJson(file: string, hosts: string[]) {
+async function updateMetaJson(file: string, tenants: string[]) {
   const raw = await fs.readFile(file, 'utf8');
   let data: any;
   try {
@@ -106,20 +99,20 @@ async function updateMetaJson(file: string, hosts: string[]) {
     return { changed: false };
   }
 
-  const current: string[] | undefined = Array.isArray(data.visibleOnHosts)
-    ? data.visibleOnHosts.map(String)
+  const current: string[] | undefined = Array.isArray(data.visibleOnTenant)
+    ? data.visibleOnTenant.map(String)
     : undefined;
 
-  const next: string[] = unique([...(current ?? []), ...hosts]);
+  const next: string[] = unique([...(current ?? []), ...tenants]);
 
   const equal =
     current &&
     current.length === next.length &&
-    current.every((h, i) => normalizeHost(h) === normalizeHost(next[i]));
+    current.every((h, i) => normalizeTenant(h) === normalizeTenant(next[i]));
 
   if (equal) return { changed: false };
 
-  data.visibleOnHosts = next;
+  data.visibleOnTenant = next;
 
   const out = JSON.stringify(data, null, 2) + '\n';
   await fs.writeFile(file, out, 'utf8');
@@ -127,17 +120,17 @@ async function updateMetaJson(file: string, hosts: string[]) {
 }
 
 // ---------- MDX frontmatter updater ----------
-function buildHostsYaml(hosts: string[], indent = ''): string {
+function buildTenantsYaml(tenants: string[], indent = ''): string {
   const lines = [
-    `${indent}visibleOnHosts:`,
-    ...hosts.map((h) => `${indent}  - ${h}`),
+    `${indent}visibleOnTenant:`,
+    ...tenants.map((h) => `${indent}  - ${h}`),
   ];
   return lines.join('\n');
 }
 
 function updateFrontmatterMerge(
   content: string,
-  newHosts: string[],
+  newTenants: string[],
 ): { changed: boolean; text: string } {
   const fmStart = content.startsWith('---\n')
     ? 0
@@ -150,7 +143,7 @@ function updateFrontmatterMerge(
     const endIdx = content.indexOf('\n---', startIdx + 4);
     if (endIdx === -1) {
       // malformed, treat as no frontmatter
-      return injectFrontmatter(content, unique(newHosts));
+      return injectFrontmatter(content, unique(newTenants));
     }
     const fm = content.slice(startIdx + 4, endIdx);
     const body = content.slice(endIdx + 4); // skip "\n---"
@@ -161,7 +154,7 @@ function updateFrontmatterMerge(
     let replaced = false;
     while (i < lines.length) {
       const line = lines[i];
-      const m = line.match(/^(\s*)visibleOnHosts\s*:(.*)$/);
+      const m = line.match(/^(\s*)visibleOnTenant\s*:(.*)$/);
       if (m) {
         const indent = m[1] ?? '';
         const rest = (m[2] ?? '').trim();
@@ -176,8 +169,8 @@ function updateFrontmatterMerge(
               .map((s) => s.trim().replace(/^['"]|['"]$/g, ''))
               .filter(Boolean);
           }
-          const merged = unique([...existing, ...newHosts]);
-          out.push(buildHostsYaml(merged, indent));
+          const merged = unique([...existing, ...newTenants]);
+          out.push(buildTenantsYaml(merged, indent));
           replaced = true;
           i += 1;
           continue;
@@ -188,12 +181,12 @@ function updateFrontmatterMerge(
             const li = lines[j];
             const mm = li.match(/^\s*-\s*(.*)$/);
             if (!mm) break;
-            const host = (mm[1] ?? '').trim().replace(/^['"]|['"]$/g, '');
-            if (host) block.push(host);
+            const tenant = (mm[1] ?? '').trim().replace(/^['"]|['"]$/g, '');
+            if (tenant) block.push(tenant);
             j++;
           }
-          const merged = unique([...block, ...newHosts]);
-          out.push(buildHostsYaml(merged, indent));
+          const merged = unique([...block, ...newTenants]);
+          out.push(buildTenantsYaml(merged, indent));
           replaced = true;
           i = j;
           continue;
@@ -207,8 +200,8 @@ function updateFrontmatterMerge(
       const trimmed = out.join('\n').trimEnd();
       const nextFm =
         trimmed.length > 0
-          ? `${trimmed}\n${buildHostsYaml(unique(newHosts))}\n`
-          : `${buildHostsYaml(unique(newHosts))}\n`;
+          ? `${trimmed}\n${buildTenantsYaml(unique(newTenants))}\n`
+          : `${buildTenantsYaml(unique(newTenants))}\n`;
       const next = `---\n${nextFm}---${body}`;
       if (next === content) return { changed: false, text: content };
       return { changed: true, text: next };
@@ -220,20 +213,20 @@ function updateFrontmatterMerge(
   }
 
   // no frontmatter: inject
-  return injectFrontmatter(content, unique(newHosts));
+  return injectFrontmatter(content, unique(newTenants));
 }
 
 function injectFrontmatter(
   content: string,
-  hosts: string[],
+  tenants: string[],
 ): { changed: boolean; text: string } {
-  const header = `---\n${buildHostsYaml(hosts)}\n---\n\n`;
+  const header = `---\n${buildTenantsYaml(tenants)}\n---\n\n`;
   return { changed: true, text: header + content };
 }
 
-async function updateMdx(file: string, hosts: string[]) {
+async function updateMdx(file: string, tenants: string[]) {
   const raw = await fs.readFile(file, 'utf8');
-  const { changed, text } = updateFrontmatterMerge(raw, hosts);
+  const { changed, text } = updateFrontmatterMerge(raw, tenants);
   if (changed) await fs.writeFile(file, text, 'utf8');
   return { changed };
 }
@@ -252,13 +245,13 @@ async function main() {
 
     try {
       if (isMeta) {
-        const res = await updateMetaJson(file, opts.hosts);
+        const res = await updateMetaJson(file, opts.tenants);
         if (res.changed) {
           changedCount++;
           console.log(`[meta] updated ${file}`);
         }
       } else if (isMdx) {
-        const res = await updateMdx(file, opts.hosts);
+        const res = await updateMdx(file, opts.tenants);
         if (res.changed) {
           changedCount++;
           console.log(`[mdx]  updated ${file}`);

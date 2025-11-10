@@ -2,7 +2,7 @@
 title: Customer Creation
 ---
 
-By using elepay’s Customer feature, you can create customers to support recurring billing or to charge using registered payment methods. The Customer feature uses both the Client SDK and the API.
+By using <EText name="elepay" />’s Customer feature, you can create customers to support recurring billing or to charge using registered payment methods. The Customer feature uses both the Client SDK and the API.
 
 Customer creation flow overview
 
@@ -24,7 +24,7 @@ Your server calls [Create Source](/openapi/customer/createSource) to create a So
 
 ## 4. Pass the Source object
 
-Your server returns the Source object from elepay to the Client SDK on the client.
+Your server returns the Source object from <EText name="elepay" /> to the Client SDK on the client.
 
 ## 5. Registration (authorization)
 
@@ -36,7 +36,7 @@ After registration completes, the selected payment channel server returns the re
 
 ## 7. Receive webhook event
 
-If registration succeeds, elepay sends a `source.activated` event notification to the configured webhook URL.
+If registration succeeds, <EText name="elepay" /> sends a `source.activated` event notification to the configured webhook URL.
 
 ## 8. Charge recurrently
 

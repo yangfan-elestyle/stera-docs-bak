@@ -6,8 +6,5 @@
     "online-payment-rejection",
     "specified-commercial-transaction-law"
   ],
-  "visibleOnHosts": [
-    "docs-smcc.stg.elepay.localhost",
-    "docs-smcc.stg.elepay.dev"
-  ]
+  "visibleOnTenant": ["smcc"]
 }

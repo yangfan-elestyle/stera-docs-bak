@@ -2,8 +2,8 @@
 title: Android Quick Start
 ---
 
-The **elepay Android SDK** integrates elepay into Android apps.<br />
-This guide explains in detail how to connect your Android app with the elepay SDK.
+The **elepay Android SDK** integrates <EText name="elepay" /> into Android apps.<br />
+This guide explains in detail how to connect your Android app with the <EText name="elepay" /> SDK.
 
 # Supported versions
 
@@ -80,7 +80,7 @@ val configuration = ElepayConfiguration(
 Elepay.setup(configuration)
 ```
 
-You need an elepay account to request an `appKey`.
+You need an <EText name="elepay" /> account to request an `appKey`.
 
 > 📘 We recommend running this configuration in your app’s `Application` class or the starting `Activity`.
 
@@ -203,8 +203,8 @@ Elepay.changeTheme(ElepayTheme.Light)
 
 > Notes
 >
-> 1. When specifying an Elepay theme, the app’s configuration may change, which can cause the `Activity` that invokes the Elepay payment flow to restart.  
->    To avoid an Activity restart, add `uiMode` to `android:configChanges` of the Activity that invokes Elepay in `AndroidManifest.xml`.
+> 1. When specifying an <EText name="elepay" /> theme, the app’s configuration may change, which can cause the `Activity` that invokes the <EText name="elepay" /> payment flow to restart.  
+>    To avoid an Activity restart, add `uiMode` to `android:configChanges` of the Activity that invokes <EText name="elepay" /> in `AndroidManifest.xml`.
 > 2. `changeTheme` takes effect only if called before starting the payment flow.
 
 ## Color customization

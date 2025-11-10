@@ -4,7 +4,7 @@ title: Webhook
 
 # 概述
 
-为便于与您的系统集成，elepay 提供用于处理异步通知的 Webhook 及相关工具。
+为便于与您的系统集成，<EText name="elepay" /> 提供用于处理异步通知的 Webhook 及相关工具。
 
 ## Webhook
 
@@ -20,18 +20,18 @@ Webhook 是指通过 HTTP 将某个服务中发生的事件通知发送到外部
 
 ## 使用场景
 
-通过 Webhook，elepay 可在如下事件发生时向任意 URL 发送通知：
+通过 Webhook，<EText name="elepay" /> 可在如下事件发生时向任意 URL 发送通知：
 
 - 支付成功
 - 退款成功
 
-只需在 elepay 管理后台添加目标 URL，即可自动接收上述事件通知。
+只需在 <EText name="elepay" /> 管理后台添加目标 URL，即可自动接收上述事件通知。
 
-![](/docs/0db64b6-Webhook______elepay.png)
+<EImg src="image.server.webhook.img1" />
 
 ## 配置
 
-登录 elepay 管理后台。在如下页面添加 Webhook 发送目标，输入 URL、选择事件类型，最后点击添加。可配置多个 Webhook 端点。
+登录 <EText name="elepay" /> 管理后台。在如下页面添加 Webhook 发送目标，输入 URL、选择事件类型，最后点击添加。可配置多个 Webhook 端点。
 
 ![](/docs/bc5025c-123123123.png)
 
@@ -45,15 +45,16 @@ Webhook 是指通过 HTTP 将某个服务中发生的事件通知发送到外部
 
 ### 3. Webhook 事件
 
-elepay 定义了 Webhook 通知的事件类型。发生以下事件时会发送相应的通知。
+<EText name="elepay" /> 定义了 Webhook
+通知的事件类型。发生以下事件时会发送相应的通知。
 
 #### 请求
 
-所有 elepay Webhook 均以 POST 请求发送，请求体包含事件的 JSON 数据。
+所有 <EText name="elepay" /> Webhook 均以 POST 请求发送，请求体包含事件的 JSON 数据。
 
 #### 事件列表
 
-以下为 elepay 实际发送的事件类型。事件类型保存在 JSON 的 `type` 字段中。
+以下为 <EText name="elepay" /> 实际发送的事件类型。事件类型保存在 JSON 的 `type` 字段中。
 
 | 类型                 | 说明           |
 | -------------------- | -------------- |
@@ -91,7 +92,7 @@ elepay 定义了 Webhook 通知的事件类型。发生以下事件时会发送�
 
 ### 异常处理
 
-接收失败时，请务必返回 HTTP 4xx 或 5xx 状态码。elepay 将自动重试：先以 1 分钟间隔重试 3 次，之后以 10 分钟间隔再重试 2 次。
+接收失败时，请务必返回 HTTP 4xx 或 5xx 状态码。<EText name="elepay" /> 将自动重试：先以 1 分钟间隔重试 3 次，之后以 10 分钟间隔再重试 2 次。
 
 若仍无法成功，请通过同步 API 对账以同步支付结果。
 
@@ -102,7 +103,7 @@ elepay 定义了 Webhook 通知的事件类型。发生以下事件时会发送�
 
 ### 正当性
 
-来自 elepay 服务器的所有 Webhook 都包含 `elepay-signature` 头。内容示例如下：
+来自 <EText name="elepay" /> 服务器的所有 Webhook 都包含 `elepay-signature` 头。内容示例如下：
 
 ```text
 格式：
@@ -118,7 +119,7 @@ elepay-signature: t=1581064080,sign=100dcc3d839c89cd91ecdd23d7305b2fdb8ae73b498c
 
 签名通过时间戳与校验密钥，使用 HMAC‑SHA256 算法生成。您可在管理后台的 Webhook 详情页面查看或重新生成该密钥。
 
-![](/docs/585eb50-Webhook_______elepay.png)
+<EImg src="image.server.webhook.img2" />
 
 1. 从请求头中取出时间戳与签名值。
 2. 读取请求体数据。

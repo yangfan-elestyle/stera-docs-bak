@@ -2,7 +2,7 @@
 title: iOS Quick Start
 ---
 
-**elepay iOS SDK** 是将 elepay 集成到 iOS 应用的开发包。<br />
+**elepay iOS SDK** 是将 <EText name="elepay" /> 集成到 iOS 应用的开发包。<br />
 本文将详细说明如何将 iOS 应用与 elepay SDK 对接。
 
 # 支持版本
@@ -97,9 +97,9 @@ pod 'Braintree'
 
 在 Xcode 的 **PROJECT** ＞ **TARGETS** ＞ **Info** 中，打开 **URL Types**，添加 elepay 专用的 _URL Scheme_。
 
-### elepay 通用设置
+### 通用设置
 
-有关获取 elepay 专用 URL Scheme 的方法，请参阅「[获取 iOS / Android SDK 的 URL Scheme](/sdks/url-scheme)」。
+有关获取 <EText name="elepay" /> 专用 URL Scheme 的方法，请参阅「[获取 iOS / Android SDK 的 URL Scheme](/sdks/url-scheme)」。
 
 ![](/docs/URL_Scheme.png)
 
@@ -115,7 +115,7 @@ pod 'Braintree'
 
 请参阅[支付方式](/get-started/pays)页面。
 
-## 3. 初始化 elepay
+## 3. 初始化
 
 在工程的 `application(_:didFinishLaunchingWithOptions:)` 函数中加入以下初始化代码。
 
@@ -125,7 +125,7 @@ Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
 
 > 📘 关于 Public Key
 >
-> 请将 `ELEPAY_APP_PUBLIC_KEY` 替换为在[elepay 管理后台](https://dashboard.elepay.io/)中签发的值。
+> 请将 `ELEPAY_APP_PUBLIC_KEY` 替换为在[<EText name="elepay" /> 管理后台](https://dashboard.elepay.io/)中签发的值。
 
 ## 4. 配置回调
 
@@ -363,7 +363,7 @@ case let .failed(let codeId, let error):
 
 > 🚧 关于支付结果处理
 >
-> App 内显示的支付结果仅用于提示用户。实际扣款结果请务必通过服务端的回调 API，并以 elepay 服务器发送的数据为准进行校验。_详情请参阅 elepay API 指南。_
+> App 内显示的支付结果仅用于提示用户。实际扣款结果请务必通过服务端的回调 API，并以 <EText name="elepay" /> 服务器发送的数据为准进行校验。_详情请参阅 elepay API 指南。_
 
 ### 1. 关于 Apple Pay
 
@@ -371,7 +371,7 @@ case let .failed(let codeId, let error):
 
 ![](/docs/xcodee_applepay.png)
 
-2. 将 Apple Pay 证书上传至[「elepay 管理后台」-「开发设置」-「Apple Pay」](https://dashboard.elepay.io/)。  
+2. 将 Apple Pay 证书上传至[「<EText name="elepay" /> 管理后台」-「开发设置」-「Apple Pay」](https://dashboard.elepay.io/)。  
    证书的创建方法见[此文档](/get-started/pays#apple-pay)。
 
 ### 2. 关于 LSApplicationQueriesSchemes（iOS 9 及以上）

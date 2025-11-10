@@ -120,13 +120,13 @@ For ElepaySDK for iOS v3.2.1 and earlier, to hand off to the PayPay app, add the
 
 ##### Callback URL Scheme for iOS apps
 
-For the default elepay URL Scheme, see [here](/sdks/ios).
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
 
 #### Android
 
 > 🚧 From elepay Android SDK 1.8.0 and later, the callback Activity specified in `AndroidManifest.xml` can be consolidated into `ElepayCallbackActivity`. The per-payment-method setup used up to 1.7.1 is no longer supported. When using 1.8.0 or later, use `ElepayCallbackActivity`. See the [Overview](#summary) for details.
 
-To use PayPay, add the URL Scheme from the “App Settings” page of your elepay account to your project’s `AndroidManifest.xml`.
+To use PayPay, add the URL Scheme from the “App Settings” page of your <EText name="elepay" /> account to your project’s `AndroidManifest.xml`.
 
 ```xml
 <activity
@@ -152,7 +152,7 @@ If you customize the Activity launched by the scheme, inherit from `jp.elestyle.
 
 > 🚧 From elepay Android SDK 1.8.0 and later, the callback Activity specified in `AndroidManifest.xml` can be consolidated into `ElepayCallbackActivity`. The per-payment-method setup used up to 1.7.1 is no longer supported. When using 1.8.0 or later, use `ElepayCallbackActivity`. See the [Overview](#summary) for details.
 
-To use merpay, add the URL Scheme from the “App Settings” page of your elepay account to your project’s `AndroidManifest.xml`.
+To use merpay, add the URL Scheme from the “App Settings” page of your <EText name="elepay" /> account to your project’s `AndroidManifest.xml`.
 
 ```xml
 <activity
@@ -187,13 +187,13 @@ For ElepaySDK for iOS v3.2.1 and earlier, to hand off to the au PAY app, add the
 
 ##### Callback URL Scheme for iOS apps
 
-For the default elepay URL Scheme, see [here](/sdks/ios).
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
 
 ### Rakuten Pay [#rpay]
 
 #### iOS
 
-To use RPay, in addition to the elepay SDK, you must add the proprietary (non‑public) RPay framework to your project’s build dependencies. Contact elepay support for how to obtain RPayKit.framework and how to add it.
+To use RPay, in addition to the elepay SDK, you must add the proprietary (non‑public) RPay framework to your project’s build dependencies. Contact <EText name="elepay" /> support for how to obtain RPayKit.framework and how to add it.
 
 ##### iOS 9 and later
 
@@ -205,13 +205,13 @@ To hand off to the Rakuten Pay app, add the `LSApplicationQueriesSchemes` key un
 
 ##### Callback URL Scheme for iOS apps
 
-For the default elepay URL Scheme, see [here](/sdks/ios).
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
 
 #### Android
 
 To use RPay, in addition to the elepay SDK, add the proprietary Rakuten Pay AAR (non‑public) to your project’s build dependencies. For how to add the dependency, see the Android Developer [official docs](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency).
 
-> 📘 For the download location of the Rakuten Pay AAR, contact elepay support.
+> 📘 For the download location of the Rakuten Pay AAR, contact <EText name="elepay" /> support.
 
 ### Apple Pay
 
@@ -234,9 +234,9 @@ See [Setting Up Apple Pay](https://developer.apple.com/documentation/passkit/app
 2.  Create an Apple Pay certificate
     A certificate is required to encrypt payment data.
     Create the certificate as follows:
-    (1) In elepay, go to “開発設定” → “Apple Pay” → “Apple Pay Certificate” and download the CSR (Certificate Signing Request).
+    (1) In <EText name="elepay" />, go to “開発設定” → “Apple Pay” → “Apple Pay Certificate” and download the CSR (Certificate Signing Request).
     (2) Upload the CSR on Apple Developer using the Merchant ID created in step 1 to create the certificate.
-    (3) Upload the certificate to elepay.
+    (3) Upload the certificate to <EText name="elepay" />.
 3.  Integrate with Xcode
     Open your project in Xcode and enable Apple Pay under the Capabilities tab. You may be prompted to sign in with your developer account. After enabling it, check the Merchant ID created in step 1 to complete the configuration.
 
@@ -263,7 +263,7 @@ See also [Adding capabilities to your app](https://developer.apple.com/documenta
 ![](/docs/Apple_Developer4.png)
 
 - Download the generated certificate (.cer) and export a Personal Information Exchange (.p12) with an empty password.
-- In elepay “開発設定” → “Apple Pay” → “Apple Pay Certificate (中国)”, upload the certificate (.cer) and the .p12 file above.
+- In <EText name="elepay" /> “開発設定” → “Apple Pay” → “Apple Pay Certificate (中国)”, upload the certificate (.cer) and the .p12 file above.
 
 ### Google Pay
 
@@ -340,10 +340,10 @@ When `googlePayExistingPaymentRequired` is true:
 
 ##### Callback URL Scheme for iOS apps
 
-For the default elepay URL Scheme, see [here](/sdks/ios).
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
 
 In addition, add a PayPal‑specific URL Scheme that starts with your app’s Bundle ID.
-See [elepay Dashboard](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **PayPal**.
+See [<EText name="elepay" /> Dashboard](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **PayPal**.
 
 ##### iOS 9 and later
 
@@ -370,7 +370,7 @@ To hand off to the Alipay app, add the `LSApplicationQueriesSchemes` key under *
 
 ##### Callback URL Scheme for iOS apps
 
-For the default elepay URL Scheme, see [here](/sdks/ios).
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
 
 #### Android
 
@@ -394,7 +394,7 @@ dependencies {
 
 ##### Callback URL Scheme for iOS apps
 
-For the default elepay URL Scheme, see [here](/sdks/ios).
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
 
 In addition, a WeChat‑specific URL Scheme (starting with `wx`) is required.
 See [elepay Dashboard](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **WeChat Pay**. If WeChat Pay is not enabled, this section is hidden.
@@ -453,4 +453,4 @@ To hand off to a UnionPay app, add the `LSApplicationQueriesSchemes` key under *
 
 ##### Callback URL Scheme for iOS apps
 
-For the default elepay URL Scheme, see [here](/sdks/ios).
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).

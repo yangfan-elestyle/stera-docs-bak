@@ -10,6 +10,7 @@ const config = {
     // Disable Next.js image optimizer to avoid `_next/image` route issues
     unoptimized: true,
   },
+  allowedDevOrigins: ['*.localhost', '*.*.localhost', '*.*.*.localhost'],
 };
 
 export default withMDX(config);

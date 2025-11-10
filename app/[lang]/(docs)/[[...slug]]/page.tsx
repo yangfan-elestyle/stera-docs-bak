@@ -24,7 +24,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const page = source.getPage(slug, lang);
   if (!page) notFound();
 
-  // Enforce host-based visibility to prevent direct access via URL
+  // Enforce tenant-based visibility to prevent direct access via URL
   const hdrs = await headers();
   const host = hdrs.get('host') ?? '';
   if (!isPageVisibleForHost(page, lang, host)) notFound();

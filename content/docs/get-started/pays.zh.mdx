@@ -120,13 +120,13 @@ dependencies {
 
 ##### iOS 应用的回调 URL Scheme
 
-elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 #### Android
 
 > 🚧 自 elepay Android SDK 1.8.0 起，可将 `AndroidManifest.xml` 中的回调 Activity 统一为 `ElepayCallbackActivity`。1.7.1 及之前的“按支付方式分别配置”已不再支持。详情见[概要](#summary)。
 
-使用 PayPay 时，需要在 elepay 账户的“アプリ設定（应用设置）”页面获取“URL Scheme”，并将其添加到项目的 `AndroidManifest.xml` 中。
+使用 PayPay 时，需要在 <EText name="elepay" /> 账户的“アプリ設定（应用设置）”页面获取“URL Scheme”，并将其添加到项目的 `AndroidManifest.xml` 中。
 
 ```xml
 <activity
@@ -152,7 +152,7 @@ elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 > 🚧 自 elepay Android SDK 1.8.0 起，可将 `AndroidManifest.xml` 中的回调 Activity 统一为 `ElepayCallbackActivity`。1.7.1 及之前的“按支付方式分别配置”已不再支持。详情见[概要](#summary)。
 
-使用 merpay 时，需要在 elepay 账户的“アプリ設定（应用设置）”页面获取“URL Scheme”，并将其添加到项目的 `AndroidManifest.xml` 中。
+使用 merpay 时，需要在 <EText name="elepay" /> 账户的“アプリ設定（应用设置）”页面获取“URL Scheme”，并将其添加到项目的 `AndroidManifest.xml` 中。
 
 ```xml
 <activity
@@ -187,13 +187,13 @@ elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 ##### iOS 应用的回调 URL Scheme
 
-elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 ### Rakuten Pay [#rpay]
 
 #### iOS
 
-如需使用 RPay，除 elepay SDK 外，还需将 RPay 的私有 Framework（不公开）添加到项目依赖中。关于 RPayKit.framework 的获取与依赖添加方法，请联系 elepay 支持。
+如需使用 RPay，除 elepay SDK 外，还需将 RPay 的私有 Framework（不公开）添加到项目依赖中。关于 RPayKit.framework 的获取与依赖添加方法，请联系 <EText name="elepay" /> 支持。
 
 ##### iOS 9 及以上
 
@@ -205,13 +205,13 @@ elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 ##### iOS 应用的回调 URL Scheme
 
-elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 #### Android
 
 使用 RPay 时，除 elepay SDK 外，还需将 Rakuten Pay 的私有 aar（不公开）添加到项目依赖中。关于依赖添加方法，请参考 Android Developer 的[官方文档](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)。
 
-> 📘 Rakuten Pay aar 的下载地址请联系 elepay 支持获取。
+> 📘 Rakuten Pay aar 的下载地址请联系 <EText name="elepay" /> 支持获取。
 
 ### Apple Pay
 
@@ -234,9 +234,9 @@ Apple Pay 让 Apple 设备充当“钱包”，以便轻松完成支付。
 2.  创建 Apple Pay 证书
     为加密支付信息，需要配置证书。
     证书创建步骤：
-    (1) 在 elepay「開発設定」→「Apple Pay」→「Apple Pay Certificate」中下载 CSR（Certificate Signing Request）。
+    (1) 在 <EText name="elepay" />「開発設定」→「Apple Pay」→「Apple Pay Certificate」中下载 CSR（Certificate Signing Request）。
     (2) 在 Apple Developer 网站使用步骤 1 中注册的 Merchant ID 上传 CSR 并生成证书。
-    (3) 将生成的证书上传到 elepay。
+    (3) 将生成的证书上传到 <EText name="elepay" />。
 3.  集成到 Xcode
     在 Xcode 中打开项目，进入 Capabilities 选项卡启用 Apple Pay。可能会要求登录开发者账号。启用后勾选步骤 1 中创建的 Merchant ID，即完成设置。
 
@@ -264,7 +264,7 @@ Apple Pay 让 Apple 设备充当“钱包”，以便轻松完成支付。
 ![](/docs/Apple_Developer4.png)
 
 - 下载生成的证书（.cer），并导出个人信息交换文件（.p12），其密码留空。
-- 在 elepay「開発設定」→「Apple Pay」→「Apple Pay Certificate（中国）」中上传上述证书（.cer）与 .p12 文件。
+- 在 <EText name="elepay" />「開発設定」→「Apple Pay」→「Apple Pay Certificate（中国）」中上传上述证书（.cer）与 .p12 文件。
 
 ### Google Pay
 
@@ -341,10 +341,10 @@ fun checkIfGooglePayIsReadyToUse(
 
 ##### iOS 应用的回调 URL Scheme
 
-elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 此外，请添加以应用 _Bundle ID_ 开头的 PayPal 专用 _URL Scheme_。
-参见[elepay 管理后台](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **PayPal**。
+参见[<EText name="elepay" /> 管理后台](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **PayPal**。
 
 ##### iOS 9 及以上
 
@@ -371,7 +371,7 @@ Alipay 是蚂蚁金服提供的跨 iOS、Android 与 Web 的便捷安全的支�
 
 ##### iOS 应用的回调 URL Scheme
 
-elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 #### Android
 
@@ -395,7 +395,7 @@ dependencies {
 
 ##### iOS 应用的回调 URL Scheme
 
-elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
 
 此外，需要 WeChat 专用 _URL Scheme_（以 `wx` 开头）。
 参见[elepay 管理后台](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **WeChat Pay**。若 WeChat Pay 未开通，则不显示该项。
@@ -454,4 +454,4 @@ WeChat Pay 会寻找 `包名.wxapi.WXPayEntryActivity`，elepay SDK 会与既有
 
 ##### iOS 应用的回调 URL Scheme
 
-elepay 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。

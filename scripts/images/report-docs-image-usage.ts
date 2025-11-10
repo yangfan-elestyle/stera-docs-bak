@@ -12,9 +12,21 @@ type ImageUsage = {
   lastModified?: Date; // last modified time
 };
 
-const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg', '.avif']);
+const IMAGE_EXTS = new Set([
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.webp',
+  '.gif',
+  '.svg',
+  '.avif',
+]);
 
-const ROOT_DIR = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', '..');
+const ROOT_DIR = path.resolve(
+  path.dirname(new URL(import.meta.url).pathname),
+  '..',
+  '..',
+);
 const PUBLIC_DOCS_DIR = path.resolve(ROOT_DIR, 'public', 'docs');
 const CONTENT_DOCS_DIR = path.resolve(ROOT_DIR, 'content', 'docs');
 
@@ -77,9 +89,12 @@ async function collectPublicDocsImages(): Promise<Map<string, ImageUsage>> {
 }
 
 // Matches /docs/...<ext> but excludes trailing query/hash and common delimiters
-const DOCS_IMAGE_REGEX = /(\/docs\/[^?\s)>'"\]]+?\.(?:png|jpe?g|webp|gif|svg|avif))/gi;
+const DOCS_IMAGE_REGEX =
+  /(\/docs\/[^?\s)>'"\]]+?\.(?:png|jpe?g|webp|gif|svg|avif))/gi;
 
-async function scanMarkdownUsages(images: Map<string, ImageUsage>): Promise<{ referencedButMissing: Map<string, Set<string>> }> {
+async function scanMarkdownUsages(
+  images: Map<string, ImageUsage>,
+): Promise<{ referencedButMissing: Map<string, Set<string>> }> {
   const mdFiles = (await walkFiles(CONTENT_DOCS_DIR)).filter(isMarkdown);
   const missing = new Map<string, Set<string>>(); // path -> set of files that reference but not present
 
@@ -123,13 +138,19 @@ function colorizeIfNotThree(text: string, count: number): string {
   return count !== 3 ? `${RED}${text}${RESET}` : text;
 }
 
-function printReport(images: Map<string, ImageUsage>, referencedButMissing: Map<string, Set<string>>): void {
+function printReport(
+  images: Map<string, ImageUsage>,
+  referencedButMissing: Map<string, Set<string>>,
+): void {
   const all = Array.from(images.values());
   const used = all.filter((i) => i.total > 0);
   const unused = all.filter((i) => i.total === 0);
 
   // Calculate unused images total size
-  const unusedTotalSize = unused.reduce((sum, img) => sum + (img.fileSize ?? 0), 0);
+  const unusedTotalSize = unused.reduce(
+    (sum, img) => sum + (img.fileSize ?? 0),
+    0,
+  );
 
   console.log('=== Image Usage Report (public/docs) ===');
   console.log(`Scanned images: ${all.length}`);
@@ -162,14 +183,18 @@ function printReport(images: Map<string, ImageUsage>, referencedButMissing: Map<
   console.log('--- Usage By Image ---');
   // sort by total desc, then path
   used
-    .sort((a, b) => (b.total - a.total) || a.publicPath.localeCompare(b.publicPath))
+    .sort(
+      (a, b) => b.total - a.total || a.publicPath.localeCompare(b.publicPath),
+    )
     .forEach((i) => {
       const fileCount = i.perFile.size;
       const sizeStr = i.fileSize ? ` [${formatBytes(i.fileSize)}]` : '';
       const line = `${i.publicPath}${sizeStr} — ${i.total} use(s) in ${fileCount} file(s)`;
       console.log(colorizeIfNotThree(line, i.total));
       // list per-file counts, sorted by count desc then name
-      const entries = Array.from(i.perFile.entries()).sort((a, b) => (b[1] - a[1]) || a[0].localeCompare(b[0]));
+      const entries = Array.from(i.perFile.entries()).sort(
+        (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+      );
       for (const [f, n] of entries) {
         console.log(`  - ${f}: ${n}`);
       }
@@ -178,7 +203,9 @@ function printReport(images: Map<string, ImageUsage>, referencedButMissing: Map<
   if (referencedButMissing.size > 0) {
     console.log('');
     console.log('--- Referenced But Missing Under public/docs ---');
-    const entries = Array.from(referencedButMissing.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+    const entries = Array.from(referencedButMissing.entries()).sort((a, b) =>
+      a[0].localeCompare(b[0]),
+    );
     for (const [ref, files] of entries) {
       console.log(`${ref} — referenced in ${files.size} file(s)`);
       const fileList = Array.from(files).sort();
@@ -206,4 +233,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

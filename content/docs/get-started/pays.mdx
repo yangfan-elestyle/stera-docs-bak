@@ -120,13 +120,14 @@ ElepaySDK for iOS v3.2.1 以前の場合、PayPay アプリに遷移するため
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
+<EText name="elepay" /> デフォルト  *URL Scheme* 
+については、[こちら](/sdks/ios)をご参照ください。
 
 #### Android
 
 > 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
 
-PayPay を使うために、elepay アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
+PayPay を使うために、<EText name="elepay" /> アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
 ```xml
 <activity
@@ -152,7 +153,7 @@ scheme より起動される Activity をカスタマイズする場合は、`jp
 
 > 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
 
-Merpay を使うために、elepay アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
+Merpay を使うために、<EText name="elepay" /> アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
 ```xml
 <activity
@@ -187,13 +188,14 @@ ElepaySDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するため
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
+<EText name="elepay" /> デフォルト  *URL Scheme* 
+については、[こちら](/sdks/ios)をご参照ください。
 
 ### 楽天ペイ [#rpay]
 
 #### iOS
 
-RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開）をプロジェクトのビルド依存関係に追加する必要があります。RPayKit.framework の入手方法やビルド依存関係の追加方法については、elepay サポートまでお問い合わせください。
+RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開）をプロジェクトのビルド依存関係に追加する必要があります。RPayKit.framework の入手方法やビルド依存関係の追加方法については、<EText name="elepay" /> サポートまでお問い合わせください。
 
 ##### iOS 9 及び以降のシステムについて
 
@@ -205,13 +207,14 @@ RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
+<EText name="elepay" /> デフォルト  *URL Scheme* 
+については、[こちら](/sdks/ios)をご参照ください。
 
 #### Android
 
 RPay を使うには、elepay SDK の他に Rakuten Pay 独自の aar ファイル（非公開）をプロジェクトのビルド依存関係に追加する必要があります。ビルド依存関係の追加方法については、Android Developer の[公式サイト](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)にご参考ください。
 
-> 📘 Rakuten Pay aar ファイルのダウンロード先は、elepay サポートまでお問い合わせしてください。
+> 📘 Rakuten Pay aar ファイルのダウンロード先は、<EText name="elepay" /> サポートまでお問い合わせしてください。
 
 ### Apple Pay
 
@@ -234,9 +237,9 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 2.  Apply Pay 証明書の作成
     支払い情報を暗号化するために、証明書が必要です。
     以下の手順で証明書の作成します。
-    (1) elepay の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。
+    (1) <EText name="elepay" /> の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。
     (2) 入手した CSR ファイルで Apple Developer Site にアップロードし、ステップ１で登録した Apple Merchant ID を利用し、証明書を作成します。
-    (3) 証明書を elepay にアップロードします。
+    (3) 証明書を <EText name="elepay" /> にアップロードします。
 3.  Xcode に統合する
     Xcode よりプロジェクトを開き、Capabilities のタブに Apple Pay のスイッチをオンにします。この際に、デベロッパーアカウントのログインを要求されることがあります。オンにした後、ステップ１で作られた Merchant ID のチェックボックスを有効することで、Apple Pay の設定は完了します。
 
@@ -264,7 +267,8 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 ![](/docs/Apple_Developer4.png)
 
 - 作成した証明書(.cer)をダウンロードして、個人情報交換ファイル(.p12)を空文字列のパースワード でエクスポートしてください。
-- elepay の「開発設定」→「Apple Pay」→「Apple Pay Certificate （中国）」に、上記証明書(.cer)と個人情報交換ファイル(.p12)をアップロードしてください。
+- <EText name="elepay" /> の「開発設定」→「Apple Pay」→「Apple Pay Certificate
+  （中国）」に、上記証明書(.cer)と個人情報交換ファイル(.p12)をアップロードしてください。
 
 ### Google Pay
 
@@ -341,10 +345,11 @@ Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play の�
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
+<EText name="elepay" /> デフォルト  *URL Scheme* 
+については、[こちら](/sdks/ios)をご参照ください。
 
 それ以外にも、あなたのアプリの  *Bundle ID*  から始まる PayPal 専用  *URL Scheme*  を追加してください。
-[「elepay 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **PayPal**  項目を確認してください。
+[「<EText name="elepay" /> 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **PayPal**  項目を確認してください。
 
 ##### iOS 9 及び以降のシステムについて
 
@@ -371,7 +376,8 @@ Alipay アプリに遷移するために、Xcode の  **PROJECT** → **TARGE
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
+<EText name="elepay" /> デフォルト  *URL Scheme* 
+については、[こちら](/sdks/ios)をご参照ください。
 
 #### Android
 
@@ -395,7 +401,8 @@ dependencies {
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
+<EText name="elepay" /> デフォルト  *URL Scheme* 
+については、[こちら](/sdks/ios)をご参照ください。
 
 それ以外にも、WeChat 専用の  *URL Scheme* （`wx`から始まるもの）が必要です。
 [「elepay 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **WeChat Pay**  項目を確認してください。なお、WeChat Pay が未開通の場合、該当項目は表示しません。
@@ -454,4 +461,5 @@ Union Pay 関連アプリに遷移するために、Xcode の  **PROJECT** →
 
 ##### iOS App の Callback URL Scheme について
 
-elepay デフォルト  *URL Scheme*  については、[こちら](/sdks/ios)をご参照ください。
+<EText name="elepay" /> デフォルト  *URL Scheme* 
+については、[こちら](/sdks/ios)をご参照ください。

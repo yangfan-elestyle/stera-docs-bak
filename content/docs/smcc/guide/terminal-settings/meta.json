@@ -1,10 +1,7 @@
 {
   "title": "端末アプリの設定",
   "defaultOpen": false,
-  "visibleOnHosts": [
-    "docs-smcc.stg.elepay.localhost",
-    "docs-smcc.stg.elepay.dev"
-  ],
+  "visibleOnTenant": ["smcc"],
   "pages": [
     "regarding-the-device-binding",
     "wait-settings",

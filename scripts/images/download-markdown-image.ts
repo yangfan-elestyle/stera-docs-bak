@@ -7,11 +7,11 @@ import crypto from 'node:crypto';
  * 示例：![用户头像](https://example.com/user.jpg "title")
  */
 type ImageMatch = {
-  start: number;  // 在原文本中的起始位置
-  end: number;    // 在原文本中的结束位置（不包含）
-  raw: string;    // 原始完整字符串，如：![用户头像](https://example.com/user.jpg)
-  alt: string;    // alt 文本，如：用户头像
-  args: string;   // 括号内的内容，如：https://example.com/user.jpg "title"
+  start: number; // 在原文本中的起始位置
+  end: number; // 在原文本中的结束位置（不包含）
+  raw: string; // 原始完整字符串，如：![用户头像](https://example.com/user.jpg)
+  alt: string; // alt 文本，如：用户头像
+  args: string; // 括号内的内容，如：https://example.com/user.jpg "title"
 };
 
 /** 延时函数，用于控制下载间隔 */
@@ -35,7 +35,7 @@ const PUBLIC_DOCS_DIR = path.resolve(
   '..',
   '..',
   'public',
-  'docs'
+  'docs',
 );
 
 /**
@@ -65,8 +65,8 @@ function findClosingBracket(text: string, openIndex: number): number {
  * @returns ')' 的位置，未找到返回 -1
  */
 function findClosingParen(text: string, openIndex: number): number {
-  let depth = 1;  // 括号嵌套深度
-  let inQuote: '"' | "'" | '' = '';  // 当前是否在引号内
+  let depth = 1; // 括号嵌套深度
+  let inQuote: '"' | "'" | '' = ''; // 当前是否在引号内
   for (let i = openIndex + 1; i < text.length; i++) {
     const ch = text[i];
     const prev = text[i - 1];
@@ -127,8 +127,8 @@ function parseImageOccurrences(text: string): ImageMatch[] {
         continue;
       }
       // 提取各部分内容
-      const raw = text.slice(i, parenClose + 1);        // 完整的 ![...](...) 字符串
-      const alt = text.slice(altOpen + 1, altClose);    // alt 文本
+      const raw = text.slice(i, parenClose + 1); // 完整的 ![...](...) 字符串
+      const alt = text.slice(altOpen + 1, altClose); // alt 文本
       const args = text.slice(parenOpen + 1, parenClose); // 括号内的内容（URL + 可选的 title）
       result.push({ start: i, end: parenClose + 1, raw, alt, args });
       i = parenClose + 1;
@@ -264,7 +264,11 @@ function sanitizeFilename(name: string): string {
  */
 function basenameFromUrl(u: URL): string {
   // 生成 URL 的 hash 前缀（取前 8 位）
-  const urlHash = crypto.createHash('sha256').update(u.toString()).digest('hex').slice(0, 8);
+  const urlHash = crypto
+    .createHash('sha256')
+    .update(u.toString())
+    .digest('hex')
+    .slice(0, 8);
 
   let base = path.posix.basename(u.pathname);
 
@@ -281,7 +285,9 @@ function basenameFromUrl(u: URL): string {
   const nameWithoutExt = ext ? base.slice(0, -ext.length) : base;
 
   // 组合：hash-文件名.扩展名
-  return ext ? `${urlHash}-${nameWithoutExt}${ext}` : `${urlHash}-${nameWithoutExt}`;
+  return ext
+    ? `${urlHash}-${nameWithoutExt}${ext}`
+    : `${urlHash}-${nameWithoutExt}`;
 }
 
 /**
@@ -297,7 +303,10 @@ function basenameFromUrl(u: URL): string {
  * @param localDir 本地保存目录（如 public/docs）
  * @returns 本地文件名（不含路径），下载失败返回 null
  */
-async function downloadIfNeeded(urlStr: string, localDir: string): Promise<string | null> {
+async function downloadIfNeeded(
+  urlStr: string,
+  localDir: string,
+): Promise<string | null> {
   const u = new URL(urlStr);
   let base = basenameFromUrl(u);
   let target = path.join(localDir, base);
@@ -360,7 +369,10 @@ async function downloadIfNeeded(urlStr: string, localDir: string): Promise<strin
  * @param filePath Markdown 文件路径
  * @param cache URL 到本地文件名的缓存（避免同一 URL 重复下载）
  */
-async function processMarkdownFile(filePath: string, cache: Map<string, string>): Promise<void> {
+async function processMarkdownFile(
+  filePath: string,
+  cache: Map<string, string>,
+): Promise<void> {
   const orig = await fs.readFile(filePath, 'utf8');
   const matches = parseImageOccurrences(orig);
   if (matches.length === 0) return; // 没有图片，跳过
@@ -473,7 +485,9 @@ async function walkAndProcess(targetPath: string): Promise<void> {
 async function main() {
   const arg = process.argv.slice(2).find((a) => !a.startsWith('-'));
   if (!arg) {
-    console.error('Usage: bun run scripts/images/index.ts <path-to-md-or-directory>');
+    console.error(
+      'Usage: bun run scripts/images/index.ts <path-to-md-or-directory>',
+    );
     process.exit(1);
   }
   const target = path.resolve(process.cwd(), arg);
@@ -485,4 +499,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

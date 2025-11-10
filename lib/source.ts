@@ -4,6 +4,7 @@ import { findPath, flattenTree } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from './i18n';
 import { openapiPlugin } from 'fumadocs-openapi/server';
+import { detectTenantByHost } from '@/lib/tenant';
 
 export const source = loader({
   i18n,
@@ -12,14 +13,14 @@ export const source = loader({
   plugins: [lucideIconsPlugin(), openapiPlugin()],
 });
 
-// 根据 host 判断页面是否可见，防止用户通过直接访问 url 进入不可见页面
+// 根据租户（由 host 推断）判断页面是否可见，防止用户通过直接访问 url 进入不可见页面
 export function isPageVisibleForHost(
   page: InferPageType<typeof source>,
   lang: string,
   host: string,
 ) {
   // 1. check file schema
-  const pageVisible = getExplicitVisibleHosts(page.data as any);
+  const pageVisible = getExplicitVisibleTenants(page.data as any);
   if (pageVisible !== undefined) return isHostMatch(host, pageVisible);
 
   // 2. check meta.json in the same folder
@@ -34,7 +35,7 @@ export function isPageVisibleForHost(
       const node = path[i];
       if (node.type === 'folder') {
         const meta = source.getNodeMeta(node, lang);
-        const visible = getExplicitVisibleHosts(meta?.data as any);
+        const visible = getExplicitVisibleTenants(meta?.data as any);
         if (visible !== undefined) return isHostMatch(host, visible);
       }
     }
@@ -44,7 +45,7 @@ export function isPageVisibleForHost(
   return true;
 }
 
-// 根据 host 过滤 nav 页面，防止用户通过侧边栏访问不可见页面
+// 根据租户（由 host 推断）过滤 nav 页面，防止用户通过侧边栏访问不可见页面
 export function getFilteredTreeByHost(lang: string, host: string) {
   const root = source.pageTree[lang];
   if (!root) return root as any;
@@ -59,7 +60,7 @@ export function getFilteredTreeByHost(lang: string, host: string) {
       if (child.type === 'page') {
         // 1. if page, directly check visibility
         const entry = source.getPageByHref(child.url, { language: lang });
-        const visible = getExplicitVisibleHosts(entry?.page?.data as any);
+        const visible = getExplicitVisibleTenants(entry?.page?.data as any);
         if (isHostMatch(host, visible ?? inheritedVisible)) {
           filtered.push(child);
         }
@@ -84,7 +85,7 @@ export function getFilteredTreeByHost(lang: string, host: string) {
     inheritedVisible?: string[],
   ): any | undefined {
     const meta = source.getNodeMeta(node, lang);
-    const folderVisible = getExplicitVisibleHosts(meta?.data as any);
+    const folderVisible = getExplicitVisibleTenants(meta?.data as any);
     const currentVisible =
       folderVisible !== undefined ? folderVisible : inheritedVisible;
 
@@ -92,7 +93,7 @@ export function getFilteredTreeByHost(lang: string, host: string) {
 
     if (next.index) {
       const idxEntry = source.getPageByHref(next.index.url, { language: lang });
-      const idxVisible = getExplicitVisibleHosts(idxEntry?.page?.data as any);
+      const idxVisible = getExplicitVisibleTenants(idxEntry?.page?.data as any);
       if (!isHostMatch(host, idxVisible ?? currentVisible)) {
         next.index = undefined;
       }
@@ -120,7 +121,7 @@ export function getFilteredTreeByHost(lang: string, host: string) {
   return nextRoot;
 }
 
-// 根据 host 过滤 footer 导航项，防止 fomadocs 自身的 previous/next 出现死链
+// 根据租户（由 host 推断）过滤 footer 导航项，防止 fomadocs 自身的 previous/next 出现死链
 export function getFilteredFooterItems(
   page: InferPageType<typeof source>,
   lang: string,
@@ -199,35 +200,26 @@ export async function getLLMText(page: InferPageType<typeof source>) {
 ${processed}`;
 }
 
-// ---------- Host visibility helpers ----------
+// ---------- Tenant visibility helpers ----------
 
-// get hosts by schema
-function getExplicitVisibleHosts(data: any): string[] | undefined {
+// 从 schema 读取显式租户白名单
+function getExplicitVisibleTenants(data: any): string[] | undefined {
   if (!data) return undefined;
-  return Object.prototype.hasOwnProperty.call(data, 'visibleOnHosts')
-    ? data.visibleOnHosts
+  return Object.prototype.hasOwnProperty.call(data, 'visibleOnTenant')
+    ? data.visibleOnTenant
     : undefined;
 }
 
-// get normalized host
-function normalizeHost(host: string): string {
-  try {
-    const url = new URL(host.startsWith('http') ? host : `http://${host}`);
-    return url.hostname.toLowerCase();
-  } catch {
-    return host.toLowerCase();
-  }
-}
-
 /**
- * Check if host is matched.
- * - undefined: visible to all
- * - []: visible to all
- * - [...hosts]: visible only if host matches (case-insensitive, port-agnostic)
+ * 判断当前 host 对应的租户是否在白名单中。
+ * - undefined: 对所有租户可见
+ * - []: 对所有租户可见
+ * - [...tenants]: 仅当解析得到的租户包含在列表中可见
  */
 function isHostMatch(host: string, visible?: string[]): boolean {
   if (!visible || visible.length === 0) return true;
-  return visible.some((v) => normalizeHost(v) === normalizeHost(host));
+  const tenant = detectTenantByHost(host).toLowerCase();
+  return visible.map((v) => String(v).toLowerCase()).includes(tenant);
 }
 
 /**

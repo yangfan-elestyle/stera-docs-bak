@@ -2,7 +2,7 @@
 title: 退款处理
 ---
 
-elepay 也提供退款功能。您的服务端可以通过 API 发起退款。
+<EText name="elepay" /> 也提供退款功能。您的服务端可以通过 API 发起退款。
 
 # 通过 API 进行退款
 
@@ -12,19 +12,20 @@ elepay 也提供退款功能。您的服务端可以通过 API 发起退款。
 
 ## 2. 处理返回值
 
-elepay 服务器会返回一个 Refund 对象。<br />
+<EText name="elepay" /> 服务器会返回一个 Refund 对象。
+<br />
 若请求已被正确接收，Refund 对象的 `failure_msg` 字段为 Null。
 
 ## 3. 接收 Webhook 事件
 
-退款成功后，elepay 会向 Webhook 配置的 URL 发送 `refund.succeeded` 事件通知。
+退款成功后，<EText name="elepay" /> 会向 Webhook 配置的 URL 发送 `refund.succeeded` 事件通知。
 
 # 在管理后台中退款
 
 可在“支払い管理 / 支払い一覧”中对指定的支付记录执行退款。
 
-![](/docs/e0fa380-______elepay.png)
-![](/docs/7d1820f-______elepay.png)
+<EImg src="image.get-started.refunds.img1" />
+<EImg src="image.get-started.refunds.img2" />
 
 > 📘 退款时效
 >

@@ -2,8 +2,8 @@
 title: Android Quick Start
 ---
 
-**elepay Android SDK**  は elepay を Android アプリに導入するための SDK です。<br />
-このガイドでは、 elepay の SDK を Android アプリと連携する方法について詳しく説明します。
+**elepay Android SDK**  は <EText name="elepay" /> を Android アプリに導入するための SDK です。<br />
+このガイドでは、 <EText name="elepay" /> の SDK を Android アプリと連携する方法について詳しく説明します。
 
 # 対応バージョン
 
@@ -80,7 +80,7 @@ val configuration = ElepayConfiguration(
 Elepay.setup(configuration)
 ```
 
-`appKey`  を申請するためには、elepay アカウントが必要となります。
+`appKey`  を申請するためには、<EText name="elepay" /> アカウントが必要となります。
 
 > 📘 本配置処理はアプリの  `Application`  クラスまたはスタート  `Activity`  で行われるのが推薦します。
 
@@ -145,7 +145,7 @@ elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定す�
 
 > 🚧 必ずお忘れずに
 >
-> 上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`は elepay 専用 URL Scheme に書き換えてください。取得方法は「[iOS / Android SDK 用 URL Scheme の取得](/sdks/url-scheme)」までご参照ください。
+> 上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`は <EText name="elepay" /> 専用 URL Scheme に書き換えてください。取得方法は「[iOS / Android SDK 用 URL Scheme の取得](/sdks/url-scheme)」までご参照ください。
 
 処理の結果は、上記の  `resultHandler`  コールバックの引数  `ElepayResult`  に含まれます。
 `ElepayResult`  は  `Succeeded` 、`Failed`  と  `Canceled`  に別れますが、詳細は API のドキュメントをご参照ください。
@@ -220,8 +220,13 @@ Elepay.changeTheme(theme = ElepayTheme.Light)
 
 > 注意
 >
-> 1.  Elepay のテーマを指定すると、システムよりアプリの Configuation データは変更されるため、elepay の支払い処理を呼び出す Activity は再起動される場合があります。
->     Activity 再起動を回避するには、`AndroidManifest.xml`に elepay の支払い処理を呼び出す Activity の`android:configChanges`に`uiMode`を追加する必要があります。
+> 1.  <EText name="elepay" /> のテーマを指定すると、システムよりアプリの
+>     Configuation データは変更されるため、
+>     <EText name="elepay" /> の支払い処理を呼び出す Activity
+>     は再起動される場合があります。 Activity
+>     再起動を回避するには、`AndroidManifest.xml`に <EText name="elepay" />
+>     の支払い処理を呼び出す Activity
+>     の`android:configChanges`に`uiMode`を追加する必要があります。
 > 2.  `changeTheme`は支払い処理の前にコールするのみ有効です。
 
 ## 色のカスタマイズ
@@ -264,9 +269,10 @@ elepay SDK UI の色は個別にカスタマイズすることができます。
 
 # 多言語
 
-elepay SDK は多言語をサポートしています。デフォルトで、elepay はシステムの言語を使います。他の言語を使う場合、`LanguageKey`で定義している言語を下記のいずれ方法で変更できます。
+elepay SDK は多言語をサポートしています。デフォルトで、<EText name="elepay" /> はシステムの言語を使います。他の言語を使う場合、`LanguageKey`で定義している言語を下記のいずれ方法で変更できます。
 
-- elepay の初期化時に、`ElepayConfiguration`の`languageKey`を設定します。
+- <EText name="elepay" />
+  の初期化時に、`ElepayConfiguration`の`languageKey`を設定します。
 
 ```kotlin
 val configuration = ElepayConfiguration(

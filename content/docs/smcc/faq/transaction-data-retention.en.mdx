@@ -1,11 +1,9 @@
 ---
 title: How long are the searchable window and retention period for transaction data?
-visibleOnHosts:
-  - docs-smcc.stg.elepay.localhost
-  - docs-smcc.stg.elepay.dev
+visibleOnTenant:
+  - smcc
 ---
 
 Updated: Retention for payment data and transaction details is 10 years; the searchable period is 5 years.
 
 Currently, there is no retention limit for order information. In line with our security requirements, the retention period for payment-related data has been set to 10 years. However, the period during which data can be searched and downloaded is limited to the most recent 5 years. If you need detailed data for each payment (e.g., transaction date/time, transaction amount, payment method, transaction ID, etc.), please obtain it within this period.
-
