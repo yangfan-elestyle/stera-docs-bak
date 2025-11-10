@@ -24,7 +24,7 @@ import image_sdks_url_scheme_img3_smcc from '@/public/docs/62d3dac-IMG_06672.png
 export const TENANT_TEXTS = {
   default: {
     elepay: 'elepay',
-    elepay_docs: 'Elepay Docs',
+    elepay_docs: 'elepay',
   },
   smcc: {
     elepay: 'stera smart one',
