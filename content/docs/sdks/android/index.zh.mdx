@@ -1,0 +1,273 @@
+---
+title: Android Quick Start
+---
+
+**elepay Android SDK** 用于将 <EText name="elepay" /> 集成到 Android 应用中。<br />
+本文将详细说明如何将 Android 应用与 <EText name="elepay" /> SDK 对接。
+
+# 支持版本
+
+**elepay Android SDK** 在 2.9.0 之前支持 Android API 21，自 2.10.0 起 `minSdkVersion` 为 23。
+
+# 安装
+
+## 通过 Gradle 安装
+
+在 `build.gradle` 的 `repositories` 块中添加：
+
+```groovy
+maven {
+   ... // 其他代码
+   url "https://elestyle.github.io/elepay-android/repository"
+}
+```
+
+在同一 `build.gradle` 文件的 `dependency` 中添加如下依赖。<br />
+（latest-version）请参阅[发布页面](https://github.com/elestyle/elepay-android/releases)。
+
+```groovy
+// 注意：（latest-version）请参阅 https://github.com/elestyle/elepay-android/releases
+
+implementation 'jp.elestyle.androidapp:elepay:(latest-version)'
+```
+
+> 🚧 建议始终使用最新版本。
+>
+> 使用 Gradle Build Tool 3.6.0（对应 Android Studio 3.6）及以上时，需要 elepay Android SDK 1.7.0 及以上。
+
+> 🚧 关于 Android Support Library
+>
+> **elepay Android SDK** 仅支持 [AndroidX](https://developer.android.com/jetpack/androidx/)。  
+> Google 自 2018 年起已[停止维护](https://android-developers.googleblog.com/2018/05/hello-world-androidx.html) [Android support library](https://developer.android.com/topic/libraries/support-library/)，  
+> 如仍在使用 support library，建议迁移至 [AndroidX](https://developer.android.com/jetpack/androidx/)。
+>
+> 迁移步骤请参阅 Google 的[迁移指南](https://developer.android.com/jetpack/androidx/migrate)。
+
+# 实现
+
+## 1. Android 系统权限
+
+若需使用银联（UnionPay）或支付宝（Alipay），请在 `AndroidManifest.xml` 中添加以下权限：
+
+> 📘 仅按实际使用场景添加所需权限。  
+> 例如：若无需扫描卡片，则不必添加相机权限。
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+<uses-feature android:name="android.hardware.camera"/>
+<uses-permission android:name="android.permission.CAMERA"/>
+<uses-permission android:name="android.hardware.camera.autofocus"/>
+
+<uses-permission android:name="org.simalliance.openmobileapi.SMARTCARD" />
+
+<uses-permission android:name="android.permission.NFC" />
+<uses-feature android:name="android.hardware.nfc.hce"/>
+```
+
+## 2. 初始化
+
+在处理支付之前，先完成 elepay SDK 的初始化：
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "" // test key or live key
+)
+Elepay.setup(configuration)
+```
+
+申请 `appKey` 需要 <EText name="elepay" /> 账号。
+
+> 📘 建议在应用的 `Application` 类或启动 `Activity` 中执行上述配置。
+
+## 3. 支付处理
+
+### Charge 处理
+
+创建 Charge 数据对象后，传入下述方法以完成支付处理：<br />
+`Elepay.processPayment(chargeJsonData, fromActivity, resultHandler)`
+
+| 参数名         | 说明                                                                                      |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| chargeJsonData | 包含支付数据的 JSON 对象。由服务端创建，**elepay Android SDK** 将基于该数据执行支付处理。 |
+| fromActivity   | 发起支付时用于展示 UI 的 `Activity` 实例。                                                |
+| resultHandler  | 用于通知支付结果的回调。                                                                  |
+
+### Source 处理
+
+创建 Source 数据对象后，传入下述方法以完成处理：<br />
+`Elepay.processSource(sourceJsonData, fromActivity, resultHandler)`
+
+| 参数名         | 说明                                                                                      |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| sourceJsonData | 包含 Source 数据的 JSON 对象。由服务端创建，**elepay Android SDK** 将基于该数据执行处理。 |
+| fromActivity   | 发起处理时用于展示 UI 的 `Activity` 实例。                                                |
+| resultHandler  | 用于通知结果的回调。                                                                      |
+
+### Checkout 处理
+
+> 📘 Checkout 需要 elepay Android SDK 1.9.0 及以上版本。
+
+创建 Checkout 数据对象后，传入下述方法以完成流程：<br />
+`Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
+
+| 参数名           | 说明                                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| checkoutJsonData | 包含 Checkout 数据的 JSON 对象。由服务端创建，**elepay Android SDK** 将基于该数据执行支付处理。 |
+
+### 回调 Activity 配置
+
+在 `AndroidManifest.xml` 中添加回调 `Activity`，并注册从 elepay 控制台获取的 URL Scheme。
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.ElepayCallbackActivity"
+    android:launchMode="singleTask"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep1234567890abcdef" /> <!-- * 请务必将此处的 scheme 替换为从 elepay「应用设置」页面获取的专用 URL Scheme。 -->
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+> 🚧 务必注意
+>
+> 上述代码中的 `<data android:scheme="ep1234567890abcdef" />` 的 `scheme` 需替换为 <EText name="elepay" /> 专用 URL Scheme。获取方式见「[获取 iOS / Android SDK 的 URL Scheme](/sdks/url-scheme)」。
+
+处理结果包含在前述 `resultHandler` 回调参数 `ElepayResult` 中。<br />
+`ElepayResult` 包含 `Succeeded`、`Failed`、`Canceled` 三种情况。详见 API 文档。
+
+```kotlin
+// 示例：
+Elepay.processPayment(chargeData = result.jsonObject, fromActivity = activity) { paymentRes ->
+    when (paymentRes) {
+        is ElepayResult.Succeeded -> print("Payment is processed successfully. id=${payResult.paymentId}")
+        is ElepayResult.Failed -> print("Payment error: ${payResult.error}")
+        is ElepayResult.Canceled -> print("Payment is cancelled. id=${payResult.paymentId}")
+    }
+}
+```
+
+### 错误处理
+
+elepay Android SDK 返回的错误中包含需要面向终端用户处理的情况。请检查错误类型与[错误码](/get-started/error-code)，并给出适当提示。例如：
+
+```kotlin
+when (paymentRes) {
+    is ElepayResult.Succeeded -> {
+        // succeeded
+    }
+    is ElepayResult.Failed -> {
+        when (paymentRes.error) {
+            is ElepayError.PaymentFailure -> {
+                if ((paymentRes.error as ElepayError.PaymentFailure).errorCode == "10110") {
+                    Log.d("Payment", "app not installed.")
+                }
+            }
+
+            is ElepayError.PermissionRequired -> {
+                Log.d("Payment", "Please grand the following permissions to complete payment. ${(paymentRes.error as ElepayError.PermissionRequired).permissions}")
+            }
+
+            else -> {
+                // Other error processing.
+            }
+        }
+    }
+    is ElepayResult.Canceled -> {
+        // canceled
+    }
+}
+```
+
+# UI 定制
+
+## 指定 UI 主题
+
+可通过以下设置更改 SDK 的 UI 主题，也可在运行时通过 SDK API 切换：
+
+```kotlin
+Elepay.changeTheme(ElepayTheme.Light)
+// 或：ElepayTheme.Dark / ElepayTheme.System
+```
+
+> 注意
+>
+> 1. 指定 <EText name="elepay" /> 主题会导致系统修改应用的配置数据，可能引起发起 <EText name="elepay" /> 支付流程的 Activity 重启。  
+>    如需避免 Activity 重启，请在 `AndroidManifest.xml` 中为该 Activity 的 `android:configChanges` 增加 `uiMode`。
+> 2. 仅在发起支付流程前调用 `changeTheme` 才会生效。
+
+## 颜色定制
+
+可以单独定制 elepay SDK UI 使用的颜色。
+
+### 系统栏定制
+
+1. 在 `colors.xml` 中可修改以下颜色：
+
+- elepayColorPrimaryDark：覆盖 Activity 主题的 `colorPrimaryDark`，主要影响状态栏背景色。
+- elepayNavigationBarBackground：覆盖 Activity 主题的 `navigationBarColor`，影响底部导航栏背景色。
+
+2. 另外可在 `res/values` 目录下任意可存放布尔值的文件（如 `bools.xml`）中修改：
+
+- elepayWindowLightStatusBar：等同于 `android:windowLightStatusBar`，API 23+ 可用。
+- elepayWindowLightNavigationBar：等同于 `android:windowLightNavigationBar`，API 27+ 可用。
+
+### SDK 内部 UI 定制
+
+- elepayTopBarBackground：Toolbar 背景色。
+- elepayTopBarContent：Toolbar 文字与图标颜色。
+- elepayBackgroundNormal：页面背景色。
+- elepayCreditCardBackground：信用卡输入页面卡片部件背景色。
+- elepayControlHighlight：高亮 UI 组件颜色。
+- elepayControlNormal：一般 UI 组件颜色。
+- elepayTextColorPrimary：主文本颜色。
+- elepayTextSecondary：次文本颜色。
+- elepayTextOnControlHighlight：高亮 UI 组件上的文本颜色。
+- elepayTextColorHint：提示文本颜色。
+- elepayErrorTextColorOnNormalBackground：错误文本颜色。
+- elepayColorDivider：分隔线颜色。
+
+![3000](/docs/f726d1e-asdf.png 'asdf.png')
+
+> 注意
+> 若定制 `Light` 主题，请在 `res/values/colors.xml` 中指定上述值。  
+> 若定制 `Dark` 主题，请在 `res/values-night/colors.xml` 中指定上述值。  
+> 若使用 `ElepayTheme.System`，可能需要在 `res/values/colors.xml` 与 `res/values-night/colors.xml` 同时指定，请按实际情况配置。
+
+# 多语言
+
+elepay SDK 支持多语言。默认使用系统语言。如需使用其他语言，可通过以下任一方式修改 `LanguageKey`：
+
+- 在 SDK 初始化时，于 `ElepayConfiguration` 设置 `languageKey`。
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "", // test key or live key
+  languageKey = LanguageKey.English
+)
+Elepay.setup(configuration)
+```
+
+- 调用 `Elepay.changeLanguageKey` 切换语言。
+
+```kotlin
+Elepay.changeLanguageKey(LangaugeKey.English)
+```
+
+> 🚧 注意
+>
+> 仅在调用 `Elepay.processPayment` 之前调用 `Elepay.changeLanguageKey` 才会生效，请注意调用时机。
+
+# 各支付方式设置
+
+请参阅[支付方式](/get-started/pays#summary)页面。

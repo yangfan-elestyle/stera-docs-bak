@@ -1,0 +1,297 @@
+---
+title: Android Quick Start
+---
+
+**elepay Android SDK**  は <EText name="elepay" /> を Android アプリに導入するための SDK です。<br />
+このガイドでは、 <EText name="elepay" /> の SDK を Android アプリと連携する方法について詳しく説明します。
+
+# 対応バージョン
+
+**elepay Android SDK**  の バージョン 2.9.0 までは Android API 21 をサポートしていましたが、2.10.0 以降の minSdkVersion は 23 になります。
+
+# インストール方法
+
+## gradle によるインストール
+
+下記のコードを  `build.gradle`  の  `repositories`  ブロックに追加してください。
+
+```groovy
+maven {
+   ... // 他のコード
+   url "https://elestyle.github.io/elepay-android/repository"
+}
+```
+
+同  `build.gradle`  ファイルの  `dependency`  に以下のコードを追加してください。<br />
+(latest-version)は[リリースページ](https://github.com/elestyle/elepay-android/releases)をご参照ください
+
+```groovy
+//ご注意：(latest-version)は https://github.com/elestyle/elepay-android/releases をご参照ください
+
+implementation 'jp.elestyle.androidapp:elepay:(latest-version)'
+```
+
+> 🚧 常に新しいバージョンを使用することを推奨します。
+>
+> gradle build tool 3.6.0 (Android Studio 3.6 に対応)以降を利用する場合、elepay Android SDK 1.7.0 以降が必要となります。
+
+> 🚧 Android Support Library ご利用の方へ
+>
+> **elepay Android SDK**  は  [Android X](https://developer.android.com/jetpack/androidx/)  のみ対応しています。
+> Google 社は 2018 年以降  [Android support library](https://developer.android.com/topic/libraries/support-library/)  の[開発を停止](https://android-developers.googleblog.com/2018/05/hello-world-androidx.html)しますので、
+> [Android support library](https://developer.android.com/topic/libraries/support-library/)  をご利用する場合は、[Android X](https://developer.android.com/jetpack/androidx/)  に変更するのはお勧めです。
+>
+> 変更手順に関して、Google 社の[マイグレーション手順](https://developer.android.com/jetpack/androidx/migrate)をご参照ください。
+
+# 実装
+
+## 1. Android システム権限
+
+UnionPay や Alipay を利用するには、以下のパーミッションを  `AndroidManifest.xml`  に追加する必要があります。
+
+> 📘 全てのパーミッションではなく、利用状況に応じて追加してください。
+> 例：カードをスキャンする仕様がなければ、カメラに関するパーミッションは不要です。
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+<uses-feature android:name="android.hardware.camera"/>
+<uses-permission android:name="android.permission.CAMERA"/>
+<uses-permission android:name="android.hardware.camera.autofocus"/>
+
+<uses-permission android:name="org.simalliance.openmobileapi.SMARTCARD" />
+
+<uses-permission android:name="android.permission.NFC" />
+<uses-feature android:name="android.hardware.nfc.hce"/>
+```
+
+## 2. セットアップ
+
+支払いの処理を行う前に、 elepay SDK をセットアップします。
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "" // test key or live key
+)
+Elepay.setup(configuration)
+```
+
+`appKey`  を申請するためには、<EText name="elepay" /> アカウントが必要となります。
+
+> 📘 本配置処理はアプリの  `Application`  クラスまたはスタート  `Activity`  で行われるのが推薦します。
+
+## 3. 支払いの処理
+
+### チャージ処理
+
+チャージのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。<br />
+`Elepay.processPayment(chargeJsonData, fromActivity, resultHandler)`
+
+| パラメータ名   | 説明                                                                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| chargeJsonData | ペイメントデータが含まれた JSON オブジェクトとなります。サーバー側により作成され、**elepay Android SDK**  はこのデータで決済処理を行います。 |
+| fromActivity   | 決済を行う際に UI を表示するために使われた  `Activity`  の実例となります。                                                                   |
+| resultHandler  | 決済の結果を通知するコールバックです。                                                                                                       |
+
+### ソース処理
+
+ソースのデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。<br />
+`Elepay.processSource(sourceJsonData, fromActivity, resultHandler)`
+
+| パラメータ名   | 説明                                                                                                                                     |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| sourceJsonData | ソースデータが含まれた JSON オブジェクトとなります。サーバー側により作成され、**elepay Android SDK**  はこのデータで決済処理を行います。 |
+| fromActivity   | 決済を行う際に UI を表示するために使われた  `Activity`  の実例となります。                                                               |
+| resultHandler  | 決済の結果を通知するコールバックです。                                                                                                   |
+
+### checkout 処理
+
+> 📘 checkout は elepay Android SDK 1.9.0 及びその以上のバージョンが必要となります。
+
+checkout のデータオブジェクトは作成された後、下記のメソッドに渡されて、支払い処理を完了させます。<br />
+`Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
+
+| パラメータ名     | 説明                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| checkoutJsonData | checkout データが含まれた JSON オブジェクトとなります。サーバー側により作成され、**elepay Android SDK**  はこのデータで決済処理を行います。 |
+| fromActivity     | 決済を行う際に UI を表示するために使われた  `Activity`  の実例となります。                                                                  |
+| resultHandler    | 決済の結果を通知するコールバックです。                                                                                                      |
+
+> 📘 引数の詳細は API ドキュメントをご参照ください。
+
+## 4. 結果の処理
+
+elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、下記のようにひとつにまとめることが可能になります。また、1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.ElepayCallbackActivity"
+    android:launchMode="singleTask"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep1234567890abcdef" /> <!-- * 必ずお忘れずに！このschemeはelepayの「アプリ設定」ページより取得してください。 -->
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+> 🚧 必ずお忘れずに
+>
+> 上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`は <EText name="elepay" /> 専用 URL Scheme に書き換えてください。取得方法は「[iOS / Android SDK 用 URL Scheme の取得](/sdks/url-scheme)」までご参照ください。
+
+処理の結果は、上記の  `resultHandler`  コールバックの引数  `ElepayResult`  に含まれます。
+`ElepayResult`  は  `Succeeded` 、`Failed`  と  `Canceled`  に別れますが、詳細は API のドキュメントをご参照ください。
+
+```kotlin
+// 処理例：
+Elepay.processPayment(chargeData = result.jsonObject, fromActivity = activity) { paymentRes ->
+    when (paymentRes) {
+        is ElepayResult.Succeeded -> print("Payment is processed successfully. id=${payResult.paymentId}")
+        is ElepayResult.Failed -> print("Payment error: ${payResult.error}")
+        is ElepayResult.Canceled -> print("Payment is cancelled. id=${payResult.paymentId}")
+    }
+}
+```
+
+### エラー処理について
+
+elepay Android SDK から戻されたエラーには、エンドユーザとして処理すべきのものが含まれます。エラータイプと[エラーコード](/get-started/error-code)をチェックし、ユーザに適切な案内を提供することを推奨します。
+例：
+
+```kotlin
+when (paymentRes) {
+    is ElepayResult.Succeeded -> {
+        // succeeded
+    }
+    is ElepayResult.Failed -> {
+        when (paymentRes.error) {
+            is ElepayError.PaymentFailure -> {
+                if ((paymentRes.error as ElepayError.PaymentFailure).errorCode == "10110") {
+                    Log.d("Payment", "app not installed.")
+                }
+            }
+
+            is ElepayError.PermissionRequired -> {
+                Log.d("Payment", "Please grand the following permissions to complete payment. ${(paymentRes.error as ElepayError.PermissionRequired).permissions}")
+            }
+
+            else -> {
+                // Other error processing.
+            }
+        }
+    }
+    is ElepayResult.Canceled -> {
+        // canceled
+    }
+}
+```
+
+# UI カスタマイズ
+
+## UI のテーマ指定
+
+elepay SDK はシステムのテーマに応じて UI を表示します。<br />
+`ElepayTheme`で定義した`Light`と`Dark`を利用し、UI のテーマを指定することができます。<br />
+指定する方法は下記となります。
+
+- elepay SDK を初期化する時に、ElepayConfiguration の`elepayTheme`を指定します。
+
+```kotlin
+val configuration = ElepayConfiguration(
+apiKey = "", // test key or live key
+elepayTheme = ElepayTheme.Light // または ElepayTheme.Dark
+)
+Elepay.setup(configuration)
+```
+
+- `Elepay.changeTheme`を利用し、UI のテーマを指定します。
+
+```kotlin
+Elepay.changeTheme(theme = ElepayTheme.Light)
+```
+
+> 注意
+>
+> 1.  <EText name="elepay" /> のテーマを指定すると、システムよりアプリの
+>     Configuation データは変更されるため、
+>     <EText name="elepay" /> の支払い処理を呼び出す Activity
+>     は再起動される場合があります。 Activity
+>     再起動を回避するには、`AndroidManifest.xml`に <EText name="elepay" />
+>     の支払い処理を呼び出す Activity
+>     の`android:configChanges`に`uiMode`を追加する必要があります。
+> 2.  `changeTheme`は支払い処理の前にコールするのみ有効です。
+
+## 色のカスタマイズ
+
+elepay SDK UI の色は個別にカスタマイズすることができます。
+
+### システムバーのカスとマイズ
+
+1.  `colors.xml`にて下記の色を変更できます。
+
+- elepayColorPrimaryDark: Activity テーマ`colorPrimaryDark`のオーバーライド。主にステータスバーの背景色。
+- elepayNavigationBarBackground: Activity テーマ`navigationBarColor`のオーバーライド。下のナビゲーションバーの背景色
+
+2.  その他、`res/values`フォルダに bool 値を格納できる任意のファイルに（例：bools.xml）下記の設定も変更できます。
+
+- elepayWindowLightStatusBar: `android:windowLightStatusBar`と同じ機能。API 23 以上に使えます。
+- elepayWindowLightNavigationBar: `android:windowLightNavigationBar`と同じ機能。API 27 以上に使えます。
+
+### SDK 内の UI のカスとマイズ
+
+- elepayTopBarBackground：Toolbar の背景色。
+- elepayTopBarContent：Toolbar の文字色とアイコン色。
+- elepayBackgroundNormal：画面の背景色。
+- elepayCreditCardBackground：クレジットカード入力画面のカードウェジットの背景色。
+- elepayControlHighlight：ハイライトになる UI 部品の色。
+- elepayControlNormal：UI 部品の色。
+- elepayTextColorPrimary：メインテキストの色。
+- elepayTextSecondary：サブテキストの色。
+- elepayTextOnControlHighlight：ハイライトになる UI 部品に表示されるテキストの色。
+- elepayTextColorHint：ヒントテキストの色。
+- elepayErrorTextColorOnNormalBackground：エラーテキストの色。
+- elepayColorDivider：区切り線となる UI 部品の色。
+
+![3000](/docs/f726d1e-asdf.png 'asdf.png')
+
+> 注意
+> `Light`テーマの色をカスタマイズする場合は、プロジェクトの`res/values/colors.xml`に上記の値を指定します。
+> `Dark`テーマの色をカスタマイズする場合は、プロジェクトの`res/values-night/colors.xml`に上記の値を指定します。
+> `ElepayTheme.System`をご利用する場合、`res/values/colors.xml`と`res/values-night/colors.xml`両方とも値を指定する可能性がありますので、実際の状況に応じてご使用ください。
+
+# 多言語
+
+elepay SDK は多言語をサポートしています。デフォルトで、<EText name="elepay" /> はシステムの言語を使います。他の言語を使う場合、`LanguageKey`で定義している言語を下記のいずれ方法で変更できます。
+
+- <EText name="elepay" />
+  の初期化時に、`ElepayConfiguration`の`languageKey`を設定します。
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "", // test key or live key
+  languageKey = LanguageKey.English
+)
+Elepay.setup(configuration)
+```
+
+- `Elepay.changeLanguageKey`を利用し、言語を変更します。
+
+```kotlin
+Elepay.changeLanguageKey(LangaugeKey.English)
+```
+
+> 🚧 注意
+>
+> `Elepay.changeLanguageKey`は、`Elepay.processPayment`の前にコールすることでしか効きませんので、言語を変更するタイミングをご注意ください。
+
+# 各支払方法の設定に関して
+
+[決済方法](/get-started/pays#summary)ページをご参考ください。

@@ -1,0 +1,10 @@
+{
+  "title": "申込(オンライン決済)",
+  "defaultOpen": false,
+  "pages": [
+    "online-payment-preparation",
+    "online-payment-rejection",
+    "specified-commercial-transaction-law"
+  ],
+  "visibleOnTenant": ["smcc"]
+}

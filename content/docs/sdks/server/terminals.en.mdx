@@ -1,0 +1,50 @@
+---
+title: Terminal Payments
+---
+
+<EText name="elepay" /> provides in‑person payment capabilities via terminal
+devices.
+
+By using a terminal, you can accept card‑present payments such as credit and debit cards. For cards with IC chips, a PIN entry may be required. Contactless payments and e‑money are also supported.
+
+> 🚧 Before using terminal payments, you must open an account with Square and complete the configuration on the <EText name="elepay" /> side.
+
+High‑level flow until a payment can be accepted
+
+![](/docs/ee8ebf5-terminal_prepare.png)
+
+Payment flow
+
+![](/docs/6b666a5-terminal_charge.png)
+
+# Payment processing
+
+### 1. Payment request
+
+Your server calls <EText name="elepay" />’s Charge API to create a payment request.
+
+> 📘 Key request parameters
+>
+> **resource**: set to `reader`. (Will be changed to `terminal` in a future version.)
+>
+> **paymentMethod**: payment method
+>
+> **extra**: `readerId` is required.
+
+### 2. Customer payment
+
+Process payments such as credit cards, debit cards, and e‑money on the terminal.
+
+### 3. Check the Charge status and display the result
+
+You can confirm the result by either of the following:
+
+**1. Receive a webhook event**
+When a payment succeeds, <EText name="elepay" /> sends a `charge.captured` event to the configured webhook URL. When a payment fails, a `charge.revoked` event is sent.
+
+**2. Retrieve payment status**
+Poll the Charge retrieval API to check status until the payment succeeds or times out (recommended timeout 60 seconds; poll every 10 seconds).
+
+# Check in the dashboard
+
+You can review payment records under “Payment Management / Payments”. For refunds, see [Refunds](/get-started/refunds).

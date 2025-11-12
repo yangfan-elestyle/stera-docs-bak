@@ -1,0 +1,17 @@
+---
+title: FAQ for Android
+---
+
+## elepay Android SDK は Google Play の 16KB 要件をどのようにサポートしますか？
+
+elepay Android SDK は 16KB アライメントの問題にはすでに対応していますが、x86_64 アーキテクチャの APK だけは個別の対応が必要です。市場には x86_64 実機がほとんど存在しないため、以下の方法を参考にして x86_64 を除外してください：
+
+```kotlin
+android {
+    defaultConfig {
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a") // 删除 "x86_64"
+        }
+    }
+}
+```

@@ -1,0 +1,457 @@
+---
+title: 支付方式
+tocMaxDepth: 3
+---
+
+# 概要 [#summary]
+
+在使用移动端 SDK（iOS、Android）时，各支付方式的配置说明均见本页。
+
+> ◯：需要单独配置，△：仅需完成 elepay 通用配置，X：无需特殊配置。
+
+## iOS 开发配置
+
+| Payment                             | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
+| ----------------------------------- | ---------- | --------------------------- | --------------------- |
+| [PayPay](#paypay)                   | △          | ◯ \*1                       | —                     |
+| [merpay](#merpay)                   | △          | X                           | —                     |
+| d払い                               | X          | X                           | —                     |
+| [au PAY](#au-pay)                   | △          | ◯ \*1                       | —                     |
+| [Rakuten Pay](#rpay)                | △          | ◯                           | —                     |
+| Paidy                               | X          | X                           | —                     |
+| atone                               | X          | X                           | —                     |
+| [WeChat Pay](#wechat-pay)           | ◯          | ◯                           | —                     |
+| [Alipay](#alipay)                   | △          | ◯                           | —                     |
+| [UnionPay（銀聯雲閃付）](#unionpay) | △          | ◯                           | ◯                     |
+| [PayPal](#paypal)                   | X          | ◯                           | —                     |
+| [Apple Pay](#apple-pay)             | X          | X                           | ◯                     |
+| Credit Card                         | X          | X                           | —                     |
+
+---
+
+1：从 ElepaySDK for iOS v3.2.1 开始，无需将各支付方式应用的 Scheme 添加到 LSApplicationQueriesSchemes 即可使用。如果设备上未安装支付应用，SDK 将返回错误代码 "10110"。
+
+## Android 开发配置
+
+### 关于支付服务提供方
+
+#### GoAllpay
+
+如需使用 GoAllpay，需要在项目配置中新增 GoAllpay SDK 的仓库与依赖。
+详细配置方法请参考 GoAllpaySDK 文档[（中文）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_CH.md)、[（英文）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_EN.md)。
+
+配置方法：
+
+> 在项目根目录的 `build.gradle` 中追加如下内容：
+
+```groovy
+repositories {
+	// ... 其他 maven 仓库
+	// GoAllpay SDK 的 maven 仓库
+	maven {
+    	url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+	}
+}
+```
+
+> 在应用模块的 `build.gradle` 中追加如下内容：
+
+```groovy
+dependencies {
+	// ... other dependencies
+	api("io.github.goallpay:allpaysdk:5.2.5")
+}
+
+```
+
+### 各支付方式的开发配置
+
+| Payment                             | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
+| ----------------------------------- | -------------------------------------- | --------------------------------- |
+| [PayPay](#paypay)                   | ◯                                      | X                                 |
+| [merpay](#merpay)                   | ◯                                      | X                                 |
+| d払い                               | X                                      | X                                 |
+| [au PAY](#au-pay)                   | ◯                                      | X                                 |
+| [Rakuten Pay](#rpay)                | X                                      | ◯                                 |
+| Paidy                               | X                                      | X                                 |
+| atone                               | X                                      | X                                 |
+| [WeChat Pay](#wechat-pay)           | ◯                                      | ◯                                 |
+| [Alipay](#alipay)                   | X                                      | ◯                                 |
+| [UnionPay（銀聯雲閃付）](#unionpay) | X                                      | X                                 |
+| [PayPal](#paypal)                   | X                                      | X                                 |
+| [Apple Pay](#apple-pay)             | X                                      | X                                 |
+| Credit Card                         | X                                      | X                                 |
+
+自 elepay Android SDK 1.8.0 起，可将 `AndroidManifest.xml` 中为回调指定的 Activity 统一为一个 Activity（如下所示）。1.7.1 及之前的“按支付方式分别配置”已不再支持。使用 1.8.0 及以上版本时，请使用 `ElepayCallbackActivity`。
+
+> 📘 elepay 专用 URL Scheme 的获取方式见「[iOS / Android SDK 用 URL Scheme 的取得](/sdks/url-scheme)」。
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.ElepayCallbackActivity"
+    android:launchMode="singleTask"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep1234567890abcdef" /> ←このschemeは「アプリ設定」ページより取得してください。
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+## 支付方式
+
+### PayPay
+
+#### iOS
+
+##### iOS 9 及以上
+
+自 ElepaySDK for iOS v3.2.1 起，无需将下述 Scheme 添加到 LSApplicationQueriesSchemes。若设备未安装支付应用，SDK 将返回[错误代码](/get-started/error-code)“10110”。
+
+在 ElepaySDK for iOS v3.2.1 及更早版本中，如需跳转到 PayPay 应用，请在 Xcode 的 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes` 键。
+
+```xml
+<string>paypay</string>
+```
+
+##### iOS 应用的回调 URL Scheme
+
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+
+#### Android
+
+> 🚧 自 elepay Android SDK 1.8.0 起，可将 `AndroidManifest.xml` 中的回调 Activity 统一为 `ElepayCallbackActivity`。1.7.1 及之前的“按支付方式分别配置”已不再支持。详情见[概要](#summary)。
+
+使用 PayPay 时，需要在 <EText name="elepay" /> 账户的“アプリ設定（应用设置）”页面获取“URL Scheme”，并将其添加到项目的 `AndroidManifest.xml` 中。
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.paypay.PayPayActivity"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep8bd64f25c5545b99c43e295"
+              android:host="paypay"/> ←このschemeは「アプリ設定」ページより取得してください。
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+若需自定义由 Scheme 启动的 Activity，请继承 `jp.elestyle.androidapp.elepay.activity.paypay.PayPayActivity`。
+
+### merpay [#merpay]
+
+#### Android
+
+> 🚧 自 elepay Android SDK 1.8.0 起，可将 `AndroidManifest.xml` 中的回调 Activity 统一为 `ElepayCallbackActivity`。1.7.1 及之前的“按支付方式分别配置”已不再支持。详情见[概要](#summary)。
+
+使用 merpay 时，需要在 <EText name="elepay" /> 账户的“アプリ設定（应用设置）”页面获取“URL Scheme”，并将其添加到项目的 `AndroidManifest.xml` 中。
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.merpay.MerpayActivity"
+    android:exported="true">
+    <intent-filter>
+        <data
+            android:host="merpay"
+            android:scheme="ep33e72b55aaa6cce18c0abd7" /> ←このschemeは「アプリ設定」ページより取得してください。
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+### au PAY
+
+#### iOS
+
+##### iOS 9 及以上
+
+自 ElepaySDK for iOS v3.2.1 起，无需将下述 Scheme 添加到 LSApplicationQueriesSchemes。若设备未安装支付应用，SDK 将返回[错误代码](/get-started/error-code)“10110”。
+
+在 ElepaySDK for iOS v3.2.1 及更早版本中，如需跳转到 au PAY 应用，请在 Xcode 的 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes` 键。
+
+```xml
+<string>auwallet</string>
+```
+
+##### iOS 应用的回调 URL Scheme
+
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+
+### Rakuten Pay [#rpay]
+
+#### iOS
+
+如需使用 RPay，除 elepay SDK 外，还需将 RPay 的私有 Framework（不公开）添加到项目依赖中。关于 RPayKit.framework 的获取与依赖添加方法，请联系 <EText name="elepay" /> 支持。
+
+##### iOS 9 及以上
+
+要跳转到乐天支付（Rakuten Pay）应用，请在 Xcode 的 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes` 键。
+
+```xml
+<string>rakutenpaysdk</string>
+```
+
+##### iOS 应用的回调 URL Scheme
+
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+
+#### Android
+
+使用 RPay 时，除 elepay SDK 外，还需将 Rakuten Pay 的私有 aar（不公开）添加到项目依赖中。关于依赖添加方法，请参考 Android Developer 的[官方文档](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)。
+
+> 📘 Rakuten Pay aar 的下载地址请联系 <EText name="elepay" /> 支持获取。
+
+### Apple Pay
+
+#### iOS
+
+##### 概述
+
+介绍 Apple Pay 的实现方法。
+
+##### 工作原理
+
+Apple Pay 让 Apple 设备充当“钱包”，以便轻松完成支付。
+
+##### Apple Pay 的设置
+
+参见[Setting Up Apple Pay](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay_requirements)。
+
+1.  注册 Apple Merchant ID
+    使用 Apple Pay 需要先注册 Apple Merchant ID。
+2.  创建 Apple Pay 证书
+    为加密支付信息，需要配置证书。
+    证书创建步骤：
+    (1) 在 <EText name="elepay" />「開発設定」→「Apple Pay」→「Apple Pay Certificate」中下载 CSR（Certificate Signing Request）。
+    (2) 在 Apple Developer 网站使用步骤 1 中注册的 Merchant ID 上传 CSR 并生成证书。
+    (3) 将生成的证书上传到 <EText name="elepay" />。
+3.  集成到 Xcode
+    在 Xcode 中打开项目，进入 Capabilities 选项卡启用 Apple Pay。可能会要求登录开发者账号。启用后勾选步骤 1 中创建的 Merchant ID，即完成设置。
+
+另请参阅 [Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)。
+
+##### Apple Pay（中国银联）专用证书
+
+**（仅在申请了“中國銀聯 Apple Pay”时需要）**
+
+- 在 [Apple Developer](https://developer.apple.com/account) 生成 CSR（Certificate Signing Request）。可参考 Apple 的指南。
+
+![](/docs/Apple_Developer1.png)
+
+- 创建 CSR 时，请务必勾选 “Let me specify key pair information”。
+
+![](/docs/Apple_Developer2.png)
+
+- 在 “Key Pair Information” 页面，将 Algorithm 设为 “ECC”，Key Size 设为 “256 bits”。
+
+![](/docs/Apple_Developer3.png)
+
+- 将 CSR 上传到 developer.apple.com 时，
+  在 “Will payments associated with this Merchant ID be processed exclusively in China?” 选择 “No”。
+
+![](/docs/Apple_Developer4.png)
+
+- 下载生成的证书（.cer），并导出个人信息交换文件（.p12），其密码留空。
+- 在 <EText name="elepay" />「開発設定」→「Apple Pay」→「Apple Pay Certificate（中国）」中上传上述证书（.cer）与 .p12 文件。
+
+### Google Pay
+
+#### Android
+
+在设置 elepay SDK 时指定 `googlePayEnvironment`。
+
+> 📘 使用 Google Pay 需要向 Google 进行申请。可能需要分别提交 TEST/PRODUCTION 环境构建的应用。
+
+> 📘 配置 elepay SDK 时可指定 `googlePayExistingPaymentRequired`（默认：true），用于检查用户的 Google Pay 中是否已有可用的支付卡。
+>
+> > true：Google Pay 中至少需要 1 张可支付的卡。
+>
+> > false：不检查 Google Pay 的卡片；若无卡片，可在支付对话框内新增。
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "" // test key or live key
+  googlePayEnvironment = GooglePayEnvironment.TEST // or GooglePayEnvironment.PRODUCTION
+  googlePayExistingPaymentRequired = false // default true
+)
+Elepay.setup(configuration)
+```
+
+由于 Google Pay 依赖 Google Play Service，使用前需要检查其可用性。
+SDK 提供了如下与 Google Pay 可用性相关的方法：
+
+```kotlin
+// 检查是否可使用 Google Pay 的方法。
+fun checkIfGooglePayIsReadyToUse(
+    activity: Activity,
+    resultHandler: (Boolean) -> Unit
+)
+```
+
+##### Google Pay 开发
+
+1. minSdkVersion 满足要求官方要求：https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+2. 配置 AndroidManifest.xml
+
+```
+<application>
+  ...
+  <meta-data
+    android:name="com.google.android.gms.wallet.api.enabled"
+    android:value="true" />
+</application>
+```
+
+##### Google Pay PRODUCTION 验证
+
+根据 Google Pay 官方要求，PRODUCTION 环境下的 Google Pay 一定需要 Google Play Release 签名。并需要以下操作流程：
+
+1. 申请 google pay api 能力
+   a. https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration
+2. 一定需要通过 Google Play store 下载 app 并测试（release 签名后本地安装是不行的。）
+   a. https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+   b. release 签名打包并且上传 Google Play store 后，通过测试人员账号下载并测试 Google Pay 能力。
+3. 一定需要使用 GooglePayEnvironment.PRODUCTION 参数，而不是 GooglePayEnvironment.TEST 参数。
+
+##### TEST／PRODUCTION 的差异
+
+当 `googlePayExistingPaymentRequired` 为 true 时：
+
+1. **Test 环境**：依赖 Google Wallet 应用。测试时需安装 Google Wallet 并预先登记信用卡，否则无法启动 Google Pay 支付对话框，且 `checkIfGooglePayIsReadyToUse` 将返回 `false`（强制发起支付将返回错误代码 10100）。
+2. **Production 环境**：实际用户需在 Google Wallet 或 Google 账号中登记支付卡。若未登记，`checkIfGooglePayIsReadyToUse` 将返回 `false`（强制发起支付将返回错误代码 10100）。
+   当 `googlePayExistingPaymentRequired` 为 false 时：
+3. **Test 环境**：支付对话框会自动填入测试卡信息。
+4. **Production 环境**：若用户在 Google Pay 中尚无支付卡，将在对话框中引导添加。
+
+### PayPal
+
+#### iOS
+
+##### iOS 应用的回调 URL Scheme
+
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+
+此外，请添加以应用 _Bundle ID_ 开头的 PayPal 专用 _URL Scheme_。
+参见[<EText name="elepay" /> 管理后台](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **PayPal**。
+
+##### iOS 9 及以上
+
+如需跳转到 PayPal 应用，请在 Xcode 的 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes` 键。
+
+```xml
+<string>com.paypal.ppclient.touch.v1</string>
+<string>com.paypal.ppclient.touch.v2</string>
+```
+
+### Alipay
+
+#### iOS
+
+Alipay 是蚂蚁金服提供的跨 iOS、Android 与 Web 的便捷安全的支付服务。
+
+##### iOS 9 及以上
+
+如需跳转到 Alipay 应用，请在 Xcode 的 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes` 键。
+
+```xml
+<string>alipay</string>
+```
+
+##### iOS 应用的回调 URL Scheme
+
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+
+#### Android
+
+使用 Alipay 时，请下载[支付宝 SDK](https://doc.open.alipay.com/doc2/detail.htm?treeId=54&articleId=104509&docType=1) 并放置到项目的 `libs` 目录。
+
+> 📘 支付宝 SDK 的文件名类似：
+> alipaySdk-15.6.8-20191021122455-noUtdid.aar
+
+随后在应用的 `build.gradle` 中添加依赖：
+
+```groovy
+dependencies {
+  // ... other dependencies
+  implementation files('libs/alipaySdk-20170725.jar')
+}
+```
+
+### WeChat Pay
+
+#### iOS
+
+##### iOS 应用的回调 URL Scheme
+
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。
+
+此外，需要 WeChat 专用 _URL Scheme_（以 `wx` 开头）。
+参见[elepay 管理后台](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **WeChat Pay**。若 WeChat Pay 未开通，则不显示该项。
+
+##### iOS 9 及以上
+
+如需跳转到 WeChat Pay 应用，请在 Xcode 的 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes` 键。
+
+```xml
+<string>weixin</string>
+<string>weixinULAPI</string>
+```
+
+#### Android
+
+WeChat Pay 依赖 wechat 库，请在 `build.gradle` 中添加 wechat SDK 的依赖。
+推荐使用最新版；版本信息参见 [wechat sdk maven](https://bintray.com/wechat-sdk-team/maven)。
+
+```groovy
+dependencies {
+  // ... other dependencies
+  implementation　"com.tencent.mm.opensdk:wechat-sdk-android-without-mta:version"
+}
+```
+
+随后在项目的 `AndroidManifest.xml` 中添加如下 `activity-alias`。
+WeChat Pay 会寻找 `包名.wxapi.WXPayEntryActivity`，elepay SDK 会与既有代码进行链接。
+
+```xml
+<!-- 其他 activity 声明 -->
+<activity name="...">
+</activity>
+
+<!-- 使用 WeChat Pay 所必需 -->
+<activity-alias
+    android:name="パッケージ名.wxapi.WXPayEntryActivity"
+    android:exported="true"
+    android:targetActivity="jp.elestyle.androidapp.elepay.activity.wxapi.WXPayEntryActivity" />
+```
+
+### UnionPay（銀聯雲閃付）[#unionpay]
+
+#### iOS
+
+##### iOS 9 及以上
+
+如需跳转到 UnionPay 相关应用，请在 Xcode 的 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes` 键。
+
+```xml
+<string>uppaysdk</string>
+<string>uppaywallet</string>
+<string>uppayx1</string>
+<string>uppayx2</string>
+<string>uppayx3</string>
+```
+
+##### iOS 应用的回调 URL Scheme
+
+<EText name="elepay" /> 的默认 _URL Scheme_ 见[此处](/sdks/ios)。

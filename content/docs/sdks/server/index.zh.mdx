@@ -1,0 +1,69 @@
+---
+title: Server Quick Start
+---
+
+<EText name="elepay" /> 支持多种开发语言与电商服务。
+为覆盖更广泛的开发者群体，我们还将持续补充更多 SDK。
+
+# 官方 SDK
+
+- Java
+- PHP
+- Ruby（筹备中）
+- Python（筹备中）
+
+## Java
+
+需要 JDK 1.8 及以上版本。
+
+### 手动安装
+
+从 GitHub 下载 SDK，并将 `libs` 目录下的 JAR 文件导入到项目中。
+
+### 通过 Maven 安装
+
+添加 elepay SDK：
+
+```xml
+<dependency>
+    <groupId>io.elepay</groupId>
+    <artifactId>elepay-java-sdk</artifactId>
+    <version>1.2.2</version>
+</dependency>
+```
+
+### 通过 Gradle 安装
+
+添加 elepay SDK：
+
+```groovy
+compile 'io.elepay:elepay-java-sdk:1.2.2'
+```
+
+## PHP
+
+需要 PHP 7.3 及以上版本。
+
+### 手动安装
+
+```groovy
+require_once('/path/to/ElepayApi/vendor/autoload.php');
+```
+
+### 通过 Composer 安装
+
+1. 在 `composer.json` 中加入：
+
+```json
+{
+  "require": {
+    "elestyle/elepay-php-sdk": ">=1.2.0"
+  }
+}
+```
+
+1. 执行 `composer install`：
+
+```text
+composer install
+```

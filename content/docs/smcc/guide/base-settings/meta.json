@@ -1,0 +1,10 @@
+{
+  "title": "基本機能の設定",
+  "defaultOpen": false,
+  "visibleOnTenant": ["smcc"],
+  "pages": [
+    "order-and-refund-processing",
+    "about-product-editing",
+    "changing-the-display-order"
+  ]
+}

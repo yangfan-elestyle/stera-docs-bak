@@ -1,0 +1,15 @@
+{
+  "title": "Optional feature settings",
+  "defaultOpen": false,
+  "visibleOnTenant": ["smcc"],
+  "pages": [
+    "issuing-coupon-codes",
+    "campaign-settings",
+    "about-promotion",
+    "inventory-management",
+    "receipt-issuance",
+    "consumption-tax-setting",
+    "order-note-function",
+    "regarding-invoice-payment"
+  ]
+}

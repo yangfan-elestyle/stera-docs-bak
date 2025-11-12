@@ -1,0 +1,35 @@
+---
+title: FAQ for iOS
+---
+
+## After integrating the elepay iOS SDK, how much will the app size increase?
+
+The elepay iOS SDK supports Bitcode. If the app you are integrating supports Bitcode, the size increases by about 15 MB. If Bitcode is not supported, it increases by about 50 MB.
+
+## Does the elepay iOS SDK support Apple Watch?
+
+We do not currently support WatchKit or App Extensions.
+
+## Does the elepay iOS SDK support App Clips?
+
+Supported starting with elepay iOS SDK v2.3.4. However, payment methods that require app switching (e.g., PayPay, Merpay) are not supported.
+
+Regarding the App Clips size limit (10 MB): the universal build of the elepay iOS SDK is about 2 MB, but if you use Stripe for credit cards or Apple Pay, you must also include the Stripe SDK, which is roughly 3 MB. Please be mindful of the App Clips size limit.
+
+## When paying with Apple Pay, Error Code 10100 "Unsupported payment method" occurs
+
+Possible causes:
+
+1.  The iOS device hardware does not support Apple Pay, or parental controls have restricted the Apple Pay feature.
+
+2.  No usable credit card is registered in the user's Apple Wallet (Visa / Mastercard / American Express / JCB ＊).
+    Even if the physical card shows one of the brands above, it cannot be used if the card image in Apple Wallet does not display that brand.
+    ＊ JCB is supported only for merchants who have separately passed onboarding review.
+
+3.  In Xcode settings, ensure Apple Pay is enabled and confirm that you have uploaded the [Apple Pay certificate](/get-started/pays#apple-pay) to the <EText name="elepay" /> dashboard.
+
+![](/docs/d3028f3-ELEPayExample_xcodeproj.png)
+
+1.  In Objective-C projects where ElepaySDK for iOS is integrated manually, required system frameworks may not be added automatically. If the problem persists after clearing the points above, try adding "PassKit.framework" manually and test again.
+
+![](/docs/81e5331-ELEPayExample_xcodeproj.png)

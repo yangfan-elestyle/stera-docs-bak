@@ -1,0 +1,40 @@
+{
+  "folder-color.pathColors": [
+    {
+      "folderPath": "elepay-docs/source.config.ts/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/next.config.mjs/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/middleware.ts/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/mdx-components.tsx/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/lib/source.ts/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/lib/layout.shared.tsx/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/app/[lang]/(docs)/[[...slug]]/page.tsx/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/app/[lang]/(docs)/layout.tsx/",
+      "color": "foldercolorizer.color_ff0000"
+    },
+    {
+      "folderPath": "elepay-docs/app/[lang]/layout.tsx/",
+      "color": "foldercolorizer.color_ff0000"
+    }
+  ]
+}

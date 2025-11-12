@@ -1,0 +1,35 @@
+---
+title: iOS 常见问题
+---
+
+## 集成 elepay iOS SDK 后，应用体积会增加多少？
+
+elepay iOS SDK 支持 Bitcode。若待集成的应用支持 Bitcode，体积大约增加 15MB；若不支持 Bitcode，则大约增加 50MB。
+
+## elepay iOS SDK 是否支持 Apple Watch？
+
+目前不支持 WatchKit 与 App Extensions 等。
+
+## elepay iOS SDK 是否支持 App Clips？
+
+自 elepay iOS SDK v2.3.4 起支持。但需要进行跨应用跳转的支付方式（例：PayPay、Merpay 等）不支持。
+
+关于 App Clips 的大小限制（10MB）：elepay iOS SDK 的 universal 包大小约为 2MB；如果使用 Stripe 处理信用卡或 Apple Pay，还需集成 Stripe SDK，其大小约 3MB。请注意 App Clips 的容量限制。
+
+## 使用 Apple Pay 支付时出现 Error Code 10100 "Unsupported payment method" 错误
+
+可能原因：
+
+1.  iOS 设备的硬件不支持 Apple Pay，或家长控制限制了 Apple Pay 功能。
+
+2.  用户的「Apple Wallet」中未注册可用的信用卡（Visa / Mastercard / American Express / JCB ＊）。
+    即使实体卡片印有上述品牌，若「Apple Wallet」内的卡片图像未显示上述品牌，也无法使用。
+    ＊ JCB 仅对通过单独入网审核的商户支持。
+
+3.  在 Xcode 设置中确认已启用 Apple Pay，并已将 [Apple Pay 证书](/get-started/pays#apple-pay) 上传至 <EText name="elepay" /> 管理后台。
+
+![](/docs/d3028f3-ELEPayExample_xcodeproj.png)
+
+1.  在使用 Objective-C 的项目中如以手动方式集成 ElepaySDK for iOS，可能无法自动引入所需的系统 Frameworks；若排除上述问题后仍存在异常，请手动引入「PassKit.framework」后再试。
+
+![](/docs/81e5331-ELEPayExample_xcodeproj.png)

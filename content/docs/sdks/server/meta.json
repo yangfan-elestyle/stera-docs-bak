@@ -1,0 +1,11 @@
+{
+  "title": "Server",
+  "defaultOpen": false,
+  "pages": [
+    "api-guide",
+    "webhook",
+    "extra-setting",
+    "terminals",
+    "[ExternalLink][OpenAPI Reference](../../openapi)"
+  ]
+}

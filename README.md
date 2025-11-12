@@ -1,45 +1,32 @@
-# elepay-docs
+# Elepay Documentation
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+## 国际化
 
-Run development server:
+> 采用 `.[lang].mdx` 的文件名格式
 
-```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+```text
+index.mdx       -- 默认是日语，如果没有对应的翻译时，默认采用日语
+meta.json       -- 日语
+index.zh.mdx    -- 中文
+meta.zh.json    -- 中文
+index.en.mdx    -- 英文
+meta.en.json    -- 英文
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+### 国际化自动化
 
-## Explore
+鉴于当前平台承载着公司对外能力输出的责任，对于【国际化】能力需要保持较高质量的水平输出。有以下目标：
 
-In the project, you can see:
+1. 高质量
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `app/layout.config.tsx`: Shared options for layouts, optional but preferred to keep.
+- 翻译输出的内容需要很高的质量，不能水
+- 不同语言的翻译结果，【交叉验证】不能出现明显的误差（单个翻译不错、整体翻译不匹配）
+- 技术术语、【业务术语】均需要相当专业的翻译输出。尤其是公司的业务术语，应该在不同的翻译结果中保持一致性
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+2. 增量翻译一致性
 
-### Fumadocs MDX
+- 已有内容更新后，仅需要对更新的内容进行【增量翻译】（此时进行【全量翻译】会出现较大范围的【翻译不一致】）
 
-A `source.config.ts` config file has been included, you can customise different options like frontmatter schema.
+3. 自动化的操作待翻译的文件和文件夹
 
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
-
-## Learn More
-
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.vercel.app) - learn about Fumadocs
+鉴于以上目标，请参考 [国际化自动化指南](./translate/readme.md) 实现文档的翻译工作。

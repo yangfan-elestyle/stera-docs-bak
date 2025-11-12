@@ -1,0 +1,92 @@
+---
+title: JavaScript Quick Start
+---
+
+**elepay JavaScript SDK** 用于将 <EText name="elepay" /> 集成到 Web 应用中。
+本文档介绍如何将 Web 应用与 <EText name="elepay" /> JavaScript SDK 对接。
+
+# 支持版本
+
+- **elepay JavaScript SDK** 推荐使用 Safari、Chrome、Edge、Firefox 的最新版本（保证在近 3 年内发布的版本上运行）。
+- 开发环境：推荐使用 Chrome。
+
+# 安装
+
+**elepay JavaScript SDK** 托管在 [https://js.elepay.io/v1/](https://js.elepay.io/v1/)，可直接通过该域名加载使用。
+
+```js
+<script src="https://js.elepay.io/v1/elepay.js"></script>
+```
+
+以模块方式使用时，请安装 npm 包 `elepay-js-sdk`。
+
+```js
+npm install --save elepay-js-sdk
+```
+
+# 实现
+
+## 初始化
+
+```js
+var elepay = new Elepay('YOUR_PUBLISHABLE_KEY');
+```
+
+**通过 npm 包安装时**
+
+```js
+import { loadElepay } from 'elepay-js-sdk';
+
+const elepay = await loadElepay('YOUR_PUBLISHABLE_KEY');
+```
+
+**Elepay(publishableKey, options?)**
+
+| 参数           | 类型   | 必填                | 说明                                                                             |
+| -------------- | ------ | ------------------- | -------------------------------------------------------------------------------- |
+| publishableKey | string | true                | 公钥                                                                             |
+| options        | object | false               | 初始化选项                                                                       |
+| options.locale | string | false（默认：auto） | ja：日语，en：英语，zh-CN：简体中文，zh-TW：繁体中文，auto：随浏览器语言自动设置 |
+
+## 支付处理
+
+获取 elepay Charge 对象后，调用以下代码发起支付处理。
+
+```js
+elepay
+  .handleCharge(chargeObject)
+  .then(function (result) {
+    // ① 正常流程
+    if (result.type === 'cancel') {
+      // 支付取消
+    } else if (result.type === 'success') {
+      // 支付成功
+    }
+  })
+  .catch(function (err) {
+    // ② 异常处理
+  });
+```
+
+以下支付方式不会调用正常流程处理（①），而是跳转到 charge extra 信息中的 `frontUrl`：
+
+- LinePay
+- Alipay
+- UnionPay
+- PayPay
+
+**elepay.handleCharge(chargeObject)**
+
+| 参数         | 类型   | 必填 | 说明                               |
+| ------------ | ------ | ---- | ---------------------------------- |
+| chargeObject | object | true | 由 elepay 服务端创建的 Charge 对象 |
+
+**跳转到 frontUrl**
+
+跳转时，会在 `frontUrl` 上追加以下查询参数：
+
+- chargeId：Charge ID
+- orderNo：订单号
+- amount：支付金额
+- currency：货币代码
+- status：状态（captured、failure、cancelled）。支付成功时为 `captured`。
