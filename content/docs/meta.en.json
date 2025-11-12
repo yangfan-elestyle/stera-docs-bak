@@ -1,6 +1,16 @@
 {
   "root": true,
   "defaultOpen": true,
+  "sectionNotes": {
+    "SAAS GUIDES": "A structured guide covering onboarding, configuration, and operations. Concise explanations of features and practical workflows.",
+    "SAAS FAQ": "Consolidated FAQs on application, screening, compliance, payments, and more. Brief, to-the-point answers.",
+    "Overview": "We provide API documentation for developers. With it, you can integrate multiple payment methods and support major mobile payment methods with a single implementation.",
+    "SDK Guide": "Multiple SDKs help you quickly integrate payment capabilities into your application.",
+    "Checkout": "With Checkout, you can quickly integrate payment capabilities into your website with no code required.",
+    "E-Commerce": "Plugins for mainstream e-commerce platforms help you quickly integrate payments into your online store.",
+    "FAQ": "See frequently asked questions for more help.",
+    "Resources": "Download SDKs, sample code, and other resources to accelerate your integration."
+  },
   "pages": [
     "index",
     "---SAAS GUIDES---",

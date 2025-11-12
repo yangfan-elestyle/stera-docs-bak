@@ -1,0 +1,14 @@
+diff --git a/dist/provider/base.js b/dist/provider/base.js
+index 62142942f40a4d6636c53e88b53188690861068d..fab045b324f4a78bc4fadf6a4dad5cd19412dc13 100644
+--- a/dist/provider/base.js
++++ b/dist/provider/base.js
+@@ -34,7 +34,8 @@ function I18nProvider({ locales = [], locale, onLocaleChange, children, translat
+         else {
+             segments[0] = value;
+         }
+-        router.push(`/${segments.join('/')}`);
++        // router.push(`/${segments.join('/')}`);
++        location.href = `/${segments.join('/')}`;
+     };
+     const onChangeRef = useRef(onChange);
+     onChangeRef.current = onChange;

@@ -28,6 +28,7 @@ export const docs = defineDocs({
     // Allow folder-level tenant visibility control in meta.json
     schema: metaSchema.extend({
       visibleOnTenant: z.array(z.string()).optional(),
+      sectionNotes: z.record(z.string(), z.string()).optional(),
     }),
   },
 });
