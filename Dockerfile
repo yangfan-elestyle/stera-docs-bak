@@ -7,7 +7,8 @@ WORKDIR /app
 ARG GH_PACKAGES_TOKEN
 ENV GH_PACKAGES_TOKEN=${GH_PACKAGES_TOKEN}
 
-COPY package.json bun.lock bunfig.toml source.config.ts patches ./
+COPY package.json bun.lock bunfig.toml source.config.ts ./
+COPY ./patches ./patches
 RUN bun install --frozen-lockfile
 
 FROM base AS builder
