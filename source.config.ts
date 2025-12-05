@@ -4,7 +4,6 @@ import {
   frontmatterSchema,
   metaSchema,
 } from 'fumadocs-mdx/config';
-import lastModified from 'fumadocs-mdx/plugins/last-modified';
 import { z } from 'zod';
 
 // Extend frontmatter schema to support custom TOC max depth and redirect
@@ -35,6 +34,5 @@ export const docs = defineDocs({
 });
 
 export default defineConfig({
-  plugins: [lastModified()],
   mdxOptions: {},
 });

@@ -43,9 +43,6 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       ? page.data.toc.filter((item) => item.depth <= tocMaxDepth)
       : page.data.toc;
 
-  // Read last modified timestamp
-  const lastModified = page.data.lastModified as number | undefined;
-
   // Compute footer items
   const footerItems = getFilteredFooterItems(page, lang, host);
 
@@ -54,7 +51,6 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       toc={filteredToc}
       full={page.data.full}
       tableOfContent={{ style: 'clerk' }}
-      lastUpdate={lastModified}
       footer={{ items: footerItems }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
