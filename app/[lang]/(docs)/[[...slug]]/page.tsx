@@ -52,6 +52,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       full={page.data.full}
       tableOfContent={{ style: 'clerk' }}
       footer={{ items: footerItems }}
+      lastUpdate={page.data.lastModified}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>

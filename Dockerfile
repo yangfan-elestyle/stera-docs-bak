@@ -18,6 +18,8 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN apt-get update && apt-get install -y git
+
 RUN bun run build
 
 FROM base AS runner
@@ -27,7 +29,7 @@ ENV NODE_ENV production
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN adduser --system --uid 1001 nextjs
+RUN useradd --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
