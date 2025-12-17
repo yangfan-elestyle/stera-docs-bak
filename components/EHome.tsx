@@ -103,43 +103,51 @@ export default async function EHome({ lang }: Props) {
   const host = hdrs.get('host') ?? '';
   // 简单归一化：zh* / cn* -> zh；en* -> en；其他 -> ja
   const v = (lang ?? '').trim().toLowerCase();
-  const currentLang: 'ja' | 'en' | 'zh' = v.startsWith('zh') || v.startsWith('cn')
-    ? 'zh'
-    : v.startsWith('en')
-      ? 'en'
-      : 'ja';
+  const currentLang: 'ja' | 'en' | 'zh' =
+    v.startsWith('zh') || v.startsWith('cn')
+      ? 'zh'
+      : v.startsWith('en')
+        ? 'en'
+        : 'ja';
 
   const sections = buildSections(currentLang, host);
 
   return (
-    <>
-      {sections.map((section, idx) => (
-        <section key={section.title || idx} className="@container">
-          {section.title ? (
-            <h2 className="mb-2 font-semibold text-fd-muted-foreground">
-              {section.title}
-            </h2>
-          ) : null}
-          {section.title && section.description ? (
-            <p className="mb-3 text-sm text-fd-muted-foreground">
-              {section.description}
-            </p>
-          ) : null}
-          <div className="grid grid-cols-2 gap-4 @lg:grid-cols-3 @xl:grid-cols-4 @2xl:grid-cols-5">
-            {section.items.map((item) => (
-              <Link
-                key={(item.url ?? item.title) as string}
-                href={item.url ?? '#'}
-                className="flex h-12 items-center rounded-xl border bg-fd-card px-4 text-fd-card-foreground transition-colors hover:bg-fd-accent/80 no-underline hover:no-underline @max-lg:col-span-full"
-              >
-                <span className="not-prose text-sm font-medium truncate w-full text-left">
-                  {item.title}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ))}
-    </>
+    <div className="not-prose mx-auto w-full max-w-5xl text-[15px] leading-6">
+      <div className="mt-8 space-y-12">
+        {sections.map((section, idx) => (
+          <section key={section.title || idx}>
+            {section.title ? (
+              <div className="mb-6 flex items-center gap-4">
+                <h2 className="text-sm font-semibold text-fd-muted-foreground">
+                  {section.title}
+                </h2>
+                <div className="h-px flex-1 bg-fd-muted-foreground/15" />
+              </div>
+            ) : null}
+
+            {section.title && section.description ? (
+              <p className="-mt-3 mb-6 text-sm text-fd-muted-foreground">
+                {section.description}
+              </p>
+            ) : null}
+
+            <div className="grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+              {section.items.map((item) => (
+                <Link
+                  key={(item.url ?? item.title) as string}
+                  href={item.url ?? '#'}
+                  className="group block no-underline hover:no-underline"
+                >
+                  <div className="font-semibold text-slate-700 group-hover:text-slate-900 group-hover:underline underline-offset-2 dark:text-slate-200 dark:group-hover:text-white">
+                    {item.title}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
   );
 }
