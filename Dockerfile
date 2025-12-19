@@ -39,6 +39,8 @@ RUN chown nextjs:bun .next
 COPY --from=builder --chown=nextjs:bun /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:bun /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:bun /app/openapi.yaml ./openapi.yaml
+COPY --from=builder --chown=nextjs:bun /app/openapi.en.yaml ./openapi.en.yaml
+COPY --from=builder --chown=nextjs:bun /app/openapi.zh.yaml ./openapi.zh.yaml
 
 USER nextjs
 
