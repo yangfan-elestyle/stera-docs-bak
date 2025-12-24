@@ -43,7 +43,7 @@ export default function ChatbotLauncher() {
         url: 'https://elekb.io/entrance',
         styles: { background: '#fff' },
         payload: {
-          lang: lang === 'zh' ? 'zh-CN' : lang === 'en' ? 'en-US' : 'ja-JP',
+          lang: lang === 'zh' ? 'zh-CN' : lang === 'en' ? 'en' : 'ja',
           user: getOrCreateGuestUser(),
         },
         container: containerRef.current,
