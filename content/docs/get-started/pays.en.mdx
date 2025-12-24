@@ -273,11 +273,11 @@ Specify `googlePayEnvironment` when setting up the elepay SDK.
 
 > 📘 Using Google Pay requires an application to Google. You may be asked to submit apps built for both TEST and PRODUCTION environments.
 
-> 📘 When configuring the elepay SDK, you can specify `googlePayExistingPaymentRequired` (default: true) to check whether the user already has a valid payment card in Google Pay.
+When configuring the elepay SDK, you can specify `googlePayExistingPaymentRequired` (default: true) to check whether the user already has a valid payment card in Google Pay.
+
+> true: At least one payable card is required in Google Pay.
 >
-> > true: At least one payable card is required in Google Pay.
->
-> > false: Do not check cards in Google Pay. If there is no card, the user can add one in the payment dialog.
+> false: Do not check cards in Google Pay. If there is no card, the user can add one in the payment dialog.
 
 ```kotlin
 val configuration = ElepayConfiguration(
@@ -330,9 +330,11 @@ When `googlePayExistingPaymentRequired` is true:
 
 1. **Test environment**: Depends on the Google Wallet app. Install Google Wallet and register a credit card; otherwise the Google Pay dialog will not start and `checkIfGooglePayIsReadyToUse` returns `false` (forcing a payment will return error code 10100).
 2. **Production environment**: Real users must have a payment card registered in Google Wallet or their Google account. If not, `checkIfGooglePayIsReadyToUse` returns `false` (forcing a payment will return error code 10100).
-   When `googlePayExistingPaymentRequired` is false:
-3. **Test environment**: The payment dialog automatically fills test card information.
-4. **Production environment**: If the user has no card in Google Pay, the dialog prompts them to add a card.
+
+When `googlePayExistingPaymentRequired` is false:
+
+1. **Test environment**: The payment dialog automatically fills test card information.
+2. **Production environment**: If the user has no card in Google Pay, the dialog prompts them to add a card.
 
 ### PayPal
 

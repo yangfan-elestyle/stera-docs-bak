@@ -278,11 +278,11 @@ elepay SDK のセットアップ時に、`googlePayEnvironment`を指定しま�
 
 > 📘 Google Pay をご利用の際、Google 社への申請が必要となります。申請するには、TEST/PRODUCTION それぞれの環境でビルドしたアプリを提出する可能性があります。
 
-> 📘 elepay SDK を設定する際、`googlePayExistingPaymentRequired`（デフォルト値：true）を指定できます。これはユーザーの Google Pay に有効な支払いカードが存在するかどうかを検証するための設定です。
+elepay SDK を設定する際、`googlePayExistingPaymentRequired`（デフォルト値：true）を指定できます。これはユーザーの Google Pay に有効な支払いカードが存在するかどうかを検証するための設定です。
+
+> true：Google Pay に少なくとも 1 枚の支払い可能なカードが必要です。
 >
-> > true：Google Pay に少なくとも 1 枚の支払い可能なカードが必要です。
->
-> > false：Google Pay の支払いカードを検証しません。カードがない場合は、支払いダイアログ内で追加できます。
+> false：Google Pay の支払いカードを検証しません。カードがない場合は、支払いダイアログ内で追加できます。
 
 ```kotlin
 val configuration = ElepayConfiguration(
@@ -335,9 +335,11 @@ Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play の�
 
 1. **Test 環境**：Google Wallet アプリへの依存が必須です。テスト時には、Google Wallet アプリをインストールし、クレジットカードを登録しておく必要があります。これがないと Google Pay の支払いダイアログが起動せず、`checkIfGooglePayIsReadyToUse` が `false` を返します（強制的に支払いを行うと、エラーコード 10100 が返されます）。
 2. **Production 環境**：実際のユーザーは Google Wallet または Google アカウントに支払いカードを登録している必要があります。登録がない場合、`checkIfGooglePayIsReadyToUse` が `false` を返します（強制的に支払いを行うと、エラーコード 10100 が返されます）。
-   `googlePayExistingPaymentRequired` が false に設定されている場合：
-3. **Test 環境**：Google Pay の支払いダイアログにはテストカード情報が自動的に入力されます。
-4. **Production 環境**：実際のユーザーが Google Pay に支払いカードを登録していない場合、支払いダイアログでカード追加を促す案内が表示されます。
+
+`googlePayExistingPaymentRequired` が false に設定されている場合：
+
+1. **Test 環境**：Google Pay の支払いダイアログにはテストカード情報が自動的に入力されます。
+2. **Production 環境**：実際のユーザーが Google Pay に支払いカードを登録していない場合、支払いダイアログでカード追加を促す案内が表示されます。
 
 ### PayPal
 

@@ -274,11 +274,11 @@ Apple Pay 让 Apple 设备充当“钱包”，以便轻松完成支付。
 
 > 📘 使用 Google Pay 需要向 Google 进行申请。可能需要分别提交 TEST/PRODUCTION 环境构建的应用。
 
-> 📘 配置 elepay SDK 时可指定 `googlePayExistingPaymentRequired`（默认：true），用于检查用户的 Google Pay 中是否已有可用的支付卡。
+在设置 elepay SDK 时可指定 `googlePayExistingPaymentRequired`（默认：true），用于检查用户的 Google Pay 中是否已有可用的支付卡。
+
+> true：Google Pay 中至少需要 1 张可支付的卡。
 >
-> > true：Google Pay 中至少需要 1 张可支付的卡。
->
-> > false：不检查 Google Pay 的卡片；若无卡片，可在支付对话框内新增。
+> false：不检查 Google Pay 的卡片；若无卡片，可在支付对话框内新增。
 
 ```kotlin
 val configuration = ElepayConfiguration(
@@ -331,9 +331,11 @@ fun checkIfGooglePayIsReadyToUse(
 
 1. **Test 环境**：依赖 Google Wallet 应用。测试时需安装 Google Wallet 并预先登记信用卡，否则无法启动 Google Pay 支付对话框，且 `checkIfGooglePayIsReadyToUse` 将返回 `false`（强制发起支付将返回错误代码 10100）。
 2. **Production 环境**：实际用户需在 Google Wallet 或 Google 账号中登记支付卡。若未登记，`checkIfGooglePayIsReadyToUse` 将返回 `false`（强制发起支付将返回错误代码 10100）。
-   当 `googlePayExistingPaymentRequired` 为 false 时：
-3. **Test 环境**：支付对话框会自动填入测试卡信息。
-4. **Production 环境**：若用户在 Google Pay 中尚无支付卡，将在对话框中引导添加。
+
+当 `googlePayExistingPaymentRequired` 为 false 时：
+
+1. **Test 环境**：支付对话框会自动填入测试卡信息。
+2. **Production 环境**：若用户在 Google Pay 中尚无支付卡，将在对话框中引导添加。
 
 ### PayPal
 
