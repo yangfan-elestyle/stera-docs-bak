@@ -1965,6 +1965,7 @@ components:
             type: string
     CustomerDto:
       description: カスタマオブジェクト
+      type: object
       properties:
         id:
           description: Customer ID
@@ -2064,6 +2065,7 @@ components:
             type: string
     SourceDto:
       description: カスタマソースオブジェクト
+      type: object
       properties:
         id:
           description: Source ID
