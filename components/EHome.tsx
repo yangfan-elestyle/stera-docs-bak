@@ -9,6 +9,7 @@ type Props = {
 type SectionItem = {
   title: string;
   url?: string;
+  external?: boolean;
 };
 
 type Section = {
@@ -38,11 +39,12 @@ function buildSections(lang: string, host: string): Section[] {
   };
 
   // 向章节中添加 item（page）
-  const addItem = (title: string, url?: string) => {
+  const addItem = (title: string, url?: string, external?: boolean) => {
     if (!url || url === '/') return;
     (current ??= { title: '', items: [] }).items.push({
       title,
       url,
+      external,
     });
   };
 
@@ -50,7 +52,7 @@ function buildSections(lang: string, host: string): Section[] {
   // 当前 api 用于处理 folder 的第一个子节点查找。
   const findFirstLink = (
     nodes?: any[],
-  ): { url?: string; name?: string } | undefined => {
+  ): { url?: string; name?: string; external?: boolean } | undefined => {
     if (!nodes) return undefined;
     for (const n of nodes) {
       if (!n) continue;
@@ -72,7 +74,7 @@ function buildSections(lang: string, host: string): Section[] {
         break;
       }
       case 'page': {
-        addItem(String(node.name ?? ''), node.url);
+        addItem(String(node.name ?? ''), node.url, Boolean(node.external));
         break;
       }
       case 'folder': {
@@ -80,11 +82,11 @@ function buildSections(lang: string, host: string): Section[] {
         const indexUrl = node.index?.url as string | undefined;
 
         if (indexUrl) {
-          addItem(title, indexUrl);
+          addItem(title, indexUrl, Boolean(node.index?.external));
         } else {
           const first = findFirstLink(node.children);
           if (first) {
-            addItem(title, first.url);
+            addItem(title, first.url, Boolean(first.external));
           }
         }
         break;
@@ -137,6 +139,7 @@ export default async function EHome({ lang }: Props) {
                 <Link
                   key={(item.url ?? item.title) as string}
                   href={item.url ?? '#'}
+                  prefetch={item.external ? false : undefined}
                   className="group block no-underline hover:no-underline"
                 >
                   <div className="font-semibold text-slate-700 group-hover:text-slate-900 group-hover:underline underline-offset-2 dark:text-slate-200 dark:group-hover:text-white">

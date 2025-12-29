@@ -49,7 +49,7 @@
     "---よくある質問---",
     "...faq",
     "---リソース---",
-    "[Download][Elepay iOS Docs](/docs/resources/ElepaySDK-iOS.doccarchive.zip)",
-    "[Download][Elepay Android Docs](/docs/resources/ElepaySDK-Android.zip)"
+    "external:[Download][Elepay iOS Docs](/docs/resources/ElepaySDK-iOS.doccarchive.zip)",
+    "external:[Download][Elepay Android Docs](/docs/resources/ElepaySDK-Android.zip)"
   ]
 }
