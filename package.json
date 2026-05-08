@@ -14,32 +14,31 @@
   },
   "dependencies": {
     "@elepay-io/chatbot": "^0.2.0",
-    "@orama/orama": "^3.1.16",
-    "@orama/stopwords": "^3.1.16",
-    "@orama/tokenizers": "^3.1.16",
-    "fumadocs-core": "^16.2.3",
-    "fumadocs-mdx": "^14.1.0",
-    "fumadocs-openapi": "^10.1.0",
-    "fumadocs-ui": "^16.2.3",
-    "lucide-react": "^0.545.0",
-    "next": "^16.0.7",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "shiki": "^3.19.0"
+    "@orama/orama": "^3.1.18",
+    "@orama/stopwords": "^3.1.18",
+    "@orama/tokenizers": "^3.1.18",
+    "fumadocs-core": "^16.8.8",
+    "fumadocs-mdx": "^14.3.2",
+    "fumadocs-openapi": "^10.8.1",
+    "fumadocs-ui": "^16.8.8",
+    "lucide-react": "^0.577.0",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "shiki": "^3.23.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/postcss": "^4.2.4",
     "@types/mdx": "^2.0.13",
-    "@types/node": "24.7.2",
-    "@types/react": "^19.2.7",
+    "@types/node": "24.12.3",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^4.2.4",
     "typescript": "^5.9.3",
-    "vite": "^7.2.6"
+    "vite": "^7.3.3"
   },
   "patchedDependencies": {
-    "fumadocs-ui@15.8.5": "patches/fumadocs-ui@15.8.5.patch",
-    "fumadocs-ui@16.2.3": "patches/fumadocs-ui@16.2.3.patch"
+    "fumadocs-ui@16.8.8": "patches/fumadocs-ui@16.8.8.patch"
   }
 }

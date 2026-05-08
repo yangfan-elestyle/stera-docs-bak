@@ -25,10 +25,12 @@ export const TENANT_TEXTS = {
   default: {
     elepay: 'elepay',
     elepay_docs: 'elepay',
+    dashboard_url: 'https://dashboard.elepay.io/',
   },
   smcc: {
     elepay: 'stera smart one',
     elepay_docs: 'stera smart one',
+    dashboard_url: 'https://dashboard.sterasmartone.com/',
   },
 } as const satisfies {
   default: Record<string, string>;
