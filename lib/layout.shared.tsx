@@ -29,7 +29,7 @@ export function baseOptions(_locale: string): BaseLayoutProps {
             />
           </EContainer>
           <EContainer tenant="default">
-            <Image src={elepay_logo} width={24} height={24} alt="Logo" />
+            <Image src={elepay_logo} width={26} height={24} alt="Logo" />
           </EContainer>
           <EContainer tenant="default">
             <EText name="elepay_docs" />
