@@ -11,6 +11,16 @@ const config = {
     unoptimized: true,
   },
   allowedDevOrigins: ['*.localhost', '*.*.localhost', '*.*.*.localhost'],
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/:lang(ja|en|zh)/:path*.md',
+          destination: '/:lang/llms.mdx/:path*',
+        },
+      ],
+    };
+  },
 };
 
 export default withMDX(config);

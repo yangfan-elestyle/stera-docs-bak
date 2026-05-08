@@ -1,4 +1,4 @@
-import { getLLMText, isPageVisibleForHost, source } from '@/lib/source';
+import { isPageVisibleForHost, source } from '@/lib/source';
 import { NextRequest } from 'next/server';
 import { headers } from 'next/headers';
 
@@ -6,15 +6,13 @@ export const revalidate = false;
 
 export async function GET(
   _request: NextRequest,
-  context: RouteContext<'/[lang]/llms-full.txt'>,
+  context: RouteContext<'/[lang]/llms.txt'>,
 ) {
   const { lang } = await context.params;
   const host = (await headers()).get('host') ?? '';
-  const scan = source
+  const lines = source
     .getPages(lang)
     .filter((p) => isPageVisibleForHost(p, lang, host))
-    .map(getLLMText);
-  const scanned = await Promise.all(scan);
-
-  return new Response(scanned.join('\n\n'));
+    .map((p) => `- [${p.data.title}](${p.url === '/' ? '/index' : p.url}.md)`);
+  return new Response(`# Elepay Documentation\n\n${lines.join('\n')}\n`);
 }
