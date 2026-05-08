@@ -18,7 +18,7 @@ export default async function Layout({
   }
 
   return (
-    <DocsLayout tree={tree} {...baseOptions(lang)}>
+    <DocsLayout tree={tree} {...baseOptions(lang, host)}>
       {children}
     </DocsLayout>
   );

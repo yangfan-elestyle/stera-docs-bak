@@ -16,6 +16,10 @@ import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { baseUrl } from '@/lib/metadata';
+import {
+  MarkdownCopyButton,
+  ViewOptionsPopover,
+} from '@/components/ai/page-actions';
 
 export const revalidate = false;
 
@@ -46,6 +50,11 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   // Compute footer items
   const footerItems = getFilteredFooterItems(page, lang, host);
 
+  // LLM page actions: matches `/:lang/:path*.md` rewrite in next.config.mjs.
+  // Root index special case: `:path*` doesn't accept empty, so use `/index.md`
+  // to align with `llms.txt` route.
+  const markdownUrl = `${page.url === '/' ? '/index' : page.url}.md`;
+
   return (
     <DocsPage
       toc={filteredToc}
@@ -56,6 +65,10 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
+      <div className="flex flex-row gap-2 items-center pb-2">
+        <MarkdownCopyButton markdownUrl={markdownUrl} />
+        <ViewOptionsPopover markdownUrl={markdownUrl} />
+      </div>
       <DocsBody>
         <MDX
           components={getMDXComponents({

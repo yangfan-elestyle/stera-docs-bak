@@ -1,0 +1,13 @@
+diff --git a/dist/contexts/i18n.js b/dist/contexts/i18n.js
+index 70d7d0f39e2a3d5d471cd3b497abf86eb75390c2..7ef92f3a2a2e42d60cd64d188f3b204d0f14938c 100644
+--- a/dist/contexts/i18n.js
++++ b/dist/contexts/i18n.js
+@@ -30,7 +30,7 @@ function I18nProvider({ locales = [], locale, onLocaleChange, children, translat
+ 		const segments = pathname.split("/").filter((v) => v.length > 0);
+ 		if (segments[0] !== locale) segments.unshift(value);
+ 		else segments[0] = value;
+-		router.push(`/${segments.join("/")}`);
++		location.href = `/${segments.join("/")}`;
+ 	};
+ 	const onChangeRef = useRef(onChange);
+ 	onChangeRef.current = onChange;
