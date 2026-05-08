@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prebuild": "bun run scripts/generate-openapi.ts",
+    "prebuild": "bun run scripts/generate-openapi.ts && bun run scripts/snapshot-error-codes.ts",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",

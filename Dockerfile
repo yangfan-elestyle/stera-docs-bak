@@ -17,6 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV DOCS_ERROR_CODES_URL=https://stg-api.stg.elepay.dev/error-codes
 
 RUN apt-get update && apt-get install -y git
 
@@ -49,5 +50,6 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 ENV DOCS_BASE_URL=https://docs.elepay.io:3000
+ENV DOCS_ERROR_CODES_URL=https://api.elepay.io/error-codes
 
 CMD ["bun", "server.js"]

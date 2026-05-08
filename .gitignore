@@ -23,10 +23,15 @@ yarn-debug.log*
 yarn-error.log*
 
 # others
+.env
 .env*.local
 .vercel
 next-env.d.ts
 .idea
 
 content/docs/openapi/(generated)/
-.claude/
+.claude/*
+!.claude/skills/
+
+# generated runtime fallback snapshot
+/data/error-codes.snapshot.json

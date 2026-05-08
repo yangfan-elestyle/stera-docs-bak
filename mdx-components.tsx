@@ -5,6 +5,7 @@ import EText from '@/components/EText';
 import EImg from '@/components/EImg';
 import EContainer from '@/components/EContainer';
 import EHome from '@/components/EHome';
+import { ErrorCodeTable } from '@/components/ErrorCodeTable';
 import { APIPage } from './components/api-page';
 
 export function getMDXComponents(options?: MDXComponents): MDXComponents {
@@ -16,6 +17,7 @@ export function getMDXComponents(options?: MDXComponents): MDXComponents {
     EImg,
     EContainer,
     EHome,
+    ErrorCodeTable,
     ...options,
   };
 }
