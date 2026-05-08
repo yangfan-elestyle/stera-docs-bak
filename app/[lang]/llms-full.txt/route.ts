@@ -1,5 +1,5 @@
 import { getLLMText, isPageVisibleForHost, source } from '@/lib/source';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 export const revalidate = false;
@@ -16,5 +16,7 @@ export async function GET(
     .map(getLLMText);
   const scanned = await Promise.all(scan);
 
-  return new Response(scanned.join('\n\n'));
+  return new NextResponse(scanned.join('\n\n'), {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
 }
