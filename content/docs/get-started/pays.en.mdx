@@ -217,8 +217,6 @@ To use RPay, in addition to the elepay SDK, add the proprietary Rakuten Pay AAR 
 
 #### iOS
 
-##### Overview
-
 This section describes how to implement Apple Pay.
 
 ##### How it works
@@ -236,13 +234,22 @@ See [Setting Up Apple Pay](https://developer.apple.com/documentation/passkit/app
     Create the certificate as follows:
     (1) In <EText name="elepay" />, go to “開発設定” → “Apple Pay” → “Apple Pay Certificate” and download the CSR (Certificate Signing Request).
     (2) Upload the CSR on Apple Developer using the Merchant ID created in step 1 to create the certificate.
-    (3) Upload the certificate to <EText name="elepay" />.
+    (3) Subsequent certificate handling varies by payment provider; see the corresponding provider section below.
 3.  Integrate with Xcode
     Open your project in Xcode and enable Apple Pay under the Capabilities tab. You may be prompted to sign in with your developer account. After enabling it, check the Merchant ID created in step 1 to complete the configuration.
 
 See also [Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app).
 
-##### Apple Pay (UnionPay in China) certificate
+##### Apple Pay (Stripe)
+
+Upload the certificate generated on the Apple Developer site to the <EText name="elepay" /> `Payment Module (決済モジュール)` dashboard.
+
+##### Apple Pay (GMO / Paygent)
+
+1. Provide your Apple Merchant ID to the <EText name="elepay" /> support team.
+2. Upload the certificate generated on the Apple Developer site to the GMO / Paygent dashboard yourself.
+
+##### Apple Pay (Stripe · UnionPay in China) certificate
 
 **(Required only if you applied for “China UnionPay Apple Pay”)**
 
@@ -271,7 +278,9 @@ See also [Adding capabilities to your app](https://developer.apple.com/documenta
 
 Specify `googlePayEnvironment` when setting up the elepay SDK.
 
-> 📘 Using Google Pay requires an application to Google. You may be asked to submit apps built for both TEST and PRODUCTION environments.
+> Using Google Pay requires an application to Google. You may be asked to submit apps built for both TEST and PRODUCTION environments.
+>
+> When applying via the [Google Pay & Wallet Console](https://pay.google.com/business/console), you must select the corresponding PSP, such as Stripe (stripe), GMO-PG (gmopg), or Paygent (paygent).
 
 When configuring the elepay SDK, you can specify `googlePayExistingPaymentRequired` (default: true) to check whether the user already has a valid payment card in Google Pay.
 
