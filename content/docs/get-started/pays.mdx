@@ -220,8 +220,6 @@ RPay を使うには、elepay SDK の他に Rakuten Pay 独自の aar ファイ�
 
 #### iOS
 
-##### 概要
-
 Apple Pay の実装方法を紹介します。
 
 ##### 仕組み
@@ -239,13 +237,22 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
     以下の手順で証明書の作成します。
     (1) <EText name="elepay" /> の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。
     (2) 入手した CSR ファイルで Apple Developer Site にアップロードし、ステップ１で登録した Apple Merchant ID を利用し、証明書を作成します。
-    (3) 証明書を <EText name="elepay" /> にアップロードします。
+    (3) 以降の証明書の利用方法は決済プロバイダーによって異なるため、下記の各プロバイダー説明をご参照ください。
 3.  Xcode に統合する
     Xcode よりプロジェクトを開き、Capabilities のタブに Apple Pay のスイッチをオンにします。この際に、デベロッパーアカウントのログインを要求されることがあります。オンにした後、ステップ１で作られた Merchant ID のチェックボックスを有効することで、Apple Pay の設定は完了します。
 
 詳細は[Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)  を参照してください。
 
-##### Apple Pay (中国銀聯) 専用証明書の作成について
+##### Apple Pay（Stripe）
+
+Apple Developer サイトで作成した証明書を、<EText name="elepay" /> の `決済モジュール` 管理画面へアップロードしてください。
+
+##### Apple Pay（GMO / Paygent）
+
+1. Apple Merchant ID を <EText name="elepay" /> サポートチームへ提供してください。
+2. Apple Developer サイトで作成した証明書を、ご自身で GMO / Paygent 管理画面へアップロードしてください。
+
+##### Apple Pay（Stripe · 中国銀聯）専用証明書の作成について
 
 **(「中国銀聯 Apple Pay」を申し込んだ場合のみ、このステップが必要です)**
 
@@ -276,13 +283,15 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 
 elepay SDK のセットアップ時に、`googlePayEnvironment`を指定します。
 
-> 📘 Google Pay をご利用の際、Google 社への申請が必要となります。申請するには、TEST/PRODUCTION それぞれの環境でビルドしたアプリを提出する可能性があります。
+> Google Pay をご利用の際、Google 社への申請が必要となります。申請するには、TEST/PRODUCTION それぞれの環境でビルドしたアプリを提出する可能性があります。
+>
+> [Google Pay & Wallet Console](https://pay.google.com/business/console) で申請する際、対応する PSP を選択する必要があります。例：Stripe（stripe）、GMO-PG（gmopg）、Paygent（paygent）。
 
-> 📘 elepay SDK を設定する際、`googlePayExistingPaymentRequired`（デフォルト値：true）を指定できます。これはユーザーの Google Pay に有効な支払いカードが存在するかどうかを検証するための設定です。
+elepay SDK を設定する際、`googlePayExistingPaymentRequired`（デフォルト値：true）を指定できます。これはユーザーの Google Pay に有効な支払いカードが存在するかどうかを検証するための設定です。
+
+> true：Google Pay に少なくとも 1 枚の支払い可能なカードが必要です。
 >
-> > true：Google Pay に少なくとも 1 枚の支払い可能なカードが必要です。
->
-> > false：Google Pay の支払いカードを検証しません。カードがない場合は、支払いダイアログ内で追加できます。
+> false：Google Pay の支払いカードを検証しません。カードがない場合は、支払いダイアログ内で追加できます。
 
 ```kotlin
 val configuration = ElepayConfiguration(
@@ -335,9 +344,11 @@ Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play の�
 
 1. **Test 環境**：Google Wallet アプリへの依存が必須です。テスト時には、Google Wallet アプリをインストールし、クレジットカードを登録しておく必要があります。これがないと Google Pay の支払いダイアログが起動せず、`checkIfGooglePayIsReadyToUse` が `false` を返します（強制的に支払いを行うと、エラーコード 10100 が返されます）。
 2. **Production 環境**：実際のユーザーは Google Wallet または Google アカウントに支払いカードを登録している必要があります。登録がない場合、`checkIfGooglePayIsReadyToUse` が `false` を返します（強制的に支払いを行うと、エラーコード 10100 が返されます）。
-   `googlePayExistingPaymentRequired` が false に設定されている場合：
-3. **Test 環境**：Google Pay の支払いダイアログにはテストカード情報が自動的に入力されます。
-4. **Production 環境**：実際のユーザーが Google Pay に支払いカードを登録していない場合、支払いダイアログでカード追加を促す案内が表示されます。
+
+`googlePayExistingPaymentRequired` が false に設定されている場合：
+
+1. **Test 環境**：Google Pay の支払いダイアログにはテストカード情報が自動的に入力されます。
+2. **Production 環境**：実際のユーザーが Google Pay に支払いカードを登録していない場合、支払いダイアログでカード追加を促す案内が表示されます。
 
 ### PayPal
 

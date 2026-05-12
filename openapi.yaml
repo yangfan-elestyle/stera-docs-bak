@@ -20,6 +20,7 @@ tags:
   - name: Invoice
   - name: Dispute
   - name: Subscription
+  - name: Location
 security:
   - bearerAuth: []
   - basicAuth: []
@@ -1965,6 +1966,7 @@ components:
             type: string
     CustomerDto:
       description: カスタマオブジェクト
+      type: object
       properties:
         id:
           description: Customer ID
@@ -2064,6 +2066,7 @@ components:
             type: string
     SourceDto:
       description: カスタマソースオブジェクト
+      type: object
       properties:
         id:
           description: Source ID

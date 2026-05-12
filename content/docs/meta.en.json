@@ -1,16 +1,26 @@
 {
   "root": true,
   "defaultOpen": true,
+  "sectionNotes": {
+    "SaaS Guides": "A structured guide covering onboarding, configuration, and operations. Concise explanations of features and practical workflows.",
+    "SaaS FAQ": "Consolidated FAQs on application, screening, compliance, payments, and more. Brief, to-the-point answers.",
+    "Overview": "We provide API documentation for developers. With it, you can integrate multiple payment methods and support major mobile payment methods with a single implementation.",
+    "SDK Guide": "Multiple SDKs help you quickly integrate payment capabilities into your application.",
+    "Checkout": "With Checkout, you can quickly integrate payment capabilities into your website with no code required.",
+    "E-Commerce": "Plugins for mainstream e-commerce platforms help you quickly integrate payments into your online store.",
+    "FAQ": "See frequently asked questions for more help.",
+    "Resources": "Download SDKs, sample code, and other resources to accelerate your integration."
+  },
   "pages": [
     "index",
-    "---SAAS GUIDES---",
+    "---SaaS Guides---",
     "smcc/guide/stera-smart-one-app-manual",
     "smcc/guide/quick-start-guide",
     "smcc/guide/account-management-manual",
     "smcc/guide/base-settings",
     "smcc/guide/option-settings",
     "smcc/guide/terminal-settings",
-    "---SAAS FAQ---",
+    "---SaaS FAQ---",
     "smcc/faq/application-review-delay",
     "smcc/faq/id-verification-photo",
     "smcc/faq/store-setup-manual",
@@ -29,6 +39,7 @@
     "[Android](/sdks/android)",
     "sdks/javascript",
     "sdks/server",
+    "[ExternalLink][API Reference](../openapi)",
     "sdks/other-sdk",
     "sdks/url-scheme",
     "---Checkout---",
@@ -38,7 +49,7 @@
     "---FAQ---",
     "...faq",
     "---Resources---",
-    "[Download][Elepay iOS Docs](/docs/resources/ElepaySDK-iOS.doccarchive.zip)",
-    "[Download][Elepay Android Docs](/docs/resources/ElepaySDK-Android.zip)"
+    "external:[Download][Elepay iOS Docs](/docs/resources/ElepaySDK-iOS.doccarchive.zip)",
+    "external:[Download][Elepay Android Docs](/docs/resources/ElepaySDK-Android.zip)"
   ]
 }

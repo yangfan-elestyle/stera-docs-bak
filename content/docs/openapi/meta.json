@@ -1,5 +1,5 @@
 {
-  "title": "Elepay OpenAPI",
+  "title": "elepay OpenAPI",
   "root": true,
   "pages": ["index", "...(generated)"]
 }

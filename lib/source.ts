@@ -1,16 +1,17 @@
-import { docs } from '@/.source';
+import { docs } from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader } from 'fumadocs-core/source';
 import { findPath, flattenTree } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from './i18n';
 import { openapiPlugin } from 'fumadocs-openapi/server';
 import { detectTenantByHost } from '@/lib/tenant';
+import { sectionNotesPlugin } from '@/lib/plugins/section-notes';
 
 export const source = loader({
   i18n,
   baseUrl: '/',
   source: docs.toFumadocsSource(),
-  plugins: [lucideIconsPlugin(), openapiPlugin()],
+  plugins: [lucideIconsPlugin(), openapiPlugin(), sectionNotesPlugin()],
 });
 
 // 根据租户（由 host 推断）判断页面是否可见，防止用户通过直接访问 url 进入不可见页面

@@ -1,4 +1,5 @@
 import { createMDX } from 'fumadocs-mdx/next';
+import { legacyRedirects } from './lib/legacy-redirects.mjs';
 
 const withMDX = createMDX();
 
@@ -11,6 +12,23 @@ const config = {
     unoptimized: true,
   },
   allowedDevOrigins: ['*.localhost', '*.*.localhost', '*.*.*.localhost'],
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/:lang(ja|en|zh)/:path*.md',
+          destination: '/:lang/llms.mdx/:path*',
+        },
+      ],
+    };
+  },
+  async redirects() {
+    return legacyRedirects.map((r) => ({
+      source: r.source,
+      destination: r.destination,
+      permanent: true,
+    }));
+  },
 };
 
 export default withMDX(config);

@@ -1,16 +1,26 @@
 {
   "root": true,
   "defaultOpen": true,
+  "sectionNotes": {
+    "SaaS Guides": "導入から設定・運用までの手順を体系化。機能解説と実務プロセスを簡潔に整理。",
+    "SaaS FAQ": "申込・審査・法規・決済等のよくある質問を集約。要点を短く回答。",
+    "概要": "開発者向けに API ドキュメントを用意しています。これにより、複数の決済手段を統合し、一度の実装で主要なモバイル決済に対応できます。",
+    "SDK ガイド": "複数の SDK により、アプリへ決済機能を迅速に統合できます。",
+    "Checkout": "Checkout を使うと、コードを書かずに決済機能を Web サイトへすばやく組み込めます。",
+    "E-Commerce": "主要な EC プラットフォーム向けプラグインで、EC サイトへの決済の統合を支援します。",
+    "よくある質問": "よくある質問を確認し、利用に関する追加のヘルプを得られます。",
+    "リソース": "SDK、サンプルコードなどのリソースをダウンロードして、本サービスをより効果的に活用できます。"
+  },
   "pages": [
     "index",
-    "---SAAS GUIDES---",
+    "---SaaS Guides---",
     "smcc/guide/stera-smart-one-app-manual",
     "smcc/guide/quick-start-guide",
     "smcc/guide/account-management-manual",
     "smcc/guide/base-settings",
     "smcc/guide/option-settings",
     "smcc/guide/terminal-settings",
-    "---SAAS FAQ---",
+    "---SaaS FAQ---",
     "smcc/faq/application-review-delay",
     "smcc/faq/id-verification-photo",
     "smcc/faq/store-setup-manual",
@@ -29,6 +39,7 @@
     "[Android](/sdks/android)",
     "sdks/javascript",
     "sdks/server",
+    "[ExternalLink][API Reference](../openapi)",
     "sdks/other-sdk",
     "sdks/url-scheme",
     "---Checkout---",
@@ -38,7 +49,7 @@
     "---よくある質問---",
     "...faq",
     "---リソース---",
-    "[Download][Elepay iOS Docs](/docs/resources/ElepaySDK-iOS.doccarchive.zip)",
-    "[Download][Elepay Android Docs](/docs/resources/ElepaySDK-Android.zip)"
+    "external:[Download][Elepay iOS Docs](/docs/resources/ElepaySDK-iOS.doccarchive.zip)",
+    "external:[Download][Elepay Android Docs](/docs/resources/ElepaySDK-Android.zip)"
   ]
 }
