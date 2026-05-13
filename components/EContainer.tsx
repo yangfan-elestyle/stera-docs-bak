@@ -1,6 +1,6 @@
 import React from 'react';
 import { headers } from 'next/headers';
-import { detectTenantByHost } from '@/lib/tenant';
+import { detectTenantByHost, getRequestHost } from '@/lib/tenant';
 
 type Props = {
   /**
@@ -20,8 +20,7 @@ type Props = {
  */
 export default async function EContainer({ tenant, children }: Props) {
   const hdrs = await headers();
-  const host = hdrs.get('host');
-  const current = detectTenantByHost(host ?? undefined).toLowerCase();
+  const current = detectTenantByHost(getRequestHost(hdrs)).toLowerCase();
 
   const list: string[] = Array.isArray(tenant)
     ? tenant

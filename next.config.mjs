@@ -32,3 +32,7 @@ const config = {
 };
 
 export default withMDX(config);
+
+import('@opennextjs/cloudflare')
+  .then(({ initOpenNextCloudflareForDev }) => initOpenNextCloudflareForDev())
+  .catch((e) => console.warn('opennext init failed', e));

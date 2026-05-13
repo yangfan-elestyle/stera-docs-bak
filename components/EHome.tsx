@@ -1,5 +1,6 @@
 import { headers } from 'next/headers';
 import { getFilteredTreeByHost } from '@/lib/source';
+import { getRequestHost } from '@/lib/tenant';
 import Link from 'next/link';
 
 type Props = {
@@ -102,7 +103,7 @@ function buildSections(lang: string, host: string): Section[] {
 
 export default async function EHome({ lang }: Props) {
   const hdrs = await headers();
-  const host = hdrs.get('host') ?? '';
+  const host = getRequestHost(hdrs);
   // 简单归一化：zh* / cn* -> zh；en* -> en；其他 -> ja
   const v = (lang ?? '').trim().toLowerCase();
   const currentLang: 'ja' | 'en' | 'zh' =

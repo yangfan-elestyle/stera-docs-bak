@@ -1,0 +1,112 @@
+# 必需 Secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   权限: Workers Scripts Edit, Account Settings Read
+#   CLOUDFLARE_ACCOUNT_ID
+#   PACKAGE_READ_TOKEN     GitHub Packages 拉取私有依赖 @elepay-io/* (bunfig.toml 用)
+#
+# 部署模型 (单 Worker `elepay-docs`):
+#   product = active deployment (wrangler deploy, 100% 流量)
+#   staging = preview alias `staging` (wrangler versions upload --preview-alias staging)
+#            稳定 URL: staging-elepay-docs.<account-subdomain>.workers.dev
+#
+# 触发规则 (master 与 develop 均禁止直接 push, 仅靠 PR merge 流入):
+#   PR merged into develop (任意 head)          → staging (preview alias)
+#   PR merged into master  (head=develop)       → product (active deployment)
+#   workflow_dispatch                           → staging (preview alias), 分支由 Run workflow UI 选
+# product 仅能由 develop → master 的 PR merge 触发, 无法手动部署; hotfix 需先合入 develop。
+
+name: Deploy to Cloudflare Workers
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master, develop]
+  workflow_dispatch:
+
+# 单 Worker 部署队列: staging upload 与 product deploy 串行排队, 避免并发上传引发 wrangler 端竞态。
+concurrency:
+  group: cf-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # PR 事件: 只放行 merged 的 PR, 且 base 必须是 master/develop, master 时额外要求 head 是 develop。
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.merged == true &&
+       (github.event.pull_request.base.ref == 'develop' ||
+        (github.event.pull_request.base.ref == 'master' &&
+         github.event.pull_request.head.ref == 'develop')))
+    env:
+      DEPLOY_ENV: >-
+        ${{
+          (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master' && 'product') ||
+          'staging'
+        }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # PR closed 事件下默认 ref 是 PR head; 显式拉合并后的 base 分支才是部署对象。
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || github.ref }}
+
+      # Wrangler 4 与 OpenNext Cloudflare adapter 要求 Node.js >= 22;
+      # 不显式 setup-node 会落到 runner 默认 v20, 导致 `cf-typegen` 直接报错。
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        env:
+          GH_PACKAGES_TOKEN: ${{ secrets.PACKAGE_READ_TOKEN }}
+        run: bun install --frozen-lockfile
+
+      # 由 wrangler.jsonc 生成 cloudflare-env.d.ts。
+      # cloudflare-env.d.ts 在 .gitignore, 本地生成不入库; CI 显式跑保证
+      # types:check 拿到与当前 wrangler.jsonc 同步的 CloudflareEnv 定义。
+      - name: Generate Cloudflare env types
+        run: bun run cf-typegen
+
+      # 生成 OpenAPI MDX、OpenAPI JSON、error-codes 快照。
+      # components/ErrorCodeTable.tsx 和 content/docs/openapi/(generated)/ 依赖这些产物,
+      # 不生成则 types:check 与 next build 都会失败。
+      # DOCS_ENV 决定 snapshot-error-codes.ts 拉取哪个环境的错误码 API,
+      # 每个 version 因此嵌入对应环境的快照 (staging vs product), 天然隔离。
+      - name: Generate data (OpenAPI + error codes)
+        env:
+          DOCS_ENV: ${{ env.DEPLOY_ENV }}
+        run: bun run generate:data
+
+      - name: Type check
+        run: bun run types:check
+
+      # product 路径在 deploy 前插入 `wrangler deploy --dry-run` 提前 catch
+      # wrangler.jsonc 配置错误 (binding 漂移、字段缺失等); staging 是 upload 不切流量, 跳过 dry-run。
+      - name: Deploy to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DOCS_ENV: ${{ env.DEPLOY_ENV }}
+        run: |
+          if [ "$DEPLOY_ENV" = "product" ]; then
+            bunx opennextjs-cloudflare build
+            echo "::group::wrangler dry-run (product)"
+            bunx wrangler deploy --dry-run
+            echo "::endgroup::"
+            bunx opennextjs-cloudflare deploy
+          else
+            bunx opennextjs-cloudflare build
+            bunx opennextjs-cloudflare upload --preview-alias staging
+          fi

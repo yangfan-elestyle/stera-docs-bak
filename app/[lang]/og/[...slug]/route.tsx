@@ -1,7 +1,9 @@
-import { getPageImage, source } from '@/lib/source';
+import { getPageImage, isPageVisibleForHost, source } from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 import { generate as DefaultImage } from 'fumadocs-ui/og';
+import { headers } from 'next/headers';
+import { getRequestHost } from '@/lib/tenant';
 
 export const revalidate = false;
 
@@ -12,6 +14,9 @@ export async function GET(
   const { slug, lang } = await params;
   const page = source.getPage(slug.slice(0, -1), lang);
   if (!page) notFound();
+
+  const host = getRequestHost(await headers());
+  if (!isPageVisibleForHost(page, lang, host)) notFound();
 
   return new ImageResponse(
     (
@@ -24,6 +29,9 @@ export async function GET(
     {
       width: 1200,
       height: 630,
+      // OG 内容按 host 过滤 (SMCC 专属页隐藏于主站),跨 host 不可共享;明确 no-store
+      // 防止中间 CDN 误缓存把 SMCC 内容透给主站。
+      headers: { 'Cache-Control': 'no-store' },
     },
   );
 }

@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   version: 1.3.0
   title: elepay API 参考文档
@@ -42,13 +42,13 @@ paths:
             items:
               $ref: '#/components/schemas/PaymentMethodType'
         - name: from
-          description: 开始时间（UTC）。获取在指定时间之后（含）创建的数据。
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
           in: query
           schema:
             type: integer
             format: int64
         - name: to
-          description: 结束时间（UTC）。获取在指定时间之前（含）创建的数据。
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
           in: query
           schema:
             type: integer
@@ -115,7 +115,7 @@ paths:
       operationId: createCharge
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeReq'
         description: 支付请求
@@ -185,7 +185,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeCaptureReq'
       responses:
@@ -252,7 +252,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/RefundReq'
         description: 退款详情信息
@@ -334,7 +334,7 @@ paths:
       operationId: createCustomer
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/CustomerReq'
         description: 客户请求
@@ -382,7 +382,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/CustomerUpdateReq'
         description: 客户请求
@@ -452,7 +452,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/SourceReq'
         description: 客户来源（Source）请求
@@ -557,7 +557,7 @@ paths:
       operationId: createCode
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/CodeReq'
         description: EasyQR 码请求
@@ -635,14 +635,14 @@ paths:
           schema:
             type: string
         - name: from
-          description: dateRange from
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
           in: query
           required: false
           schema:
             type: integer
             format: int64
         - name: to
-          description: dateRange from
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
           in: query
           required: false
           schema:
@@ -685,7 +685,7 @@ paths:
       operationId: createInvoice
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/InvoiceReq'
         description: 发票请求
@@ -733,7 +733,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/InvoiceReq'
         description: 发票请求
@@ -791,12 +791,12 @@ paths:
     post:
       tags:
         - Invoice
-      summary: send invoice
+      summary: 发送发票
       description: 发送发票。
       operationId: sendInvoice
       parameters:
         - name: invoiceId
-          description: invoice id
+          description: 发票 ID
           in: path
           required: true
           schema:
@@ -812,7 +812,7 @@ paths:
     get:
       tags:
         - Terminal
-      summary: list locations
+      summary: 获取 Location 列表
       operationId: listLocations
       responses:
         '200':
@@ -825,7 +825,7 @@ paths:
     get:
       tags:
         - Terminal
-      summary: list readers
+      summary: 获取读卡器列表
       operationId: listReaders
       parameters:
         - name: limit
@@ -852,11 +852,11 @@ paths:
     post:
       tags:
         - Terminal
-      summary: create terminal reader
+      summary: 创建终端读卡器
       operationId: createReader
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/TerminalReaderReq'
         required: true
@@ -871,11 +871,11 @@ paths:
     get:
       tags:
         - Terminal
-      summary: get reader
+      summary: 获取读卡器
       operationId: getReader
       parameters:
         - name: readerId
-          description: reader Id
+          description: 读卡器 ID
           in: path
           required: true
           schema:
@@ -890,11 +890,11 @@ paths:
     delete:
       tags:
         - Terminal
-      summary: delete reader
+      summary: 删除读卡器
       operationId: deleteReader
       parameters:
         - name: readerId
-          description: reader Id
+          description: 读卡器 ID
           in: path
           required: true
           schema:
@@ -917,13 +917,13 @@ paths:
           schema:
             type: string
         - name: from
-          description: 开始时间（UTC）。获取在指定时间之后（含）创建的数据。
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
           in: query
           schema:
             type: integer
             format: int64
         - name: to
-          description: 结束时间（UTC）。获取在指定时间之前（含）创建的数据。
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
           in: query
           schema:
             type: integer
@@ -1018,13 +1018,13 @@ paths:
           schema:
             type: string
         - name: from
-          description: 开始时间（UTC）。获取在指定时间之后（含）创建的数据。
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
           in: query
           schema:
             type: integer
             format: int64
         - name: to
-          description: 结束时间（UTC）。获取在指定时间之前（含）创建的数据。
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
           in: query
           schema:
             type: integer
@@ -1064,7 +1064,7 @@ paths:
       operationId: createSubscription
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/SubscriptionReq'
         required: true
@@ -1111,7 +1111,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/SubscriptionUpdateReq'
         required: true
@@ -1264,7 +1264,7 @@ paths:
       operationId: createChargeLocation
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeLocationReq'
       responses:
@@ -1310,7 +1310,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeLocationUpdateReq'
         required: true
@@ -1407,6 +1407,7 @@ components:
         - momopay Momo Pay
         - promptpay Prompt Pay
         - wovenpay Woven City Pay
+        - ezopay EZO Pay
       type: string
       enum:
         - alipay
@@ -1460,6 +1461,7 @@ components:
         - momopay
         - promptpay
         - wovenpay
+        - ezopay
         - auto
     ResourceType:
       description: |
@@ -1589,6 +1591,8 @@ components:
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         paymentMethod:
           $ref: '#/components/schemas/PaymentMethodType'
@@ -1599,12 +1603,18 @@ components:
             商户系统订单号（例如：订单号、支付 ID 等）。
             最大长度为 50 个字符。
           type: string
+          maxLength: 50
         description:
           description: 支付说明
           type: string
+          maxLength: 1024
         extra:
           description: 若有与支付相关的附加信息时使用。具体设置请参阅“开发指南->支付 Extra 信息设置”。
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
@@ -1614,20 +1624,28 @@ components:
             Key 最多 20 个，Value 为不超过 255 字节的字符串。
             以“route”“__”开头的字符串为保留 Key。
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         clientIp:
           description: Client IP 地址
           type: string
+          maxLength: 39
         customerId:
           description: 客户 ID
           type: string
+          maxLength: 32
         sourceId:
           description: 客户来源（Source）ID
           type: string
+          maxLength: 32
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
     ChargeDto:
       type: object
       description: 支付对象
@@ -1635,9 +1653,11 @@ components:
         id:
           description: Charge ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -1657,6 +1677,8 @@ components:
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         authorize:
           description: 预授权标志
@@ -1668,17 +1690,29 @@ components:
         orderNo:
           description: 商户系统订单号，例如订单号、支付 ID 等
           type: string
+          maxLength: 50
         description:
           description: 支付说明
           type: string
+          maxLength: 1024
+        location:
+          $ref: '#/components/schemas/ChargeLocationDto'
         extra:
           description: 支付 Extra 数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: 支付元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         cardInfo:
@@ -1686,9 +1720,11 @@ components:
         voucherNo:
           description: 支付服务商支付凭证号
           type: string
+          maxLength: 32
         clientIp:
           description: Client IP 地址
           type: string
+          maxLength: 45
         paid:
           description: 已支付标志
           type: boolean
@@ -1709,23 +1745,23 @@ components:
           description: Client SDK 认证信息
           type: string
         paidTime:
-          description: 支付时间 UTC 时间戳
+          description: 支付时间（Epoch 毫秒）
           type: integer
           format: int64
         refundTime:
-          description: 退款时间 UTC 时间戳
+          description: 退款时间（Epoch 毫秒）
           type: integer
           format: int64
         expiryTime:
-          description: 支付请求有效期 UTC 时间戳
+          description: 支付请求有效期（Epoch 毫秒）
           type: integer
           format: int64
         settleTime:
-          description: 支付结算截止时间 UTC 时间戳
+          description: 支付结算截止时间（Epoch 毫秒）
           type: integer
           format: int64
         createTime:
-          description: 支付创建时间 UTC 时间戳
+          description: 支付创建时间（Epoch 毫秒）
           type: integer
           format: int64
     ChargeStatusDto:
@@ -1735,9 +1771,11 @@ components:
         id:
           description: Charge ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             是否为生产模式
@@ -1758,15 +1796,22 @@ components:
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         metadata:
           description: 退款元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         reason:
           description: 退款原因
           type: string
+          maxLength: 255
     RefundDto:
       description: 退款对象
       type: object
@@ -1774,6 +1819,7 @@ components:
         id:
           description: Refund ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -1781,6 +1827,7 @@ components:
         chargeId:
           description: Charge ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             是否为生产模式
@@ -1793,22 +1840,29 @@ components:
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
         metadata:
           description: 退款元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         reason:
           description: 退款原因
           type: string
+          maxLength: 255
         status:
           $ref: '#/components/schemas/RefundStatusType'
         refundedTime:
-          description: 退款时间 UTC 时间戳。
+          description: 退款处理时间（Epoch 毫秒）
           type: integer
           format: int64
         createTime:
-          description: 退款创建时间 UTC 时间戳。
+          description: 退款创建时间（Epoch 毫秒）
           type: integer
           format: int64
     RefundsDto:
@@ -1869,6 +1923,7 @@ components:
         id:
           description: Dispute ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -1876,6 +1931,7 @@ components:
         chargeId:
           description: Charge ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             是否为生产模式
@@ -1888,22 +1944,29 @@ components:
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         reason:
           description: 争议原因
           type: string
+          maxLength: 255
         status:
           $ref: '#/components/schemas/DisputeStatusType'
         resolvedTime:
-          description: 处理时间 UTC 时间戳
+          description: 处理时间（Epoch 毫秒）
           type: integer
           format: int64
         createTime:
-          description: 发生时间 UTC 时间戳。
+          description: 发生时间（Epoch 毫秒）
           type: integer
           format: int64
     CustomerStatusType:
@@ -1920,21 +1983,29 @@ components:
         name:
           description: 名称
           type: string
+          maxLength: 255
         description:
           description: 客户说明
           type: string
+          maxLength: 255
         email:
           description: 邮箱地址
           type: string
+          maxLength: 255
         phone:
           description: 电话号码
           type: string
+          maxLength: 255
         remark:
           description: 备注
           type: string
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     CustomerUpdateReq:
@@ -1944,33 +2015,42 @@ components:
         defaultSource:
           description: 默认客户来源（Source）ID
           type: string
+          maxLength: 32
         name:
           description: 名称
           type: string
+          maxLength: 255
         description:
           description: 客户说明
           type: string
+          maxLength: 255
         email:
           description: 邮箱地址
           type: string
+          maxLength: 255
         phone:
           description: 电话号码
           type: string
+          maxLength: 255
         remark:
           description: 备注
           type: string
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     CustomerDto:
       description: 客户对象
-      type: object
       properties:
         id:
           description: Customer ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -1984,29 +2064,39 @@ components:
         defaultSource:
           description: 默认客户来源（Source）ID
           type: string
+          maxLength: 32
         name:
           description: 名称
           type: string
+          maxLength: 255
         description:
           description: 客户说明
           type: string
+          maxLength: 255
         email:
           description: 邮箱地址
           type: string
+          maxLength: 255
         phone:
           description: 电话号码
           type: string
+          maxLength: 255
         remark:
           description: 备注
           type: string
         operator:
           description: 操作人
           type: string
+          maxLength: 255
         status:
           $ref: '#/components/schemas/CustomerStatusType'
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         updateTime:
@@ -2054,23 +2144,32 @@ components:
         description:
           description: 客户来源（Source）说明
           type: string
+          maxLength: 255
         extra:
           description: 若有与支付相关的附加信息时使用。具体设置请参阅“开发指南->来源 Extra 信息设置”。
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     SourceDto:
       description: 客户来源（Source）对象
-      type: object
       properties:
         id:
           description: Source ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -2088,9 +2187,14 @@ components:
         description:
           description: 客户来源（Source）说明
           type: string
+          maxLength: 255
         extra:
           description: 客户来源（Source）Extra 数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         info:
@@ -2103,6 +2207,10 @@ components:
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         credential:
@@ -2117,9 +2225,11 @@ components:
         id:
           description: Source ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             是否为生产模式
@@ -2242,25 +2352,37 @@ components:
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         orderNo:
           description: |
             商户系统订单号（例如：订单号、支付 ID 等）。
             最大长度为 50 个字符。
           type: string
+          maxLength: 50
         description:
           description: 支付对象中的“支付说明”
           type: string
+          maxLength: 255
         extra:
           description: |
             若有与支付相关的附加信息时使用。具体设置请参阅“开发指南->支付 Extra 信息设置”。
             创建支付对象时，将优先使用此处设置的 extra 信息。
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: 支付对象中的“元数据”
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         expiryDuration:
@@ -2280,12 +2402,15 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
         customerId:
           description: 客户 ID
           type: string
+          maxLength: 32
         sourceId:
           description: 客户来源（Source）ID
           type: string
+          maxLength: 32
         shouldCreateSource:
           description: |
             是否需要通过此 code 创建新的客户来源（Source）。
@@ -2298,6 +2423,7 @@ components:
         id:
           description: EasyQR 码 ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -2311,27 +2437,40 @@ components:
         codeUrl:
           description: EasyQR 码 URL
           type: string
+          maxLength: 255
         amount:
           description: 支付金额
           type: integer
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         orderNo:
           description: 商户系统订单号，例如订单号、支付 ID 等
           type: string
+          maxLength: 50
         description:
           description: 支付对象中的“支付说明”
           type: string
+          maxLength: 255
         extra:
           description: 支付 Extra 数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: 支付对象中的“元数据”
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         status:
@@ -2351,11 +2490,12 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
         expired:
           description: EasyQR 码是否过期
           type: boolean
         expiryTime:
-          description: EasyQR 码有效期 UTC 时间戳
+          description: EasyQR 码有效期（Epoch 毫秒）
           type: integer
           format: int64
         expiryPeriod:
@@ -2363,13 +2503,20 @@ components:
           type: integer
           format: int64
         createTime:
-          description: Code 创建时间 UTC 时间戳
+          description: Code 创建时间（Epoch 毫秒）
           type: integer
           format: int64
         shouldCreateSource:
           description: |
             是否需要通过此 code 创建新的客户来源（Source）。
           type: boolean
+        activeSources:
+          description: 有效的客户付款源列表
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceDto'
+        invoice:
+          $ref: '#/components/schemas/InvoiceDto'
     CodePaymentMethodResponse:
       description: EasyQR 可用支付方式列表
       type: object
@@ -2399,6 +2546,16 @@ components:
           type: integer
         name:
           description: 持卡人姓名
+          type: string
+        issuerCode:
+          description: |
+            卡发行公司代码（仅 GMO 支付）
+            遵循 GMO-PG "目标卡公司代码"
+          type: string
+        issuerName:
+          description: |
+            卡发行公司名称（仅 GMO 支付）
+            GMO-PG "目标卡公司代码" 对应的公司名称
           type: string
         wallet:
           description: 钱包信息
@@ -2465,6 +2622,9 @@ components:
           type: string
         bankAccountNo:
           description: 收款银行账号
+          type: string
+        billingNo:
+          description: 账单号（支付终端用）
           type: string
     CodeItem:
       type: object
@@ -2551,23 +2711,26 @@ components:
         customerId:
           description: 客户 ID
           type: string
+          maxLength: 32
         amount:
           description: 支付金额
           type: integer
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         taxType:
           $ref: '#/components/schemas/TaxType'
         taxCalcType:
           $ref: '#/components/schemas/TaxCalcType'
         invoiceTime:
-          description: 账单日 UTC 时间戳
+          description: 账单日（Epoch 毫秒）
           type: integer
           format: int64
         expiryTime:
-          description: 支付请求有效期 UTC 时间戳
+          description: 支付请求有效期（Epoch 毫秒）
           type: integer
           format: int64
         fields:
@@ -2585,6 +2748,10 @@ components:
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         enableAutoCharge:
@@ -2594,7 +2761,7 @@ components:
           type: boolean
           default: false
         autoChargeTime:
-          description: 自动支付时间 UTC 时间戳
+          description: 自动支付时间（Epoch 毫秒）
           type: integer
           format: int64
     InvoiceDto:
@@ -2603,6 +2770,7 @@ components:
         id:
           description: Invoice ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -2618,42 +2786,48 @@ components:
         invoiceNo:
           description: Invoice Number
           type: string
+          maxLength: 255
         name:
           description: 发票主题
           type: string
+          maxLength: 255
         memo:
           description: 发票备注
           type: string
+          maxLength: 255
         amount:
           description: 支付金额
           type: integer
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         status:
           $ref: '#/components/schemas/InvoiceStatusType'
         operator:
           description: 操作人
           type: string
+          maxLength: 255
         invoiceTime:
-          description: 账单日 UTC 时间戳
+          description: 账单日（Epoch 毫秒）
           type: integer
           format: int64
         sendTime:
-          description: 发送时间 UTC 时间戳
+          description: 发送时间（Epoch 毫秒）
           type: integer
           format: int64
         paidTime:
-          description: 支付时间 UTC 时间戳
+          description: 支付时间（Epoch 毫秒）
           type: integer
           format: int64
         expiryTime:
-          description: 支付请求有效期 UTC 时间戳
+          description: 支付请求有效期（Epoch 毫秒）
           type: integer
           format: int64
         createTime:
-          description: 创建 UTC 时间戳
+          description: 创建时间（Epoch 毫秒）
           type: integer
           format: int64
         fields:
@@ -2672,6 +2846,10 @@ components:
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         enableAutoCharge:
@@ -2685,6 +2863,7 @@ components:
         id:
           description: Invoice Item ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -2692,12 +2871,15 @@ components:
         name:
           description: 商品名称
           type: string
+          maxLength: 255
         unitPrice:
           description: 单价
           type: integer
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         quantity:
           description: 条数
@@ -2708,7 +2890,7 @@ components:
         taxRateType:
           $ref: '#/components/schemas/TaxRateType'
         transactionTime:
-          description: 交易时间 UTC 时间戳
+          description: 交易时间（Epoch 毫秒）
           type: integer
           format: int64
     InvoicesResponse:
@@ -2751,15 +2933,19 @@ components:
         id:
           description: Location ID
           type: string
+          maxLength: 32
         name:
           description: Location 名称
           type: string
+          maxLength: 255
         country:
           description: Location 国家/地区
           type: string
+          maxLength: 255
         description:
           description: Location 详情
           type: string
+          maxLength: 255
         logoUrl:
           description: Location Logo URL
           type: string
@@ -2792,9 +2978,14 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     TerminalReaderDto:
@@ -2804,9 +2995,11 @@ components:
         id:
           description: Reader ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -2820,15 +3013,22 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 50
         serialNumber:
           description: 序列号
           type: string
+          maxLength: 50
         registrationCode:
           description: 配对码
           type: string
+          maxLength: 20
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         status:
@@ -2846,6 +3046,10 @@ components:
           type: integer
         extra:
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     TerminalReadersResponse:
@@ -2880,9 +3084,11 @@ components:
         id:
           description: Subscription ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
@@ -2896,10 +3102,11 @@ components:
         customerId:
           description: Customer ID
           type: string
+          maxLength: 32
         customer:
           $ref: '#/components/schemas/CustomerDto'
         nextChargeTime:
-          description: 下一订阅周期开始 UTC 时间戳
+          description: 下次扣款时间（Epoch 毫秒）
           type: integer
           format: int64
         isCharging:
@@ -2911,16 +3118,20 @@ components:
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         status:
           $ref: '#/components/schemas/SubscriptionStatusType'
         createTime:
-          description: 创建 UTC 时间戳
+          description: 创建时间（Epoch 毫秒）
           type: integer
           format: int64
         updateTime:
-          description: 更新 UTC 时间戳
+          description: 更新时间（Epoch 毫秒）
           type: integer
           format: int64
     SubscriptionPeriodDto:
@@ -2930,16 +3141,17 @@ components:
         id:
           description: Subscription Period ID
           type: string
+          maxLength: 32
         object:
           description: 对象类型标识
           type: string
           default: subscription_period
         startTime:
-          description: 周期开始 UTC 时间戳
+          description: 周期开始时间（Epoch 毫秒）
           type: integer
           format: int64
         endTime:
-          description: 周期结束 UTC 时间戳
+          description: 周期结束时间（Epoch 毫秒）
           type: integer
           format: int64
         charge:
@@ -2966,12 +3178,16 @@ components:
         name:
           description: 订阅名称
           type: string
+          maxLength: 20
         customerId:
           description: 客户 ID
           type: string
+          maxLength: 32
         currency:
           description: 货币代码（ISO 4217）
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         amount:
           description: 每期扣款金额
@@ -2984,15 +3200,19 @@ components:
           type: integer
           default: 1
         initialAmount:
-          description: 首次支付前的固定支付金额
+          description: 首次扣款前支付的固定金额
           type: integer
         firstChargeTime:
-          description: 首次支付 UTC 时间戳
+          description: 首次扣款时间（Epoch 毫秒）
           type: integer
           format: int64
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     SubscriptionUpdateReq:
@@ -3002,6 +3222,10 @@ components:
         metadata:
           description: 元数据
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     SubscriptionsResponse:
@@ -3063,9 +3287,11 @@ components:
         tel:
           description: 电话号码
           type: string
+          maxLength: 20
         zip:
           description: 邮政编码
           type: string
+          maxLength: 8
         address:
           $ref: '#/components/schemas/AddressTransliterationDto'
         latitude:
@@ -3082,7 +3308,7 @@ components:
         status:
           $ref: '#/components/schemas/ChargeLocationStatusType'
     ChargeLocationUpdateReq:
-      description: Location 更新请求
+      description: 更新位置请求
       type: object
       properties:
         name:
@@ -3090,9 +3316,11 @@ components:
         tel:
           description: 电话号码
           type: string
+          maxLength: 20
         zip:
           description: 邮政编码
           type: string
+          maxLength: 8
         address:
           $ref: '#/components/schemas/AddressTransliterationDto'
         latitude:
@@ -3115,14 +3343,17 @@ components:
         id:
           description: Location ID
           type: string
+          maxLength: 32
         name:
           $ref: '#/components/schemas/StringTransliterationDto'
         tel:
           description: 电话号码
           type: string
+          maxLength: 20
         zip:
           description: 邮政编码
           type: string
+          maxLength: 8
         address:
           $ref: '#/components/schemas/AddressTransliterationDto'
         latitude:

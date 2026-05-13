@@ -15,13 +15,26 @@ import { headers } from 'next/headers';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { baseUrl } from '@/lib/metadata';
 import {
   MarkdownCopyButton,
   ViewOptionsPopover,
 } from '@/components/ai/page-actions';
+import { getRequestHost, getRequestProtocol } from '@/lib/tenant';
 
 export const revalidate = false;
+
+function getRequestBaseUrl(hdrs: Awaited<ReturnType<typeof headers>>) {
+  const host = getRequestHost(hdrs);
+  if (!host) return undefined;
+
+  const proto = getRequestProtocol(host);
+
+  try {
+    return new URL(`${proto}://${host}`);
+  } catch {
+    return undefined;
+  }
+}
 
 export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const { slug, lang } = await props.params;
@@ -30,7 +43,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
 
   // Enforce tenant-based visibility to prevent direct access via URL
   const hdrs = await headers();
-  const host = hdrs.get('host') ?? '';
+  const host = getRequestHost(hdrs);
   if (!isPageVisibleForHost(page, lang, host)) notFound();
 
   // Handle redirect if specified in frontmatter
@@ -87,13 +100,21 @@ export async function generateMetadata(
   const page = source.getPage(slug, lang);
   if (!page) notFound();
 
+  const hdrs = await headers();
+  const requestBaseUrl = getRequestBaseUrl(hdrs);
+  const pageImage = getPageImage(page);
+
   return {
     title: page.data.title,
     description: page.data.description,
-    openGraph: {
-      url: `${baseUrl.origin}${page.url}`,
-      images: getPageImage(page).url,
-    },
-    metadataBase: baseUrl,
+    ...(requestBaseUrl
+      ? {
+          openGraph: {
+            url: `${requestBaseUrl.origin}${page.url}`,
+            images: `${requestBaseUrl.origin}${pageImage.url}`,
+          },
+          metadataBase: requestBaseUrl,
+        }
+      : {}),
   };
 }

@@ -1,5 +1,6 @@
 import { headers } from 'next/headers';
 import { getTextValue } from '@/lib/tenant-config';
+import { getRequestHost } from '@/lib/tenant';
 
 /**
  * md 文件中，不适用于以下标签：
@@ -19,7 +20,6 @@ type Props = {
 
 export default async function EText({ name }: Props) {
   const hdrs = await headers();
-  const host = hdrs.get('host');
-  const value = getTextValue(name, host ?? undefined);
+  const value = getTextValue(name, getRequestHost(hdrs));
   return <>{value ?? ''}</>;
 }

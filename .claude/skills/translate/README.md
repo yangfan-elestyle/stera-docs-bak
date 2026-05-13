@@ -1,6 +1,6 @@
 # Translate Skill — 国际化文档自动翻译
 
-把 `.md` / `.mdx` 文件或整个目录翻译为日文（ja）、英文（en）、简体中文（zh）三个版本，并保留所有 Markdown 格式。自动识别源语言、按需走全量或增量模式，金融与支付术语优先。
+把 `.md` / `.mdx` 或 OpenAPI YAML（`.yaml` / `.yml`）文件或整个目录翻译为日文（ja）、英文（en）、简体中文（zh）三个版本，并保留所有原始格式（Markdown 含空格空行/代码块；YAML 含缩进/key/$ref/enum/数据样本，仅翻译 description/summary/title 等自然语言字段）。自动识别源语言、按需走全量或增量模式，金融与支付术语优先。
 
 > 详细的执行指令（喂给 Claude 的 prompt）见同目录 [SKILL.md](SKILL.md)。
 
@@ -30,7 +30,7 @@ Skill 已纳入仓库 `.claude/skills/translate/`，git clone 后由 Claude Code
 
 ### TLDR
 
-1. 文件【全量】&【增量】翻译：`/translate content/docs/index.en.mdx`
+1. 文件【全量】&【增量】翻译：`/translate content/docs/index.en.mdx` 或 `/translate openapi.yaml`
 2. 文件夹【全量】翻译：`/translate content/docs`
 
 ### Claude Code Skill 如何使用

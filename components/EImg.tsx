@@ -1,5 +1,6 @@
 import { headers } from 'next/headers';
 import { getImageAsset } from '@/lib/tenant-config';
+import { getRequestHost } from '@/lib/tenant';
 import Image from 'next/image';
 import React from 'react';
 
@@ -12,8 +13,7 @@ type Props = {
 
 export default async function EImg({ src, alt, className, style }: Props) {
   const hdrs = await headers();
-  const host = hdrs.get('host');
-  const asset = getImageAsset(src, host ?? undefined);
+  const asset = getImageAsset(src, getRequestHost(hdrs));
 
   if (!asset) {
     return null;

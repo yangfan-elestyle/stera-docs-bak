@@ -1,5 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import snapshot from '@/data/error-codes.snapshot.json';
+import { getErrorCodesUrl } from '@/lib/env';
 import { ErrorCodeTableClient } from './ErrorCodeTableClient';
 
 export type Lang = 'ja' | 'en' | 'zh';
@@ -23,18 +24,13 @@ export interface ErrorCodesResponse {
   items: ErrorCodeItem[];
 }
 
-const API_URL = process.env.DOCS_ERROR_CODES_URL;
-const REVALIDATE_SECONDS = 3600 * 6;
-const EMPTY_RESPONSE: ErrorCodesResponse = {
-  generatedAt: '',
-  items: [],
-};
-
-const LANG_MAP: Record<Lang, string> = {
+export const LANG_MAP: Record<Lang, string> = {
   ja: 'ja',
   en: 'en',
   zh: 'zh-CN',
 };
+
+const REVALIDATE_SECONDS = 3600 * 6;
 
 const loadFromApi = unstable_cache(
   async (url: string): Promise<ErrorCodesResponse> => {
@@ -46,13 +42,11 @@ const loadFromApi = unstable_cache(
   { revalidate: REVALIDATE_SECONDS, tags: ['error-codes'] },
 );
 
-async function loadErrorCodes(): Promise<ErrorCodesResponse> {
-  if (!API_URL) {
-    console.warn('[ErrorCodeTable] DOCS_ERROR_CODES_URL is not set');
-    return EMPTY_RESPONSE;
-  }
+export async function loadErrorCodes(): Promise<ErrorCodesResponse> {
+  const apiUrl = getErrorCodesUrl();
+
   try {
-    return await loadFromApi(API_URL);
+    return await loadFromApi(apiUrl);
   } catch (e) {
     const reason = e instanceof Error ? e.message : String(e);
     const fallback = snapshot as ErrorCodesResponse;

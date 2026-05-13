@@ -6,6 +6,7 @@ import { i18n } from './i18n';
 import { openapiPlugin } from 'fumadocs-openapi/server';
 import { detectTenantByHost } from '@/lib/tenant';
 import { sectionNotesPlugin } from '@/lib/plugins/section-notes';
+import { resolveLLMTags } from './llm-postprocess';
 
 export const source = loader({
   i18n,
@@ -193,12 +194,16 @@ export function getPageImage(page: InferPageType<typeof source>) {
   };
 }
 
-export async function getLLMText(page: InferPageType<typeof source>) {
+export async function getLLMText(
+  page: InferPageType<typeof source>,
+  host: string,
+) {
   const processed = await page.data.getText('processed');
+  const resolved = await resolveLLMTags(processed, host);
 
   return `# ${page.data.title} (${page.url})
 
-${processed}`;
+${resolved}`;
 }
 
 // ---------- Tenant visibility helpers ----------

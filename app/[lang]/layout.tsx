@@ -1,7 +1,7 @@
 import '@/app/global.css';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { detectTenantByHost } from '@/lib/tenant';
+import { detectTenantByHost, getRequestHost } from '@/lib/tenant';
 import { i18n } from '@/lib/i18n';
 import { defineI18nUI } from 'fumadocs-ui/i18n';
 import { RootProvider } from 'fumadocs-ui/provider/next';
@@ -63,8 +63,7 @@ export default async function Layout({
 
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers();
-  const host = h.get('host');
-  const tenant = detectTenantByHost(host ?? undefined);
+  const tenant = detectTenantByHost(getRequestHost(h));
   const icon = tenant === 'smcc' ? '/favicon-smcc.ico' : '/favicon.ico';
   return {
     icons: {

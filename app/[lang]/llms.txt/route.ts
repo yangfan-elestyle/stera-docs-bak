@@ -1,6 +1,7 @@
 import { isPageVisibleForHost, source } from '@/lib/source';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
+import { getRequestHost } from '@/lib/tenant';
 
 export const revalidate = false;
 
@@ -9,7 +10,7 @@ export async function GET(
   context: RouteContext<'/[lang]/llms.txt'>,
 ) {
   const { lang } = await context.params;
-  const host = (await headers()).get('host') ?? '';
+  const host = getRequestHost(await headers());
   const lines = source
     .getPages(lang)
     .filter((p) => isPageVisibleForHost(p, lang, host))
@@ -17,7 +18,12 @@ export async function GET(
   return new NextResponse(
     `# Elepay Documentation\n\n${lines.join('\n')}\n`,
     {
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        // 列表按 host 过滤,跨 host 不可共享;明确 no-store
+        // 防止中间 CDN 误缓存把 SMCC 内容透给主站。
+        'Cache-Control': 'no-store',
+      },
     },
   );
 }

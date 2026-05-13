@@ -78,3 +78,59 @@
 
 - `elepay` 管理后台：<https://dashboard.elepay.io/>
 - `stera smart one` 管理后台：<https://dashboard.sterasmartone.com/>
+
+## 本地开发
+
+技术栈：Next.js 16 App Router + Fumadocs + Tailwind 4 + Bun。部署目标为 Cloudflare Workers（OpenNext 适配）。
+
+```bash
+# 1. 从 GitHub Packages 拉私有依赖 @elepay-io/* 需要 read 权限的 PAT
+export GH_PACKAGES_TOKEN=<your_github_pat>
+
+# 2. 安装依赖（postinstall 会自动跑 fumadocs-mdx 生成 .source/）
+bun install
+
+# 3. 生成 OpenAPI JSON/MDX 与错误码快照（clone 后必跑；data/ 与 (generated)/ 都在 .gitignore）
+bun run generate:data
+
+# 4. 启动 dev server
+bun run dev                   # http://localhost:3000
+```
+
+## 同步上游 OpenAPI
+
+`openapi.yaml`（默认 ja 版）的源头是私有仓库 `elepay-io/elepay-charge-api` 的 `client/elepay-client-sdk.yaml`。上游 API 变更后本地跑：
+
+```bash
+bun run sync:openapi              # 需 gh 已登录；幂等补全上游缺失的顶层 tags
+bun run generate:data             # 重新生成 data/openapi/*.json 与 (generated)/**.mdx
+```
+
+`openapi.en.yaml` / `openapi.zh.yaml` 默认不动，按需翻译。要让 sync 顺手翻：
+
+```bash
+bun run sync:openapi --translate  # 同步 ja 后调 claude -p 走 translate skill 翻 en/zh
+```
+
+`--translate` 需本地装好 `claude` 命令并完成过一次交互登录（脚本走 keychain OAuth，不带 `--bare`）；已存在目标语言文件时 skill 走 `git diff` 增量模式，否则全量翻。
+
+## 部署
+
+部署完全由 `.github/workflows/deploy.yml` 在 PR merge 时触发，禁止 master/develop 直接 push；Cloudflare 凭证仅存在于 GitHub Secrets，本地无法部署。
+
+单 Worker `elepay-docs`，staging 与 production 是同一 Worker 的不同 version：production 走 `wrangler deploy`（100% 流量），staging 走 `wrangler versions upload --preview-alias staging`（仅 preview，不切流量），稳定 URL 为 `staging-elepay-docs.<account-subdomain>.workers.dev`。
+
+<!-- prettier-ignore -->
+| 触发 | 行为 |
+| --- | --- |
+| PR merged into `develop`（任意 head） | preview alias `staging` 覆盖更新 |
+| PR merged into `master`（head 必须是 `develop`） | active deployment（100% 流量） |
+| `workflow_dispatch` | preview alias `staging` 覆盖更新 |
+
+hotfix 需先合入 `develop`，再走 `develop → master` PR。
+
+需要的 GitHub Secrets：
+
+- `CLOUDFLARE_API_TOKEN`（Workers Scripts Edit、Account Settings Read）
+- `CLOUDFLARE_ACCOUNT_ID`
+- `PACKAGE_READ_TOKEN`（GitHub Packages 拉 `@elepay-io/*`，对应 `bunfig.toml`）

@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   version: 1.3.0
   title: elepay API Reference
@@ -42,13 +42,13 @@ paths:
             items:
               $ref: '#/components/schemas/PaymentMethodType'
         - name: from
-          description: Start time (UTC). Retrieves data created on or after the specified time.
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
           in: query
           schema:
             type: integer
             format: int64
         - name: to
-          description: End time (UTC). Retrieves data created on or before the specified time.
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
           in: query
           schema:
             type: integer
@@ -115,7 +115,7 @@ paths:
       operationId: createCharge
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeReq'
         description: Payment request
@@ -185,7 +185,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeCaptureReq'
       responses:
@@ -252,7 +252,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/RefundReq'
         description: Refund details
@@ -334,7 +334,7 @@ paths:
       operationId: createCustomer
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/CustomerReq'
         description: Customer request
@@ -382,7 +382,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/CustomerUpdateReq'
         description: Customer request
@@ -452,7 +452,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/SourceReq'
         description: Customer source request
@@ -557,7 +557,7 @@ paths:
       operationId: createCode
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/CodeReq'
         description: EasyQR code request
@@ -635,14 +635,14 @@ paths:
           schema:
             type: string
         - name: from
-          description: dateRange from
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
           in: query
           required: false
           schema:
             type: integer
             format: int64
         - name: to
-          description: dateRange from
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
           in: query
           required: false
           schema:
@@ -685,7 +685,7 @@ paths:
       operationId: createInvoice
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/InvoiceReq'
         description: Invoice request
@@ -733,7 +733,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/InvoiceReq'
         description: Invoice request
@@ -791,12 +791,12 @@ paths:
     post:
       tags:
         - Invoice
-      summary: send invoice
+      summary: Send invoice
       description: Sends an invoice.
       operationId: sendInvoice
       parameters:
         - name: invoiceId
-          description: invoice id
+          description: Invoice ID
           in: path
           required: true
           schema:
@@ -812,7 +812,7 @@ paths:
     get:
       tags:
         - Terminal
-      summary: list locations
+      summary: List locations
       operationId: listLocations
       responses:
         '200':
@@ -825,7 +825,7 @@ paths:
     get:
       tags:
         - Terminal
-      summary: list readers
+      summary: List readers
       operationId: listReaders
       parameters:
         - name: limit
@@ -852,11 +852,11 @@ paths:
     post:
       tags:
         - Terminal
-      summary: create terminal reader
+      summary: Create terminal reader
       operationId: createReader
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/TerminalReaderReq'
         required: true
@@ -871,11 +871,11 @@ paths:
     get:
       tags:
         - Terminal
-      summary: get reader
+      summary: Get reader
       operationId: getReader
       parameters:
         - name: readerId
-          description: reader Id
+          description: Reader ID
           in: path
           required: true
           schema:
@@ -890,11 +890,11 @@ paths:
     delete:
       tags:
         - Terminal
-      summary: delete reader
+      summary: Delete reader
       operationId: deleteReader
       parameters:
         - name: readerId
-          description: reader Id
+          description: Reader ID
           in: path
           required: true
           schema:
@@ -917,13 +917,13 @@ paths:
           schema:
             type: string
         - name: from
-          description: Start time (UTC). Retrieves data created on or after the specified time.
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
           in: query
           schema:
             type: integer
             format: int64
         - name: to
-          description: End time (UTC). Retrieves data created on or before the specified time.
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
           in: query
           schema:
             type: integer
@@ -1018,13 +1018,13 @@ paths:
           schema:
             type: string
         - name: from
-          description: Start time (UTC). Retrieves data created on or after the specified time.
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
           in: query
           schema:
             type: integer
             format: int64
         - name: to
-          description: End time (UTC). Retrieves data created on or before the specified time.
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
           in: query
           schema:
             type: integer
@@ -1064,7 +1064,7 @@ paths:
       operationId: createSubscription
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/SubscriptionReq'
         required: true
@@ -1111,7 +1111,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/SubscriptionUpdateReq'
         required: true
@@ -1264,7 +1264,7 @@ paths:
       operationId: createChargeLocation
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeLocationReq'
       responses:
@@ -1310,7 +1310,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/json;charset=utf-8:
             schema:
               $ref: '#/components/schemas/ChargeLocationUpdateReq'
         required: true
@@ -1407,6 +1407,7 @@ components:
         - momopay Momo Pay
         - promptpay Prompt Pay
         - wovenpay Woven City Pay
+        - ezopay EZO Pay
       type: string
       enum:
         - alipay
@@ -1460,6 +1461,7 @@ components:
         - momopay
         - promptpay
         - wovenpay
+        - ezopay
         - auto
     ResourceType:
       description: |
@@ -1589,6 +1591,8 @@ components:
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         paymentMethod:
           $ref: '#/components/schemas/PaymentMethodType'
@@ -1599,12 +1603,18 @@ components:
             Merchant system order number (e.g., order number, payment ID, etc.).
             Maximum length is 50 characters.
           type: string
+          maxLength: 50
         description:
           description: Description of the payment
           type: string
+          maxLength: 1024
         extra:
           description: Used when there is additional payment-related information. For details, refer to 'Developer Guide -> Payment Extra Information Settings'.
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
@@ -1614,20 +1624,28 @@ components:
             Up to 20 keys; values are strings up to 255 bytes.
             Strings beginning with 'route' or '__' are reserved keys.
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         clientIp:
           description: Client IP address
           type: string
+          maxLength: 39
         customerId:
           description: Customer ID
           type: string
+          maxLength: 32
         sourceId:
           description: Customer source ID
           type: string
+          maxLength: 32
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
     ChargeDto:
       type: object
       description: Payment object
@@ -1635,9 +1653,11 @@ components:
         id:
           description: Charge ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -1657,6 +1677,8 @@ components:
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         authorize:
           description: Pre-authorization flag
@@ -1668,17 +1690,29 @@ components:
         orderNo:
           description: Merchant system order number, e.g., order number, payment ID, etc.
           type: string
+          maxLength: 50
         description:
           description: Payment description
           type: string
+          maxLength: 1024
+        location:
+          $ref: '#/components/schemas/ChargeLocationDto'
         extra:
           description: Payment extra data
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: Payment metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         cardInfo:
@@ -1686,9 +1720,11 @@ components:
         voucherNo:
           description: Provider payment voucher number
           type: string
+          maxLength: 32
         clientIp:
           description: Client IP address
           type: string
+          maxLength: 45
         paid:
           description: Paid flag
           type: boolean
@@ -1709,23 +1745,23 @@ components:
           description: Client SDK credentials
           type: string
         paidTime:
-          description: Payment time UTC timestamp
+          description: Payment time (epoch millisecond)
           type: integer
           format: int64
         refundTime:
-          description: Refund time UTC timestamp
+          description: Refund time (epoch millisecond)
           type: integer
           format: int64
         expiryTime:
-          description: Payment request expiry time UTC timestamp
+          description: Payment request expiry time (epoch millisecond)
           type: integer
           format: int64
         settleTime:
-          description: Payment settlement time UTC timestamp
+          description: Payment settlement time (epoch millisecond)
           type: integer
           format: int64
         createTime:
-          description: Payment creation time UTC timestamp
+          description: Payment creation time (epoch millisecond)
           type: integer
           format: int64
     ChargeStatusDto:
@@ -1735,9 +1771,11 @@ components:
         id:
           description: Charge ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             Whether this is live mode
@@ -1758,15 +1796,22 @@ components:
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         metadata:
           description: Refund metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         reason:
           description: Refund reason
           type: string
+          maxLength: 255
     RefundDto:
       description: Refund object
       type: object
@@ -1774,6 +1819,7 @@ components:
         id:
           description: Refund ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -1781,6 +1827,7 @@ components:
         chargeId:
           description: Charge ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             Whether this is live mode
@@ -1793,22 +1840,29 @@ components:
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
         metadata:
           description: Refund metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         reason:
           description: Refund reason
           type: string
+          maxLength: 255
         status:
           $ref: '#/components/schemas/RefundStatusType'
         refundedTime:
-          description: Refund processed time UTC timestamp.
+          description: Refund processed time (epoch millisecond)
           type: integer
           format: int64
         createTime:
-          description: Refund creation time UTC timestamp.
+          description: Refund creation time (epoch millisecond)
           type: integer
           format: int64
     RefundsDto:
@@ -1869,6 +1923,7 @@ components:
         id:
           description: Dispute ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -1876,6 +1931,7 @@ components:
         chargeId:
           description: Charge ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             Whether this is live mode
@@ -1888,22 +1944,29 @@ components:
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         reason:
           description: Dispute reason
           type: string
+          maxLength: 255
         status:
           $ref: '#/components/schemas/DisputeStatusType'
         resolvedTime:
-          description: Resolution time UTC timestamp
+          description: Resolution time (epoch millisecond)
           type: integer
           format: int64
         createTime:
-          description: Occurrence time UTC timestamp.
+          description: Occurrence time (epoch millisecond)
           type: integer
           format: int64
     CustomerStatusType:
@@ -1920,21 +1983,29 @@ components:
         name:
           description: Name
           type: string
+          maxLength: 255
         description:
           description: Description of the customer
           type: string
+          maxLength: 255
         email:
           description: Email address
           type: string
+          maxLength: 255
         phone:
           description: Phone number
           type: string
+          maxLength: 255
         remark:
           description: Remarks
           type: string
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     CustomerUpdateReq:
@@ -1944,33 +2015,42 @@ components:
         defaultSource:
           description: Default customer source ID
           type: string
+          maxLength: 32
         name:
           description: Name
           type: string
+          maxLength: 255
         description:
           description: Description of the customer
           type: string
+          maxLength: 255
         email:
           description: Email address
           type: string
+          maxLength: 255
         phone:
           description: Phone number
           type: string
+          maxLength: 255
         remark:
           description: Remarks
           type: string
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     CustomerDto:
       description: Customer object
-      type: object
       properties:
         id:
           description: Customer ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -1984,29 +2064,39 @@ components:
         defaultSource:
           description: Default customer source ID
           type: string
+          maxLength: 32
         name:
           description: Name
           type: string
+          maxLength: 255
         description:
           description: Description of the customer
           type: string
+          maxLength: 255
         email:
           description: Email address
           type: string
+          maxLength: 255
         phone:
           description: Phone number
           type: string
+          maxLength: 255
         remark:
           description: Remarks
           type: string
         operator:
           description: Operator
           type: string
+          maxLength: 255
         status:
           $ref: '#/components/schemas/CustomerStatusType'
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         updateTime:
@@ -2054,23 +2144,32 @@ components:
         description:
           description: Description of the customer source
           type: string
+          maxLength: 255
         extra:
           description: Used when there is additional payment-related information. For details, refer to 'Developer Guide -> Source Extra Information Settings'.
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     SourceDto:
       description: Customer source object
-      type: object
       properties:
         id:
           description: Source ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -2088,9 +2187,14 @@ components:
         description:
           description: Description of the customer source
           type: string
+          maxLength: 255
         extra:
           description: Customer source extra data
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         info:
@@ -2103,6 +2207,10 @@ components:
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         credential:
@@ -2117,9 +2225,11 @@ components:
         id:
           description: Source ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         liveMode:
           description: |
             Whether this is live mode
@@ -2242,25 +2352,37 @@ components:
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         orderNo:
           description: |
             Merchant system order number (e.g., order number, payment ID, etc.).
             Maximum length is 50 characters.
           type: string
+          maxLength: 50
         description:
           description: The payment object's 'Description of the payment'
           type: string
+          maxLength: 255
         extra:
           description: |
             Used when there is additional payment-related information. For details, refer to 'Developer Guide -> Payment Extra Information Settings'.
             When creating a payment object, the extra configured here takes precedence.
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: The payment object's 'Metadata'
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         expiryDuration:
@@ -2280,12 +2402,15 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
         customerId:
           description: Customer ID
           type: string
+          maxLength: 32
         sourceId:
           description: Customer source ID
           type: string
+          maxLength: 32
         shouldCreateSource:
           description: |
             Whether a new customer source needs to be created with this code.
@@ -2298,6 +2423,7 @@ components:
         id:
           description: EasyQR code ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -2311,27 +2437,40 @@ components:
         codeUrl:
           description: EasyQR code URL
           type: string
+          maxLength: 255
         amount:
           description: Payment amount
           type: integer
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         orderNo:
           description: Merchant system order number, e.g., order number, payment ID, etc.
           type: string
+          maxLength: 50
         description:
           description: The payment object's 'Description of the payment'
           type: string
+          maxLength: 255
         extra:
           description: Payment extra data
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         metadata:
           description: The payment object's 'Metadata'
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         status:
@@ -2351,11 +2490,12 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
         expired:
           description: Whether the EasyQR code is expired
           type: boolean
         expiryTime:
-          description: EasyQR code expiry time UTC timestamp
+          description: EasyQR code expiry time (epoch millisecond)
           type: integer
           format: int64
         expiryPeriod:
@@ -2363,13 +2503,20 @@ components:
           type: integer
           format: int64
         createTime:
-          description: Code creation time UTC timestamp
+          description: Code creation time (epoch millisecond)
           type: integer
           format: int64
         shouldCreateSource:
           description: |
             Whether a new customer source needs to be created with this code.
           type: boolean
+        activeSources:
+          description: List of active customer sources
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceDto'
+        invoice:
+          $ref: '#/components/schemas/InvoiceDto'
     CodePaymentMethodResponse:
       description: List of payment methods available for EasyQR.
       type: object
@@ -2399,6 +2546,16 @@ components:
           type: integer
         name:
           description: Cardholder name
+          type: string
+        issuerCode:
+          description: |
+            Card issuer code (GMO payment only)
+            Complies with GMO-PG "destination card company code"
+          type: string
+        issuerName:
+          description: |
+            Card issuer name (GMO payment only)
+            Company name corresponding to GMO-PG "destination card company code"
           type: string
         wallet:
           description: Wallet information
@@ -2465,6 +2622,9 @@ components:
           type: string
         bankAccountNo:
           description: Receiving bank account number
+          type: string
+        billingNo:
+          description: Billing number (for payment station)
           type: string
     CodeItem:
       type: object
@@ -2551,23 +2711,26 @@ components:
         customerId:
           description: Customer ID
           type: string
+          maxLength: 32
         amount:
           description: Payment amount
           type: integer
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         taxType:
           $ref: '#/components/schemas/TaxType'
         taxCalcType:
           $ref: '#/components/schemas/TaxCalcType'
         invoiceTime:
-          description: Billing date UTC timestamp
+          description: Billing date (epoch millisecond)
           type: integer
           format: int64
         expiryTime:
-          description: Payment request expiry time UTC timestamp
+          description: Payment request expiry time (epoch millisecond)
           type: integer
           format: int64
         fields:
@@ -2585,6 +2748,10 @@ components:
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         enableAutoCharge:
@@ -2594,7 +2761,7 @@ components:
           type: boolean
           default: false
         autoChargeTime:
-          description: Automatic payment time UTC timestamp
+          description: Automatic payment time (epoch millisecond)
           type: integer
           format: int64
     InvoiceDto:
@@ -2603,6 +2770,7 @@ components:
         id:
           description: Invoice ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -2618,42 +2786,48 @@ components:
         invoiceNo:
           description: Invoice Number
           type: string
+          maxLength: 255
         name:
           description: Invoice subject
           type: string
+          maxLength: 255
         memo:
           description: Invoice memo
           type: string
+          maxLength: 255
         amount:
           description: Payment amount
           type: integer
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         status:
           $ref: '#/components/schemas/InvoiceStatusType'
         operator:
           description: Operator
           type: string
+          maxLength: 255
         invoiceTime:
-          description: Billing date UTC timestamp
+          description: Billing date (epoch millisecond)
           type: integer
           format: int64
         sendTime:
-          description: Send time UTC timestamp
+          description: Send time (epoch millisecond)
           type: integer
           format: int64
         paidTime:
-          description: Payment time UTC timestamp
+          description: Payment time (epoch millisecond)
           type: integer
           format: int64
         expiryTime:
-          description: Payment request expiry time UTC timestamp
+          description: Payment request expiry time (epoch millisecond)
           type: integer
           format: int64
         createTime:
-          description: Creation UTC timestamp
+          description: Creation time (epoch millisecond)
           type: integer
           format: int64
         fields:
@@ -2672,6 +2846,10 @@ components:
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         enableAutoCharge:
@@ -2685,6 +2863,7 @@ components:
         id:
           description: Invoice Item ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -2692,12 +2871,15 @@ components:
         name:
           description: Product name
           type: string
+          maxLength: 255
         unitPrice:
           description: Unit price
           type: integer
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         quantity:
           description: Count
@@ -2708,7 +2890,7 @@ components:
         taxRateType:
           $ref: '#/components/schemas/TaxRateType'
         transactionTime:
-          description: Transaction time UTC timestamp
+          description: Transaction time (epoch millisecond)
           type: integer
           format: int64
     InvoicesResponse:
@@ -2751,15 +2933,19 @@ components:
         id:
           description: Location ID
           type: string
+          maxLength: 32
         name:
           description: Location name
           type: string
+          maxLength: 255
         country:
           description: Location country
           type: string
+          maxLength: 255
         description:
           description: Location details
           type: string
+          maxLength: 255
         logoUrl:
           description: Location logo URL
           type: string
@@ -2792,9 +2978,14 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 32
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     TerminalReaderDto:
@@ -2804,9 +2995,11 @@ components:
         id:
           description: Reader ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -2820,15 +3013,22 @@ components:
         locationId:
           description: Location ID
           type: string
+          maxLength: 50
         serialNumber:
           description: Serial number
           type: string
+          maxLength: 50
         registrationCode:
           description: Pairing code
           type: string
+          maxLength: 20
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         status:
@@ -2846,6 +3046,10 @@ components:
           type: integer
         extra:
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     TerminalReadersResponse:
@@ -2880,9 +3084,11 @@ components:
         id:
           description: Subscription ID
           type: string
+          maxLength: 32
         appId:
           description: App ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
@@ -2896,10 +3102,11 @@ components:
         customerId:
           description: Customer ID
           type: string
+          maxLength: 32
         customer:
           $ref: '#/components/schemas/CustomerDto'
         nextChargeTime:
-          description: Next subscription period start UTC timestamp
+          description: Next charge time (epoch millisecond)
           type: integer
           format: int64
         isCharging:
@@ -2911,16 +3118,20 @@ components:
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
         status:
           $ref: '#/components/schemas/SubscriptionStatusType'
         createTime:
-          description: Creation UTC timestamp
+          description: Creation time (epoch millisecond)
           type: integer
           format: int64
         updateTime:
-          description: Update UTC timestamp
+          description: Update time (epoch millisecond)
           type: integer
           format: int64
     SubscriptionPeriodDto:
@@ -2930,16 +3141,17 @@ components:
         id:
           description: Subscription Period ID
           type: string
+          maxLength: 32
         object:
           description: Object type
           type: string
           default: subscription_period
         startTime:
-          description: Period start UTC timestamp
+          description: Period start time (epoch millisecond)
           type: integer
           format: int64
         endTime:
-          description: Period end UTC timestamp
+          description: Period end time (epoch millisecond)
           type: integer
           format: int64
         charge:
@@ -2966,12 +3178,16 @@ components:
         name:
           description: Subscription name
           type: string
+          maxLength: 20
         customerId:
           description: Customer ID
           type: string
+          maxLength: 32
         currency:
           description: Currency code (ISO 4217)
           type: string
+          minLength: 3
+          maxLength: 3
           default: JPY
         amount:
           description: Amount per billing period
@@ -2984,15 +3200,19 @@ components:
           type: integer
           default: 1
         initialAmount:
-          description: Fixed amount before the first payment
+          description: Fixed amount to pay before the first charge
           type: integer
         firstChargeTime:
-          description: First payment UTC timestamp
+          description: First charge time (epoch millisecond)
           type: integer
           format: int64
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     SubscriptionUpdateReq:
@@ -3002,6 +3222,10 @@ components:
         metadata:
           description: Metadata
           type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
           additionalProperties:
             type: string
     SubscriptionsResponse:
@@ -3063,9 +3287,11 @@ components:
         tel:
           description: Phone number
           type: string
+          maxLength: 20
         zip:
           description: Postal code
           type: string
+          maxLength: 8
         address:
           $ref: '#/components/schemas/AddressTransliterationDto'
         latitude:
@@ -3090,9 +3316,11 @@ components:
         tel:
           description: Phone number
           type: string
+          maxLength: 20
         zip:
           description: Postal code
           type: string
+          maxLength: 8
         address:
           $ref: '#/components/schemas/AddressTransliterationDto'
         latitude:
@@ -3115,14 +3343,17 @@ components:
         id:
           description: Location ID
           type: string
+          maxLength: 32
         name:
           $ref: '#/components/schemas/StringTransliterationDto'
         tel:
           description: Phone number
           type: string
+          maxLength: 20
         zip:
           description: Postal code
           type: string
+          maxLength: 8
         address:
           $ref: '#/components/schemas/AddressTransliterationDto'
         latitude:
