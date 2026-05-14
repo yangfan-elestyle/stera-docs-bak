@@ -70,5 +70,8 @@ export async function generateMetadata(): Promise<Metadata> {
       icon,
       shortcut: icon,
     },
+    ...(process.env.DOCS_ENV !== 'product' && {
+      other: { 'docs-env': process.env.DOCS_ENV || 'dev' },
+    }),
   };
 }

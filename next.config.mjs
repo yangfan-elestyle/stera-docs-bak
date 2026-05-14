@@ -7,6 +7,7 @@ const withMDX = createMDX();
 const config = {
   reactStrictMode: true,
   output: 'standalone',
+  env: { DOCS_ENV: process.env.DOCS_ENV ?? '' },
   images: {
     // Disable Next.js image optimizer to avoid `_next/image` route issues
     unoptimized: true,
