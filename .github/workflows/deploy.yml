@@ -5,8 +5,12 @@
 #
 # 部署模型 (单 Worker `elepay-docs`):
 #   product = active deployment (wrangler deploy, 100% 流量)
-#   staging = preview alias `staging` (wrangler versions upload --preview-alias staging)
-#            稳定 URL: staging-elepay-docs.<account-subdomain>.workers.dev
+#   staging = 同一份构件 upload 两次, 分别绑定 preview alias `staging` 与 `staging-smcc`
+#            (wrangler `--preview-alias` 是单值, 且只能在 versions upload 时创建,
+#             无追加 alias 的公开 API; 两次 upload 内容一致, 各产生一个 version 但行为相同)
+#            稳定 URL:
+#              - staging-elepay-docs.elestyle.workers.dev      (默认租户)
+#              - staging-smcc-elepay-docs.elestyle.workers.dev (smcc 租户)
 #
 # 触发规则 (master 与 develop 均禁止直接 push, 仅靠 PR merge 流入):
 #   PR merged into develop (任意 head)          → staging (preview alias)
@@ -109,4 +113,5 @@ jobs:
           else
             bunx opennextjs-cloudflare build
             bunx opennextjs-cloudflare upload --preview-alias staging
+            bunx opennextjs-cloudflare upload --preview-alias staging-smcc
           fi

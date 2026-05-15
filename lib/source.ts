@@ -103,7 +103,19 @@ export function getFilteredTreeByHost(lang: string, host: string) {
 
     next.children = filterChildren(node.children, currentVisible);
 
-    return next.children.length > 0 || next.index ? next : undefined;
+    // 三态合一:
+    //   - 仍有可见子项                 → 保留为 folder
+    //   - 子项全被过滤但 index 仍可见   → 降级为 page 节点 (避免空 dropdown)
+    //   - 子项与 index 均不可见        → 丢弃
+    return next.children.length > 0
+      ? next
+      : next.index
+        ? {
+            ...next.index,
+            name: next.name ?? next.index.name,
+            icon: next.icon ?? next.index.icon,
+          }
+        : undefined;
   }
 
   // Filter root and fallback

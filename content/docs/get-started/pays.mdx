@@ -243,6 +243,8 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 
 詳細は[Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)  を参照してください。
 
+<EContainer tenant="default">
+
 ##### Apple Pay（Stripe）
 
 Apple Developer サイトで作成した証明書を、<EText name="elepay" /> の `決済モジュール` 管理画面へアップロードしてください。
@@ -276,6 +278,17 @@ Apple Developer サイトで作成した証明書を、<EText name="elepay" /> �
 - 作成した証明書(.cer)をダウンロードして、個人情報交換ファイル(.p12)を空文字列のパースワード でエクスポートしてください。
 - <EText name="elepay" /> の「開発設定」→「Apple Pay」→「Apple Pay Certificate
   （中国）」に、上記証明書(.cer)と個人情報交換ファイル(.p12)をアップロードしてください。
+
+</EContainer>
+
+<EContainer tenant="smcc">
+
+##### Apple Pay（GMO）
+
+1. Apple Merchant ID を <EText name="elepay" /> サポートチームへ提供してください。
+2. Apple Developer サイトで作成した証明書を、ご自身で GMO 管理画面へアップロードしてください。
+
+</EContainer>
 
 ### Google Pay
 

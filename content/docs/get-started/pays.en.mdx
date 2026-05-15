@@ -240,6 +240,8 @@ See [Setting Up Apple Pay](https://developer.apple.com/documentation/passkit/app
 
 See also [Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app).
 
+<EContainer tenant="default">
+
 ##### Apple Pay (Stripe)
 
 Upload the certificate generated on the Apple Developer site to the <EText name="elepay" /> `Payment Module (決済モジュール)` dashboard.
@@ -271,6 +273,17 @@ Upload the certificate generated on the Apple Developer site to the <EText name=
 
 - Download the generated certificate (.cer) and export a Personal Information Exchange (.p12) with an empty password.
 - In <EText name="elepay" /> “開発設定” → “Apple Pay” → “Apple Pay Certificate (中国)”, upload the certificate (.cer) and the .p12 file above.
+
+</EContainer>
+
+<EContainer tenant="smcc">
+
+##### Apple Pay (GMO)
+
+1. Provide your Apple Merchant ID to the <EText name="elepay" /> support team.
+2. Upload the certificate generated on the Apple Developer site to the GMO dashboard yourself.
+
+</EContainer>
 
 ### Google Pay
 

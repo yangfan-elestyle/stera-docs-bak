@@ -1,27 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // Single Worker `elepay-docs`. Environments are version-based, not env-based:
-  //   production  == active deployment    (master ← develop PR merge → `opennextjs-cloudflare deploy`)
-  //   staging     == preview alias `staging`
-  //                  (develop merge / workflow_dispatch → `opennextjs-cloudflare upload --preview-alias staging`)
-  //                  Stable URL: `staging-elepay-docs.<account-subdomain>.workers.dev`.
-  // `DOCS_ENV` is still set at build time (staging vs product) so each version
-  // embeds the matching error-codes snapshot.
-  // Business domains are owned outside this Cloudflare account.
-  // AWS maps docs.* (and docs.stg.*) to the corresponding workers.dev URL.
-  // Keep Wrangler free of routes/custom domains/zone_name here.
+  // 部署模型见 .github/workflows/deploy.yml; 业务域名由 AWS 映射到 workers.dev URL,
+  // 此处不配置 routes / custom_domains / zone_name。
   "name": "elepay-docs",
   "main": ".open-next/worker.js",
   "workers_dev": true,
   "compatibility_date": "2026-04-15",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  // Disable esbuild `--keep-names` to avoid `ReferenceError: __name` in
-  // inline scripts that next-themes stringifies into <head>.
-  // See https://opennext.js.org/cloudflare/howtos/keep_names
+  // 关闭 esbuild `--keep-names`, 避免 next-themes 注入的 inline script 触发
+  // `ReferenceError: __name`. https://opennext.js.org/cloudflare/howtos/keep_names
   "keep_names": false,
-  // Built-in logging + Tail Worker compatibility; required for `wrangler tail`.
   "observability": { "enabled": true },
-  // Explicit 30s CPU ceiling (Paid plan default) to guard against silent regressions.
   "limits": { "cpu_ms": 30000 },
   "assets": {
     "directory": ".open-next/assets",

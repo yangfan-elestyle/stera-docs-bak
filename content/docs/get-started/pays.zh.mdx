@@ -240,6 +240,8 @@ Apple Pay 让 Apple 设备充当“钱包”，以便轻松完成支付。
 
 另请参阅 [Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)。
 
+<EContainer tenant="default">
+
 ##### Apple Pay（Stripe）
 
 将在 Apple Developer 网站生成的证书，上传到 <EText name="elepay" /> `支付模块（決済モジュール）` 管理后台。
@@ -272,6 +274,17 @@ Apple Pay 让 Apple 设备充当“钱包”，以便轻松完成支付。
 
 - 下载生成的证书（.cer），并导出个人信息交换文件（.p12），其密码留空。
 - 在 <EText name="elepay" />「開発設定」→「Apple Pay」→「Apple Pay Certificate（中国）」中上传上述证书（.cer）与 .p12 文件。
+
+</EContainer>
+
+<EContainer tenant="smcc">
+
+##### Apple Pay（GMO）
+
+1. 将 Apple Merchant ID 提供给 <EText name="elepay" /> 支持团队。
+2. 将在 Apple Developer 网站生成的证书，自行上传到 GMO 管理后台。
+
+</EContainer>
 
 ### Google Pay
 

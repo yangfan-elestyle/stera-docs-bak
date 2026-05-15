@@ -10,12 +10,6 @@ The elepay iOS SDK supports Bitcode. If the app you are integrating supports Bit
 
 We do not currently support WatchKit or App Extensions.
 
-## Does the elepay iOS SDK support App Clips?
-
-Supported starting with elepay iOS SDK v2.3.4. However, payment methods that require app switching (e.g., PayPay, Merpay) are not supported.
-
-Regarding the App Clips size limit (10 MB): the universal build of the elepay iOS SDK is about 2 MB, but if you use Stripe for credit cards or Apple Pay, you must also include the Stripe SDK, which is roughly 3 MB. Please be mindful of the App Clips size limit.
-
 ## When paying with Apple Pay, Error Code 10100 "Unsupported payment method" occurs
 
 Possible causes:

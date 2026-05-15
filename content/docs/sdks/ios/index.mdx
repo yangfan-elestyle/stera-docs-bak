@@ -16,7 +16,7 @@ title: iOS Quick Start
 
 ## 1. Cocoapod によるインストール
 
-1.  Podfile に  `ElepaySDK`  を追加します。  
+-  Podfile に  `ElepaySDK`  を追加します。  
     **ご注意：Cocoapods 1.10.0 以上をご利用ください。**
 
 ```ruby
@@ -29,7 +29,7 @@ title: iOS Quick Start
 pod 'ElepaySDK', '~> 3.0'
 ```
 
-2.  中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin`  も追加します。
+-  中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin`  も追加します。
 
 ```ruby
 # From 2.0.0, the SDK renamed from ElePay-ChinesePayments-Plugin to Elepay_ChinesePayments_Plugin
@@ -37,7 +37,9 @@ pod 'ElepaySDK', '~> 3.0'
 pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
 ```
 
-3.  Stripe を利用する、かつ elepay SDK が 2.2.0 以上の場合のみ、`Stripe`  を追加してください。
+<EContainer tenant="default">
+
+-  Stripe を利用する、かつ elepay SDK が 2.2.0 以上の場合のみ、`Stripe`  を追加してください。
     ご注意：ElepaySDK 2.x を利用する場合は、`pod 'Stripe', '~> 19.4.1'`  で Stripe を追加してください。
 
 ```ruby
@@ -49,40 +51,47 @@ pod 'Stripe', '~> 22.0'
 
 > 🚧 Stripe v23 が iOS 12 のサポートを停止したため、elepay SDK では Stripe v22 までを設定してください。
 
-4.  PayPal を利用する、かつ elepay SDK が 1.7.0 以降の場合のみ、`Braintree`を追加してください。
+</EContainer>
+
+-  PayPal を利用する、かつ elepay SDK が 1.7.0 以降の場合のみ、`Braintree`を追加してください。
     **ご注意：** elepay SDK 4.0.0 からは Braintree のサポートが終了しました。PayPal を利用する場合は、elepay SDK 3.x をご利用ください。
 
 ```ruby
 pod 'Braintree'
 ```
 
-5.  `pod install`  を実行します。
+-  `pod install`  を実行します。
 
 ## 2. Swift Package Manager (SPM)によるインストール
 
 **elepay iOS SDK**  は 3.1.1 から SPM に対応しました。<br />
 **elepay iOS SDK Chinese Payments Plugin**  は 2.0.2 から SPM に対応しました。
 
-1.  SPM に ElepaySDK を追加します。
+-  SPM に ElepaySDK を追加します。
     こちらの URL をご利用ください：`https://github.com/elestyle/elepay-ios-sdk.git`
     バージョンを指定する場合は、3.1.1 以降をご指定ください。
-2.  中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin`  も追加します。
+-  中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin`  も追加します。
     こちらの URL をご利用ください： `https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`
     バージョンを指定する場合は、2.0.2 以降をご指定ください。
-3.  Stripe を利用する場合は、`Stripe`  を追加してください。
+<EContainer tenant="default">
+
+-  Stripe を利用する場合は、`Stripe`  を追加してください。
     こちらの URL をご利用ください：`https://github.com/stripe/stripe-ios.git`
     バージョンを指定する場合は、21.8.1 以降をご指定ください。
-4.  PayPal を利用する場合は、`Braintree`  を追加してください。
+
+</EContainer>
+
+-  PayPal を利用する場合は、`Braintree`  を追加してください。
     ご注意：`Braintree`  の最新版 5.x.x は iOS 11 の対応が終了したため、4.x.x をご利用ください。また、4.x.x は SPM に対応していないため、Cocoapods で導入するか、手動でインストールしてください。
 
 ## 3. 手動インストール
 
 7 ステップで、 elepay SDK for iOS をアプリに導入できます。
 
-1.  [Github.com](https://github.com/elestyle/elepay-ios-sdk)  で  [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip)  をダウンロードして解凍します。
-2.  `ElePay.framework`  を Xcode のプロジェクトに追加します。必要に応じて「Copy items if needed」をチェックしてください。
-3.  ターゲット設定に、`ElePay.framework`  を「Embedded Binaries」に追加します。
-4.  Objective-C のプロジェクトで Apple Pay を利用する場合、ターゲット設定に  `PassKit.framework`  を「Embedded Binaries」に追加する必要があります。
+-  [Github.com](https://github.com/elestyle/elepay-ios-sdk)  で  [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip)  をダウンロードして解凍します。
+-  `ElePay.framework`  を Xcode のプロジェクトに追加します。必要に応じて「Copy items if needed」をチェックしてください。
+-  ターゲット設定に、`ElePay.framework`  を「Embedded Binaries」に追加します。
+-  Objective-C のプロジェクトで Apple Pay を利用する場合、ターゲット設定に  `PassKit.framework`  を「Embedded Binaries」に追加する必要があります。
 
 ## 4. Objective-C プロジェクトで利用する場合
 

@@ -16,7 +16,7 @@ This guide explains in detail how to connect your iOS app with the elepay SDK.
 
 ## 1. Install via CocoaPods
 
-1. Add `ElepaySDK` to your Podfile.  
+- Add `ElepaySDK` to your Podfile.  
    **Note: CocoaPods 1.10.0 or later is required.**
 
 ```ruby
@@ -29,7 +29,7 @@ This guide explains in detail how to connect your iOS app with the elepay SDK.
 pod 'ElepaySDK', '~> 3.0'
 ```
 
-2. Only when using Chinese payments (Alipay, WeChat Pay, UnionPay), add `Elepay_ChinesePayments_Plugin`.
+- Only when using Chinese payments (Alipay, WeChat Pay, UnionPay), add `Elepay_ChinesePayments_Plugin`.
 
 ```ruby
 # From 2.0.0, the SDK renamed from ElePay-ChinesePayments-Plugin to Elepay_ChinesePayments_Plugin
@@ -37,7 +37,9 @@ pod 'ElepaySDK', '~> 3.0'
 pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
 ```
 
-3. Only when using Stripe and elepay SDK is 2.2.0 or later, add `Stripe`.
+<EContainer tenant="default">
+
+- Only when using Stripe and elepay SDK is 2.2.0 or later, add `Stripe`.
    Note: If using ElepaySDK 2.x, add Stripe with `pod 'Stripe', '~> 19.4.1'`.
 
 ```ruby
@@ -49,40 +51,47 @@ pod 'Stripe', '~> 22.0'
 
 > 🚧 Because Stripe v23 dropped iOS 12 support, configure Stripe v22 with the elepay SDK.
 
-4. Only when using PayPal and elepay SDK is 1.7.0 or later, add `Braintree`.
+</EContainer>
+
+- Only when using PayPal and elepay SDK is 1.7.0 or later, add `Braintree`.
    **Note:** From elepay SDK 4.0.0, Braintree support has ended. If you need PayPal, use elepay SDK 3.x.
 
 ```ruby
 pod 'Braintree'
 ```
 
-5. Run `pod install`.
+- Run `pod install`.
 
 ## 2. Install via Swift Package Manager (SPM)
 
 **elepay iOS SDK** supports SPM from 3.1.1.<br />
 **elepay iOS SDK Chinese Payments Plugin** supports SPM from 2.0.2.
 
-1. Add ElepaySDK via SPM.  
+- Add ElepaySDK via SPM.  
    Use this URL: `https://github.com/elestyle/elepay-ios-sdk.git`  
    Specify 3.1.1 or later if pinning versions.
-2. Only when using Chinese payments (Alipay, WeChat Pay, UnionPay), add `Elepay_ChinesePayments_Plugin`.  
+- Only when using Chinese payments (Alipay, WeChat Pay, UnionPay), add `Elepay_ChinesePayments_Plugin`.  
    Use this URL: `https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`  
    Specify 2.0.2 or later if pinning versions.
-3. If you use Stripe, add `Stripe`.  
+<EContainer tenant="default">
+
+- If you use Stripe, add `Stripe`.  
    Use this URL: `https://github.com/stripe/stripe-ios.git`  
    Specify 21.8.1 or later if pinning versions.
-4. If you use PayPal, add `Braintree`.  
+
+</EContainer>
+
+- If you use PayPal, add `Braintree`.  
    Note: Braintree 5.x.x dropped iOS 11 support, so use 4.x.x. Also, 4.x.x does not support SPM, so install it via CocoaPods or manually.
 
 ## 3. Manual installation
 
 Integrate elepay SDK for iOS into your app in 7 steps.
 
-1. Download [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip) from [Github.com](https://github.com/elestyle/elepay-ios-sdk) and extract it.
-2. Add `ElePay.framework` to your Xcode project. Select “Copy items if needed” if necessary.
-3. In the target settings, add `ElePay.framework` under “Embedded Binaries”.
-4. For Objective‑C projects using Apple Pay, add `PassKit.framework` under “Embedded Binaries”.
+- Download [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip) from [Github.com](https://github.com/elestyle/elepay-ios-sdk) and extract it.
+- Add `ElePay.framework` to your Xcode project. Select “Copy items if needed” if necessary.
+- In the target settings, add `ElePay.framework` under “Embedded Binaries”.
+- For Objective‑C projects using Apple Pay, add `PassKit.framework` under “Embedded Binaries”.
 
 ## 4. Using with Objective‑C projects
 
