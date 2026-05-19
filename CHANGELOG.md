@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2] - 2026-05-19
+
+### Added
+
+- OpenAPI 文档新增 PHP 代码示例 tab（基于 `@scalar/snippetz` 的 `phpCurl` 插件，封装为客户端代码生成器并补齐 `CURLOPT_RETURNTRANSFER` / 响应捕获 / `echo $response`）。
+
 ## [0.1.1] - 2026-05-15
 
 ### Changed

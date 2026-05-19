@@ -2,7 +2,7 @@
   "name": "@elepay/docs",
   "title": "Elepay Docs",
   "description": "Documentation for Elepay, a payment platform.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "generate:data": "bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts && bun run scripts/snapshot-error-codes.ts",
@@ -20,6 +20,7 @@
     "@orama/orama": "^3.1.18",
     "@orama/stopwords": "^3.1.18",
     "@orama/tokenizers": "^3.1.18",
+    "@scalar/snippetz": "^0.9.8",
     "fumadocs-core": "^16.8.8",
     "fumadocs-mdx": "^14.3.2",
     "fumadocs-openapi": "^10.8.1",
