@@ -248,8 +248,11 @@ Apple Pay 让 Apple 设备充当“钱包”，以便轻松完成支付。
 
 ##### Apple Pay（GMO / Paygent）
 
-1. 将 Apple Merchant ID 提供给 <EText name="elepay" /> 支持团队。
-2. 将在 Apple Developer 网站生成的证书，自行上传到 GMO/Paygent 管理后台。
+CSR 由商户自行生成（不使用 <EText name="elepay" /> 后台下载的 CSR）：
+
+1. 在 Apple Developer 使用商户自有 CSR 与 Merchant ID 创建证书。
+2. 将证书自行上传至 GMO / Paygent 管理后台（无需上传 <EText name="elepay" /> 后台）。
+3. 仅需将 Apple Merchant ID 提供给 <EText name="elepay" /> 支持团队。
 
 ##### Apple Pay（Stripe · 中国银联）专用证书
 
@@ -358,6 +361,12 @@ fun checkIfGooglePayIsReadyToUse(
 
 1. **Test 环境**：支付对话框会自动填入测试卡信息。
 2. **Production 环境**：若用户在 Google Pay 中尚无支付卡，将在对话框中引导添加。
+
+##### Google Pay × GMO Test Mode（3DS2 联调）
+
+GMO 渠道下，Test Mode（charge `liveMode=false`）发起 Google Pay 时，SDK 会将 Google Wallet 返回的真实 token 替换为 elepay 下发的 `googlePayTestToken`，再交由 GMO `ExecutePaymentFlow` 触发 3DS2 验证。
+
+如需在开发阶段覆盖不同 3DS2 场景（挑战 / 免挑战、各类失败码等），请联系 <EText name="elepay" /> 支持团队调整该 test token，无需修改 App 端代码。
 
 ### PayPal
 

@@ -251,8 +251,11 @@ Apple Developer サイトで作成した証明書を、<EText name="elepay" /> �
 
 ##### Apple Pay（GMO / Paygent）
 
-1. Apple Merchant ID を <EText name="elepay" /> サポートチームへ提供してください。
-2. Apple Developer サイトで作成した証明書を、ご自身で GMO / Paygent 管理画面へアップロードしてください。
+CSR は加盟店ご自身で生成してください（<EText name="elepay" /> 管理画面からダウンロードできる CSR は使用しません）：
+
+1. Apple Developer にて、加盟店ご自身の CSR と Merchant ID を使用して証明書を作成してください。
+2. 作成した証明書を、ご自身で GMO / Paygent 管理画面へアップロードしてください（<EText name="elepay" /> 管理画面へのアップロードは不要です）。
+3. Apple Merchant ID のみ、<EText name="elepay" /> サポートチームへ提供してください。
 
 ##### Apple Pay（Stripe · 中国銀聯）専用証明書の作成について
 
@@ -362,6 +365,12 @@ Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play の�
 
 1. **Test 環境**：Google Pay の支払いダイアログにはテストカード情報が自動的に入力されます。
 2. **Production 環境**：実際のユーザーが Google Pay に支払いカードを登録していない場合、支払いダイアログでカード追加を促す案内が表示されます。
+
+##### Google Pay × GMO Test Mode（3DS2 結合テスト）
+
+GMO チャネルでは、Test Mode（charge `liveMode=false`）で Google Pay を起動すると、SDK は Google Wallet が返却する実トークンを elepay が配信する `googlePayTestToken` に置き換え、GMO `ExecutePaymentFlow` に引き渡して 3DS2 認証を発火させます。
+
+開発段階で異なる 3DS2 シナリオ（チャレンジあり / チャレンジ免除、各種失敗コードなど）を再現したい場合は、<EText name="elepay" /> サポートチームへ test token の調整をご依頼ください。App 側のコード変更は不要です。
 
 ### PayPal
 

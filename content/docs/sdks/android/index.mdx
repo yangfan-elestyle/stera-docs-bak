@@ -28,10 +28,15 @@ maven {
 ```groovy
 //ご注意：(latest-version)は https://github.com/elestyle/elepay-android/releases をご参照ください
 
-implementation 'jp.elestyle.androidapp:elepay:(latest-version)'
+implementation 'io.elepay.android:elepay:(latest-version)'
+
+// Checkout 機能を利用する場合は、以下も追加してください：
+implementation 'io.elepay.android:elepay-checkout:(latest-version)'
 ```
 
 > 🚧 常に新しいバージョンを使用することを推奨します。
+>
+> 4.0.0 から、Maven 座標が `jp.elestyle.androidapp` から `io.elepay.android` へ移行し、SDK は `elepay` / `elepay-core` / `elepay-checkout` に分割されました。`elepay-core` は `elepay` から推移的に解決されるため、単独で宣言する必要はありません。Checkout を利用する場合は、別途 `elepay-checkout` の追加が必要です。4.0.0 より前のバージョンは引き続き旧座標 `jp.elestyle.androidapp:elepay` を使用します。
 >
 > gradle build tool 3.6.0 (Android Studio 3.6 に対応)以降を利用する場合、elepay Android SDK 1.7.0 以降が必要となります。
 

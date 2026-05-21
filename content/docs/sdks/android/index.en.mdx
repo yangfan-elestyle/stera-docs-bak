@@ -28,10 +28,15 @@ See the [releases page](https://github.com/elestyle/elepay-android/releases) for
 ```groovy
 // Note: Check https://github.com/elestyle/elepay-android/releases for (latest-version)
 
-implementation 'jp.elestyle.androidapp:elepay:(latest-version)'
+implementation 'io.elepay.android:elepay:(latest-version)'
+
+// If you use the Checkout feature, also add the following:
+implementation 'io.elepay.android:elepay-checkout:(latest-version)'
 ```
 
 > 🚧 We recommend always using the latest version.
+>
+> From 4.0.0, the Maven coordinates have migrated from `jp.elestyle.androidapp` to `io.elepay.android`, and the SDK has been split into `elepay` / `elepay-core` / `elepay-checkout`. `elepay-core` is resolved transitively from `elepay`, so it does not need to be declared separately; to use Checkout, additionally include `elepay-checkout`. Versions prior to 4.0.0 continue to use the old coordinates `jp.elestyle.androidapp:elepay`.
 >
 > If you use Gradle Build Tool 3.6.0 (Android Studio 3.6 compatible) or later, elepay Android SDK 1.7.0 or later is required.
 

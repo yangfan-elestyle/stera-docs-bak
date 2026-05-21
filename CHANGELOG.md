@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.3] - 2026-05-21
+
+### Added
+
+- 新增 elepay 版本与 GMO 支付方式说明（`pays.*`、`sdks/android/index.*`、`sdks/ios/index.*` 三语同步）。
+
+### Changed
+
+- LLM 导出后处理增强：`<Callout>` → GFM Alert、`<APIPage>` → `**Endpoint**`、剥离 `{/* ... */}` MDX 注释，并修正含反引号 Callout 跨段匹配问题。
+
 ## [0.1.2] - 2026-05-19
 
 ### Added

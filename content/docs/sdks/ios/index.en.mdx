@@ -7,6 +7,7 @@ This guide explains in detail how to connect your iOS app with the elepay SDK.
 
 # Supported versions
 
+- From **elepay iOS SDK 5.0**, the SDK has been split into `ElepaySDK` and independent plugins such as `Stripe` / `RPay` / `ChinesePayments` / `Checkout`, which you include as needed. From 5.0.5, GMO (Apple Pay / Credit Pay 3DS) handling has been added.
 - From **elepay iOS SDK 4.0**, iOS 11.0 support has ended. Bitcode support has also ended.
 - From **elepay iOS SDK 3.0**, iOS 10.0 support ended.
 - **elepay iOS SDK 2.x** supports iOS 10.0 and later.
@@ -63,6 +64,8 @@ pod 'Braintree'
 - Run `pod install`.
 
 ## 2. Install via Swift Package Manager (SPM)
+
+> 📘 From elepay iOS SDK 5.0, SPM (Swift Package Manager) is the default distribution method. If you have requirements for other integration channels, please contact the <EText name="elepay" /> team.
 
 **elepay iOS SDK** supports SPM from 3.1.1.<br />
 **elepay iOS SDK Chinese Payments Plugin** supports SPM from 2.0.2.

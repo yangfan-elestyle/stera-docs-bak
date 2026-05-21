@@ -7,6 +7,7 @@ title: iOS Quick Start
 
 # 支持版本
 
+- 自 **elepay iOS SDK 5.0** 起，SDK 拆分为 `ElepaySDK` 与 `Stripe` / `RPay` / `ChinesePayments` / `Checkout` 等独立 Plugin，按需引入。自 5.0.5 起，新增 GMO（Apple Pay / Credit Pay 3DS）处理。
 - 自 **elepay iOS SDK 4.0** 起，不再支持 iOS 11.0；同时不再支持 Bitcode。
 - 自 **elepay iOS SDK 3.0** 起，不再支持 iOS 10.0。
 - **elepay iOS SDK 2.x** 支持 iOS 10.0 及以上。
@@ -63,6 +64,8 @@ pod 'Braintree'
 - 执行 `pod install`。
 
 ## 2. 通过 Swift Package Manager（SPM）安装
+
+> 📘 自 elepay iOS SDK 5.0 起，默认以 SPM（Swift Package Manager）作为分发方式；如有其他接入平台的诉求，请联系 <EText name="elepay" /> 团队。
 
 **elepay iOS SDK** 自 3.1.1 起支持 SPM。<br />
 **elepay iOS SDK Chinese Payments Plugin** 自 2.0.2 起支持 SPM。
