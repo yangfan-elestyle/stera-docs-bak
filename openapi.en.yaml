@@ -1,0 +1,3425 @@
+openapi: 3.1.0
+info:
+  version: 1.3.0
+  title: elepay API Reference
+  description: The elepay API is a REST-based payment API. It provides various capabilities for payment operations, such as processing payments and refunds.
+  contact:
+    name: ELESTYLE, INC
+    url: https://elepay.io
+    email: support@elestyle.jp
+servers:
+  - url: https://api.elepay.io
+tags:
+  - name: Charge
+  - name: Refund
+  - name: Customer
+  - name: Code
+  - name: CodeSetting
+  - name: PaymentMethod
+  - name: Terminal
+  - name: Invoice
+  - name: Dispute
+  - name: Subscription
+  - name: Location
+security:
+  - bearerAuth: []
+  - basicAuth: []
+paths:
+  /charges:
+    get:
+      tags:
+        - Charge
+      summary: List charges
+      description: Retrieves a list of charge information.
+      operationId: listCharges
+      parameters:
+        - name: paymentMethod
+          description: Payment method (multiple values can be specified).
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PaymentMethodType'
+        - name: from
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: dateField
+          description: |
+            Specifies which fields are used for the start and end times.
+            - paid_time Payment time
+            - create_time Charge creation time
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ChargeDateTimeType'
+        - name: status
+          description: Payment status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ChargeStatusType'
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          description: |
+            Sort field
+            - paid_time Payment time
+            - create_time Charge creation time
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ChargeDateTimeType'
+        - name: order
+          description: |
+            Sort order
+            - desc Descending
+            - asc Ascending
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrderType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargesResponse'
+    post:
+      tags:
+        - Charge
+      summary: Create charge
+      description: Creates a charge.
+      operationId: createCharge
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeReq'
+        description: Payment request
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}:
+    get:
+      tags:
+        - Charge
+      summary: Retrieve charge
+      description: Retrieves detailed information about a charge.
+      operationId: retrieveCharge
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}/revoke:
+    post:
+      tags:
+        - Charge
+      summary: Revoke charge
+      description: Cancels a charge.
+      operationId: revokeCharge
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}/capture:
+    post:
+      tags:
+        - Charge
+      summary: Capture charge
+      description: Captures a charge.
+      operationId: captureCharge
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeCaptureReq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}/status:
+    get:
+      tags:
+        - Charge
+      summary: Retrieve charge's status
+      description: Retrieves detailed information about a charge's status.
+      operationId: retrieveChargeStatus
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeStatusDto'
+  /charges/{id}/refunds:
+    get:
+      tags:
+        - Refund
+      summary: List refunds
+      description: Retrieves a list of refund information.
+      operationId: listChargesRefunds
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundsResponse'
+    post:
+      tags:
+        - Refund
+      summary: Create refund
+      description: Processes a full or partial refund for a charge.
+      operationId: createRefund
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/RefundReq'
+        description: Refund details
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundDto'
+  /charges/{id}/refunds/{refundId}:
+    get:
+      tags:
+        - Refund
+      summary: Retrieve refund
+      description: Retrieves detailed information about a refund.
+      operationId: retrieveChargeRefund
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: refundId
+          description: Refund ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundDto'
+  /customers:
+    get:
+      tags:
+        - Customer
+      summary: List customers
+      description: Retrieves a list of customer information.
+      operationId: listCustomers
+      parameters:
+        - name: keyword
+          description: Keyword
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+    post:
+      tags:
+        - Customer
+      summary: Create customer
+      description: Creates a customer.
+      operationId: createCustomer
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CustomerReq'
+        description: Customer request
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+  /customers/{customerId}:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve customer
+      description: Retrieves customer information.
+      operationId: retrieveCustomer
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+    post:
+      tags:
+        - Customer
+      summary: Update customer
+      description: Updates a customer.
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateReq'
+        description: Customer request
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+    delete:
+      tags:
+        - Customer
+      summary: Delete customer
+      description: Deletes a customer.
+      operationId: deleteCustomer
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+  /customers/{customerId}/sources:
+    get:
+      tags:
+        - Customer
+      summary: List sources by customer ID
+      description: Retrieves a list of customer source information.
+      operationId: listSources
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: paymentMethod
+          description: Payment method
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PaymentMethodType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceResponse'
+    post:
+      tags:
+        - Customer
+      summary: Create source
+      description: Creates a customer source.
+      operationId: createSource
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SourceReq'
+        description: Customer source request
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceDto'
+  /customers/{customerId}/sources/{sourceId}:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve source
+      description: Retrieves customer information.
+      operationId: retrieveSource
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          description: Source ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceDto'
+    delete:
+      tags:
+        - Customer
+      summary: Delete source
+      description: Deletes a customer source.
+      operationId: deleteSource
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          description: Source ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+  /sources/{sourceId}/status:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve source's status
+      description: Retrieves detailed information about a customer source's status.
+      operationId: retrieveSourceStatus
+      parameters:
+        - name: sourceId
+          description: Source ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceStatusDto'
+  /payment-methods:
+    get:
+      tags:
+        - PaymentMethod
+      summary: List supported payment methods
+      description: Retrieves the available payment methods.
+      operationId: listPaymentMethods
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PaymentMethodResponse'
+  /codes:
+    post:
+      tags:
+        - Code
+      summary: Create EasyQR code
+      description: Creates an EasyQR code.
+      operationId: createCode
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CodeReq'
+        description: EasyQR code request
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodeDto'
+  /codes/{codeId}:
+    get:
+      tags:
+        - Code
+      summary: Retrieve EasyQR code
+      description: Retrieves an EasyQR code object.
+      operationId: retrieveCode
+      parameters:
+        - name: codeId
+          description: EasyQR code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodeDto'
+    delete:
+      tags:
+        - Code
+      summary: Close EasyQR code
+      description: Deletes an EasyQR code.
+      operationId: closeCode
+      parameters:
+        - name: codeId
+          description: EasyQR code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Closed
+  /code-setting/payment-methods:
+    get:
+      tags:
+        - CodeSetting
+      summary: List all enabled EasyQR payment methods
+      description: Retrieves the payment methods available for EasyQR.
+      operationId: listCodePaymentMethods
+      responses:
+        '200':
+          description: List of payment methods available for EasyQR.
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodePaymentMethodResponse'
+  /invoices:
+    get:
+      tags:
+        - Invoice
+      summary: List invoices
+      description: Retrieves a list of invoice information.
+      operationId: listInvoices
+      parameters:
+        - name: keyword
+          description: Keyword
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: from
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          description: status
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/InvoiceStatusType'
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoicesResponse'
+    post:
+      tags:
+        - Invoice
+      summary: Create invoice
+      description: Creates an invoice.
+      operationId: createInvoice
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/InvoiceReq'
+        description: Invoice request
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}:
+    get:
+      tags:
+        - Invoice
+      summary: Retrieve invoice
+      description: Retrieves invoice information.
+      operationId: retrieveInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+    post:
+      tags:
+        - Invoice
+      summary: Update invoice
+      description: Updates invoice information.
+      operationId: updateInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/InvoiceReq'
+        description: Invoice request
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}/cancel:
+    post:
+      tags:
+        - Invoice
+      summary: Cancel invoice
+      description: Cancels an invoice.
+      operationId: cancelInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}/submit:
+    post:
+      tags:
+        - Invoice
+      summary: Submit invoice
+      description: Finalizes an invoice.
+      operationId: submitInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}/send:
+    post:
+      tags:
+        - Invoice
+      summary: Send invoice
+      description: Sends an invoice.
+      operationId: sendInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Accept
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /terminal/locations:
+    get:
+      tags:
+        - Terminal
+      summary: List locations
+      operationId: listLocations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/LocationsResponse'
+  /terminal/readers:
+    get:
+      tags:
+        - Terminal
+      summary: List readers
+      operationId: listReaders
+      parameters:
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReadersResponse'
+    post:
+      tags:
+        - Terminal
+      summary: Create terminal reader
+      operationId: createReader
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/TerminalReaderReq'
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReaderDto'
+  /terminal/readers/{readerId}:
+    get:
+      tags:
+        - Terminal
+      summary: Get reader
+      operationId: getReader
+      parameters:
+        - name: readerId
+          description: Reader ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReaderDto'
+    delete:
+      tags:
+        - Terminal
+      summary: Delete reader
+      operationId: deleteReader
+      parameters:
+        - name: readerId
+          description: Reader ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+  /disputes:
+    get:
+      tags:
+        - Dispute
+      summary: List disputes
+      description: Retrieves a list of dispute information.
+      operationId: listDisputes
+      parameters:
+        - name: chargeId
+          description: Charge ID
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: from
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: dateField
+          description: |
+            Specifies which fields are used for the start and end times.
+            - resolved_time Dispute resolution time
+            - create_time Dispute occurrence time
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisputeDateTimeType'
+        - name: status
+          description: Dispute status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisputeStatusType'
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          description: |
+            Sort field
+            - resolved_time Dispute resolution time
+            - create_time Charge creation time
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisputeDateTimeType'
+        - name: order
+          description: |
+            Sort order
+            - desc Descending
+            - asc Ascending
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrderType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DisputesResponse'
+  /disputes/{id}:
+    get:
+      tags:
+        - Dispute
+      summary: Retrieve dispute
+      description: Retrieves detailed information about a dispute.
+      operationId: retrieveDispute
+      parameters:
+        - name: id
+          description: Dispute ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DisputeDto'
+  /subscriptions:
+    get:
+      tags:
+        - Subscription
+      summary: List subscriptions
+      description: Retrieves a list of subscriptions.
+      operationId: listSubscriptions
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: from
+          description: Start time (epoch millisecond). Retrieves data created on or after the specified time.
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: End time (epoch millisecond). Retrieves data created on or before the specified time.
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          description: Subscription status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SubscriptionStatusType'
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionsResponse'
+    post:
+      tags:
+        - Subscription
+      summary: Create subscription
+      description: Creates a subscription.
+      operationId: createSubscription
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SubscriptionReq'
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}:
+    get:
+      tags:
+        - Subscription
+      summary: Retrieve subscription
+      description: Retrieves subscription information.
+      operationId: retrieveSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+    post:
+      tags:
+        - Subscription
+      summary: Update subscription
+      description: Updates a subscription.
+      operationId: updateSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SubscriptionUpdateReq'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/start:
+    post:
+      tags:
+        - Subscription
+      summary: Start subscription
+      description: |
+        Starts a new (status=new) subscription.
+      operationId: startSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/resume:
+    post:
+      tags:
+        - Subscription
+      summary: Resume subscription
+      description: |
+        Resumes a past due (status=past_due) subscription.
+      operationId: resumeSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/cancel:
+    post:
+      tags:
+        - Subscription
+      summary: Cancel subscription
+      description: |
+        Cancels the subscription and ends it at the end of the current period.
+        A canceled subscription cannot be restarted.
+        A subscription that is being processed cannot be canceled.
+      operationId: cancelSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/periods:
+    get:
+      tags:
+        - Subscription
+      summary: List subscription periods
+      description: Retrieves a list of subscription period information.
+      operationId: listSubscriptionPeriods
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPeriodsResponse'
+  /locations:
+    get:
+      tags:
+        - Location
+      summary: List locations
+      description: Retrieves a list of location information.
+      operationId: listChargeLocations
+      parameters:
+        - name: limit
+          description: Maximum number of items
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 20
+        - name: offset
+          description: Starting offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationsResponse'
+    post:
+      tags:
+        - Location
+      summary: Create location
+      description: Creates a location.
+      operationId: createChargeLocation
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeLocationReq'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+  /locations/{locationId}:
+    get:
+      tags:
+        - Location
+      summary: Retrieve location
+      description: Retrieves location information.
+      operationId: retrieveChargeLocation
+      parameters:
+        - name: locationId
+          description: Location ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+    post:
+      tags:
+        - Location
+      summary: Update location
+      description: Updates location information.
+      operationId: updateChargeLocation
+      parameters:
+        - name: locationId
+          description: Location ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeLocationUpdateReq'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+    delete:
+      tags:
+        - Location
+      summary: Delete location
+      description: Deletes a location.
+      operationId: deleteChargeLocation
+      parameters:
+        - name: locationId
+          description: Location ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: |
+        API authentication is performed via Basic auth using the secret key as the username and omitting the password.
+        The secret key is a critical key that allows all API operations, so handle it with care.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        API authentication is performed via Bearer auth using the secret key as the bearer token.
+        The secret key is a critical key that allows all API operations, so handle it with care.
+  schemas:
+    PaymentMethodType:
+      description: |
+        Payment method
+        - auto Auto detection (available for CPM payments only)
+        - alipay Alipay
+        - alipayhk AlipayHK
+        - alipayplus Alipay+
+        - amazonpay Amazon Pay
+        - applepay Apple Pay
+        - applepay_cn Apple Pay (China)
+        - atokara Atokara
+        - atone atone (pay next month at convenience stores)
+        - aupay au Pay
+        - clicktopay Click To Pay
+        - banktransfer Bank transfer
+        - creditcard Credit card
+        - dana DANA
+        - docomopay d Payment
+        - ezlink EZ-Link
+        - felica E-money
+        - felica_id iD
+        - felica_quickpay QUICPay
+        - felica_transport_ic Transit IC card
+        - gcash GCash
+        - ginkopay Bank Pay
+        - googlepay Google Pay
+        - jcoinpay J-Coin Pay
+        - jkopay JKOPAY
+        - kakaopay Kakao Pay
+        - konbini Convenience store payment
+        - linepay LINE Pay
+        - merpay Merpay
+        - origamipay Origami Pay
+        - paidy Paidy (pay next month)
+        - paypal PayPal
+        - paypay PayPay
+        - pxpayplus AllPay
+        - rakutenpay Rakuten Pay
+        - smartcode Smart Code
+        - tng Touch 'n Go eWallet
+        - truemoney TrueMoney
+        - unionpay UnionPay QuickPass
+        - wechatpay Wechat Pay
+        - aeonpay AEON Pay
+        - rabbitlinepay Rabbit LINE Pay
+        - bpi BPI
+        - boost Boost
+        - hellomoney HelloMoney by AUB
+        - tosspay Toss Pay
+        - naverpay Naver Pay
+        - wellwa WellWa Points
+        - grabpay Grab Pay
+        - momopay Momo Pay
+        - promptpay Prompt Pay
+        - wovenpay Woven City Pay
+        - ezopay EZO Pay
+      type: string
+      enum:
+        - alipay
+        - alipayhk
+        - alipayplus
+        - amazonpay
+        - applepay
+        - applepay_cn
+        - atokara
+        - atone
+        - aupay
+        - clicktopay
+        - banktransfer
+        - creditcard
+        - dana
+        - docomopay
+        - ezlink
+        - felica
+        - felica_id
+        - felica_quickpay
+        - felica_transport_ic
+        - gcash
+        - ginkopay
+        - googlepay
+        - jcoinpay
+        - jkopay
+        - kakaopay
+        - konbini
+        - linepay
+        - merpay
+        - origamipay
+        - paidy
+        - paypal
+        - paypay
+        - pxpayplus
+        - rakutenpay
+        - smartcode
+        - tng
+        - truemoney
+        - unionpay
+        - wechatpay
+        - aeonpay
+        - rabbitlinepay
+        - bpi
+        - boost
+        - hellomoney
+        - tosspay
+        - naverpay
+        - wellwa
+        - grabpay
+        - momopay
+        - promptpay
+        - wovenpay
+        - ezopay
+        - auto
+    ResourceType:
+      description: |
+        Payment resource
+        - web Web browser
+        - ios iOS native app
+        - android Android native app
+        - liff LINE LIFF app
+        - mini WeChat Mini Program
+        - cpm CPM payment (customer-presented QR code)
+        - mpm MPM payment (merchant-presented QR code)
+        - reader Card reader payment (reader device required)
+        - posapp POS app payment (POS app integration required)
+      type: string
+      enum:
+        - web
+        - ios
+        - android
+        - liff
+        - mini
+        - cpm
+        - mpm
+        - reader
+        - posapp
+    CardBrandType:
+      description: |
+        - unknown
+        - visa
+        - mastercard
+        - amex
+        - jcb
+        - diners
+        - unionpay
+        - discover
+        - felica
+        - seven_eleven
+        - lawson
+        - familymart
+        - ministop
+        - seicomart
+      type: string
+    ChargeDateTimeType:
+      description: Time field
+      type: string
+      enum:
+        - paid_time
+        - create_time
+      default: create_time
+    DisputeDateTimeType:
+      description: Time field
+      type: string
+      enum:
+        - resolved_time
+        - create_time
+      default: create_time
+    SortOrderType:
+      description: Sort order
+      type: string
+      enum:
+        - desc
+        - asc
+      default: desc
+    ChargeStatusType:
+      description: |
+        Payment status
+        - pending Unpaid
+        - waiting Waiting for payment (information entered)
+        - notified Preparing for payment (notified)
+        - uncaptured Authorized (not captured)
+        - captured Paid
+        - partially_refunded Partially refunded
+        - refunded Refunded
+        - amount_mismatch Amount mismatch
+        - revoked Canceled
+        - failed Payment failed
+      type: string
+      enum:
+        - pending
+        - waiting
+        - notified
+        - uncaptured
+        - captured
+        - partially_refunded
+        - refunded
+        - amount_mismatch
+        - revoked
+        - failed
+    RefundStatusType:
+      description: |
+        Refund status
+        - pending Not refunded
+        - refunded Refunded
+      type: string
+      enum:
+        - pending
+        - refunded
+    CodeStatusType:
+      description: |
+        EasyQR code status
+        - pending Unpaid
+        - completed Payment information is ready
+        - captured Paid
+        - closed Expired or deleted
+      type: string
+      enum:
+        - pending
+        - completed
+        - captured
+        - closed
+    ChargeReq:
+      type: object
+      description: Payment request
+      required:
+        - amount
+        - paymentMethod
+        - orderNo
+      properties:
+        amount:
+          description: Amount
+          type: integer
+        capture:
+          description: |
+            Whether to capture the payment.
+            If false, only authorization and amount hold are performed. Default is true.
+          type: boolean
+          default: true
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        orderNo:
+          description: |
+            Merchant system order number (e.g., order number, payment ID, etc.).
+            Maximum length is 50 characters.
+          type: string
+          maxLength: 50
+        description:
+          description: Description of the payment
+          type: string
+          maxLength: 1024
+        extra:
+          description: Used when there is additional payment-related information. For details, refer to 'Developer Guide -> Payment Extra Information Settings'.
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: |
+            Metadata
+            Arbitrary key-value data.
+            Up to 20 keys; values are strings up to 255 bytes.
+            Strings beginning with 'route' or '__' are reserved keys.
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        clientIp:
+          description: Client IP address
+          type: string
+          maxLength: 39
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        sourceId:
+          description: Customer source ID
+          type: string
+          maxLength: 32
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+    ChargeDto:
+      type: object
+      description: Payment object
+      properties:
+        id:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: charge
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        amount:
+          description: Payment amount
+          type: integer
+        authorizeAmount:
+          description: Pre-authorization amount
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        authorize:
+          description: Pre-authorization flag
+          type: boolean
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        orderNo:
+          description: Merchant system order number, e.g., order number, payment ID, etc.
+          type: string
+          maxLength: 50
+        description:
+          description: Payment description
+          type: string
+          maxLength: 1024
+        location:
+          $ref: '#/components/schemas/ChargeLocationDto'
+        extra:
+          description: Payment extra data
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: Payment metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        cardInfo:
+          $ref: '#/components/schemas/CardInfo'
+        voucherNo:
+          description: Provider payment voucher number
+          type: string
+          maxLength: 32
+        clientIp:
+          description: Client IP address
+          type: string
+          maxLength: 45
+        paid:
+          description: Paid flag
+          type: boolean
+        refunded:
+          description: Refunded flag
+          type: boolean
+        disputed:
+          description: Disputed flag
+          type: boolean
+        refunds:
+          $ref: '#/components/schemas/RefundsDto'
+        status:
+          $ref: '#/components/schemas/ChargeStatusType'
+        codeContent:
+          description: Merchant-presented QR code (only when resource is mpm)
+          type: string
+        credential:
+          description: Client SDK credentials
+          type: string
+        paidTime:
+          description: Payment time (epoch millisecond)
+          type: integer
+          format: int64
+        refundTime:
+          description: Refund time (epoch millisecond)
+          type: integer
+          format: int64
+        expiryTime:
+          description: Payment request expiry time (epoch millisecond)
+          type: integer
+          format: int64
+        settleTime:
+          description: Payment settlement time (epoch millisecond)
+          type: integer
+          format: int64
+        createTime:
+          description: Payment creation time (epoch millisecond)
+          type: integer
+          format: int64
+    ChargeStatusDto:
+      type: object
+      description: Payment status object
+      properties:
+        id:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        status:
+          $ref: '#/components/schemas/ChargeStatusType'
+    RefundReq:
+      description: Refund request
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          description: Refund amount. You can refund the full amount, or refund any amount by specifying amount.
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        metadata:
+          description: Refund metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        reason:
+          description: Refund reason
+          type: string
+          maxLength: 255
+    RefundDto:
+      description: Refund object
+      type: object
+      properties:
+        id:
+          description: Refund ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: refund
+        chargeId:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        amount:
+          description: Refund amount. You can refund the full amount, or partially refund by specifying amount.
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+        metadata:
+          description: Refund metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        reason:
+          description: Refund reason
+          type: string
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/RefundStatusType'
+        refundedTime:
+          description: Refund processed time (epoch millisecond)
+          type: integer
+          format: int64
+        createTime:
+          description: Refund creation time (epoch millisecond)
+          type: integer
+          format: int64
+    RefundsDto:
+      description: Refund summary. If multiple refunds are issued, refund details are summarized and returned.
+      type: object
+      properties:
+        amount:
+          description: Total refunded amount
+          type: integer
+        totalCount:
+          description: Number of refunds
+          type: integer
+        data:
+          description: Refund details
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundDto'
+    ChargesResponse:
+      description: Payment list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        charges:
+          description: Payment details
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeDto'
+    RefundsResponse:
+      description: Refund list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        refunds:
+          description: Refund details
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundDto'
+    DisputesResponse:
+      description: Dispute list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        disputes:
+          description: Dispute details
+          type: array
+          items:
+            $ref: '#/components/schemas/DisputeDto'
+    DisputeDto:
+      description: Dispute object
+      type: object
+      properties:
+        id:
+          description: Dispute ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: dispute
+        chargeId:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        amount:
+          description: Dispute amount
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        reason:
+          description: Dispute reason
+          type: string
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/DisputeStatusType'
+        resolvedTime:
+          description: Resolution time (epoch millisecond)
+          type: integer
+          format: int64
+        createTime:
+          description: Occurrence time (epoch millisecond)
+          type: integer
+          format: int64
+    CustomerStatusType:
+      description: |
+        Status
+      type: string
+      enum:
+        - active
+        - deleted
+    CustomerReq:
+      description: Customer request
+      type: object
+      properties:
+        name:
+          description: Name
+          type: string
+          maxLength: 255
+        description:
+          description: Description of the customer
+          type: string
+          maxLength: 255
+        email:
+          description: Email address
+          type: string
+          maxLength: 255
+        phone:
+          description: Phone number
+          type: string
+          maxLength: 255
+        remark:
+          description: Remarks
+          type: string
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    CustomerUpdateReq:
+      description: Update customer request
+      type: object
+      properties:
+        defaultSource:
+          description: Default customer source ID
+          type: string
+          maxLength: 32
+        name:
+          description: Name
+          type: string
+          maxLength: 255
+        description:
+          description: Description of the customer
+          type: string
+          maxLength: 255
+        email:
+          description: Email address
+          type: string
+          maxLength: 255
+        phone:
+          description: Phone number
+          type: string
+          maxLength: 255
+        remark:
+          description: Remarks
+          type: string
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    CustomerDto:
+      description: Customer object
+      properties:
+        id:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: customer
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        defaultSource:
+          description: Default customer source ID
+          type: string
+          maxLength: 32
+        name:
+          description: Name
+          type: string
+          maxLength: 255
+        description:
+          description: Description of the customer
+          type: string
+          maxLength: 255
+        email:
+          description: Email address
+          type: string
+          maxLength: 255
+        phone:
+          description: Phone number
+          type: string
+          maxLength: 255
+        remark:
+          description: Remarks
+          type: string
+        operator:
+          description: Operator
+          type: string
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/CustomerStatusType'
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        updateTime:
+          description: update time
+          type: integer
+          format: int64
+    CustomerResponse:
+      description: Customer list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        customers:
+          description: Customer details
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDto'
+    SourceStatusType:
+      description: |
+        Customer source status
+        - pending Not approved
+        - active Approved
+        - failed Approval failed
+        - inactive Approved, but currently unavailable
+        - deleted Deleted or expired
+      type: string
+      enum:
+        - pending
+        - active
+        - failed
+        - inactive
+        - deleted
+    SourceReq:
+      description: Customer source request
+      type: object
+      required:
+        - paymentMethod
+        - resource
+      properties:
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        description:
+          description: Description of the customer source
+          type: string
+          maxLength: 255
+        extra:
+          description: Used when there is additional payment-related information. For details, refer to 'Developer Guide -> Source Extra Information Settings'.
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    SourceDto:
+      description: Customer source object
+      properties:
+        id:
+          description: Source ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: source
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        description:
+          description: Description of the customer source
+          type: string
+          maxLength: 255
+        extra:
+          description: Customer source extra data
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        info:
+          description: Customer source information
+          type: object
+          additionalProperties:
+            type: object
+        cardInfo:
+          $ref: '#/components/schemas/CardInfo'
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        credential:
+          description: Client SDK credentials
+          type: string
+        status:
+          $ref: '#/components/schemas/SourceStatusType'
+    SourceStatusDto:
+      type: object
+      description: Customer source status object
+      properties:
+        id:
+          description: Source ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        status:
+          $ref: '#/components/schemas/SourceStatusType'
+    SourceResponse:
+      description: Customer source list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        sources:
+          description: Customer source details
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceDto'
+    PaymentMethodResponse:
+      description: List of available payment methods
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        paymentMethods:
+          description: Payment method details
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodDto'
+    PaymentMethodDto:
+      description: Payment method details
+      type: object
+      properties:
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceType'
+        brand:
+          description: For credit cards, the available card brands
+          type: array
+          items:
+            description: Card brand
+            type: string
+        ua:
+          description: Available browser user agent
+          type: string
+        channelProperties:
+          $ref: '#/components/schemas/ChannelPropertiesDto'
+        customerProperties:
+          $ref: '#/components/schemas/CustomerPropertiesDto'
+    ChannelPropertiesDto:
+      description: Information about the payment method
+      type: object
+      properties:
+        isSupportRefund:
+          type: boolean
+          description: 'Refunds: true supported, false not supported'
+        isSupportPartialRefund:
+          type: boolean
+          description: 'Partial refunds: true supported, false not supported'
+        isSupportMultipleRefund:
+          type: boolean
+          description: 'Multiple refunds: true supported, false only once'
+        isSupportSource:
+          type: boolean
+          description: 'Customer & source: true supported, false not supported'
+        isSupportMultipleSource:
+          type: boolean
+          description: 'Multiple sources: true can be bound, false cannot be bound'
+        maxAmount:
+          type: integer
+          description: Maximum amount
+        minAmount:
+          type: integer
+          description: Minimum amount
+        resourceWebEnv:
+          $ref: '#/components/schemas/ResourceWebEnvType'
+    ResourceWebEnvType:
+      description: |
+        When the resource is Web: supported environments
+        - all All environments
+        - wallet_app Only embedded browsers inside wallet apps
+        - web Web only; not available inside wallet apps
+      type: string
+      enum:
+        - all
+        - wallet_app
+        - web
+    CustomerPropertiesDto:
+      deprecated: true
+      description: |
+        Customer-related information for payment methods. Deprecated. Use ChannelPropertiesDto instead.
+      type: object
+      properties:
+        isSupportCustomer:
+          type: boolean
+          description: |
+            Deprecated. Use ChannelPropertiesDto.isSupportSource.
+            Customer feature: true supported, false not supported.
+        isSupportMultipleSource:
+          type: boolean
+          description: |
+            Deprecated. Use ChannelPropertiesDto.isSupportMultipleSource.
+            Multiple sources: true can be bound, false cannot be bound
+    CodeReq:
+      type: object
+      description: EasyQR code request
+      required:
+        - amount
+        - orderNo
+      properties:
+        amount:
+          description: Amount
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        orderNo:
+          description: |
+            Merchant system order number (e.g., order number, payment ID, etc.).
+            Maximum length is 50 characters.
+          type: string
+          maxLength: 50
+        description:
+          description: The payment object's 'Description of the payment'
+          type: string
+          maxLength: 255
+        extra:
+          description: |
+            Used when there is additional payment-related information. For details, refer to 'Developer Guide -> Payment Extra Information Settings'.
+            When creating a payment object, the extra configured here takes precedence.
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: The payment object's 'Metadata'
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        expiryDuration:
+          description: |
+            EasyQR code expiration duration (minutes)
+            Minimum: 3 minutes, Maximum: 30 minutes, Default: 10 minutes
+          type: integer
+        frontUrl:
+          description: Return URL after EasyCheckout payment is completed
+          type: string
+          pattern: https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]
+        items:
+          description: Product information
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeItem'
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        sourceId:
+          description: Customer source ID
+          type: string
+          maxLength: 32
+        shouldCreateSource:
+          description: |
+            Whether a new customer source needs to be created with this code.
+          type: boolean
+          default: false
+    CodeDto:
+      type: object
+      description: EasyQR code object
+      properties:
+        id:
+          description: EasyQR code ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: code
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        codeUrl:
+          description: EasyQR code URL
+          type: string
+          maxLength: 255
+        amount:
+          description: Payment amount
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        orderNo:
+          description: Merchant system order number, e.g., order number, payment ID, etc.
+          type: string
+          maxLength: 50
+        description:
+          description: The payment object's 'Description of the payment'
+          type: string
+          maxLength: 255
+        extra:
+          description: Payment extra data
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: The payment object's 'Metadata'
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        status:
+          $ref: '#/components/schemas/CodeStatusType'
+        charge:
+          $ref: '#/components/schemas/ChargeDto'
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        source:
+          $ref: '#/components/schemas/SourceDto'
+        frontUrl:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeItem'
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+        expired:
+          description: Whether the EasyQR code is expired
+          type: boolean
+        expiryTime:
+          description: EasyQR code expiry time (epoch millisecond)
+          type: integer
+          format: int64
+        expiryPeriod:
+          description: Remaining milliseconds until EasyQR code expiry
+          type: integer
+          format: int64
+        createTime:
+          description: Code creation time (epoch millisecond)
+          type: integer
+          format: int64
+        shouldCreateSource:
+          description: |
+            Whether a new customer source needs to be created with this code.
+          type: boolean
+        activeSources:
+          description: List of active customer sources
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceDto'
+        invoice:
+          $ref: '#/components/schemas/InvoiceDto'
+    CodePaymentMethodResponse:
+      description: List of payment methods available for EasyQR.
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        paymentMethods:
+          description: Payment method details
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodDto'
+    CardInfo:
+      type: object
+      description: Card and wallet information
+      properties:
+        brand:
+          $ref: '#/components/schemas/CardBrandType'
+        last4:
+          description: Last 4 digits of the card number
+          type: string
+        expMonth:
+          description: Expiration month
+          type: integer
+        expYear:
+          description: Expiration year
+          type: integer
+        name:
+          description: Cardholder name
+          type: string
+        issuerCode:
+          description: |
+            Card issuer code (GMO payment only)
+            Complies with GMO-PG "destination card company code"
+          type: string
+        issuerName:
+          description: |
+            Card issuer name (GMO payment only)
+            Company name corresponding to GMO-PG "destination card company code"
+          type: string
+        wallet:
+          description: Wallet information
+          type: string
+        walletApp:
+          description: Wallet app information (for paymentMethod alipayplus or smartcode, the actual app name used)
+          type: string
+        repaymentType:
+          description: |
+            Repayment type
+            - 1 One-time payment
+            - revolving Revolving payment
+            - bonus_one_time Bonus one-time payment
+            - 2 Two-installment payment
+            - 3 Three-installment payment
+          type: string
+        approvalCode:
+          description: Authorization code
+          type: string
+        threeDSecure:
+          description: 3D Secure enabled
+          type: boolean
+        threeDSecureVersion:
+          description: 3D Secure version
+          type: string
+        threeDSecureDetail:
+          description: 3D Secure details
+          type: string
+        businessType:
+          description: Business type
+          type: string
+        konbiniScanTime:
+          description: Last scan time by the convenience store
+          type: integer
+          format: int64
+        konbiniType:
+          description: |
+            Convenience store type used for the actual payment
+            - unknown
+            - seven_eleven
+            - lawson
+            - familymart
+            - ministop
+            - seicomart
+          type: string
+        receivedAmount:
+          description: Actual amount received from the convenience store or bank
+          type: integer
+        receivedTime:
+          description: Actual time received by the convenience store or bank; this value may contain only the date (midnight).
+          type: integer
+          format: int64
+        bankUserCode:
+          description: Bank transfer user code
+          type: string
+        bankUserName:
+          description: Bank transfer user name
+          type: string
+        bankName:
+          description: Receiving bank name
+          type: string
+        bankBranchName:
+          description: Receiving bank branch name
+          type: string
+        bankAccountNo:
+          description: Receiving bank account number
+          type: string
+        billingNo:
+          description: Billing number (for payment station)
+          type: string
+    CodeItem:
+      type: object
+      description: Product information
+      required:
+        - name
+        - price
+        - count
+      properties:
+        name:
+          description: Product name
+          type: string
+        image:
+          description: Product image URL
+          type: string
+          pattern: https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]
+        price:
+          description: Payment amount for each product item
+          type: integer
+        count:
+          description: Quantity
+          type: integer
+    TaxType:
+      description: |
+        Tax type
+        - included Tax included
+        - excluded Tax excluded
+      type: string
+      enum:
+        - included
+        - excluded
+    TaxCalcType:
+      description: |
+        Tax calculation method
+        - floor Round down
+        - ceil Round up
+        - round5 Round half up
+      type: string
+      enum:
+        - floor
+        - ceil
+        - round5
+    TaxRateType:
+      description: |
+        Tax rate type
+        - standard Standard rate (10%)
+        - reduced Reduced rate (8%)
+        - free Tax-free (0%)
+      type: string
+      enum:
+        - standard
+        - reduced
+        - free
+    InvoiceStatusType:
+      description: |
+        Invoice status
+        - draft Draft
+        - submit Finalized
+        - sent Sent
+        - paid Paid
+        - expired Expired
+        - canceled Canceled
+      type: string
+      enum:
+        - draft
+        - submit
+        - sent
+        - paid
+        - expired
+        - canceled
+    InvoiceReq:
+      description: Invoice request
+      type: object
+      required:
+        - customerId
+        - amount
+      properties:
+        name:
+          description: Invoice subject
+          type: string
+        memo:
+          description: Invoice memo
+          type: string
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        amount:
+          description: Payment amount
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        taxType:
+          $ref: '#/components/schemas/TaxType'
+        taxCalcType:
+          $ref: '#/components/schemas/TaxCalcType'
+        invoiceTime:
+          description: Billing date (epoch millisecond)
+          type: integer
+          format: int64
+        expiryTime:
+          description: Payment request expiry time (epoch millisecond)
+          type: integer
+          format: int64
+        fields:
+          description: Invoice field list
+          type: array
+          items:
+            type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+        remark:
+          description: Additional description
+          type: string
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        enableAutoCharge:
+          description: |
+            Whether to enable automatic payment.
+            true Enabled, false Disabled
+          type: boolean
+          default: false
+        autoChargeTime:
+          description: Automatic payment time (epoch millisecond)
+          type: integer
+          format: int64
+    InvoiceDto:
+      description: Invoice object
+      properties:
+        id:
+          description: Invoice ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: invoice
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        invoiceNo:
+          description: Invoice Number
+          type: string
+          maxLength: 255
+        name:
+          description: Invoice subject
+          type: string
+          maxLength: 255
+        memo:
+          description: Invoice memo
+          type: string
+          maxLength: 255
+        amount:
+          description: Payment amount
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        status:
+          $ref: '#/components/schemas/InvoiceStatusType'
+        operator:
+          description: Operator
+          type: string
+          maxLength: 255
+        invoiceTime:
+          description: Billing date (epoch millisecond)
+          type: integer
+          format: int64
+        sendTime:
+          description: Send time (epoch millisecond)
+          type: integer
+          format: int64
+        paidTime:
+          description: Payment time (epoch millisecond)
+          type: integer
+          format: int64
+        expiryTime:
+          description: Payment request expiry time (epoch millisecond)
+          type: integer
+          format: int64
+        createTime:
+          description: Creation time (epoch millisecond)
+          type: integer
+          format: int64
+        fields:
+          description: Invoice field list
+          type: array
+          items:
+            type: string
+        items:
+          description: Invoice item list
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+        remark:
+          description: Additional description
+          type: string
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        enableAutoCharge:
+          description: |
+            Whether to enable automatic payment.
+            true Enabled, false Disabled
+          type: boolean
+    InvoiceItem:
+      description: Invoice item object
+      properties:
+        id:
+          description: Invoice Item ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: invoiceItem
+        name:
+          description: Product name
+          type: string
+          maxLength: 255
+        unitPrice:
+          description: Unit price
+          type: integer
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        quantity:
+          description: Count
+          type: integer
+        unit:
+          description: Unit
+          type: string
+        taxRateType:
+          $ref: '#/components/schemas/TaxRateType'
+        transactionTime:
+          description: Transaction time (epoch millisecond)
+          type: integer
+          format: int64
+    InvoicesResponse:
+      description: Invoice list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        invoices:
+          description: Invoice details
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceDto'
+    InvoiceTaxSummaryItemDto:
+      description: Invoice tax summary item
+      type: object
+      properties:
+        taxRateType:
+          $ref: '#/components/schemas/TaxRateType'
+        amount:
+          description: Taxable amount
+          type: integer
+        tax:
+          description: Tax amount
+          type: integer
+    LocationsResponse:
+      description: Terminal location list
+      type: object
+      properties:
+        locations:
+          description: Terminal location details
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDto'
+    LocationDto:
+      description: Terminal location object
+      type: object
+      properties:
+        id:
+          description: Location ID
+          type: string
+          maxLength: 32
+        name:
+          description: Location name
+          type: string
+          maxLength: 255
+        country:
+          description: Location country
+          type: string
+          maxLength: 255
+        description:
+          description: Location details
+          type: string
+          maxLength: 255
+        logoUrl:
+          description: Location logo URL
+          type: string
+    ReaderStatusType:
+      description: |
+        Reader status
+        - pending Waiting for pairing
+        - active Paired
+      type: string
+      enum:
+        - pending
+        - active
+    DisputeStatusType:
+      description: |
+        Dispute status
+        - new In progress
+        - won Claim accepted
+        - lost Claim rejected
+      type: string
+      enum:
+        - new
+        - won
+        - lost
+    TerminalReaderReq:
+      description: Terminal reader request
+      type: object
+      required:
+        - locationId
+      properties:
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    TerminalReaderDto:
+      description: Terminal reader object
+      type: object
+      properties:
+        id:
+          description: Reader ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: terminal.reader
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 50
+        serialNumber:
+          description: Serial number
+          type: string
+          maxLength: 50
+        registrationCode:
+          description: Pairing code
+          type: string
+          maxLength: 20
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        status:
+          $ref: '#/components/schemas/ReaderStatusType'
+    ChargeCaptureReq:
+      description: Capture request
+      type: object
+      properties:
+        amount:
+          description: >
+            Capture amount
+
+            By setting this, you can process a payment amount different from the amount at creation.
+            Note that it must be less than the amount at creation.
+          type: integer
+        extra:
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    TerminalReadersResponse:
+      description: Reader list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        readers:
+          description: Reader details
+          type: array
+          items:
+            $ref: '#/components/schemas/TerminalReaderDto'
+    SubscriptionIntervalType:
+      description: |
+        Subscription interval type
+        - day Once per day
+        - week Once per week
+        - month Once per month
+        - year Once per year
+      type: string
+      enum:
+        - day
+        - week
+        - month
+        - year
+    SubscriptionDto:
+      description: Subscription object
+      type: object
+      properties:
+        id:
+          description: Subscription ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: subscription
+        liveMode:
+          description: |
+            Whether this is live mode
+            - false Test mode
+            - true Live mode
+          type: boolean
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        nextChargeTime:
+          description: Next charge time (epoch millisecond)
+          type: integer
+          format: int64
+        isCharging:
+          description: Whether it is being processed
+          type: boolean
+        chargedPeriods:
+          description: Number of successful subscription charges
+          type: integer
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        status:
+          $ref: '#/components/schemas/SubscriptionStatusType'
+        createTime:
+          description: Creation time (epoch millisecond)
+          type: integer
+          format: int64
+        updateTime:
+          description: Update time (epoch millisecond)
+          type: integer
+          format: int64
+    SubscriptionPeriodDto:
+      description: Subscription period information object
+      type: object
+      properties:
+        id:
+          description: Subscription Period ID
+          type: string
+          maxLength: 32
+        object:
+          description: Object type
+          type: string
+          default: subscription_period
+        startTime:
+          description: Period start time (epoch millisecond)
+          type: integer
+          format: int64
+        endTime:
+          description: Period end time (epoch millisecond)
+          type: integer
+          format: int64
+        charge:
+          $ref: '#/components/schemas/ChargeDto'
+    SubscriptionStatusType:
+      description: |
+        Subscription status
+        - new New
+        - active Active
+        - past_due Past due
+        - canceled Canceled
+      type: string
+      enum:
+        - new
+        - active
+        - past_due
+        - canceled
+    SubscriptionReq:
+      description: Create subscription request
+      type: object
+      required:
+        - customerId
+      properties:
+        name:
+          description: Subscription name
+          type: string
+          maxLength: 20
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        currency:
+          description: Currency code (ISO 4217)
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        amount:
+          description: Amount per billing period
+          type: integer
+        interval:
+          description: Subscription interval type
+          $ref: '#/components/schemas/SubscriptionIntervalType'
+        intervalSpan:
+          description: Interval span (how many intervals between charges)
+          type: integer
+          default: 1
+        initialAmount:
+          description: Fixed amount to pay before the first charge
+          type: integer
+        firstChargeTime:
+          description: First charge time (epoch millisecond)
+          type: integer
+          format: int64
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    SubscriptionUpdateReq:
+      description: Update subscription request
+      type: object
+      properties:
+        metadata:
+          description: Metadata
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    SubscriptionsResponse:
+      description: Subscription list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        subscriptions:
+          description: Subscription details
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionDto'
+    SubscriptionPeriodsResponse:
+      description: Subscription period list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        periods:
+          description: Subscription period details
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionPeriodDto'
+    SubscriptionScheduleChargesResponse:
+      description: Subscription period charge list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        charges:
+          description: Subscription period charge details
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeDto'
+    ChargeLocationStatusType:
+      description: |
+        Location status
+        - active Active
+        - submitted Submitted
+      type: string
+      enum:
+        - active
+        - submitted
+    ChargeLocationReq:
+      description: Location request
+      type: object
+      required:
+        - name
+        - tel
+        - zip
+        - address
+      properties:
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: Phone number
+          type: string
+          maxLength: 20
+        zip:
+          description: Postal code
+          type: string
+          maxLength: 8
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: Latitude
+          type: number
+          format: double
+        longitude:
+          description: Longitude
+          type: number
+          format: double
+        note:
+          description: Remarks
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+    ChargeLocationUpdateReq:
+      description: Location update request
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: Phone number
+          type: string
+          maxLength: 20
+        zip:
+          description: Postal code
+          type: string
+          maxLength: 8
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: Latitude
+          type: number
+          format: double
+        longitude:
+          description: Longitude
+          type: number
+          format: double
+        note:
+          description: Remarks
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+    ChargeLocationDto:
+      description: Location object
+      type: object
+      properties:
+        id:
+          description: Location ID
+          type: string
+          maxLength: 32
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: Phone number
+          type: string
+          maxLength: 20
+        zip:
+          description: Postal code
+          type: string
+          maxLength: 8
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: Latitude
+          type: number
+          format: double
+        longitude:
+          description: Longitude
+          type: number
+          format: double
+        note:
+          description: Remarks
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+    ChargeLocationsResponse:
+      description: Location list
+      type: object
+      properties:
+        total:
+          description: Count
+          type: integer
+        locations:
+          description: Location details
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeLocationDto'
+    AddressTransliterationDto:
+      description: Address transliteration object
+      type: object
+      properties:
+        kanji:
+          $ref: '#/components/schemas/AddressDto'
+        kana:
+          $ref: '#/components/schemas/AddressDto'
+        romaji:
+          $ref: '#/components/schemas/AddressDto'
+    StringTransliterationDto:
+      description: Name transliteration object
+      type: object
+      properties:
+        kanji:
+          description: Kanji
+          type: string
+        kana:
+          description: Kana
+          type: string
+        romaji:
+          description: Romaji
+          type: string
+    AddressDto:
+      description: Address object
+      type: object
+      properties:
+        pref:
+          description: Prefecture
+          type: string
+        city:
+          description: City/Municipality
+          type: string
+        town:
+          description: Town
+          type: string
+        address1:
+          description: Address line 1
+          type: string
+        address2:
+          description: Address line 2
+          type: string

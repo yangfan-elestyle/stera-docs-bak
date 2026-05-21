@@ -1,0 +1,49 @@
+---
+title: 终端收款
+---
+
+<EText name="elepay" /> 提供结合终端设备的线下收款能力。
+
+通过终端可受理信用卡、借记卡等到店刷卡/插卡/挥卡支付。带 IC 芯片的卡可能需要输入 PIN。亦支持非接（触碰）支付与电子货币。
+
+> 🚧 使用终端收款前，需要先开通 Square 账户并在 <EText name="elepay" /> 端完成相关配置。
+
+从准备到可受理支付的流程示意
+
+![](/docs/ee8ebf5-terminal_prepare.png)
+
+收款处理流程示意
+
+![](/docs/6b666a5-terminal_charge.png)
+
+# 支付处理
+
+### 1. 发起支付请求
+
+服务端调用 <EText name="elepay" /> 的 Charge 接口创建支付请求。
+
+> 📘 关键请求项说明
+>
+> **resource**：设置为 `reader`。（后续版本计划更名为 `terminal`）
+>
+> **paymentMethod**：支付方式
+>
+> **extra**：必须包含 `readerId`。
+
+### 2. 顾客完成支付
+
+在终端上完成信用卡、借记卡、电子货币等支付。
+
+### 3. 检查 Charge 状态并展示结果
+
+可通过以下两种方式确认结果：
+
+**1. 接收 Webhook 事件**
+支付成功时，<EText name="elepay" /> 会向配置的 Webhook URL 发送 `charge.captured` 事件；支付失败时发送 `charge.revoked` 事件。
+
+**2. 轮询获取支付状态**
+调用 Charge 查询接口轮询状态，直到支付成功或超时（建议超时时间 60 秒，轮询频率每 10 秒 1 次）。
+
+# 在控制台中查看
+
+可在「支付管理 / 支付列表」查看记录。关于退款，请参阅[退款](/get-started/refunds)。

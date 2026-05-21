@@ -1,0 +1,489 @@
+---
+title: Payment Methods
+tocMaxDepth: 3
+---
+
+# Overview [#summary]
+
+When using the mobile SDKs (iOS, Android), the configuration for each payment method is described on this page.
+
+> ◯: Requires individual settings, △: Only common elepay settings are needed, X: No special settings.
+
+## iOS Development Setup
+
+| Payment                            | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
+| ---------------------------------- | ---------- | --------------------------- | --------------------- |
+| [PayPay](#paypay)                  | △          | ◯ \*1                       | —                     |
+| [merpay](#merpay)                  | △          | X                           | —                     |
+| d払い                              | X          | X                           | —                     |
+| [au PAY](#au-pay)                  | △          | ◯ \*1                       | —                     |
+| [Rakuten Pay](#rpay)               | △          | ◯                           | —                     |
+| Paidy                              | X          | X                           | —                     |
+| atone                              | X          | X                           | —                     |
+| [WeChat Pay](#wechat-pay)          | ◯          | ◯                           | —                     |
+| [Alipay](#alipay)                  | △          | ◯                           | —                     |
+| [UnionPay (銀聯雲閃付)](#unionpay) | △          | ◯                           | ◯                     |
+| [PayPal](#paypal)                  | X          | ◯                           | —                     |
+| [Apple Pay](#apple-pay)            | X          | X                           | ◯                     |
+| Credit Card                        | X          | X                           | —                     |
+
+---
+
+1: From ElepaySDK for iOS v3.2.1 onward, you do not need to add each payment app’s scheme to LSApplicationQueriesSchemes. If the payment app is not actually installed, the SDK returns error code "10110".
+
+## Android Development Setup
+
+### About payment providers
+
+#### GoAllpay
+
+If you use GoAllpay, you must add the GoAllpay SDK repository and dependency to your project configuration.
+For details, refer to the GoAllpay SDK docs in [Chinese](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_CH.md) or [English](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_EN.md).
+
+Setup:
+
+> Add the following to the root project’s `build.gradle`:
+
+```groovy
+repositories {
+	// ... other maven repos
+	// maven repo for GoAllpay SDK
+	maven {
+    	url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+	}
+}
+```
+
+> Add the following to the app module’s `build.gradle`:
+
+```groovy
+dependencies {
+	// ... other dependencies
+	api("io.github.goallpay:allpaysdk:5.2.5")
+}
+
+```
+
+### Per-payment-method setup
+
+| Payment                            | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
+| ---------------------------------- | -------------------------------------- | --------------------------------- |
+| [PayPay](#paypay)                  | ◯                                      | X                                 |
+| [merpay](#merpay)                  | ◯                                      | X                                 |
+| d払い                              | X                                      | X                                 |
+| [au PAY](#au-pay)                  | ◯                                      | X                                 |
+| [Rakuten Pay](#rpay)               | X                                      | ◯                                 |
+| Paidy                              | X                                      | X                                 |
+| atone                              | X                                      | X                                 |
+| [WeChat Pay](#wechat-pay)          | ◯                                      | ◯                                 |
+| [Alipay](#alipay)                  | X                                      | ◯                                 |
+| [UnionPay (銀聯雲閃付)](#unionpay) | X                                      | X                                 |
+| [PayPal](#paypal)                  | X                                      | X                                 |
+| [Apple Pay](#apple-pay)            | X                                      | X                                 |
+| Credit Card                        | X                                      | X                                 |
+
+From elepay Android SDK 1.8.0 and later, the callback Activity specified in `AndroidManifest.xml` can be consolidated into a single Activity as shown below. The per-payment-method setup used up to 1.7.1 is no longer supported. When using 1.8.0 or later, use `ElepayCallbackActivity`.
+
+> 📘 For how to obtain the elepay-specific URL Scheme, see “[URL Scheme for iOS/Android SDK](/sdks/url-scheme)”.
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.ElepayCallbackActivity"
+    android:launchMode="singleTask"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep1234567890abcdef" /> ←このschemeは「アプリ設定」ページより取得してください。
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+## Payment methods
+
+### PayPay
+
+#### iOS
+
+##### iOS 9 and later
+
+Starting with ElepaySDK for iOS v3.2.1, you can use the payment app without adding the scheme below to LSApplicationQueriesSchemes. If the payment app is not installed, the SDK returns [error code](/get-started/error-code) “10110”.
+
+For ElepaySDK for iOS v3.2.1 and earlier, to hand off to the PayPay app, add the `LSApplicationQueriesSchemes` key under **PROJECT** → **TARGETS** → **Info** (or `Info.plist`) in Xcode.
+
+```xml
+<string>paypay</string>
+```
+
+##### Callback URL Scheme for iOS apps
+
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
+
+#### Android
+
+> 🚧 From elepay Android SDK 1.8.0 and later, the callback Activity specified in `AndroidManifest.xml` can be consolidated into `ElepayCallbackActivity`. The per-payment-method setup used up to 1.7.1 is no longer supported. When using 1.8.0 or later, use `ElepayCallbackActivity`. See the [Overview](#summary) for details.
+
+To use PayPay, add the URL Scheme from the “App Settings” page of your <EText name="elepay" /> account to your project’s `AndroidManifest.xml`.
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.paypay.PayPayActivity"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep8bd64f25c5545b99c43e295"
+              android:host="paypay"/> ←このschemeは「アプリ設定」ページより取得してください。
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+If you customize the Activity launched by the scheme, inherit from `jp.elestyle.androidapp.elepay.activity.paypay.PayPayActivity`.
+
+### merpay [#merpay]
+
+#### Android
+
+> 🚧 From elepay Android SDK 1.8.0 and later, the callback Activity specified in `AndroidManifest.xml` can be consolidated into `ElepayCallbackActivity`. The per-payment-method setup used up to 1.7.1 is no longer supported. When using 1.8.0 or later, use `ElepayCallbackActivity`. See the [Overview](#summary) for details.
+
+To use merpay, add the URL Scheme from the “App Settings” page of your <EText name="elepay" /> account to your project’s `AndroidManifest.xml`.
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.merpay.MerpayActivity"
+    android:exported="true">
+    <intent-filter>
+        <data
+            android:host="merpay"
+            android:scheme="ep33e72b55aaa6cce18c0abd7" /> ←このschemeは「アプリ設定」ページより取得してください。
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+### au PAY
+
+#### iOS
+
+##### iOS 9 and later
+
+Starting with ElepaySDK for iOS v3.2.1, you can use the payment app without adding the scheme below to LSApplicationQueriesSchemes. If the payment app is not installed, the SDK returns [error code](/get-started/error-code) “10110”.
+
+For ElepaySDK for iOS v3.2.1 and earlier, to hand off to the au PAY app, add the `LSApplicationQueriesSchemes` key under **PROJECT** → **TARGETS** → **Info** (or `Info.plist`) in Xcode.
+
+```xml
+<string>auwallet</string>
+```
+
+##### Callback URL Scheme for iOS apps
+
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
+
+### Rakuten Pay [#rpay]
+
+#### iOS
+
+To use RPay, in addition to the elepay SDK, you must add the proprietary (non‑public) RPay framework to your project’s build dependencies. Contact <EText name="elepay" /> support for how to obtain RPayKit.framework and how to add it.
+
+##### iOS 9 and later
+
+To hand off to the Rakuten Pay app, add the `LSApplicationQueriesSchemes` key under **PROJECT** → **TARGETS** → **Info** (or `Info.plist`) in Xcode.
+
+```xml
+<string>rakutenpaysdk</string>
+```
+
+##### Callback URL Scheme for iOS apps
+
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
+
+#### Android
+
+To use RPay, in addition to the elepay SDK, add the proprietary Rakuten Pay AAR (non‑public) to your project’s build dependencies. For how to add the dependency, see the Android Developer [official docs](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency).
+
+> 📘 For the download location of the Rakuten Pay AAR, contact <EText name="elepay" /> support.
+
+### Apple Pay
+
+#### iOS
+
+This section describes how to implement Apple Pay.
+
+##### How it works
+
+Apple Pay allows Apple devices to function as a wallet for simple payments.
+
+##### Apple Pay configuration
+
+See [Setting Up Apple Pay](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay_requirements).
+
+1.  Register an Apple Merchant ID
+    To use Apple Pay, you must register an Apple Merchant ID.
+2.  Create an Apple Pay certificate
+    A certificate is required to encrypt payment data.
+    Create the certificate as follows:
+    (1) In <EText name="elepay" />, go to “開発設定” → “Apple Pay” → “Apple Pay Certificate” and download the CSR (Certificate Signing Request).
+    (2) Upload the CSR on Apple Developer using the Merchant ID created in step 1 to create the certificate.
+    (3) Subsequent certificate handling varies by payment provider; see the corresponding provider section below.
+3.  Integrate with Xcode
+    Open your project in Xcode and enable Apple Pay under the Capabilities tab. You may be prompted to sign in with your developer account. After enabling it, check the Merchant ID created in step 1 to complete the configuration.
+
+See also [Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app).
+
+<EContainer tenant="default">
+
+##### Apple Pay (Stripe)
+
+Upload the certificate generated on the Apple Developer site to the <EText name="elepay" /> `Payment Module (決済モジュール)` dashboard.
+
+##### Apple Pay (GMO / Paygent)
+
+The CSR must be generated by the merchant (do not use the CSR available from the <EText name="elepay" /> dashboard):
+
+1. On Apple Developer, create the certificate using your own CSR and Merchant ID.
+2. Upload the certificate to the GMO / Paygent dashboard yourself (no upload to the <EText name="elepay" /> dashboard is required).
+3. Only the Apple Merchant ID needs to be provided to the <EText name="elepay" /> support team.
+
+##### Apple Pay (Stripe · UnionPay in China) certificate
+
+**(Required only if you applied for “China UnionPay Apple Pay”)**
+
+- On [Apple Developer](https://developer.apple.com/account), create a Certificate Signing Request (CSR). Refer to Apple’s guide.
+
+![](/docs/Apple_Developer1.png)
+
+- When creating the CSR, be sure to check “Let me specify key pair information”.
+
+![](/docs/Apple_Developer2.png)
+
+- In “Key Pair Information”, set Algorithm to “ECC” and Key Size to “256 bits”.
+
+![](/docs/Apple_Developer3.png)
+
+- When uploading the CSR to developer.apple.com, select “No” for “Will payments associated with this Merchant ID be processed exclusively in China?”.
+
+![](/docs/Apple_Developer4.png)
+
+- Download the generated certificate (.cer) and export a Personal Information Exchange (.p12) with an empty password.
+- In <EText name="elepay" /> “開発設定” → “Apple Pay” → “Apple Pay Certificate (中国)”, upload the certificate (.cer) and the .p12 file above.
+
+</EContainer>
+
+<EContainer tenant="smcc">
+
+##### Apple Pay (GMO)
+
+1. Provide your Apple Merchant ID to the <EText name="elepay" /> support team.
+2. Upload the certificate generated on the Apple Developer site to the GMO dashboard yourself.
+
+</EContainer>
+
+### Google Pay
+
+#### Android
+
+Specify `googlePayEnvironment` when setting up the elepay SDK.
+
+> Using Google Pay requires an application to Google. You may be asked to submit apps built for both TEST and PRODUCTION environments.
+>
+> When applying via the [Google Pay & Wallet Console](https://pay.google.com/business/console), you must select the corresponding PSP, such as Stripe (stripe), GMO-PG (gmopg), or Paygent (paygent).
+
+When configuring the elepay SDK, you can specify `googlePayExistingPaymentRequired` (default: true) to check whether the user already has a valid payment card in Google Pay.
+
+> true: At least one payable card is required in Google Pay.
+>
+> false: Do not check cards in Google Pay. If there is no card, the user can add one in the payment dialog.
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "" // test key or live key
+  googlePayEnvironment = GooglePayEnvironment.TEST // or GooglePayEnvironment.PRODUCTION
+  googlePayExistingPaymentRequired = false // default true
+)
+Elepay.setup(configuration)
+```
+
+Because Google Pay depends on Google Play Services, you must check availability before use.
+The SDK provides the following method for availability of Google Pay:
+
+```kotlin
+// Check whether Google Pay can be used.
+fun checkIfGooglePayIsReadyToUse(
+    activity: Activity,
+    resultHandler: (Boolean) -> Unit
+)
+```
+
+##### Google Pay development
+
+1. Ensure `minSdkVersion` meets the official requirements: https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+2. Configure `AndroidManifest.xml`:
+
+```
+<application>
+  ...
+  <meta-data
+    android:name="com.google.android.gms.wallet.api.enabled"
+    android:value="true" />
+</application>
+```
+
+##### Google Pay PRODUCTION verification
+
+Per Google Pay requirements, PRODUCTION must use a Google Play release-signed build. Follow this process:
+
+1. Apply for Google Pay API integration.
+   a. https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration
+2. You must download the app from Google Play Store and test it (a locally installed release-signed APK is not accepted).
+   a. https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+   b. After signing with your release key and uploading to Google Play, download with a tester account and verify Google Pay functionality.
+3. Use `GooglePayEnvironment.PRODUCTION`, not `GooglePayEnvironment.TEST`.
+
+##### Differences between TEST and PRODUCTION
+
+When `googlePayExistingPaymentRequired` is true:
+
+1. **Test environment**: Depends on the Google Wallet app. Install Google Wallet and register a credit card; otherwise the Google Pay dialog will not start and `checkIfGooglePayIsReadyToUse` returns `false` (forcing a payment will return error code 10100).
+2. **Production environment**: Real users must have a payment card registered in Google Wallet or their Google account. If not, `checkIfGooglePayIsReadyToUse` returns `false` (forcing a payment will return error code 10100).
+
+When `googlePayExistingPaymentRequired` is false:
+
+1. **Test environment**: The payment dialog automatically fills test card information.
+2. **Production environment**: If the user has no card in Google Pay, the dialog prompts them to add a card.
+
+##### Google Pay × GMO Test Mode (3DS2 integration)
+
+When invoking Google Pay through the GMO channel in Test Mode (charge `liveMode=false`), the SDK replaces the real token returned by Google Wallet with the `googlePayTestToken` issued by elepay, and then hands it to GMO `ExecutePaymentFlow` to trigger 3DS2 authentication.
+
+To cover different 3DS2 scenarios during development (challenge / frictionless, various failure codes, etc.), contact the <EText name="elepay" /> support team to adjust this test token. No changes are required on the app side.
+
+### PayPal
+
+#### iOS
+
+##### Callback URL Scheme for iOS apps
+
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
+
+In addition, add a PayPal‑specific URL Scheme that starts with your app’s Bundle ID.
+See [<EText name="elepay" /> Dashboard](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **PayPal**.
+
+##### iOS 9 and later
+
+To hand off to the PayPal app, add the `LSApplicationQueriesSchemes` key under **PROJECT** → **TARGETS** → **Info** (or `Info.plist`) in Xcode.
+
+```xml
+<string>com.paypal.ppclient.touch.v1</string>
+<string>com.paypal.ppclient.touch.v2</string>
+```
+
+### Alipay
+
+#### iOS
+
+Alipay is a simple and secure payment service provided by Ant Financial, available on iOS, Android, and web browsers.
+
+##### iOS 9 and later
+
+To hand off to the Alipay app, add the `LSApplicationQueriesSchemes` key under **PROJECT** → **TARGETS** → **Info** (or `Info.plist`) in Xcode.
+
+```xml
+<string>alipay</string>
+```
+
+##### Callback URL Scheme for iOS apps
+
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
+
+#### Android
+
+To use Alipay, download the [Alipay SDK](https://doc.open.alipay.com/doc2/detail.htm?treeId=54&articleId=104509&docType=1) and place it under your project’s `libs` folder.
+
+> 📘 The Alipay SDK filename looks like:
+> alipaySdk-15.6.8-20191021122455-noUtdid.aar
+
+Then, add the Alipay SDK dependency to your app’s `build.gradle`:
+
+```groovy
+dependencies {
+  // ... other dependencies
+  implementation files('libs/alipaySdk-20170725.jar')
+}
+```
+
+### WeChat Pay
+
+#### iOS
+
+##### Callback URL Scheme for iOS apps
+
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).
+
+In addition, a WeChat‑specific URL Scheme (starting with `wx`) is required.
+See [elepay Dashboard](https://dashboard.elepay.io/) → **開発設定** → **アプリ設定** → **URL Scheme** → **WeChat Pay**. If WeChat Pay is not enabled, this section is hidden.
+
+##### iOS 9 and later
+
+To hand off to the WeChat Pay app, add the `LSApplicationQueriesSchemes` key under **PROJECT** → **TARGETS** → **Info** (or `Info.plist`) in Xcode.
+
+```xml
+<string>weixin</string>
+<string>weixinULAPI</string>
+```
+
+#### Android
+
+WeChat Pay depends on the WeChat library. Add the WeChat SDK dependency to `build.gradle`.
+We recommend the latest version; see [WeChat SDK maven](https://bintray.com/wechat-sdk-team/maven) for versions.
+
+```groovy
+dependencies {
+  // ... other dependencies
+  implementation　"com.tencent.mm.opensdk:wechat-sdk-android-without-mta:version"
+}
+```
+
+Then add the following `activity-alias` to your project’s `AndroidManifest.xml`.
+WeChat Pay looks for `package.name.wxapi.WXPayEntryActivity`, so the elepay SDK links into your existing code.
+
+```xml
+<!-- Other activity declarations -->
+<activity name="...">
+</activity>
+
+<!-- Required for using WeChat Pay -->
+<activity-alias
+    android:name="パッケージ名.wxapi.WXPayEntryActivity"
+    android:exported="true"
+    android:targetActivity="jp.elestyle.androidapp.elepay.activity.wxapi.WXPayEntryActivity" />
+```
+
+### UnionPay（銀聯雲閃付）[#unionpay]
+
+#### iOS
+
+##### iOS 9 and later
+
+To hand off to a UnionPay app, add the `LSApplicationQueriesSchemes` key under **PROJECT** → **TARGETS** → **Info** (or `Info.plist`) in Xcode.
+
+```xml
+<string>uppaysdk</string>
+<string>uppaywallet</string>
+<string>uppayx1</string>
+<string>uppayx2</string>
+<string>uppayx3</string>
+```
+
+##### Callback URL Scheme for iOS apps
+
+For the default <EText name="elepay" /> URL Scheme, see [here](/sdks/ios).

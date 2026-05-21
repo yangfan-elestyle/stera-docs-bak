@@ -1,0 +1,57 @@
+---
+title: エラーコード
+---
+
+<EText name="elepay" /> API のレスポンスに含まれる `errorCode`
+一覧です。エラーコードは先頭 1 文字でカテゴリが分類されています。
+
+- **M** : Merchant / API 側エラー — リクエスト内容の不備など、マーチャント側で修正すべきもの
+- **U** : User / Transaction エラー — カード拒否や残高不足など、エンドユーザー起因のもの
+- **S** : System エラー — <EText name="elepay" /> や決済事業者側で発生した内部エラー
+
+<ErrorCodeTable lang="ja" />
+
+## エラーレスポンスの構造
+
+API がエラーを返す際のレスポンスボディは以下の形式です。
+
+```json
+{
+  "requestId": "req_1a2b3c4d",
+  "errorCode": "U001000",
+  "code": "9_elepay_creditcard_10101",
+  "message": "カードが拒否されました",
+  "parameterName": null,
+  "providerError": {
+    "providerKey": "stripe",
+    "code": "card_declined",
+    "message": "Your card was declined."
+  }
+}
+```
+
+| フィールド      | 説明                                                                                                                                                                             |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `errorCode`     | 上表で定義された <EText name="elepay" /> 標準エラーコード。ビジネスロジックの分岐はこの値で行ってください。                                                                      |
+| `code`          | 旧 5 桁形式の互換コード（`9_` プレフィックス付き）。新規開発では使用しないでください。                                                                                           |
+| `message`       | エラーメッセージ。`Accept-Language` ヘッダに応じて日本語 / 英語 / 中国語が返されます（デフォルト日本語）。                                                                       |
+| `requestId`     | リクエスト識別子。サポートにお問い合わせの際にご共有ください。                                                                                                                   |
+| `parameterName` | バリデーションエラーの場合、問題があったパラメータ名。該当しない場合は `null`。                                                                                                  |
+| `providerError` | 決済事業者（Stripe / PayPay / GMO など）から返却された生のエラー情報を透過的に返します。<EText name="elepay" /> が網羅していない事業者固有のエラーを識別する際にご利用ください。 |
+
+### `providerError` について
+
+`providerError.code` と `providerError.message` は **決済事業者側の定義** であり、事業者ごとに形式が異なります。長期運用では `errorCode`（<EText name="elepay" /> 標準）で分岐することを推奨しますが、以下のようなケースでは `providerError` が有用です。
+
+- 新しい事業者固有エラーが <EText name="elepay" /> 側でまだ標準コードに変換されていない場合
+- 事業者のダッシュボードや問い合わせ時に元のコードが必要な場合
+- ログやアナリティクスで事業者別の傾向を分析する場合
+
+## 旧エラーコード（非推奨）
+
+<Callout type="warn" title="Deprecated">
+  旧 5 桁形式のエラーコード（例：`10001`、`40022`、`50000` など）は **非推奨**
+  です。新規開発では上記の新形式をご利用ください。既存連携向けに互換として提供しています。
+</Callout>
+
+対応表は [旧エラーコード一覧](/get-started/error-code-legacy) をご参照ください。

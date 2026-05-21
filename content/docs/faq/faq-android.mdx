@@ -1,0 +1,48 @@
+---
+title: FAQ for Android
+---
+
+## elepay Android SDK は Google Play の 16KB 要件をどのようにサポートしますか？
+
+elepay Android SDK は 16KB アライメントの問題にはすでに対応していますが、x86_64 アーキテクチャの APK だけは個別の対応が必要です。市場には x86_64 実機がほとんど存在しないため、以下の方法を参考にして x86_64 を除外してください：
+
+```kotlin
+android {
+    defaultConfig {
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a") // 削除 "x86_64"
+        }
+    }
+}
+```
+
+アプリで引き続き Google Play の 16KB アライメント問題が発生する場合は、アプリ内の他のサードパーティ依存ライブラリの影響かどうかを確認するため、以下の手順を参考にしてください：
+
+```
+1. > ./gradlew :app:assembleDebug
+// 生成された APK は次の場所にあります：app/build/outputs/apk/debug/xxx.apk
+
+2. > check_elf_alignment.sh xxx.apk
+// sh スクリプトは Google 公式から入手できます：https://developer.android.com/guide/practices/page-sizes#elf-alignment
+```
+
+elepay Android SDK の出力例は以下のとおりで、Google Play の 16KB アライメント要件を満たしています。
+
+```
+=== ELF alignment ===
+....../lib/armeabi-v7a/libentryexpro.so: \e[31mUNALIGNED\e[0m (2**12)
+....../lib/armeabi-v7a/libsurface_util_jni.so: \e[32mALIGNED\e[0m (2**14)
+....../lib/armeabi-v7a/libmlkit_google_ocr_pipeline.so: \e[31mUNALIGNED\e[0m (2**12)
+....../lib/armeabi-v7a/libtensorflowlite_jni.so: \e[31mUNALIGNED\e[0m (2**12)
+....../lib/armeabi-v7a/libimage_processing_util_jni.so: \e[32mALIGNED\e[0m (2**14)
+....../lib/armeabi-v7a/libuptsmaddon.so: \e[31mUNALIGNED\e[0m (2**12)
+....../lib/arm64-v8a/libentryexpro.so: \e[32mALIGNED\e[0m (2**16)
+....../lib/arm64-v8a/libsurface_util_jni.so: \e[32mALIGNED\e[0m (2**14)
+....../lib/arm64-v8a/libmlkit_google_ocr_pipeline.so: \e[32mALIGNED\e[0m (2**14)
+....../lib/arm64-v8a/libtensorflowlite_jni.so: \e[32mALIGNED\e[0m (2**16)
+....../lib/arm64-v8a/libimage_processing_util_jni.so: \e[32mALIGNED\e[0m (2**14)
+....../lib/arm64-v8a/libuptsmaddon.so: \e[32mALIGNED\e[0m (2**16)
+
+\e[31mFound 4 unaligned libs (only arm64-v8a/x86_64 libs need to be aligned).\e[0m
+=====================
+```

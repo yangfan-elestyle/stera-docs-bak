@@ -1,0 +1,69 @@
+---
+title: WooCommerce Plugin
+---
+
+## Overview
+
+<EText name="elepay" /> provides a dedicated plugin for WooCommerce.
+
+## Installing the Plugin
+
+This section explains how to install the <EText name="elepay" /> for WooCommerce plugin.
+
+1.  Download the plugin  
+    Download the latest plugin ZIP from the release page below.  
+    [elepay for WooCommerce](https://github.com/elestyle/woocommerce-gateway-elepay/releases)
+
+> 📘 Do not extract the downloaded ZIP file.
+
+2.  Log in to the WordPress admin console with administrator privileges.  
+    Click “Plugins” → “Add New”.
+
+![](/docs/adcc6f4-image-20210901-022542.png)
+
+3.  On the “Add Plugins” screen, upload the ZIP file downloaded in Step 1.
+
+![](/docs/bd3442f-image-20210901-025522.png)
+
+4.  On the installation result screen, click “Activate Plugin”.
+
+![](/docs/cc04219-image-20210901-025604.png)
+
+5.  When “elepay Plug-in for WooCommerce” appears in the “Plugins” list, it is ready to use.
+
+![](/docs/1459aae-image-20210901-025655.png)
+
+This completes the plugin installation.
+
+## Initial Setup
+
+This section explains the initial setup for the plugin.
+
+1.  In the WordPress admin console, go to “Settings” → “Payments” → “elepay Payments - QR Code Payments” → click “Manage”.
+
+![](/docs/90c1229-image-20210901-025839.png)
+
+2.  Under “Enable/Disable,” check “Enable elepay,” then enter the development keys obtained from the elepay dashboard into “Public Key” and “Secret Key.” Finally, click “Save changes.”
+
+    For how to obtain elepay development keys, see “[Overview](/get-started)”.
+
+> ❗️ Warning: When using development keys for the test environment (keys starting with pk_test or sk_test), no actual payment is processed. Even if the order status shows “Paid,” do not ship any goods.
+
+![](/docs/69e2d28-image-20210901-031006.png)
+
+3.  Copy the Webhook URL.
+
+![](/docs/cd45b44-image-20210901-030500.png)
+
+4.  In the <EText name="elepay" /> dashboard, go to “Developer Settings” → “Webhook” and click “New.”
+
+![](/docs/2762d21-image-20210405-084536.png)
+
+5.  Paste the Webhook URL copied in Step 3 into “URL,” check “Payment Succeeded” under “Event Type,” then click “OK.”
+
+![](/docs/36c9403-image-20210405-085341.png)
+
+All settings are now complete.<br />
+From the payment method selection screen in EC-CUBE, buyers can see the list of <EText name="elepay" /> payment methods.
+
+> 📘 Only the payment methods enabled in <EText name="elepay" /> are displayed. Methods not supported by the browser or device are automatically hidden.

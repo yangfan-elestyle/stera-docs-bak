@@ -1,0 +1,3 @@
+# Local Worker vars for `wrangler dev` / opennextjs preview.
+# Leave DOCS_ENV unset to use the default environment.
+# DOCS_ENV=product

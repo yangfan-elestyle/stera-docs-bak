@@ -1,0 +1,66 @@
+---
+title: App Clips
+visibleOnTenant:
+  - default
+---
+
+在 App Clips 中使用 <EText name="elepay" /> 的注意事项。<br />
+elepay StripeApplePay Plugin for iOS 是为 App Clips 提供的精简版 SDK，用于控制应用体积。
+
+### 安装
+
+- 通过 CocoaPods 安装：
+
+```ruby
+pod 'Elepay_StripeApplePay_Plugin', "~> 0.1.0"
+```
+
+- 直接下载 XCFramework：
+  [→ Elepay_StripeApplePay_Plugin 发布页面](https://github.com/elestyle/elepay-stripeapplepay-plugin/releases)
+
+该插件必须与 [elepay iOS SDK](https://github.com/elestyle/elepay-ios-sdk) 一起使用。
+
+### 系统要求
+
+- iOS 11.0 及以上，Xcode 12.5.1 及以上
+- 已内置 StripeApplePay SDK，无需另外导入 Stripe SDK 或 StripeAppleSDK
+- 如果在 App Clip 的 target 中已导入 Stripe SDK，请勿与本插件同时使用，否则会产生功能重叠
+
+### 配置示例
+
+在 App Clips 中使用该插件的 `Podfile` 示例：
+
+```ruby
+# Uncomment the next line to define a global platform for your project
+platform :ios, '11.0'
+
+project 'Example.xcodeproj'
+workspace 'Example.xcworkspace'
+
+def elepay_pods
+  use_frameworks!
+
+  # Pods for the full functional App
+  pod 'ElepaySDK', '~> 3.4.0'
+  pod 'Stripe', '~> 21.13.0'
+
+  # The Chinese Payment Methods Plugin, use this plugin only when you need support WeChat Pay
+  pod 'Elepay_ChinesePayments_Plugin', '~> 2.1.0'
+end
+
+def elepay_app_clip_pods
+  use_frameworks!
+
+  # Pods for the App Clip
+  pod 'ElepaySDK', '~> 3.4.0'
+  pod 'Elepay_StripeApplePay_Plugin', "~> 0.1.0"
+end
+
+target 'YourFullFunctionalAppTarget' do
+  elepay_pods
+end
+
+target 'YourAppClipTarget' do
+  elepay_app_clip_pods
+end
+```

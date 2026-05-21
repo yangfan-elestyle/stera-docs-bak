@@ -1,0 +1,14 @@
+{
+  "title": "申込 (実店舗決済)",
+  "defaultOpen": false,
+  "pages": [
+    "application-preparation",
+    "open-business-application",
+    "service-name-vs-store-name",
+    "store-photo-guidelines",
+    "license-submission-guidelines",
+    "apply-restriction",
+    "store-photo-requirements"
+  ],
+  "visibleOnTenant": ["smcc"]
+}

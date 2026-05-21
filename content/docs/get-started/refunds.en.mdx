@@ -1,0 +1,36 @@
+---
+title: Refund Processing
+---
+
+<EText name="elepay" /> also provides a refund feature. Your server can issue
+refunds by calling the API.
+
+# Refund via API
+
+## 1. Refund request
+
+Your server calls [Create Refund](/openapi/refund/createRefund) to request a refund.
+
+## 2. Handle the response
+
+The <EText name="elepay" /> server returns a Refund object in response to the request.<br />
+If the request is accepted, the `failure_msg` field of the Refund object is null.
+
+## 3. Receive webhook event
+
+If the refund succeeds, <EText name="elepay" /> sends a `refund.succeeded` event notification to the URL configured for your webhook.
+
+# Refund in the dashboard
+
+You can refund a specific payment record under “支払い管理 / 支払い一覧” in the dashboard.
+
+<EImg src="image.get-started.refunds.img1" />
+<EImg src="image.get-started.refunds.img2" />
+
+> 📘 Refund window
+>
+> Refunds can be issued within 90 days from the capture date.
+
+> ❗️ Refund request vs. refunded
+>
+> Refunds are processed asynchronously. After a refund is requested, the status may not become “refunded” immediately.

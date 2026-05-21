@@ -1,0 +1,58 @@
+---
+title: Error Codes
+---
+
+This is the list of `errorCode` values returned in <EText name="elepay" /> API
+responses. Error codes are categorized by their first character.
+
+- **M** : Merchant / API-side errors — issues such as malformed request payloads that should be fixed on the merchant side
+- **U** : User / Transaction errors — issues caused by the end user, such as card declines or insufficient balance
+- **S** : System errors — internal errors originating from <EText name="elepay" /> or the payment provider
+
+<ErrorCodeTable lang="en" />
+
+## Error Response Structure
+
+When the API returns an error, the response body takes the following form.
+
+```json
+{
+  "requestId": "req_1a2b3c4d",
+  "errorCode": "U001000",
+  "code": "9_elepay_creditcard_10101",
+  "message": "カードが拒否されました",
+  "parameterName": null,
+  "providerError": {
+    "providerKey": "stripe",
+    "code": "card_declined",
+    "message": "Your card was declined."
+  }
+}
+```
+
+| Field           | Description                                                                                                                                                                                          |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `errorCode`     | The <EText name="elepay" /> standard error code defined in the table above. Branch your business logic based on this value.                                                                          |
+| `code`          | Legacy 5-digit compatibility code (prefixed with `9_`). Do not use it for new development.                                                                                                           |
+| `message`       | Error message. Returned in Japanese / English / Chinese depending on the `Accept-Language` header (defaults to Japanese).                                                                            |
+| `requestId`     | Request identifier. Share this value with support when contacting us.                                                                                                                                |
+| `parameterName` | For validation errors, the name of the parameter that caused the problem. `null` when not applicable.                                                                                                |
+| `providerError` | Raw error information returned by the payment provider (Stripe / PayPay / GMO, etc.) is passed through transparently. Use it to identify provider-specific errors that <EText name="elepay" /> has not yet mapped. |
+
+### About `providerError`
+
+`providerError.code` and `providerError.message` are **defined on the payment provider side** and the format varies between providers. For long-term operation we recommend branching on `errorCode` (the <EText name="elepay" /> standard), but `providerError` is useful in the following cases.
+
+- When a newly introduced provider-specific error has not yet been mapped to a standard code on the <EText name="elepay" /> side
+- When the original code is required on the provider's dashboard or in support inquiries
+- When analyzing provider-specific trends in logs or analytics
+
+## Legacy Error Codes (Deprecated)
+
+<Callout type="warn" title="Deprecated">
+  The legacy 5-digit error codes (e.g., `10001`, `40022`, `50000`) are
+  **deprecated**. Please use the new format described above for new development.
+  They are provided as a compatibility layer for existing integrations.
+</Callout>
+
+For the mapping, see [Legacy Error Codes](/get-started/error-code-legacy).

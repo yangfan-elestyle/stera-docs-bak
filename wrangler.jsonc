@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // 部署模型见 .github/workflows/deploy.yml; 业务域名由 AWS 映射到 workers.dev URL,
+  // 此处不配置 routes / custom_domains / zone_name。
+  "name": "elepay-docs",
+  "main": ".open-next/worker.js",
+  "workers_dev": true,
+  "compatibility_date": "2026-04-15",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // 关闭 esbuild `--keep-names`, 避免 next-themes 注入的 inline script 触发
+  // `ReferenceError: __name`. https://opennext.js.org/cloudflare/howtos/keep_names
+  "keep_names": false,
+  "observability": { "enabled": true },
+  "limits": { "cpu_ms": 30000 },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "elepay-docs",
+    },
+  ],
+}

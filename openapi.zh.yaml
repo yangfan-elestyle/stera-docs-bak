@@ -1,0 +1,3425 @@
+openapi: 3.1.0
+info:
+  version: 1.3.0
+  title: elepay API 参考文档
+  description: elepay API 是基于 REST 构建的支付 API，可执行支付处理、退款处理等与支付运营相关的各类操作。
+  contact:
+    name: ELESTYLE, INC
+    url: https://elepay.io
+    email: support@elestyle.jp
+servers:
+  - url: https://api.elepay.io
+tags:
+  - name: Charge
+  - name: Refund
+  - name: Customer
+  - name: Code
+  - name: CodeSetting
+  - name: PaymentMethod
+  - name: Terminal
+  - name: Invoice
+  - name: Dispute
+  - name: Subscription
+  - name: Location
+security:
+  - bearerAuth: []
+  - basicAuth: []
+paths:
+  /charges:
+    get:
+      tags:
+        - Charge
+      summary: List charges
+      description: 获取支付（Charge）信息列表。
+      operationId: listCharges
+      parameters:
+        - name: paymentMethod
+          description: 支付方式（可指定多个）
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PaymentMethodType'
+        - name: from
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: dateField
+          description: |
+            指定开始时间与结束时间对应的字段。
+            - paid_time 支付时间
+            - create_time 支付创建时间
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ChargeDateTimeType'
+        - name: status
+          description: 支付状态
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ChargeStatusType'
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          description: |
+            排序字段
+            - paid_time 支付时间
+            - create_time 支付创建时间
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ChargeDateTimeType'
+        - name: order
+          description: |
+            排序顺序
+            - desc 降序
+            - asc 升序
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrderType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargesResponse'
+    post:
+      tags:
+        - Charge
+      summary: Create charge
+      description: 执行支付处理（创建 Charge）。
+      operationId: createCharge
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeReq'
+        description: 支付请求
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}:
+    get:
+      tags:
+        - Charge
+      summary: Retrieve charge
+      description: 获取支付（Charge）详情信息。
+      operationId: retrieveCharge
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}/revoke:
+    post:
+      tags:
+        - Charge
+      summary: Revoke charge
+      description: 取消支付（Charge）。
+      operationId: revokeCharge
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}/capture:
+    post:
+      tags:
+        - Charge
+      summary: Capture charge
+      description: 确认支付（Capture Charge）。
+      operationId: captureCharge
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeCaptureReq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeDto'
+  /charges/{id}/status:
+    get:
+      tags:
+        - Charge
+      summary: Retrieve charge's status
+      description: 获取支付（Charge）状态的详细信息。
+      operationId: retrieveChargeStatus
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeStatusDto'
+  /charges/{id}/refunds:
+    get:
+      tags:
+        - Refund
+      summary: List refunds
+      description: 获取退款信息列表。
+      operationId: listChargesRefunds
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundsResponse'
+    post:
+      tags:
+        - Refund
+      summary: Create refund
+      description: 对支付进行全额或部分退款处理。
+      operationId: createRefund
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/RefundReq'
+        description: 退款详情信息
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundDto'
+  /charges/{id}/refunds/{refundId}:
+    get:
+      tags:
+        - Refund
+      summary: Retrieve refund
+      description: 获取退款详情信息。
+      operationId: retrieveChargeRefund
+      parameters:
+        - name: id
+          description: Charge ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: refundId
+          description: Refund ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/RefundDto'
+  /customers:
+    get:
+      tags:
+        - Customer
+      summary: List customers
+      description: 获取客户信息列表。
+      operationId: listCustomers
+      parameters:
+        - name: keyword
+          description: 关键字
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+    post:
+      tags:
+        - Customer
+      summary: Create customer
+      description: 创建客户。
+      operationId: createCustomer
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CustomerReq'
+        description: 客户请求
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+  /customers/{customerId}:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve customer
+      description: 获取客户信息。
+      operationId: retrieveCustomer
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+    post:
+      tags:
+        - Customer
+      summary: Update customer
+      description: 更新客户。
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateReq'
+        description: 客户请求
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CustomerDto'
+    delete:
+      tags:
+        - Customer
+      summary: Delete customer
+      description: 删除客户。
+      operationId: deleteCustomer
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+  /customers/{customerId}/sources:
+    get:
+      tags:
+        - Customer
+      summary: List sources by customer ID
+      description: 获取客户来源（Source）信息列表。
+      operationId: listSources
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: paymentMethod
+          description: 支付方式
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/PaymentMethodType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceResponse'
+    post:
+      tags:
+        - Customer
+      summary: Create source
+      description: 创建客户来源（Source）。
+      operationId: createSource
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SourceReq'
+        description: 客户来源（Source）请求
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceDto'
+  /customers/{customerId}/sources/{sourceId}:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve source
+      description: 获取客户信息。
+      operationId: retrieveSource
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          description: Source ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceDto'
+    delete:
+      tags:
+        - Customer
+      summary: Delete source
+      description: 删除客户来源（Source）。
+      operationId: deleteSource
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          description: Source ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+  /sources/{sourceId}/status:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve source's status
+      description: 获取客户来源（Source）状态的详细信息。
+      operationId: retrieveSourceStatus
+      parameters:
+        - name: sourceId
+          description: Source ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SourceStatusDto'
+  /payment-methods:
+    get:
+      tags:
+        - PaymentMethod
+      summary: List supported payment methods
+      description: 获取可用的支付方式。
+      operationId: listPaymentMethods
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PaymentMethodResponse'
+  /codes:
+    post:
+      tags:
+        - Code
+      summary: Create EasyQR code
+      description: 创建 EasyQR 码。
+      operationId: createCode
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/CodeReq'
+        description: EasyQR 码请求
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodeDto'
+  /codes/{codeId}:
+    get:
+      tags:
+        - Code
+      summary: Retrieve EasyQR code
+      description: 获取 EasyQR 码对象。
+      operationId: retrieveCode
+      parameters:
+        - name: codeId
+          description: EasyQR 码
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodeDto'
+    delete:
+      tags:
+        - Code
+      summary: Close EasyQR code
+      description: 删除 EasyQR 码。
+      operationId: closeCode
+      parameters:
+        - name: codeId
+          description: EasyQR 码
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Closed
+  /code-setting/payment-methods:
+    get:
+      tags:
+        - CodeSetting
+      summary: List all enabled EasyQR payment methods
+      description: 获取 EasyQR 可用的支付方式。
+      operationId: listCodePaymentMethods
+      responses:
+        '200':
+          description: EasyQR 可用支付方式列表
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/CodePaymentMethodResponse'
+  /invoices:
+    get:
+      tags:
+        - Invoice
+      summary: List invoices
+      description: 获取发票信息列表。
+      operationId: listInvoices
+      parameters:
+        - name: keyword
+          description: 关键字
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: from
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          description: status
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/InvoiceStatusType'
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoicesResponse'
+    post:
+      tags:
+        - Invoice
+      summary: Create invoice
+      description: 创建发票。
+      operationId: createInvoice
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/InvoiceReq'
+        description: 发票请求
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}:
+    get:
+      tags:
+        - Invoice
+      summary: Retrieve invoice
+      description: 获取发票信息。
+      operationId: retrieveInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+    post:
+      tags:
+        - Invoice
+      summary: Update invoice
+      description: 更新发票信息。
+      operationId: updateInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/InvoiceReq'
+        description: 发票请求
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}/cancel:
+    post:
+      tags:
+        - Invoice
+      summary: Cancel invoice
+      description: 取消发票。
+      operationId: cancelInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}/submit:
+    post:
+      tags:
+        - Invoice
+      summary: Submit invoice
+      description: 确认发票。
+      operationId: submitInvoice
+      parameters:
+        - name: invoiceId
+          description: Invoice ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoices/{invoiceId}/send:
+    post:
+      tags:
+        - Invoice
+      summary: 发送发票
+      description: 发送发票。
+      operationId: sendInvoice
+      parameters:
+        - name: invoiceId
+          description: 发票 ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Accept
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /terminal/locations:
+    get:
+      tags:
+        - Terminal
+      summary: 获取 Location 列表
+      operationId: listLocations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/LocationsResponse'
+  /terminal/readers:
+    get:
+      tags:
+        - Terminal
+      summary: 获取读卡器列表
+      operationId: listReaders
+      parameters:
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReadersResponse'
+    post:
+      tags:
+        - Terminal
+      summary: 创建终端读卡器
+      operationId: createReader
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/TerminalReaderReq'
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReaderDto'
+  /terminal/readers/{readerId}:
+    get:
+      tags:
+        - Terminal
+      summary: 获取读卡器
+      operationId: getReader
+      parameters:
+        - name: readerId
+          description: 读卡器 ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TerminalReaderDto'
+    delete:
+      tags:
+        - Terminal
+      summary: 删除读卡器
+      operationId: deleteReader
+      parameters:
+        - name: readerId
+          description: 读卡器 ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+  /disputes:
+    get:
+      tags:
+        - Dispute
+      summary: List disputes
+      description: 获取争议（Dispute）信息列表。
+      operationId: listDisputes
+      parameters:
+        - name: chargeId
+          description: Charge ID
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: from
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: dateField
+          description: |
+            指定开始时间与结束时间对应的字段。
+            - resolved_time 争议解决时间
+            - create_time 争议发生时间
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisputeDateTimeType'
+        - name: status
+          description: 争议状态
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisputeStatusType'
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort
+          description: |
+            排序字段
+            - resolved_time 争议解决时间
+            - create_time 支付创建时间
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/DisputeDateTimeType'
+        - name: order
+          description: |
+            排序顺序
+            - desc 降序
+            - asc 升序
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrderType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DisputesResponse'
+  /disputes/{id}:
+    get:
+      tags:
+        - Dispute
+      summary: Retrieve dispute
+      description: 获取争议（Dispute）详情信息。
+      operationId: retrieveDispute
+      parameters:
+        - name: id
+          description: Dispute ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DisputeDto'
+  /subscriptions:
+    get:
+      tags:
+        - Subscription
+      summary: List subscriptions
+      description: 获取订阅（定期扣款）列表。
+      operationId: listSubscriptions
+      parameters:
+        - name: customerId
+          description: Customer ID
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: from
+          description: 开始时间（Epoch 毫秒），获取在指定时间之后（含）创建的数据。
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: to
+          description: 结束时间（Epoch 毫秒），获取在指定时间之前（含）创建的数据。
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          description: 订阅状态
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SubscriptionStatusType'
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionsResponse'
+    post:
+      tags:
+        - Subscription
+      summary: Create subscription
+      description: 创建订阅（定期扣款）。
+      operationId: createSubscription
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SubscriptionReq'
+        required: true
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}:
+    get:
+      tags:
+        - Subscription
+      summary: Retrieve subscription
+      description: 获取订阅（定期扣款）信息。
+      operationId: retrieveSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+    post:
+      tags:
+        - Subscription
+      summary: Update subscription
+      description: 更新订阅（定期扣款）。
+      operationId: updateSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/SubscriptionUpdateReq'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/start:
+    post:
+      tags:
+        - Subscription
+      summary: Start subscription
+      description: |
+        启动新的（status=new）订阅（定期扣款）。
+      operationId: startSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/resume:
+    post:
+      tags:
+        - Subscription
+      summary: Resume subscription
+      description: |
+        重新启动逾期（status=past_due）的订阅（定期扣款）。
+      operationId: resumeSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/cancel:
+    post:
+      tags:
+        - Subscription
+      summary: Cancel subscription
+      description: |
+        取消订阅，并在当前周期结束日终止订阅。
+        已取消的订阅无法再次启动。
+        处理中（processing）的订阅无法取消。
+      operationId: cancelSubscription
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionDto'
+  /subscriptions/{subscriptionId}/periods:
+    get:
+      tags:
+        - Subscription
+      summary: List subscription periods
+      description: 获取订阅周期信息列表。
+      operationId: listSubscriptionPeriods
+      parameters:
+        - name: subscriptionId
+          description: Subscription ID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPeriodsResponse'
+  /locations:
+    get:
+      tags:
+        - Location
+      summary: List locations
+      description: 获取 Location 信息列表。
+      operationId: listChargeLocations
+      parameters:
+        - name: limit
+          description: 最大条数
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 20
+        - name: offset
+          description: 查询起始位置
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationsResponse'
+    post:
+      tags:
+        - Location
+      summary: Create location
+      description: 创建 Location。
+      operationId: createChargeLocation
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeLocationReq'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+  /locations/{locationId}:
+    get:
+      tags:
+        - Location
+      summary: Retrieve location
+      description: 获取 Location 信息。
+      operationId: retrieveChargeLocation
+      parameters:
+        - name: locationId
+          description: Location ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+    post:
+      tags:
+        - Location
+      summary: Update location
+      description: 更新 Location 信息。
+      operationId: updateChargeLocation
+      parameters:
+        - name: locationId
+          description: Location ID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json;charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ChargeLocationUpdateReq'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ChargeLocationDto'
+    delete:
+      tags:
+        - Location
+      summary: Delete location
+      description: 删除 Location。
+      operationId: deleteChargeLocation
+      parameters:
+        - name: locationId
+          description: Location ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: |
+        API 调用的认证将密钥作为用户名，省略密码，通过 Basic 认证进行。
+        密钥是可执行所有 API 请求操作的重要密钥，请妥善保管。
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        API 调用的认证将密钥作为认证 Token，通过 Bearer 认证进行。
+        密钥是可执行所有 API 请求操作的重要密钥，请妥善保管。
+  schemas:
+    PaymentMethodType:
+      description: |
+        支付方式
+        - auto 自动识别（仅 CPM 支付可用）
+        - alipay 支付宝
+        - alipayhk 支付宝香港
+        - alipayplus Alipay+
+        - amazonpay Amazon Pay
+        - applepay Apple Pay
+        - applepay_cn Apple Pay（中国）
+        - atokara Atokara
+        - atone atone（便利店次月付）
+        - aupay au Pay
+        - clicktopay Click To Pay
+        - banktransfer 银行转账
+        - creditcard 信用卡
+        - dana DANA
+        - docomopay d 支付
+        - ezlink EZ-Link
+        - felica 电子货币
+        - felica_id iD
+        - felica_quickpay QUICPay
+        - felica_transport_ic 交通系 IC 卡
+        - gcash GCash
+        - ginkopay 银行 Pay
+        - googlepay Google Pay
+        - jcoinpay J-Coin Pay
+        - jkopay JKOPAY
+        - kakaopay Kakao Pay
+        - konbini 便利店支付
+        - linepay LINE Pay
+        - merpay Merpay
+        - origamipay Origami Pay
+        - paidy Paidy 次月付
+        - paypal PayPal
+        - paypay PayPay
+        - pxpayplus 全支付
+        - rakutenpay 乐天 Pay
+        - smartcode Smart Code
+        - tng Touch 'n Go eWallet
+        - truemoney TrueMoney
+        - unionpay 云闪付
+        - wechatpay Wechat Pay
+        - aeonpay AEON Pay
+        - rabbitlinepay Rabbit LINE Pay
+        - bpi BPI
+        - boost Boost
+        - hellomoney HelloMoney by AUB
+        - tosspay Toss Pay
+        - naverpay Naver Pay
+        - wellwa WellWa Points
+        - grabpay Grab Pay
+        - momopay Momo Pay
+        - promptpay Prompt Pay
+        - wovenpay Woven City Pay
+        - ezopay EZO Pay
+      type: string
+      enum:
+        - alipay
+        - alipayhk
+        - alipayplus
+        - amazonpay
+        - applepay
+        - applepay_cn
+        - atokara
+        - atone
+        - aupay
+        - clicktopay
+        - banktransfer
+        - creditcard
+        - dana
+        - docomopay
+        - ezlink
+        - felica
+        - felica_id
+        - felica_quickpay
+        - felica_transport_ic
+        - gcash
+        - ginkopay
+        - googlepay
+        - jcoinpay
+        - jkopay
+        - kakaopay
+        - konbini
+        - linepay
+        - merpay
+        - origamipay
+        - paidy
+        - paypal
+        - paypay
+        - pxpayplus
+        - rakutenpay
+        - smartcode
+        - tng
+        - truemoney
+        - unionpay
+        - wechatpay
+        - aeonpay
+        - rabbitlinepay
+        - bpi
+        - boost
+        - hellomoney
+        - tosspay
+        - naverpay
+        - wellwa
+        - grabpay
+        - momopay
+        - promptpay
+        - wovenpay
+        - ezopay
+        - auto
+    ResourceType:
+      description: |
+        支付资源
+        - web Web 浏览器
+        - ios iOS 原生应用
+        - android Android 原生应用
+        - liff LINE LIFF 应用
+        - mini 微信小程序
+        - cpm CPM 支付，用户出示型二维码
+        - mpm MPM 支付，门店出示型二维码
+        - reader 刷卡机支付（需要读卡器设备）
+        - posapp POS 应用支付（需要与 POS 应用集成）
+      type: string
+      enum:
+        - web
+        - ios
+        - android
+        - liff
+        - mini
+        - cpm
+        - mpm
+        - reader
+        - posapp
+    CardBrandType:
+      description: |
+        - unknown
+        - visa
+        - mastercard
+        - amex
+        - jcb
+        - diners
+        - unionpay
+        - discover
+        - felica
+        - seven_eleven
+        - lawson
+        - familymart
+        - ministop
+        - seicomart
+      type: string
+    ChargeDateTimeType:
+      description: 时间字段
+      type: string
+      enum:
+        - paid_time
+        - create_time
+      default: create_time
+    DisputeDateTimeType:
+      description: 时间字段
+      type: string
+      enum:
+        - resolved_time
+        - create_time
+      default: create_time
+    SortOrderType:
+      description: 排序顺序
+      type: string
+      enum:
+        - desc
+        - asc
+      default: desc
+    ChargeStatusType:
+      description: |
+        支付状态
+        - pending 未支付
+        - waiting 等待支付（信息已输入）
+        - notified 支付准备中（已通知）
+        - uncaptured 已授权（未确认）
+        - captured 已支付
+        - partially_refunded 部分退款
+        - refunded 已退款
+        - amount_mismatch 金额不一致
+        - revoked 已取消
+        - failed 支付失败
+      type: string
+      enum:
+        - pending
+        - waiting
+        - notified
+        - uncaptured
+        - captured
+        - partially_refunded
+        - refunded
+        - amount_mismatch
+        - revoked
+        - failed
+    RefundStatusType:
+      description: |
+        退款状态
+        - pending 未退款
+        - refunded 已退款
+      type: string
+      enum:
+        - pending
+        - refunded
+    CodeStatusType:
+      description: |
+        EasyQR 码状态
+        - pending 未支付
+        - completed 支付信息准备完成
+        - captured 已支付
+        - closed 已过期或已删除
+      type: string
+      enum:
+        - pending
+        - completed
+        - captured
+        - closed
+    ChargeReq:
+      type: object
+      description: 支付请求
+      required:
+        - amount
+        - paymentMethod
+        - orderNo
+      properties:
+        amount:
+          description: 金额
+          type: integer
+        capture:
+          description: |
+            是否确认（capture）支付。
+            当为 false 时，仅进行授权并冻结支付金额。默认值为 true。
+          type: boolean
+          default: true
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        orderNo:
+          description: |
+            商户系统订单号（例如：订单号、支付 ID 等）。
+            最大长度为 50 个字符。
+          type: string
+          maxLength: 50
+        description:
+          description: 支付说明
+          type: string
+          maxLength: 1024
+        extra:
+          description: 若有与支付相关的附加信息时使用。具体设置请参阅“开发指南->支付 Extra 信息设置”。
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: |
+            元数据
+            任意的键值对数据。
+            Key 最多 20 个，Value 为不超过 255 字节的字符串。
+            以“route”“__”开头的字符串为保留 Key。
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        clientIp:
+          description: Client IP 地址
+          type: string
+          maxLength: 39
+        customerId:
+          description: 客户 ID
+          type: string
+          maxLength: 32
+        sourceId:
+          description: 客户来源（Source）ID
+          type: string
+          maxLength: 32
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+    ChargeDto:
+      type: object
+      description: 支付对象
+      properties:
+        id:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: charge
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        amount:
+          description: 支付金额
+          type: integer
+        authorizeAmount:
+          description: 预授权金额
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        authorize:
+          description: 预授权标志
+          type: boolean
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        orderNo:
+          description: 商户系统订单号，例如订单号、支付 ID 等
+          type: string
+          maxLength: 50
+        description:
+          description: 支付说明
+          type: string
+          maxLength: 1024
+        location:
+          $ref: '#/components/schemas/ChargeLocationDto'
+        extra:
+          description: 支付 Extra 数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: 支付元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        cardInfo:
+          $ref: '#/components/schemas/CardInfo'
+        voucherNo:
+          description: 支付服务商支付凭证号
+          type: string
+          maxLength: 32
+        clientIp:
+          description: Client IP 地址
+          type: string
+          maxLength: 45
+        paid:
+          description: 已支付标志
+          type: boolean
+        refunded:
+          description: 已退款标志
+          type: boolean
+        disputed:
+          description: 争议标志
+          type: boolean
+        refunds:
+          $ref: '#/components/schemas/RefundsDto'
+        status:
+          $ref: '#/components/schemas/ChargeStatusType'
+        codeContent:
+          description: 门店出示型二维码（仅当 resource 为 mpm 时）
+          type: string
+        credential:
+          description: Client SDK 认证信息
+          type: string
+        paidTime:
+          description: 支付时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        refundTime:
+          description: 退款时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        expiryTime:
+          description: 支付请求有效期（Epoch 毫秒）
+          type: integer
+          format: int64
+        settleTime:
+          description: 支付结算截止时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        createTime:
+          description: 支付创建时间（Epoch 毫秒）
+          type: integer
+          format: int64
+    ChargeStatusDto:
+      type: object
+      description: 支付状态对象
+      properties:
+        id:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        status:
+          $ref: '#/components/schemas/ChargeStatusType'
+    RefundReq:
+      description: 退款请求
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          description: 退款金额。可全额退款，亦可通过指定 amount 进行任意金额退款。
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        metadata:
+          description: 退款元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        reason:
+          description: 退款原因
+          type: string
+          maxLength: 255
+    RefundDto:
+      description: 退款对象
+      type: object
+      properties:
+        id:
+          description: Refund ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: refund
+        chargeId:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        amount:
+          description: 退款金额。可全额退款，亦可通过指定 amount 进行部分退款。
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+        metadata:
+          description: 退款元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        reason:
+          description: 退款原因
+          type: string
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/RefundStatusType'
+        refundedTime:
+          description: 退款处理时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        createTime:
+          description: 退款创建时间（Epoch 毫秒）
+          type: integer
+          format: int64
+    RefundsDto:
+      description: 退款汇总。若发生多次退款，将对退款内容进行汇总返回。
+      type: object
+      properties:
+        amount:
+          description: 退款总额
+          type: integer
+        totalCount:
+          description: 退款次数
+          type: integer
+        data:
+          description: 退款详情信息
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundDto'
+    ChargesResponse:
+      description: 支付信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        charges:
+          description: 支付详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeDto'
+    RefundsResponse:
+      description: 退款信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        refunds:
+          description: 退款详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundDto'
+    DisputesResponse:
+      description: 争议信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        disputes:
+          description: 争议详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/DisputeDto'
+    DisputeDto:
+      description: 争议（Dispute）对象
+      type: object
+      properties:
+        id:
+          description: Dispute ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: dispute
+        chargeId:
+          description: Charge ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        amount:
+          description: 争议金额
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        reason:
+          description: 争议原因
+          type: string
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/DisputeStatusType'
+        resolvedTime:
+          description: 处理时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        createTime:
+          description: 发生时间（Epoch 毫秒）
+          type: integer
+          format: int64
+    CustomerStatusType:
+      description: |
+        状态
+      type: string
+      enum:
+        - active
+        - deleted
+    CustomerReq:
+      description: 客户请求
+      type: object
+      properties:
+        name:
+          description: 名称
+          type: string
+          maxLength: 255
+        description:
+          description: 客户说明
+          type: string
+          maxLength: 255
+        email:
+          description: 邮箱地址
+          type: string
+          maxLength: 255
+        phone:
+          description: 电话号码
+          type: string
+          maxLength: 255
+        remark:
+          description: 备注
+          type: string
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    CustomerUpdateReq:
+      description: 更新客户请求
+      type: object
+      properties:
+        defaultSource:
+          description: 默认客户来源（Source）ID
+          type: string
+          maxLength: 32
+        name:
+          description: 名称
+          type: string
+          maxLength: 255
+        description:
+          description: 客户说明
+          type: string
+          maxLength: 255
+        email:
+          description: 邮箱地址
+          type: string
+          maxLength: 255
+        phone:
+          description: 电话号码
+          type: string
+          maxLength: 255
+        remark:
+          description: 备注
+          type: string
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    CustomerDto:
+      description: 客户对象
+      properties:
+        id:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: customer
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        defaultSource:
+          description: 默认客户来源（Source）ID
+          type: string
+          maxLength: 32
+        name:
+          description: 名称
+          type: string
+          maxLength: 255
+        description:
+          description: 客户说明
+          type: string
+          maxLength: 255
+        email:
+          description: 邮箱地址
+          type: string
+          maxLength: 255
+        phone:
+          description: 电话号码
+          type: string
+          maxLength: 255
+        remark:
+          description: 备注
+          type: string
+        operator:
+          description: 操作人
+          type: string
+          maxLength: 255
+        status:
+          $ref: '#/components/schemas/CustomerStatusType'
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        updateTime:
+          description: update time
+          type: integer
+          format: int64
+    CustomerResponse:
+      description: 客户信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        customers:
+          description: 客户详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDto'
+    SourceStatusType:
+      description: |
+        客户来源（Source）状态
+        - pending 未认证
+        - active 已认证
+        - failed 认证失败
+        - inactive 已认证，但当前不可用
+        - deleted 已删除或已失效
+      type: string
+      enum:
+        - pending
+        - active
+        - failed
+        - inactive
+        - deleted
+    SourceReq:
+      description: 客户来源（Source）请求
+      type: object
+      required:
+        - paymentMethod
+        - resource
+      properties:
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        description:
+          description: 客户来源（Source）说明
+          type: string
+          maxLength: 255
+        extra:
+          description: 若有与支付相关的附加信息时使用。具体设置请参阅“开发指南->来源 Extra 信息设置”。
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    SourceDto:
+      description: 客户来源（Source）对象
+      properties:
+        id:
+          description: Source ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: source
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resource:
+          $ref: '#/components/schemas/ResourceType'
+        description:
+          description: 客户来源（Source）说明
+          type: string
+          maxLength: 255
+        extra:
+          description: 客户来源（Source）Extra 数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        info:
+          description: 客户来源（Source）信息
+          type: object
+          additionalProperties:
+            type: object
+        cardInfo:
+          $ref: '#/components/schemas/CardInfo'
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        credential:
+          description: Client SDK 认证信息
+          type: string
+        status:
+          $ref: '#/components/schemas/SourceStatusType'
+    SourceStatusDto:
+      type: object
+      description: 客户来源（Source）状态对象
+      properties:
+        id:
+          description: Source ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        status:
+          $ref: '#/components/schemas/SourceStatusType'
+    SourceResponse:
+      description: 客户来源（Source）信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        sources:
+          description: 客户来源（Source）详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceDto'
+    PaymentMethodResponse:
+      description: 可用支付方式列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        paymentMethods:
+          description: 支付方式详情信息
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodDto'
+    PaymentMethodDto:
+      description: 支付方式详情信息
+      type: object
+      properties:
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodType'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceType'
+        brand:
+          description: 对于信用卡，可用的信用卡品牌
+          type: array
+          items:
+            description: 信用卡品牌
+            type: string
+        ua:
+          description: 可用浏览器的 User-Agent
+          type: string
+        channelProperties:
+          $ref: '#/components/schemas/ChannelPropertiesDto'
+        customerProperties:
+          $ref: '#/components/schemas/CustomerPropertiesDto'
+    ChannelPropertiesDto:
+      description: 支付方式相关信息
+      type: object
+      properties:
+        isSupportRefund:
+          type: boolean
+          description: 退款 true 可用 false 不可用
+        isSupportPartialRefund:
+          type: boolean
+          description: 部分退款 true 可用 false 不可用
+        isSupportMultipleRefund:
+          type: boolean
+          description: 多次退款 true 可用 false 仅一次
+        isSupportSource:
+          type: boolean
+          description: 客户功能与来源（Source） true 可用 false 不可用
+        isSupportMultipleSource:
+          type: boolean
+          description: 多来源 true 可绑定 false 不可绑定
+        maxAmount:
+          type: integer
+          description: 最大金额
+        minAmount:
+          type: integer
+          description: 最小金额
+        resourceWebEnv:
+          $ref: '#/components/schemas/ResourceWebEnvType'
+    ResourceWebEnvType:
+      description: |
+        当资源为 Web 时：可用环境
+        - all 全部环境
+        - wallet_app 仅限钱包 App 内置浏览器
+        - web 仅 Web，不可在钱包 App 内使用
+      type: string
+      enum:
+        - all
+        - wallet_app
+        - web
+    CustomerPropertiesDto:
+      deprecated: true
+      description: |
+        支付方式的客户相关信息。即将废弃。请使用 ChannelPropertiesDto。
+      type: object
+      properties:
+        isSupportCustomer:
+          type: boolean
+          description: |
+            即将废弃。请使用 ChannelPropertiesDto.isSupportSource。
+            客户功能 true 可用 false 不可用。
+        isSupportMultipleSource:
+          type: boolean
+          description: |
+            即将废弃。请使用 ChannelPropertiesDto.isSupportMultipleSource。
+            多来源 true 可绑定 false 不可绑定
+    CodeReq:
+      type: object
+      description: EasyQR 码请求
+      required:
+        - amount
+        - orderNo
+      properties:
+        amount:
+          description: 金额
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        orderNo:
+          description: |
+            商户系统订单号（例如：订单号、支付 ID 等）。
+            最大长度为 50 个字符。
+          type: string
+          maxLength: 50
+        description:
+          description: 支付对象中的“支付说明”
+          type: string
+          maxLength: 255
+        extra:
+          description: |
+            若有与支付相关的附加信息时使用。具体设置请参阅“开发指南->支付 Extra 信息设置”。
+            创建支付对象时，将优先使用此处设置的 extra 信息。
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: 支付对象中的“元数据”
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        expiryDuration:
+          description: |
+            EasyQR 码有效期（分钟）
+            最小：3 分钟，最大：30 分钟，默认：10 分钟
+          type: integer
+        frontUrl:
+          description: EasyCheckout 支付完成后的返回页面 URL
+          type: string
+          pattern: https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]
+        items:
+          description: 商品信息
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeItem'
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+        customerId:
+          description: 客户 ID
+          type: string
+          maxLength: 32
+        sourceId:
+          description: 客户来源（Source）ID
+          type: string
+          maxLength: 32
+        shouldCreateSource:
+          description: |
+            是否需要通过此 code 创建新的客户来源（Source）。
+          type: boolean
+          default: false
+    CodeDto:
+      type: object
+      description: EasyQR 码对象
+      properties:
+        id:
+          description: EasyQR 码 ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: code
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        codeUrl:
+          description: EasyQR 码 URL
+          type: string
+          maxLength: 255
+        amount:
+          description: 支付金额
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        orderNo:
+          description: 商户系统订单号，例如订单号、支付 ID 等
+          type: string
+          maxLength: 50
+        description:
+          description: 支付对象中的“支付说明”
+          type: string
+          maxLength: 255
+        extra:
+          description: 支付 Extra 数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        metadata:
+          description: 支付对象中的“元数据”
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        status:
+          $ref: '#/components/schemas/CodeStatusType'
+        charge:
+          $ref: '#/components/schemas/ChargeDto'
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        source:
+          $ref: '#/components/schemas/SourceDto'
+        frontUrl:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeItem'
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+        expired:
+          description: EasyQR 码是否过期
+          type: boolean
+        expiryTime:
+          description: EasyQR 码有效期（Epoch 毫秒）
+          type: integer
+          format: int64
+        expiryPeriod:
+          description: 距 EasyQR 码过期剩余毫秒数
+          type: integer
+          format: int64
+        createTime:
+          description: Code 创建时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        shouldCreateSource:
+          description: |
+            是否需要通过此 code 创建新的客户来源（Source）。
+          type: boolean
+        activeSources:
+          description: 有效的客户付款源列表
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceDto'
+        invoice:
+          $ref: '#/components/schemas/InvoiceDto'
+    CodePaymentMethodResponse:
+      description: EasyQR 可用支付方式列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        paymentMethods:
+          description: 支付方式详情信息
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodDto'
+    CardInfo:
+      type: object
+      description: 卡信息及钱包信息
+      properties:
+        brand:
+          $ref: '#/components/schemas/CardBrandType'
+        last4:
+          description: 卡号后四位
+          type: string
+        expMonth:
+          description: 有效期月份
+          type: integer
+        expYear:
+          description: 有效期年份
+          type: integer
+        name:
+          description: 持卡人姓名
+          type: string
+        issuerCode:
+          description: |
+            卡发行公司代码（仅 GMO 支付）
+            遵循 GMO-PG "目标卡公司代码"
+          type: string
+        issuerName:
+          description: |
+            卡发行公司名称（仅 GMO 支付）
+            GMO-PG "目标卡公司代码" 对应的公司名称
+          type: string
+        wallet:
+          description: 钱包信息
+          type: string
+        walletApp:
+          description: 钱包 App 信息（当 paymentMethod 为 alipayplus 或 smartcode 时，为实际使用的 App 名称）
+          type: string
+        repaymentType:
+          description: |
+            还款类型
+            - 1 一次性付款
+            - revolving 循环分期（Revolving）
+            - bonus_one_time 奖励一次性付款
+            - 2 2 期分期
+            - 3 3 期分期
+          type: string
+        approvalCode:
+          description: 授权码
+          type: string
+        threeDSecure:
+          description: 是否启用 3D Secure
+          type: boolean
+        threeDSecureVersion:
+          description: 3D Secure 版本
+          type: string
+        threeDSecureDetail:
+          description: 3D Secure 详细信息
+          type: string
+        businessType:
+          description: 业务类型
+          type: string
+        konbiniScanTime:
+          description: 便利店最后一次扫描时间
+          type: integer
+          format: int64
+        konbiniType:
+          description: |
+            实际支付时的便利店类型
+            - unknown
+            - seven_eleven
+            - lawson
+            - familymart
+            - ministop
+            - seicomart
+          type: string
+        receivedAmount:
+          description: 便利店或银行实际入金金额
+          type: integer
+        receivedTime:
+          description: 便利店或银行实际入金时间；该值可能仅包含日期（零点）
+          type: integer
+          format: int64
+        bankUserCode:
+          description: 银行转账用户代码
+          type: string
+        bankUserName:
+          description: 银行转账用户户名
+          type: string
+        bankName:
+          description: 收款银行名称
+          type: string
+        bankBranchName:
+          description: 收款银行支店名称
+          type: string
+        bankAccountNo:
+          description: 收款银行账号
+          type: string
+        billingNo:
+          description: 账单号（支付终端用）
+          type: string
+    CodeItem:
+      type: object
+      description: 商品信息
+      required:
+        - name
+        - price
+        - count
+      properties:
+        name:
+          description: 商品名称
+          type: string
+        image:
+          description: 商品图片 URL
+          type: string
+          pattern: https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]
+        price:
+          description: 单个商品的支付金额
+          type: integer
+        count:
+          description: 数量
+          type: integer
+    TaxType:
+      description: |
+        税类型
+        - included 含税
+        - excluded 不含税
+      type: string
+      enum:
+        - included
+        - excluded
+    TaxCalcType:
+      description: |
+        税计算方法
+        - floor 向下取整
+        - ceil 向上取整
+        - round5 四舍五入
+      type: string
+      enum:
+        - floor
+        - ceil
+        - round5
+    TaxRateType:
+      description: |
+        税率类型
+        - standard 标准税率（10%）
+        - reduced 轻减税率（8%）
+        - free 税率 0%
+      type: string
+      enum:
+        - standard
+        - reduced
+        - free
+    InvoiceStatusType:
+      description: |
+        发票状态
+        - draft 草稿
+        - submit 已确认
+        - sent 已发送
+        - paid 已支付
+        - expired 已过期
+        - canceled 已取消
+      type: string
+      enum:
+        - draft
+        - submit
+        - sent
+        - paid
+        - expired
+        - canceled
+    InvoiceReq:
+      description: 发票请求
+      type: object
+      required:
+        - customerId
+        - amount
+      properties:
+        name:
+          description: 发票主题
+          type: string
+        memo:
+          description: 发票备注
+          type: string
+        customerId:
+          description: 客户 ID
+          type: string
+          maxLength: 32
+        amount:
+          description: 支付金额
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        taxType:
+          $ref: '#/components/schemas/TaxType'
+        taxCalcType:
+          $ref: '#/components/schemas/TaxCalcType'
+        invoiceTime:
+          description: 账单日（Epoch 毫秒）
+          type: integer
+          format: int64
+        expiryTime:
+          description: 支付请求有效期（Epoch 毫秒）
+          type: integer
+          format: int64
+        fields:
+          description: 发票字段列表
+          type: array
+          items:
+            type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+        remark:
+          description: 补充说明
+          type: string
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        enableAutoCharge:
+          description: |
+            是否启用自动支付。
+            true 启用，false 禁用
+          type: boolean
+          default: false
+        autoChargeTime:
+          description: 自动支付时间（Epoch 毫秒）
+          type: integer
+          format: int64
+    InvoiceDto:
+      description: 发票对象
+      properties:
+        id:
+          description: Invoice ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: invoice
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        invoiceNo:
+          description: Invoice Number
+          type: string
+          maxLength: 255
+        name:
+          description: 发票主题
+          type: string
+          maxLength: 255
+        memo:
+          description: 发票备注
+          type: string
+          maxLength: 255
+        amount:
+          description: 支付金额
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        status:
+          $ref: '#/components/schemas/InvoiceStatusType'
+        operator:
+          description: 操作人
+          type: string
+          maxLength: 255
+        invoiceTime:
+          description: 账单日（Epoch 毫秒）
+          type: integer
+          format: int64
+        sendTime:
+          description: 发送时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        paidTime:
+          description: 支付时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        expiryTime:
+          description: 支付请求有效期（Epoch 毫秒）
+          type: integer
+          format: int64
+        createTime:
+          description: 创建时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        fields:
+          description: 发票字段列表
+          type: array
+          items:
+            type: string
+        items:
+          description: 发票项目列表
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+        remark:
+          description: 补充说明
+          type: string
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        enableAutoCharge:
+          description: |
+            是否启用自动支付。
+            true 启用，false 禁用
+          type: boolean
+    InvoiceItem:
+      description: 发票项目对象
+      properties:
+        id:
+          description: Invoice Item ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: invoiceItem
+        name:
+          description: 商品名称
+          type: string
+          maxLength: 255
+        unitPrice:
+          description: 单价
+          type: integer
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        quantity:
+          description: 条数
+          type: integer
+        unit:
+          description: 单位
+          type: string
+        taxRateType:
+          $ref: '#/components/schemas/TaxRateType'
+        transactionTime:
+          description: 交易时间（Epoch 毫秒）
+          type: integer
+          format: int64
+    InvoicesResponse:
+      description: 发票信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        invoices:
+          description: 发票详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceDto'
+    InvoiceTaxSummaryItemDto:
+      description: 发票税金汇总项
+      type: object
+      properties:
+        taxRateType:
+          $ref: '#/components/schemas/TaxRateType'
+        amount:
+          description: 计税金额
+          type: integer
+        tax:
+          description: 税额
+          type: integer
+    LocationsResponse:
+      description: 终端 Location 信息列表
+      type: object
+      properties:
+        locations:
+          description: 终端 Location 详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDto'
+    LocationDto:
+      description: 终端 Location 对象
+      type: object
+      properties:
+        id:
+          description: Location ID
+          type: string
+          maxLength: 32
+        name:
+          description: Location 名称
+          type: string
+          maxLength: 255
+        country:
+          description: Location 国家/地区
+          type: string
+          maxLength: 255
+        description:
+          description: Location 详情
+          type: string
+          maxLength: 255
+        logoUrl:
+          description: Location Logo URL
+          type: string
+    ReaderStatusType:
+      description: |
+        读卡器状态
+        - pending 等待配对
+        - active 已配对
+      type: string
+      enum:
+        - pending
+        - active
+    DisputeStatusType:
+      description: |
+        争议状态
+        - new 处理中
+        - won 主张被认可
+        - lost 主张未被认可
+      type: string
+      enum:
+        - new
+        - won
+        - lost
+    TerminalReaderReq:
+      description: 终端读卡器请求
+      type: object
+      required:
+        - locationId
+      properties:
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 32
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    TerminalReaderDto:
+      description: 终端读卡器对象
+      type: object
+      properties:
+        id:
+          description: Reader ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: terminal.reader
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        locationId:
+          description: Location ID
+          type: string
+          maxLength: 50
+        serialNumber:
+          description: 序列号
+          type: string
+          maxLength: 50
+        registrationCode:
+          description: 配对码
+          type: string
+          maxLength: 20
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        status:
+          $ref: '#/components/schemas/ReaderStatusType'
+    ChargeCaptureReq:
+      description: 支付确认请求
+      type: object
+      properties:
+        amount:
+          description: >
+            确认金额
+
+            设置该值后，可使用与创建支付时不同的金额进行支付处理。
+            但请注意，该金额必须小于创建支付时的金额。
+          type: integer
+        extra:
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    TerminalReadersResponse:
+      description: 读卡器信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        readers:
+          description: 读卡器详情信息
+          type: array
+          items:
+            $ref: '#/components/schemas/TerminalReaderDto'
+    SubscriptionIntervalType:
+      description: |
+        订阅周期类型
+        - day 每天 1 次
+        - week 每周 1 次
+        - month 每月 1 次
+        - year 每年 1 次
+      type: string
+      enum:
+        - day
+        - week
+        - month
+        - year
+    SubscriptionDto:
+      description: 订阅对象
+      type: object
+      properties:
+        id:
+          description: Subscription ID
+          type: string
+          maxLength: 32
+        appId:
+          description: App ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: subscription
+        liveMode:
+          description: |
+            是否为生产模式
+            - false 测试模式
+            - true 生产模式
+          type: boolean
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
+        customer:
+          $ref: '#/components/schemas/CustomerDto'
+        nextChargeTime:
+          description: 下次扣款时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        isCharging:
+          description: 是否处理中
+          type: boolean
+        chargedPeriods:
+          description: 成功的订阅扣款次数
+          type: integer
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+        status:
+          $ref: '#/components/schemas/SubscriptionStatusType'
+        createTime:
+          description: 创建时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        updateTime:
+          description: 更新时间（Epoch 毫秒）
+          type: integer
+          format: int64
+    SubscriptionPeriodDto:
+      description: 订阅周期信息对象
+      type: object
+      properties:
+        id:
+          description: Subscription Period ID
+          type: string
+          maxLength: 32
+        object:
+          description: 对象类型标识
+          type: string
+          default: subscription_period
+        startTime:
+          description: 周期开始时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        endTime:
+          description: 周期结束时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        charge:
+          $ref: '#/components/schemas/ChargeDto'
+    SubscriptionStatusType:
+      description: |
+        订阅状态
+        - new 新建
+        - active 有效
+        - past_due 逾期
+        - canceled 已取消
+      type: string
+      enum:
+        - new
+        - active
+        - past_due
+        - canceled
+    SubscriptionReq:
+      description: 创建订阅请求
+      type: object
+      required:
+        - customerId
+      properties:
+        name:
+          description: 订阅名称
+          type: string
+          maxLength: 20
+        customerId:
+          description: 客户 ID
+          type: string
+          maxLength: 32
+        currency:
+          description: 货币代码（ISO 4217）
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: JPY
+        amount:
+          description: 每期扣款金额
+          type: integer
+        interval:
+          description: 订阅周期类型
+          $ref: '#/components/schemas/SubscriptionIntervalType'
+        intervalSpan:
+          description: 周期间隔（每隔多少个周期扣款）
+          type: integer
+          default: 1
+        initialAmount:
+          description: 首次扣款前支付的固定金额
+          type: integer
+        firstChargeTime:
+          description: 首次扣款时间（Epoch 毫秒）
+          type: integer
+          format: int64
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    SubscriptionUpdateReq:
+      description: 更新订阅请求
+      type: object
+      properties:
+        metadata:
+          description: 元数据
+          type: object
+          maxProperties: 20
+          propertyNames:
+            type: string
+            maxLength: 20
+          additionalProperties:
+            type: string
+    SubscriptionsResponse:
+      description: 订阅信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        subscriptions:
+          description: 订阅详情信息
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionDto'
+    SubscriptionPeriodsResponse:
+      description: 订阅周期信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        periods:
+          description: 订阅周期详情信息
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionPeriodDto'
+    SubscriptionScheduleChargesResponse:
+      description: 订阅周期支付信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        charges:
+          description: 订阅周期支付详情信息
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeDto'
+    ChargeLocationStatusType:
+      description: |
+        Location 状态
+        - active 有效
+        - submitted 已提交
+      type: string
+      enum:
+        - active
+        - submitted
+    ChargeLocationReq:
+      description: Location 请求
+      type: object
+      required:
+        - name
+        - tel
+        - zip
+        - address
+      properties:
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: 电话号码
+          type: string
+          maxLength: 20
+        zip:
+          description: 邮政编码
+          type: string
+          maxLength: 8
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: 纬度
+          type: number
+          format: double
+        longitude:
+          description: 经度
+          type: number
+          format: double
+        note:
+          description: 备注
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+    ChargeLocationUpdateReq:
+      description: 更新位置请求
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: 电话号码
+          type: string
+          maxLength: 20
+        zip:
+          description: 邮政编码
+          type: string
+          maxLength: 8
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: 纬度
+          type: number
+          format: double
+        longitude:
+          description: 经度
+          type: number
+          format: double
+        note:
+          description: 备注
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+    ChargeLocationDto:
+      description: Location 对象
+      type: object
+      properties:
+        id:
+          description: Location ID
+          type: string
+          maxLength: 32
+        name:
+          $ref: '#/components/schemas/StringTransliterationDto'
+        tel:
+          description: 电话号码
+          type: string
+          maxLength: 20
+        zip:
+          description: 邮政编码
+          type: string
+          maxLength: 8
+        address:
+          $ref: '#/components/schemas/AddressTransliterationDto'
+        latitude:
+          description: 纬度
+          type: number
+          format: double
+        longitude:
+          description: 经度
+          type: number
+          format: double
+        note:
+          description: 备注
+          type: string
+        status:
+          $ref: '#/components/schemas/ChargeLocationStatusType'
+    ChargeLocationsResponse:
+      description: Location 信息列表
+      type: object
+      properties:
+        total:
+          description: 条数
+          type: integer
+        locations:
+          description: Location 详情内容
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeLocationDto'
+    AddressTransliterationDto:
+      description: 地址转写对象
+      type: object
+      properties:
+        kanji:
+          $ref: '#/components/schemas/AddressDto'
+        kana:
+          $ref: '#/components/schemas/AddressDto'
+        romaji:
+          $ref: '#/components/schemas/AddressDto'
+    StringTransliterationDto:
+      description: 姓名转写对象
+      type: object
+      properties:
+        kanji:
+          description: 汉字
+          type: string
+        kana:
+          description: 假名
+          type: string
+        romaji:
+          description: 罗马字
+          type: string
+    AddressDto:
+      description: 地址对象
+      type: object
+      properties:
+        pref:
+          description: 都道府县
+          type: string
+        city:
+          description: 市区町村
+          type: string
+        town:
+          description: 町域
+          type: string
+        address1:
+          description: 地址1
+          type: string
+        address2:
+          description: 地址2
+          type: string
