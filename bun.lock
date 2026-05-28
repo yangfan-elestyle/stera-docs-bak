@@ -37,6 +37,7 @@
     },
   },
   "patchedDependencies": {
+    "fumadocs-openapi@10.8.1": "patches/fumadocs-openapi@10.8.1.patch",
     "fumadocs-ui@16.8.8": "patches/fumadocs-ui@16.8.8.patch",
   },
   "packages": {

@@ -1,0 +1,81 @@
+diff --git a/dist/playground/client.js b/dist/playground/client.js
+index a3cfe7176d708bbc14a65b55579e9f703e73c04d..423148d00f3fe9b36b62a85abdd387892867e171 100644
+--- a/dist/playground/client.js
++++ b/dist/playground/client.js
+@@ -167,7 +167,7 @@ function PlaygroundClient({ route, method, securities, doc, proxyUrl, writeOnly,
+ function SecurityRequirements({ securities, setSecurityId, securityId, children }) {
+ 	const t = useTranslations();
+ 	const { isLoading, error } = useAuth();
+-	const defaultOpen = isLoading || error != null;
++	const defaultOpen = true;
+ 	const [open, setOpen] = useState(defaultOpen);
+ 	const { CollapsiblePanel = DefaultCollapsiblePanel } = useApiContext().client.playground?.components ?? {};
+ 	useOnChange(defaultOpen, () => {
+@@ -517,6 +517,7 @@ function Route({ route, ...props }) {
+ }
+ function DefaultCollapsiblePanel({ title, children, ...props }) {
+ 	return /* @__PURE__ */ jsxs(Collapsible, {
++		defaultOpen: true,
+ 		...props,
+ 		className: cn("border-b last:border-b-0", props.className),
+ 		children: [/* @__PURE__ */ jsxs(CollapsibleTrigger, {
+diff --git a/dist/playground/components/inputs.js b/dist/playground/components/inputs.js
+index b08ee45..c92e522 100644
+--- a/dist/playground/components/inputs.js
++++ b/dist/playground/components/inputs.js
+@@ -254,12 +254,8 @@ function FieldSet({ field: _field, fieldName, toolbar, name, isRequired, depth =
+ 		});
+ 	}
+ 	function renderUnsetButton() {
+-		return /* @__PURE__ */ jsx("button", {
+-			type: "button",
+-			onClick: () => dataEngine.delete(fieldName),
+-			className: "text-fd-muted-foreground hover:text-fd-accent-foreground",
+-			children: /* @__PURE__ */ jsx(X, { className: "size-3.5" })
+-		});
++		// elepay 定制: 移除所有字段 (object/array/普通) 的 unset (×) 删除按钮, 由用户自行清空输入框。
++		return null;
+ 	}
+ 	if (info.unionField && field[info.unionField] && field[info.unionField].length > 0) {
+ 		const union = field[info.unionField];
+diff --git a/dist/ui/operation/index.js b/dist/ui/operation/index.js
+index 7494a245ba769180b6c230ba468e0c33e108cf03..0de0d1dae082216b5e5bdc9751370315df8a10d3 100644
+--- a/dist/ui/operation/index.js
++++ b/dist/ui/operation/index.js
+@@ -84,6 +84,7 @@ function Operation({ type = "operation", path, method, ctx, showTitle, showDescr
+ 		const statuses = Object.keys(method.responses);
+ 		responseNode = /* @__PURE__ */ jsxs(Fragment$1, { children: [ctx.renderHeading(headingLevel, /* @__PURE__ */ jsx(I18nLabel, { label: "titleResponseBody" }), { id: "response-body" }), /* @__PURE__ */ jsx(Accordions, {
+ 			type: "multiple",
++			defaultValue: statuses,
+ 			children: statuses.map((status) => /* @__PURE__ */ jsx(ResponseAccordion, {
+ 				status,
+ 				operation: method,
+diff --git a/dist/utils/schema/sample.js b/dist/utils/schema/sample.js
+--- a/dist/utils/schema/sample.js
++++ b/dist/utils/schema/sample.js
+@@ -228,12 +228,6 @@
+ 			res[propertyName] = sample.value;
+ 		}
+ 	}
+-	if (schema.additionalProperties && typeof schema.additionalProperties === "object") {
+-		const ap = schema.additionalProperties;
+-		const baseName = ap["x-additionalPropertiesName"] || "property";
+-		res[`${String(baseName)}1`] = traverse(ap, options, spec, { depth: depth + 1 }).value;
+-		res[`${String(baseName)}2`] = traverse(ap, options, spec, { depth: depth + 1 }).value;
+-	}
+ 	if (schema.properties && typeof schema.properties === "object" && typeof schema.maxProperties === "number" && Object.keys(res).length > schema.maxProperties) {
+ 		const filtered = {};
+ 		let added = 0;
+diff --git a/package.json b/package.json
+index 9489635cda18437d02cae2c1ed411834b6dba777..4e795d5d1b237fb9a3f0843feda1d3ee2d942343 100644
+--- a/package.json
++++ b/package.json
+@@ -22,6 +22,8 @@
+     ".": "./dist/index.js",
+     "./i18n": "./dist/i18n.js",
+     "./playground/client": "./dist/playground/client.js",
++    "./playground/components/inputs": "./dist/playground/components/inputs.js",
++    "./playground/schema": "./dist/playground/schema.js",
+     "./requests/generators": "./dist/requests/generators/index.js",
+     "./requests/generators/all": "./dist/requests/generators/all.js",
+     "./requests/generators/csharp": "./dist/requests/generators/csharp.js",

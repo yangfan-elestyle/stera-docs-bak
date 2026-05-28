@@ -2,7 +2,7 @@
   "name": "@elepay/docs",
   "title": "Elepay Docs",
   "description": "Documentation for Elepay, a payment platform.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "scripts": {
     "generate:data": "bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts && bun run scripts/snapshot-error-codes.ts",
@@ -45,6 +45,7 @@
     "wrangler": "^4.90.1"
   },
   "patchedDependencies": {
+    "fumadocs-openapi@10.8.1": "patches/fumadocs-openapi@10.8.1.patch",
     "fumadocs-ui@16.8.8": "patches/fumadocs-ui@16.8.8.patch"
   }
 }

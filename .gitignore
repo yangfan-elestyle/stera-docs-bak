@@ -41,3 +41,4 @@ content/docs/openapi/(generated)/
 
 # generated data
 /data/
+.mcp.json

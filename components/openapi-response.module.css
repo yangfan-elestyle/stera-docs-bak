@@ -1,0 +1,7 @@
+/* 响应面板代码块高度: 由 openapi-response.tsx 按「钉住后到视口底」实测算出 --resp-max-h,
+   使右栏整体不超出视口、响应面板尽量高; 未算出时 (SSR 首帧 / 移动端非 sticky) 回退 600px。
+   :global 命中 fumadocs-ui CodeBlock 写死的滚动容器 .fd-scroll-container; 作用域限于本面板
+   (.panel 经 CSS Module 哈希), 不影响右栏 cURL 示例与正文代码块。 */
+.panel :global(.fd-scroll-container) {
+  max-height: var(--resp-max-h, 600px);
+}
