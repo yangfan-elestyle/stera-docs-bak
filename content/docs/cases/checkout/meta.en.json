@@ -1,0 +1,5 @@
+{
+  "title": "Checkout",
+  "defaultOpen": false,
+  "pages": ["elepay-hosted", "qrwidget"]
+}

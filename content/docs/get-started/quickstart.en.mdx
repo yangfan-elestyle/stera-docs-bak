@@ -1,0 +1,99 @@
+---
+title: Quick Start
+description: Create your first EasyQR payment QR code with a single API call
+---
+
+Follow this guide to create your first EasyQR code with a single API call and see a real, scannable payment QR code in your browser. The entire flow runs in test mode, so no real payments are collected.
+
+<Callout title="What is EasyQR">
+EasyQR is a dynamic payment QR code provided by <EText name="elepay" />: your server creates a code, and the customer scans it to pay via dozens of methods such as PayPay and credit cards. For the complete approach to integrating the QR code into a website or device, see [EasyCheckout](/cases/checkout).
+</Callout>
+
+## Before you begin
+
+You only need to prepare one thing: a **test Secret Key**.
+
+- Log in to the <EText name="elepay" /> dashboard and obtain your test Secret Key under “開発設定 / API” on the left. It looks like `sk_test_…`. For detailed steps, see [Initial setup](/get-started/set-up).
+- The test Secret Key corresponds to **test mode**: it does not connect to real payment channels and produces no real transactions, so you can try it freely.
+
+<Callout type="warn">
+The Secret Key has full access to API operations and **must be used only on the server side**. Never commit it to a code repository or expose it in the frontend.
+</Callout>
+
+## Step 1: Create an EasyQR code
+
+Send a request to `POST /codes` to create an EasyQR code. After replacing the `sk_test_…` below with your own test Secret Key, you can copy and run it directly:
+
+```bash
+curl -X POST https://api.elepay.io/codes \
+  -H "Authorization: Bearer sk_test_xxxxxxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 500,
+    "currency": "JPY",
+    "orderNo": "quickstart-0001"
+  }'
+```
+
+<Callout title="Authentication methods">
+<EText name="elepay" /> supports both Bearer and Basic authentication. The example above uses Bearer (the key as the token); if you switch to Basic, use the key as the username and leave the password empty. For details, see the [API guide](/guides/api-guide).
+</Callout>
+
+Request fields (full definitions in [Create EasyQR code](/openapi/code/createCode)):
+
+{/* prettier-ignore */}
+| Field | Required | Description |
+| --- | --- | --- |
+| `amount` | Yes | Payment amount, an integer. `JPY` is in yen (`500` means ¥500) |
+| `orderNo` | Yes | The order number on your system, up to 50 characters, for reconciliation |
+| `currency` | No | Currency code (ISO 4217), defaults to `JPY` |
+
+A successful creation returns `201`, and the response body is a code object (the following is an example; actual field values vary by account):
+
+```json
+{
+  "id": "code_xxxxxxxxxxxxxxxx",
+  "object": "code",
+  "liveMode": false,
+  "amount": 500,
+  "currency": "JPY",
+  "orderNo": "quickstart-0001",
+  "status": "pending",
+  "codeUrl": "https://pay.elepay.io/code/xxxxxxxxxxxxxxxx",
+  "expiryTime": 1717200000000,
+  "createTime": 1717199400000
+}
+```
+
+Key fields:
+
+{/* prettier-ignore */}
+| Field | Meaning |
+| --- | --- |
+| `id` | The unique identifier of the EasyQR code, used for later retrieval / closing |
+| `liveMode` | `false` indicates test mode (created with a test Secret Key) |
+| `status` | `pending` (unpaid) when newly created; becomes `captured` after payment completes |
+| `codeUrl` | **The customer payment landing page URL**—used in the next step |
+
+## Step 2: View your payment QR code
+
+Copy the `codeUrl` from the response and open it in a browser. You will see a checkout page hosted by <EText name="elepay" />: the amount on the left, and the payment QR code with available payment methods on the right.
+
+![EasyQR checkout page](/docs/fdfa6f6c89671f21da0c49a86a440b156f6b48603faaf6ab5a40f530f3635091-image.png)
+
+The customer scans this QR code with their phone and can pay using methods such as PayPay or a credit card.
+
+<Callout title="🎉 Congratulations">
+This is the first EasyQR code you created with the API—you have now completed the core <EText name="elepay" /> payment flow: from creation to QR code generation.
+</Callout>
+
+<Callout type="info">
+If the QR code page indicates that no payment method is available, first enable at least one payment method under “簡単決済 > 設定 > 決済方法管理” in the dashboard.
+</Callout>
+
+## Next steps
+
+- **Integrate into your website or device**: [EasyCheckout integration](/cases/checkout) (hosted page / embedded Widget)
+- **Query payment status**: [Retrieve EasyQR code](/openapi/code/retrieveCode)
+- **Learn about all fields**: [Create EasyQR code](/openapi/code/createCode)
+- **Go live with real payments**: After enabling payment methods in the dashboard, simply replace the test Secret Key with a live Secret Key (`sk_live_…`)

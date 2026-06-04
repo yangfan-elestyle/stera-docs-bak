@@ -1,0 +1,70 @@
+---
+title: Best Practices
+---
+
+Recommendations for a stable EasyCheckout integration. Differences between payment methods and internal processing are absorbed by <EText name="elepay" />, so you only need to check the **final charge result**.
+
+## Integration sequence
+
+<Mermaid
+  chart={`sequenceDiagram
+    autonumber
+    participant S as Merchant server
+    participant C as Customer
+    participant E as elepay
+    S->>E: Create EasyQR code (orderNo, amount)
+    E-->>S: code (id, codeUrl)
+    S->>C: Show QR code / Checkout
+    C->>E: Scan QR and pay
+    E-)S: Webhook: charge.succeeded / charge.revoked
+    S-->>E: 2xx
+    Note over E,S: Non-2xx triggers retry (1min x3 -> 10min x2); reconcile via sync API if undelivered`}
+/>
+
+The merchant server creates an EasyQR code, shows it to the customer, the customer pays, and <EText name="elepay" /> notifies the result via Webhook. See the best practices below for how to handle it.
+
+## Status lifecycle
+
+<Mermaid
+  chart={`flowchart TD
+    A(["Create EasyQR code"]) --> P["pending / unpaid"]
+    P -->|"customer scans QR and pays"| D{"payment result"}
+    D -->|"settled"| C["captured / paid"]
+    D -->|"failed"| F["closed / revoked"]
+    P -->|"expired / Close EasyQR code"| F
+    C -.->|"Webhook"| WS(["charge.succeeded"])
+    F -.->|"Webhook"| WR(["charge.revoked"])`}
+/>
+
+## Best practices
+
+### 1. Treat the Webhook as the single source of truth
+
+- Always verify the `elepay-signature` (HMAC-SHA256) of the received [Webhook](/guides/webhook) before processing.
+- The redirect `status` parameter is for page transition only. Do not use it for result determination; determine the result from the final events `charge.succeeded` (success) / `charge.revoked` (revoked).
+
+### 2. Process the Webhook idempotently and return 2xx quickly
+
+- The same event may be re-delivered, so make processing idempotent (keyed by `orderNo`, etc.) to avoid double processing.
+- Offload heavy work to async; return 2xx immediately on receipt. A 4xx / 5xx triggers automatic retries (every 1 min x3 -> every 10 min x2).
+
+### 3. Prepare a reconciliation fallback for missed events
+
+- In case a Webhook is not delivered, implement a path to reconcile the result via a sync API such as [Retrieve EasyQR code](/openapi/code/retrieveCode). Do not rely on the Webhook alone.
+
+### 4. Set a unique `orderNo` per order
+
+- Set a unique `orderNo` per order in [Create EasyQR code](/openapi/code/createCode). It is used to match the order on Webhook receipt and prevents duplicate creation for the same `orderNo`.
+
+### 5. Determine amount and currency on the server side
+
+- Create the code on the server side (secret key) and limit the public key to client-side display. Do not let the client decide the amount, to prevent tampering.
+
+### 6. Verify in Test mode before going Live
+
+- Switch between Test / Live and verify the full flow, including Webhook receipt, in Test mode before switching to Live.
+
+### 7. Design the expiry and failure flows
+
+- Set an expiry appropriate to your use case. When the expiry is reached, an unsettled (`pending`) payment is revoked and `charge.revoked` is notified.
+- On expiry or failure, provide a recovery path for the customer, such as regenerating the QR code.

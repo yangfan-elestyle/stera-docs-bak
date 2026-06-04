@@ -1,0 +1,5 @@
+{
+  "title": "EC プラットフォーム連携",
+  "defaultOpen": false,
+  "pages": ["ec-cube-plugin", "woocommerce-plugin", "allvalue"]
+}

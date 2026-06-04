@@ -1,0 +1,219 @@
+---
+title: JavaScript API Reference
+---
+
+## Elepay
+
+**Kind**: global class
+
+### new Elepay(key, options)
+
+Initialize the SDK.
+
+**Returns**: `Elepay` - Elepay instance
+
+| Param          | Type     | Description                                                                                            |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| key            | `string` | Required. Publishable key                                                                              |
+| options        | `object` | Options                                                                                                |
+| options.locale | `string` | Language. Default is `auto` (auto‑detect from browser). You can also set `ja`, `en`, `zh-CN`, `zh-TW`. |
+
+### elepay.handleCharge(charge) ⇒ `Promise`
+
+Process a payment with a Charge object.
+
+**Kind**: instance method of `Elepay`<br />
+**Returns**: `Promise` - Promise of the payment result. For methods that require `frontUrl`, the result is returned via `frontUrl`.
+
+| Param  | Type     | Description                               |
+| ------ | -------- | ----------------------------------------- |
+| charge | `object` | Required. Charge object created on server |
+
+**Example**
+
+```js
+elepay
+  .handleCharge(chargeObject)
+  .then(function (result) {
+    // Normal flow
+    if (result.type === 'cancel') {
+      // Payment cancelled
+    } else if (result.type === 'success') {
+      // Payment succeeded
+    }
+  })
+  .catch(function (err) {
+    // Error handling
+  });
+```
+
+### elepay.handleSource(source) ⇒ `Promise`
+
+Process an authorization with a Source object.
+
+**Kind**: instance method of `Elepay`<br />
+**Returns**: `Promise` - Promise of the authorization result. For methods that require `frontUrl`, the result is returned via `frontUrl`.
+
+| Param  | Type     | Description                               |
+| ------ | -------- | ----------------------------------------- |
+| source | `object` | Required. Source object created on server |
+
+**Example**
+
+```js
+elepay
+  .handleSource(source)
+  .then(function (result) {
+    // Normal flow
+    if (result.type === 'cancel') {
+      // Cancelled
+    } else if (result.type === 'success') {
+      // Authorization succeeded
+    }
+  })
+  .catch(function (err) {
+    // Error handling
+  });
+```
+
+### elepay.createCodeWidget(options) ⇒ `CodesWidget`
+
+Create an EasyQR widget.
+
+**Kind**: instance method of `Elepay`
+**Returns**: `CodesWidget` - EasyQR widget instance
+
+| Param                         | Type    | Description                                     |
+| ----------------------------- | ------- | ----------------------------------------------- |
+| options                       | object  | Widget options                                  |
+| options.container             | string  | CSS selector string for the target DOM element  |
+| options.direction             | string  | Widget layout. vertical (default) or horizontal |
+| options.icon                  | boolean | If true, show branded QR icon. Default false    |
+| options.parts.amount          | boolean | If true, show amount. Default true              |
+| options.parts.paymentLogo     | boolean | If true, show payment method icon. Default true |
+| options.parts.tip             | boolean | If true, show help message. Default true        |
+| options.theme.primaryColor    | boolean | Primary color                                   |
+| options.theme.borderColor     | boolean | Border color. null: no border                   |
+| options.theme.backgroundColor | boolean | Background color. Default white                 |
+
+**Example**
+
+```js
+var widget = elepay.createCodeWidget({
+  container: '#widget',
+});
+widget.on('success', () => {
+  // Post‑payment handling
+});
+widget.on('expired', () => {
+  // Generate a new EasyQR code, etc.
+});
+widget.show('cod_028123beb9f8c853fa845f4');
+```
+
+### elepay.checkout(code) ⇒ `Promise`
+
+Run EasyCheckout.
+
+**Kind**: instance method of `Elepay`
+**Returns**: `Promise` - Promise for the checkout flow. Only handle on error.
+
+| Param | Type     | Description                                  |
+| ----- | -------- | -------------------------------------------- |
+| code  | `object` | Required. EasyQR object ID created on server |
+
+**Example**
+
+```js
+elepay.checkout('cod_028123beb9f8c853fa845f4').catch(function (err) {
+  // Error handling
+});
+```
+
+## CodesWidget
+
+EasyQR widget class.
+
+**Kind**: global class
+
+### codesWidget.show(code)
+
+Show the EasyQR widget.
+
+**Kind**: instance method of `CodesWidget`
+
+| Param | Type   | Description                                  |
+| ----- | ------ | -------------------------------------------- |
+| code  | object | Required. EasyQR object ID created on server |
+
+**Example**
+
+```js
+widget.show('cod_028123beb9f8c853fa845f4');
+```
+
+### codesWidget.destroy()
+
+Destroy the EasyQR widget.
+
+**Kind**: instance method of `CodesWidget`
+
+### "success" (ev, codeObject)
+
+Event emitted when a payment completes.
+
+**Kind**: event emitted by `CodesWidget`
+
+| Param      | Type   | Description        |
+| ---------- | ------ | ------------------ |
+| ev         | object | Event              |
+| ev.type    | string | success            |
+| codeObject | object | EasyQR code object |
+
+**Example**
+
+```js
+widget.on('success', function (ev, codeObject) {
+  // Post‑payment handling
+});
+```
+
+### "expired" (ev, codeObject)
+
+Event emitted when an EasyQR code expires.
+
+**Kind**: event emitted by `CodesWidget`
+
+| Param      | Type   | Description        |
+| ---------- | ------ | ------------------ |
+| ev         | object | Event              |
+| ev.type    | string | expired            |
+| codeObject | object | EasyQR code object |
+
+**Example**
+
+```js
+widget.on('expired', function (ev, codeObject) {
+  // Generate a new EasyQR code, etc.
+});
+```
+
+### "error" (ev, error)
+
+Error event.
+
+**Kind**: event emitted by `CodesWidget`
+
+| Param   | Type   | Description  |
+| ------- | ------ | ------------ |
+| ev      | object | Event        |
+| ev.type | string | error        |
+| error   | Error  | Error object |
+
+**Example**
+
+```js
+widget.on('error', function (ev, err) {
+  // Error handling
+});
+```

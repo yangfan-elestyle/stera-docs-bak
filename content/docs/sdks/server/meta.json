@@ -1,5 +1,0 @@
-{
-  "title": "Server",
-  "defaultOpen": false,
-  "pages": ["api-guide", "webhook", "extra-setting", "terminals"]
-}

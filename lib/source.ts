@@ -12,7 +12,11 @@ export const source = loader({
   i18n,
   baseUrl: '/',
   source: docs.toFumadocsSource(),
-  plugins: [lucideIconsPlugin(), openapiPlugin(), sectionNotesPlugin()],
+  plugins: [
+    lucideIconsPlugin(),
+    openapiPlugin(),
+    sectionNotesPlugin(),
+  ],
 });
 
 // 根据租户（由 host 推断）判断页面是否可见，防止用户通过直接访问 url 进入不可见页面
@@ -204,6 +208,61 @@ export function getPageImage(page: InferPageType<typeof source>) {
     segments,
     url: `/og/${segments.join('/')}`,
   };
+}
+
+const DESCRIPTION_MAX = 155;
+
+// CJK 字符类(含和文/中日韩统一/全角及标点),用于清除被剥离行内组件留下的空隙。
+const CJK = '\\u3000-\\u303f\\u3040-\\u30ff\\u3400-\\u9fff\\uff00-\\uffef';
+const CJK_GAP = new RegExp(`([${CJK}])\\s+(?=[${CJK}])`, 'g');
+
+/**
+ * 清洗 structuredData 抽取的正文文本为可读纯文本:
+ * structuredData 已排除代码块/Mermaid,但会保留 `**`/行内代码标记,且会丢弃行内 JSX
+ * (如 <EText/>)留下空隙。此处剥离残留标记并修复空格。不动 `_`,避免误伤 snake_case。
+ */
+function normalizeDescriptionText(raw: string): string {
+  return raw
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // 链接/图片 → 可读文本
+    .replace(/[*`]+/g, '') // 去除加粗/斜体/行内代码标记
+    .replace(/\s+/g, ' ') // 折叠空白
+    .replace(CJK_GAP, '$1') // 去除 CJK 之间的残留空格
+    .trim();
+}
+
+/**
+ * 页面描述,带自动回退(无需为每个 mdx 手写 description):
+ *   1. frontmatter.description(若显式声明)
+ *   2. 正文首段(由 structuredData 提供),清洗后截断至 ~155 字符
+ *   3. undefined(交由调用方决定是否省略)
+ * 用于 SEO meta 与 OG 预览图。
+ */
+export function getPageDescription(
+  page: InferPageType<typeof source>,
+): string | undefined {
+  const explicit = page.data.description?.trim();
+  if (explicit) return explicit;
+
+  const contents = (
+    page.data as { structuredData?: { contents?: { content?: string }[] } }
+  ).structuredData?.contents;
+  if (!contents?.length) return undefined;
+
+  // 多取一些原始文本,清洗(可能缩短)后再截断。
+  let text = '';
+  for (const { content } of contents) {
+    const para = content?.trim();
+    if (!para) continue;
+    text = text ? `${text} ${para}` : para;
+    if (text.length >= DESCRIPTION_MAX * 2) break;
+  }
+
+  text = normalizeDescriptionText(text);
+  if (!text) return undefined;
+
+  return text.length > DESCRIPTION_MAX
+    ? `${text.slice(0, DESCRIPTION_MAX).trimEnd()}…`
+    : text;
 }
 
 export async function getLLMText(

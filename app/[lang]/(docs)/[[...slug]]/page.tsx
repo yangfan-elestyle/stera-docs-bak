@@ -1,5 +1,6 @@
 import {
   getFilteredFooterItems,
+  getPageDescription,
   getPageImage,
   isPageVisibleForHost,
   source,
@@ -93,7 +94,7 @@ export async function generateMetadata(
 
   return {
     title: page.data.title,
-    description: page.data.description,
+    description: getPageDescription(page),
     ...(requestBaseUrl
       ? {
           openGraph: {

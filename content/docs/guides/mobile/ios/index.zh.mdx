@@ -1,0 +1,425 @@
+---
+title: iOS SDK
+---
+
+**elepay iOS SDK** 是将 <EText name="elepay" /> 集成到 iOS 应用的开发包。<br />
+本文将详细说明如何将 iOS 应用与 elepay SDK 对接。
+
+# 支持版本
+
+- 自 **elepay iOS SDK 5.0** 起，SDK 拆分为 `ElepaySDK` 与 `Stripe` / `RPay` / `ChinesePayments` / `Checkout` 等独立 Plugin，按需引入。自 5.0.5 起，新增 GMO（Apple Pay / Credit Pay 3DS）处理。
+- 自 **elepay iOS SDK 4.0** 起，不再支持 iOS 11.0；同时不再支持 Bitcode。
+- 自 **elepay iOS SDK 3.0** 起，不再支持 iOS 10.0。
+- **elepay iOS SDK 2.x** 支持 iOS 10.0 及以上。
+- 开发环境：请使用 Xcode 11.0 及以上版本。
+
+# 安装
+
+## 1. 通过 CocoaPods 安装
+
+- 在 Podfile 中添加 `ElepaySDK`。  
+   **注意：需要 CocoaPods 1.10.0 及以上。**
+
+```ruby
+# ElepaySDK 2.2 以下仅支持 dynamic frameworks。
+# 自 2.3 起同时支持 static frameworks。
+#use_frameworks!
+
+# 自 2.0.0 起，SDK 名称由 ElePay 更名为 ElepaySDK
+
+pod 'ElepaySDK', '~> 3.0'
+```
+
+- 仅在使用中国支付方式（Alipay、WeChat Pay、UnionPay）时，添加 `Elepay_ChinesePayments_Plugin`。
+
+```ruby
+# 自 2.0.0 起，插件由 ElePay-ChinesePayments-Plugin 更名为 Elepay_ChinesePayments_Plugin
+
+pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
+```
+
+<EContainer tenant="default">
+
+- 如需使用 Stripe，且 elepay SDK 版本不低于 2.2.0，请添加 `Stripe`。  
+   注意：若使用 ElepaySDK 2.x，请以 `pod 'Stripe', '~> 19.4.1'` 的方式添加。
+
+```ruby
+# 仅 ElepaySDK 3.0+ 支持 Stripe 21.x
+# 若使用 ElepaySDK 2.x，请使用 "pod 'Stripe', '~> 19.4.1'"
+
+pod 'Stripe', '~> 22.0'
+```
+
+> 🚧 由于 Stripe v23 停止支持 iOS 12，请在 elepay SDK 中配置 Stripe v22。
+
+</EContainer>
+
+- 如需使用 PayPal，且 elepay SDK 版本不低于 1.7.0，请添加 `Braintree`。  
+   **注意：** 自 elepay SDK 4.0.0 起，已不再支持 Braintree。如需 PayPal，请使用 elepay SDK 3.x。
+
+```ruby
+pod 'Braintree'
+```
+
+- 执行 `pod install`。
+
+## 2. 通过 Swift Package Manager（SPM）安装
+
+> 📘 自 elepay iOS SDK 5.0 起，默认以 SPM（Swift Package Manager）作为分发方式；如有其他接入平台的诉求，请联系 <EText name="elepay" /> 团队。
+
+**elepay iOS SDK** 自 3.1.1 起支持 SPM。<br />
+**elepay iOS SDK Chinese Payments Plugin** 自 2.0.2 起支持 SPM。
+
+- 通过 SPM 添加 ElepaySDK。  
+   使用地址：`https://github.com/elestyle/elepay-ios-sdk.git`  
+   如需指定版本，请选择 3.1.1 及以上。
+- 仅在使用中国支付方式（Alipay、WeChat Pay、UnionPay）时，添加 `Elepay_ChinesePayments_Plugin`。  
+   使用地址：`https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`  
+   如需指定版本，请选择 2.0.2 及以上。
+<EContainer tenant="default">
+
+- 若使用 Stripe，请添加 `Stripe`。  
+   使用地址：`https://github.com/stripe/stripe-ios.git`  
+   如需指定版本，请选择 21.8.1 及以上。
+
+</EContainer>
+
+- 若使用 PayPal，请添加 `Braintree`。  
+   注意：Braintree 5.x.x 不再支持 iOS 11，请使用 4.x.x。且 4.x.x 不支持 SPM，请通过 CocoaPods 安装或手动集成。
+
+## 3. 手动安装
+
+7 个步骤将 elepay iOS SDK 集成到您的应用：
+
+- 从 [Github.com](https://github.com/elestyle/elepay-ios-sdk) 下载并解压 [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip)。
+- 将 `ElePay.framework` 添加到 Xcode 工程。必要时勾选 “Copy items if needed”。
+- 在目标设置中将 `ElePay.framework` 添加到 “Embedded Binaries”。
+- 在使用 Apple Pay 的 Objective‑C 工程中，还需在目标设置的 “Embedded Binaries” 中添加 `PassKit.framework`。
+
+## 4. 在 Objective‑C 工程中使用
+
+> 📘 若使用 Objective‑C 开发
+>
+> 在 Objective‑C 工程中集成 elepay 时，可使用此文件：
+> [ElePayObjCBridge.swift](https://github.com/elestyle/elepay-ios-demo-swift/blob/master/ELEPayObjectiveC/ElePayObjCBridge.swift)
+
+# 实现
+
+## 1. 添加 URL Scheme
+
+在 Xcode 的 **PROJECT** ＞ **TARGETS** ＞ **Info** 中，打开 **URL Types**，添加 elepay 专用的 _URL Scheme_。
+
+### 通用设置
+
+有关获取 <EText name="elepay" /> 专用 URL Scheme 的方法，请参阅「[获取 iOS / Android SDK 的 URL Scheme](/guides/mobile/url-scheme)」。
+
+![](/docs/URL_Scheme.png)
+
+### 测试 URL Scheme
+
+可在移动版 Safari 或 Chrome 地址栏输入 _URL Scheme_（例如：`ep1a2b3c4d5e://`）验证是否能正确唤起 App。
+
+> 📘 重要
+>
+> 若存在多个 **TARGETS**，请在所有 target 的 _URL Type_ 中都添加该 _URL Scheme_。
+
+## 2. 各支付方式的设置
+
+请参阅[支付方式](/guides/mobile/payment-methods-config)页面。
+
+## 3. 初始化
+
+在工程的 `application(_:didFinishLaunchingWithOptions:)` 函数中加入以下初始化代码。
+
+```swift
+Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
+```
+
+> 📘 关于 Public Key
+>
+> 请将 `ELEPAY_APP_PUBLIC_KEY` 替换为在[<EText name="elepay" /> 管理后台](https://dashboard.elepay.io/)中签发的值。
+
+## 4. 配置回调
+
+在 `application(_:open:options:) -> Bool` 函数中加入以下代码：
+
+```swift
+func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+    // 先让 elepay 处理来自第三方支付 App 的回调
+    if (Elepay.handleOpenURL(url)) {
+        // 当 elepay 已处理该 URL 时，请在此处直接返回
+        return true;
+    }
+
+    // 非支付相关的 URL 交由您的代码处理
+    return false;
+}
+```
+
+## 5. 支付处理（单次支付）
+
+### 业务服务端处理
+
+通过 **elepay API** 的 Charge 接口 `/api/charges` 发起单次支付。<br />
+鉴于该接口需要认证，请将密钥保存在您控制的服务器上，并由该服务器发起请求。
+
+> ❗️ 安全：
+>
+> 出于安全考虑，切勿在 App 内保存或传输密钥。
+
+### 原生 App 侧处理
+
+将 **elepay API** 的 Charge 接口返回的载荷按如下方式传入 **elepay SDK**，并在 SDK 的回调中加入支付完成（或失败）后的处理逻辑。
+
+可从以下三种方式中选择合适的方法：
+
+#### 1. 以 JSON 字符串发起支付
+
+```swift
+_ = Elepay.handlePayment(
+  chargeJSON: jsonString,
+  cardParams: elepayCardParams, /* <- 可选参数，可省略 */
+  viewController: viewController) { result in
+    switch (result) {
+    case let .succeeded(paymentId):
+        // 支付成功处理
+    case let .canceled(paymentId):
+        // 用户取消处理
+    case let .failed(paymentId, error):
+        // 支付失败处理
+    }
+}
+```
+
+| 参数名         | 说明                                                                                                    |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| chargeJSON     | 类型为 `String` 的 JSON 对象，包含支付数据。由服务端创建，**elepay iOS SDK** 将基于该数据进行支付处理。 |
+| cardParams     | 控制信用卡 UI 的可选参数。默认 `nil`，为 `nil` 时使用 SDK 内置的信用卡 UI。                             |
+| viewController | 用于在支付过程中展示 UI 的 `UIViewController` 实例。                                                    |
+| completion     | 用于通知支付结果的回调。                                                                                |
+
+#### 2. 以 JSON Data 发起支付
+
+```swift
+_ = Elepay.handlePayment(
+  chargeData: jsonData,
+  cardParams: elepayCardParams, /* <- 可选参数，可省略 */
+  viewController: viewController) { result in
+    switch (result) {
+    case let .succeeded(paymentId):
+        // 支付成功处理
+    case let .canceled(paymentId):
+        // 用户取消处理
+    case let .failed(paymentId, error):
+        // 支付失败处理
+    }
+}
+```
+
+| 参数名         | 说明                                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------- |
+| chargeData     | 类型为 `Data` 的 JSON 对象，包含支付数据。由服务端创建，**elepay iOS SDK** 将基于该数据进行支付处理。 |
+| cardParams     | 控制信用卡 UI 的可选参数。默认 `nil`，为 `nil` 时使用 SDK 内置的信用卡 UI。                           |
+| viewController | 用于在支付过程中展示 UI 的 `UIViewController` 实例。                                                  |
+| completion     | 用于通知支付结果的回调。                                                                              |
+
+#### 3. 以 JSON 字典发起支付
+
+```swift
+_ = Elepay.handlePayment(
+  charge: jsonDictionary,
+  cardParams: elepayCardParams, /* <- 可选参数，可省略 */
+  viewController: viewController) { result in
+    switch (result) {
+    case let .succeeded(paymentId):
+        // 支付成功处理
+    case let .canceled(paymentId):
+        // 用户取消处理
+    case let .failed(paymentId, error):
+        // 支付失败处理
+    }
+}
+```
+
+| 参数名         | 说明                                                                                                        |
+| -------------- | ----------------------------------------------------------------------------------------------------------- |
+| charge         | 类型为 `Dictionary` 的 JSON 对象，包含支付数据。由服务端创建，**elepay iOS SDK** 将基于该数据进行支付处理。 |
+| cardParams     | 控制信用卡 UI 的可选参数。默认 `nil`，为 `nil` 时使用 SDK 内置的信用卡 UI。                                 |
+| viewController | 用于在支付过程中展示 UI 的 `UIViewController` 实例。                                                        |
+| completion     | 用于通知支付结果的回调。                                                                                    |
+
+## Checkout 功能
+
+通过 Checkout 功能，可免去自建支付方式选择页，直接使用 elepay SDK 提供的选择界面等能力。
+
+界面效果见下方截图，并支持深色模式。
+
+![](/docs/checkout.png)
+
+### 服务端处理
+
+通过 **elepay API** 的代码接口创建用于 Checkout 的载荷。
+
+### 原生 App 侧处理
+
+将 **elepay API** 代码接口返回的载荷传入 **elepay SDK**，由 SDK 完成 Checkout 处理。
+
+根据载荷类型提供三种方法：<br />
+示例与方法说明如下。
+
+#### 1. 以 JSON 字符串进行 Checkout：
+
+```swift
+Elepay.checkout(
+  checkoutJSONString: checkoutJSONString,
+  from: viewController
+) { result in
+   switch (result) {
+   case .succeeded(let codeId):
+     // checkout 成功
+   case .cancelled(let codeId):
+     // checkout 取消
+   case let .failed(let codeId, let error):
+     // checkout 失败
+   }
+}
+```
+
+| 参数名             | 说明                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------- |
+| checkoutJSONString | 类型为 `String` 的 JSON 对象，包含 checkout 数据。由服务端创建，**elepay iOS SDK** 将基于该数据进行支付处理。 |
+| from               | 用于在支付过程中展示 UI 的 `UIViewController` 实例。                                                          |
+| resultHandler      | 用于通知结果的回调。                                                                                          |
+
+#### 2. 以 JSON Data 进行 Checkout：
+
+```swift
+Elepay.checkout(
+  checkoutJSONData: checkoutJSONData,
+  from: viewController
+) { result in
+   switch (result) {
+   case .succeeded(let codeId):
+     // checkout 成功
+   case .cancelled(let codeId):
+     // checkout 取消
+   case let .failed(let codeId, let error):
+     // checkout 失败
+   }
+}
+```
+
+| 参数名           | 说明                                                                                                        |
+| ---------------- | ----------------------------------------------------------------------------------------------------------- |
+| checkoutJSONData | 类型为 `Data` 的 JSON 对象，包含 checkout 数据。由服务端创建，**elepay iOS SDK** 将基于该数据进行支付处理。 |
+| from             | 用于在支付过程中展示 UI 的 `UIViewController` 实例。                                                        |
+| resultHandler    | 用于通知结果的回调。                                                                                        |
+
+#### 3. 以 JSON 字典进行 Checkout：
+
+```swift
+Elepay.checkout(
+  checkoutJSON: checkoutJSON,
+  from: viewController
+) { result in
+   switch (result) {
+   case .succeeded(let codeId):
+     // checkout 成功
+   case .cancelled(let codeId):
+     // checkout 取消
+   case let .failed(let codeId, let error):
+     // checkout 失败
+   }
+}
+```
+
+| 参数名        | 说明                                                                                                              |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| checkoutJSON  | 类型为 `Dictionary` 的 JSON 对象，包含 checkout 数据。由服务端创建，**elepay iOS SDK** 将基于该数据进行支付处理。 |
+| from          | 用于在支付过程中展示 UI 的 `UIViewController` 实例。                                                              |
+| resultHandler | 用于通知结果的回调。                                                                                              |
+
+## 错误处理
+
+SDK 会通过回调返回各种错误（`ElepayError`）。
+
+为提升用户体验，建议将 `case unsupportedPaymentMethod(errorCode: String, paymentMethod: String)` 的信息提示给用户。
+
+示例代码：
+
+```swift
+switch (result) {
+case .succeeded(let codeId):
+    // checkout 成功
+case .cancelled(let codeId):
+    // checkout 取消
+case let .failed(let codeId, let error):
+    switch error {
+    case let .unsupportedPaymentMethod(errorCode, method):
+        if errorCode == "10110" {   // 未安装第三方支付 App
+            print("未安装 \(method) App。请先安装或选择其他支付方式。")
+        } if errorCode == "10100" {   // 设备或 iOS 系统过旧
+            print("设备过旧，无法使用 \(method)")
+        } else {    // 其他错误，例如当前 SDK 不支持的新支付方式等
+            print("需更新应用后才能使用 \(method)")
+        }
+    default:
+        // 其他错误处理
+    }
+}
+```
+
+错误码列表见[错误码](/get-started/error-code)。
+
+## 注意事项
+
+> 🚧 关于支付结果处理
+>
+> App 内显示的支付结果仅用于提示用户。实际扣款结果请务必通过服务端的回调 API，并以 <EText name="elepay" /> 服务器发送的数据为准进行校验。_详情请参阅 elepay API 指南。_
+
+### 1. 关于 Apple Pay
+
+1. 实现 Apple Pay 时，在 Xcode 的 **PROJECT** → **TARGETS** → **Capabilities** 中将 Apple Pay 开启。
+
+![](/docs/xcodee_applepay.png)
+
+2. 将 Apple Pay 证书上传至[「<EText name="elepay" /> 管理后台」-「开发设置」-「Apple Pay」](https://dashboard.elepay.io/)。  
+   证书的创建方法见[此文档](/guides/mobile/payment-methods-config#apple-pay)。
+
+### 2. 关于 LSApplicationQueriesSchemes（iOS 9 及以上）
+
+为跳转至各支付 App，请在 **PROJECT** → **TARGETS** → **Info**（或 `Info.plist`）中添加 `LSApplicationQueriesSchemes`：
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>**请添加各 App 的 Scheme**</string>
+</array>
+```
+
+#### 各支付方式的设置
+
+请参阅[支付方式](/guides/mobile/payment-methods-config)页面。
+
+# 多语言
+
+**elepay iOS SDK** 支持多语言（当前支持 English、Japanese、Simplified Chinese、Traditional Chinese）。
+
+默认情况下，SDK 会按 iOS 系统设置显示对应语言。
+
+## 指定显示语言
+
+若需显示与系统设置不同的语言，请按如下方式指定：
+
+```swift
+ElepayLocalization.shared.switchLanguage(code: .ja)	// 使用日语
+ElepayLocalization.shared.switchLanguage(code: .en)	// 使用英语
+ElepayLocalization.shared.switchLanguage(code: .cn)	// 使用简体中文
+ElepayLocalization.shared.switchLanguage(code: .tw)	// 使用繁体中文
+```
+
+`switchLanguage` 可多次调用。调用后新展示的页面将按指定语言显示。
+
+> 📘 部分页面无法按指定语言显示
+>
+> 部分支付方式会跳转至第三方页面；这些页面不受 elepay SDK 控制，可能与您指定的语言不一致。

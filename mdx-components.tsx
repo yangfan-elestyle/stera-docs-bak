@@ -6,6 +6,7 @@ import EImg from '@/components/EImg';
 import EContainer from '@/components/EContainer';
 import EHome from '@/components/EHome';
 import { ErrorCodeTable } from '@/components/ErrorCodeTable';
+import { Mermaid } from '@/components/Mermaid';
 import { APIPage } from './components/api-page';
 
 export function getMDXComponents(options?: MDXComponents): MDXComponents {
@@ -18,6 +19,7 @@ export function getMDXComponents(options?: MDXComponents): MDXComponents {
     EContainer,
     EHome,
     ErrorCodeTable,
+    Mermaid,
     ...options,
   };
 }

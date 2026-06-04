@@ -1,0 +1,425 @@
+---
+title: iOS SDK
+---
+
+The **elepay iOS SDK** is an SDK for integrating <EText name="elepay" /> into iOS apps.<br />
+This guide explains in detail how to connect your iOS app with the elepay SDK.
+
+# Supported versions
+
+- From **elepay iOS SDK 5.0**, the SDK has been split into `ElepaySDK` and independent plugins such as `Stripe` / `RPay` / `ChinesePayments` / `Checkout`, which you include as needed. From 5.0.5, GMO (Apple Pay / Credit Pay 3DS) handling has been added.
+- From **elepay iOS SDK 4.0**, iOS 11.0 support has ended. Bitcode support has also ended.
+- From **elepay iOS SDK 3.0**, iOS 10.0 support ended.
+- **elepay iOS SDK 2.x** supports iOS 10.0 and later.
+- Development environment: Use Xcode 11.0 or later.
+
+# Installation
+
+## 1. Install via CocoaPods
+
+- Add `ElepaySDK` to your Podfile.  
+   **Note: CocoaPods 1.10.0 or later is required.**
+
+```ruby
+# For ElepaySDK versions earlier than 2.2 only dynamic frameworks are supported.
+# From 2.3, static frameworks are also supported.
+#use_frameworks!
+
+# From 2.0.0, the SDK renamed from ElePay to ElepaySDK
+
+pod 'ElepaySDK', '~> 3.0'
+```
+
+- Only when using Chinese payments (Alipay, WeChat Pay, UnionPay), add `Elepay_ChinesePayments_Plugin`.
+
+```ruby
+# From 2.0.0, the SDK renamed from ElePay-ChinesePayments-Plugin to Elepay_ChinesePayments_Plugin
+
+pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
+```
+
+<EContainer tenant="default">
+
+- Only when using Stripe and elepay SDK is 2.2.0 or later, add `Stripe`.
+   Note: If using ElepaySDK 2.x, add Stripe with `pod 'Stripe', '~> 19.4.1'`.
+
+```ruby
+# Only ElepaySDK 3.0 and above supports Stripe 21.x
+# Use "pod 'Stripe', '~> 19.4.1'" if you are using ElepaySDK 2.x
+
+pod 'Stripe', '~> 22.0'
+```
+
+> 🚧 Because Stripe v23 dropped iOS 12 support, configure Stripe v22 with the elepay SDK.
+
+</EContainer>
+
+- Only when using PayPal and elepay SDK is 1.7.0 or later, add `Braintree`.
+   **Note:** From elepay SDK 4.0.0, Braintree support has ended. If you need PayPal, use elepay SDK 3.x.
+
+```ruby
+pod 'Braintree'
+```
+
+- Run `pod install`.
+
+## 2. Install via Swift Package Manager (SPM)
+
+> 📘 From elepay iOS SDK 5.0, SPM (Swift Package Manager) is the default distribution method. If you have requirements for other integration channels, please contact the <EText name="elepay" /> team.
+
+**elepay iOS SDK** supports SPM from 3.1.1.<br />
+**elepay iOS SDK Chinese Payments Plugin** supports SPM from 2.0.2.
+
+- Add ElepaySDK via SPM.  
+   Use this URL: `https://github.com/elestyle/elepay-ios-sdk.git`  
+   Specify 3.1.1 or later if pinning versions.
+- Only when using Chinese payments (Alipay, WeChat Pay, UnionPay), add `Elepay_ChinesePayments_Plugin`.  
+   Use this URL: `https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`  
+   Specify 2.0.2 or later if pinning versions.
+<EContainer tenant="default">
+
+- If you use Stripe, add `Stripe`.  
+   Use this URL: `https://github.com/stripe/stripe-ios.git`  
+   Specify 21.8.1 or later if pinning versions.
+
+</EContainer>
+
+- If you use PayPal, add `Braintree`.  
+   Note: Braintree 5.x.x dropped iOS 11 support, so use 4.x.x. Also, 4.x.x does not support SPM, so install it via CocoaPods or manually.
+
+## 3. Manual installation
+
+Integrate elepay SDK for iOS into your app in 7 steps.
+
+- Download [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip) from [Github.com](https://github.com/elestyle/elepay-ios-sdk) and extract it.
+- Add `ElePay.framework` to your Xcode project. Select “Copy items if needed” if necessary.
+- In the target settings, add `ElePay.framework` under “Embedded Binaries”.
+- For Objective‑C projects using Apple Pay, add `PassKit.framework` under “Embedded Binaries”.
+
+## 4. Using with Objective‑C projects
+
+> 📘 For Objective‑C development
+>
+> If you implement elepay in an Objective‑C project, use this
+> [ElePayObjCBridge.swift](https://github.com/elestyle/elepay-ios-demo-swift/blob/master/ELEPayObjectiveC/ElePayObjCBridge.swift) file.
+
+# Implementation
+
+## 1. Add URL Scheme
+
+In Xcode, go to **PROJECT** ＞ **TARGETS** ＞ **Info** and add an elepay‑specific _URL Scheme_ under **URL Types**.
+
+### Common settings
+
+See “[Obtaining URL Scheme for iOS / Android SDK](/guides/mobile/url-scheme)” for how to get the <EText name="elepay" />‑specific URL Scheme.
+
+![](/docs/URL_Scheme.png)
+
+### Test the URL Scheme
+
+You can test whether the scheme correctly launches the app by entering the _URL Scheme_ (e.g., `ep1a2b3c4d5e://`) into the address bar of Mobile Safari or Chrome.
+
+> 📘 Important
+>
+> If you have multiple **TARGETS**, add the _URL Type_ with the scheme to all targets.
+
+## 2. Settings for each payment method
+
+See the [Payment Methods](/guides/mobile/payment-methods-config) page.
+
+## 3. Initialize
+
+Add the following initialization code in your project’s `application(_:didFinishLaunchingWithOptions:)` function.
+
+```swift
+Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
+```
+
+> 📘 About the Public Key
+>
+> Replace `ELEPAY_APP_PUBLIC_KEY` with the one issued on the [<EText name="elepay" /> dashboard](https://dashboard.elepay.io/).
+
+## 4. Configure callback
+
+Add the following code to `application(_:open:options:) -> Bool`.
+
+```swift
+func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+    // Let elepay handle the result callback from 3rd‑party payment apps first.
+    if (Elepay.handleOpenURL(url)) {
+        // When elepay has already handled the URL, make sure your code returns here.
+        return true;
+    }
+
+    // Handle non‑payment URLs in your own code here.
+    return false;
+}
+```
+
+## 5. Payment processing (one‑time payments)
+
+### Your server‑side processing
+
+Start a one‑time payment using the **elepay API** charge API `/api/charges`.<br />
+Because this API requires authentication, store the authentication secret key on a server you control and make the request from that server.
+
+> ❗️ Security:
+>
+> For safety, never store or transmit the secret key in the app.
+
+### Native app processing
+
+Send the payload obtained from the **elepay API** charge API to the **elepay SDK** as shown below, and add post‑processing code for completion (or failure) in the SDK callback.
+
+Use whichever of the three methods below is most convenient.
+
+#### 1. Charge with a JSON string
+
+```swift
+_ = Elepay.handlePayment(
+  chargeJSON: jsonString,
+  cardParams: elepayCardParams, /* <- Optional parameter, can be removed */
+  viewController: viewController) { result in
+    switch (result) {
+    case let .succeeded(paymentId):
+        // your code for handling successful situation
+    case let .canceled(paymentId):
+        // your code for handling canceled by user
+    case let .failed(paymentId, error):
+        // your code for handling failure situation
+    }
+}
+```
+
+| Parameter name | Description                                                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| chargeJSON     | A JSON object of type `String` containing the payment data. Created on the server side. **elepay iOS SDK** uses this data to process the payment. |
+| cardParams     | Optional parameters to control the credit‑card UI. Default is `nil`. When `nil`, the SDK’s built‑in card UI is used.                              |
+| viewController | The `UIViewController` instance used to present UI during payment.                                                                                |
+| completion     | Callback that notifies the payment result.                                                                                                        |
+
+#### 2. Charge with JSON data
+
+```swift
+_ = Elepay.handlePayment(
+  chargeData: jsonData,
+  cardParams: elepayCardParams, /* <- Optional parameter, can be removed */
+  viewController: viewController) { result in
+    switch (result) {
+    case let .succeeded(paymentId):
+        // your code for handling successful situation
+    case let .canceled(paymentId):
+        // your code for handling canceled by user
+    case let .failed(paymentId, error):
+        // your code for handling failure situation
+    }
+}
+```
+
+| Parameter name | Description                                                                                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| chargeData     | A JSON object of type `Data` containing the payment data. Created on the server side. **elepay iOS SDK** uses this data to process the payment. |
+| cardParams     | Optional parameters to control the credit‑card UI. Default is `nil`. When `nil`, the SDK’s built‑in card UI is used.                            |
+| viewController | The `UIViewController` instance used to present UI during payment.                                                                              |
+| completion     | Callback that notifies the payment result.                                                                                                      |
+
+#### 3. Charge with a JSON dictionary
+
+```swift
+_ = Elepay.handlePayment(
+  charge: jsonDictionary,
+  cardParams: elepayCardParams, /* <- Optional parameter, can be removed */
+  viewController: viewController) { result in
+    switch (result) {
+    case let .succeeded(paymentId):
+        // your code for handling successful situation
+    case let .canceled(paymentId):
+        // your code for handling canceled by user
+    case let .failed(paymentId, error):
+        // your code for handling failure situation
+    }
+}
+```
+
+| Parameter name | Description                                                                                                                                           |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| charge         | A JSON object of type `Dictionary` containing the payment data. Created on the server side. **elepay iOS SDK** uses this data to process the payment. |
+| cardParams     | Optional parameters to control the credit‑card UI. Default is `nil`. When `nil`, the SDK’s built‑in card UI is used.                                  |
+| viewController | The `UIViewController` instance used to present UI during payment.                                                                                    |
+| completion     | Callback that notifies the payment result.                                                                                                            |
+
+## Checkout feature
+
+Using the Checkout feature lets you skip building your own payment‑method selection UI and instead use the selection screens provided by the elepay SDK.
+
+You can preview the flow in the screenshot below. Dark mode is supported.
+
+![](/docs/checkout.png)
+
+### Server‑side
+
+Create a checkout payload using the **elepay API** code API.
+
+### Native app side
+
+Send the checkout payload obtained from the **elepay API** code API to the **elepay SDK** and let the SDK complete the checkout process.
+
+Three methods are provided depending on the payload type.<br />
+Sample code and method descriptions are as follows.
+
+#### 1. Checkout with a JSON string
+
+```swift
+Elepay.checkout(
+  checkoutJSONString: checkoutJSONString,
+  from: viewController
+) { result in
+   switch (result) {
+   case .succeeded(let codeId):
+     // checkout is succeeded.
+   case .cancelled(let codeId):
+     // checkout is canceled.
+   case let .failed(let codeId, let error):
+     // checkout is failed.
+   }
+}
+```
+
+| Parameter name     | Description                                                                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| checkoutJSONString | A JSON object of type `String` containing the checkout data. Created on the server side. **elepay iOS SDK** uses this data to process the payment. |
+| from               | The `UIViewController` instance used to present UI during payment.                                                                                 |
+| resultHandler      | Callback that notifies the result.                                                                                                                 |
+
+#### 2. Checkout with JSON data
+
+```swift
+Elepay.checkout(
+  checkoutJSONData: checkoutJSONData,
+  from: viewController
+) { result in
+   switch (result) {
+   case .succeeded(let codeId):
+     // checkout is succeeded.
+   case .cancelled(let codeId):
+     // checkout is canceled.
+   case let .failed(let codeId, let error):
+     // checkout is failed.
+   }
+}
+```
+
+| Parameter name   | Description                                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| checkoutJSONData | A JSON object of type `Data` containing the checkout data. Created on the server side. **elepay iOS SDK** uses this data to process the payment. |
+| from             | The `UIViewController` instance used to present UI during payment.                                                                               |
+| resultHandler    | Callback that notifies the result.                                                                                                               |
+
+#### 3. Checkout with a JSON dictionary
+
+```swift
+Elepay.checkout(
+  checkoutJSON: checkoutJSON,
+  from: viewController
+) { result in
+   switch (result) {
+   case .succeeded(let codeId):
+     // checkout is succeeded.
+   case .cancelled(let codeId):
+     // checkout is canceled.
+   case let .failed(let codeId, let error):
+     // checkout is failed.
+   }
+}
+```
+
+| Parameter name | Description                                                                                                                                            |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| checkoutJSON   | A JSON object of type `Dictionary` containing the checkout data. Created on the server side. **elepay iOS SDK** uses this data to process the payment. |
+| from           | The `UIViewController` instance used to present UI during payment.                                                                                     |
+| resultHandler  | Callback that notifies the result.                                                                                                                     |
+
+## Error handling
+
+The SDK calls back various errors (`ElepayError`).
+
+To improve user experience, we recommend surfacing the message of `case unsupportedPaymentMethod(errorCode: String, paymentMethod: String)` to users.
+
+Sample code
+
+```swift
+switch (result) {
+case .succeeded(let codeId):
+    // checkout is succeeded.
+case .cancelled(let codeId):
+    // checkout is canceled.
+case let .failed(let codeId, let error):
+    switch error {
+    case let .unsupportedPaymentMethod(errorCode, method):
+        if errorCode == "10110" {   // 3rd party App not installed error
+            print("The \(method) App is not installed for payment processing. Please install the app first or selected another payment method.")
+        } if errorCode == "10100" {   // The device or the iOS system is too old to use this payment method
+            print("Your device is too old to use \(method)")
+        } else {    // Other error codes. Such as: a new payment method not supported by current SDK. The App using elepay SDK need to be updated
+            print("Your App need to be updated to use \(method)")
+        }
+    default:
+        // other error handling code
+    }
+}
+```
+
+See the [Error Codes](/get-started/error-code) list.
+
+## Notes
+
+> 🚧 About handling payment results
+>
+> In‑app payment results should only be used for user‑facing confirmation. Always verify the actual charge result on your server using the callback API and the data sent by the <EText name="elepay" /> servers. _See the elepay API guide for details._
+
+### 1. About Apple Pay
+
+1. When implementing Apple Pay, go to **PROJECT** → **TARGETS** → **Capabilities** in Xcode and turn Apple Pay “ON”.
+
+![](/docs/xcodee_applepay.png)
+
+2. Upload your Apple Pay certificate to [“<EText name="elepay" /> Dashboard” → “Developer Settings” → “Apple Pay”](https://dashboard.elepay.io/).  
+   For how to create the certificate, see [this document](/guides/mobile/payment-methods-config#apple-pay).
+
+### 2. About LSApplicationQueriesSchemes (iOS 9 and later)
+
+To transition to various payment apps, add the `LSApplicationQueriesSchemes` key in **PROJECT** → **TARGETS** → **Info** (or in `Info.plist`).
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>**Add the scheme of each app**</string>
+></array>
+```
+
+#### Settings for each payment method
+
+See the [Payment Methods](/guides/mobile/payment-methods-config) page.
+
+# Localization
+
+The **elepay iOS SDK** supports multiple languages (currently English, Japanese, Simplified Chinese, and Traditional Chinese).
+
+By default, the SDK displays the language that matches the iOS system setting.
+
+## Specify display language
+
+If you want to display a language different from the system setting, specify it as follows:
+
+```swift
+ElepayLocalization.shared.switchLanguage(code: .ja)	// Use Japanese
+ElepayLocalization.shared.switchLanguage(code: .en)	// Use English
+ElepayLocalization.shared.switchLanguage(code: .cn)	// Use Simplified Chinese
+ElepayLocalization.shared.switchLanguage(code: .tw)	// Use Traditional Chinese
+```
+
+You can call `switchLanguage` multiple times. Screens presented after calling the function will display in the specified language.
+
+> 📘 Some screens cannot follow the specified language
+>
+> Some payment methods transition to third‑party screens. Because those screens are outside the control of the elepay SDK, they may be shown in a language different from the one you specified.

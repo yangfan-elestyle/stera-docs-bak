@@ -1,0 +1,91 @@
+---
+title: Hosted Checkout Integration
+---
+
+# Set up the hosted Checkout page
+
+When customers click a button on your website, they are redirected to the <EText name="elepay" />‑hosted Checkout page.
+
+> - Effort: low code, ~20 minutes
+> - Implementation style: hosted page
+> - UI flexibility: limited
+
+When customers have already selected items and are ready to purchase, follow the steps below.
+
+### Step 1: Create an EasyQR code for the selected items
+
+#### Configure the Checkout page
+
+Example for [Create EasyQR code](/openapi/code/createCode):
+
+```sh
+--data '
+{
+  "currency": "JPY",
+  "extra": {
+    "defaultPaymentMethod": "paypay" # QR code for a specific brand
+  },
+  "amount": 266,  # Show total amount
+  "items": [     # Show details for each item
+    {
+      "name": "お茶",
+      "price": 108,
+      "count": 1
+    },
+    {
+      "name": "コーラ",
+      "price": 158,
+      "count": 1
+    }
+  ]
+}
+'
+
+```
+
+| Show details for each item                                                            | Show only total amount                                                                | QR code for a specific brand                                                          |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| ![](/docs/561e8f4eb56cc69195fae551b4003cac5f287b91c1180b97c414c572cb0e4d6c-image.png) | ![](/docs/fdfa6f6c89671f21da0c49a86a440b156f6b48603faaf6ab5a40f530f3635091-image.png) | ![](/docs/b839861abb314abe309c7774597672a0b092501ab38416b9a322e95c2da32a4d-image.png) |
+
+### Step 2: Add a payment button on your site and redirect to the Checkout page
+
+Use the JavaScript SDK to navigate to the Checkout page. The SDK automatically detects the device type: it opens the Checkout page on desktop and the Payment page on mobile.
+
+```js
+<script src="https://js.elepay.io/v1/elepay.js"></script>
+<script>
+  var elepay = new Elepay("<公開鍵>")
+  elepay.checkout("<QRCode ID>")
+
+</script>
+```
+
+### Step 3: After the customer completes payment, handle the redirect page and status
+
+After the payment flow finishes, the redirect URL includes a status parameter (e.g., status=captured), which allows the frontend to determine success or failure.
+
+- captured: Payment completed
+- cancelled: Payment cancelled
+- failure: Payment failed
+
+> Example: [https://example.com/thank-you?status=captured](https://example.com/thank-you?status=captured)
+
+> 👍 To track payment status accurately, receiving event notifications via Webhook is recommended.
+>
+> In <EText name="elepay" /> [開発設定>Webhook], you can configure the receiving URL.
+>
+> When a payment succeeds, <EText name="elepay" /> sends an event notification to the configured webhook URL.
+
+### Other settings
+
+#### Customize the Checkout page UI
+
+The Checkout page customers see can be customized under <EText name="elepay" /> [簡単決済>設定>基本設定], including icon and color scheme.
+
+#### Configure payment methods
+
+Under <EText name="elepay" /> [簡単決済>設定>決済方法管理], you can manage available payment methods (review, enable, disable). Newly added payment methods can be used immediately.
+
+#### Add location information
+
+You can add location information when creating the EasyQR code. It is also manageable under <EText name="elepay" /> [ロケーション].

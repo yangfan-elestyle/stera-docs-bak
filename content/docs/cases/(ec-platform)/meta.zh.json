@@ -1,0 +1,5 @@
+{
+  "title": "集成 EC 平台",
+  "defaultOpen": false,
+  "pages": ["ec-cube-plugin", "woocommerce-plugin", "allvalue"]
+}

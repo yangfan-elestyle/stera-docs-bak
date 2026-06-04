@@ -1,0 +1,279 @@
+---
+title: Android SDK
+---
+
+The **elepay Android SDK** integrates <EText name="elepay" /> into Android apps.<br />
+This guide explains in detail how to connect your Android app with the <EText name="elepay" /> SDK.
+
+# Supported versions
+
+Up to version 2.9.0, the **elepay Android SDK** supported Android API 21. From 2.10.0 onward, the `minSdkVersion` is 23.
+
+# Installation
+
+## Install via Gradle
+
+Add the following to the `repositories` block of your `build.gradle`:
+
+```groovy
+maven {
+   ... // other code
+   url "https://elestyle.github.io/elepay-android/repository"
+}
+```
+
+Add the following to the `dependency` section of the same `build.gradle` file.<br />
+See the [releases page](https://github.com/elestyle/elepay-android/releases) for the (latest-version).
+
+```groovy
+// Note: Check https://github.com/elestyle/elepay-android/releases for (latest-version)
+
+implementation 'io.elepay.android:elepay:(latest-version)'
+
+// If you use the Checkout feature, also add the following:
+implementation 'io.elepay.android:elepay-checkout:(latest-version)'
+```
+
+> 🚧 We recommend always using the latest version.
+>
+> From 4.0.0, the Maven coordinates have migrated from `jp.elestyle.androidapp` to `io.elepay.android`, and the SDK has been split into `elepay` / `elepay-core` / `elepay-checkout`. `elepay-core` is resolved transitively from `elepay`, so it does not need to be declared separately; to use Checkout, additionally include `elepay-checkout`. Versions prior to 4.0.0 continue to use the old coordinates `jp.elestyle.androidapp:elepay`.
+>
+> If you use Gradle Build Tool 3.6.0 (Android Studio 3.6 compatible) or later, elepay Android SDK 1.7.0 or later is required.
+
+> 🚧 For users of Android Support Library
+>
+> The **elepay Android SDK** supports only [AndroidX](https://developer.android.com/jetpack/androidx/).  
+> Because Google [stopped developing](https://android-developers.googleblog.com/2018/05/hello-world-androidx.html) the [Android support library](https://developer.android.com/topic/libraries/support-library/) in 2018,  
+> if you still use the support library, we recommend migrating to [AndroidX](https://developer.android.com/jetpack/androidx/).
+>
+> For migration steps, see Google’s [migration guide](https://developer.android.com/jetpack/androidx/migrate).
+
+# Implementation
+
+## 1. Android system permissions
+
+To use UnionPay or Alipay, you must add the following permissions to `AndroidManifest.xml`.
+
+> 📘 Add only the permissions required by your use case.  
+> Example: If you do not scan cards, you do not need camera permissions.
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+<uses-feature android:name="android.hardware.camera"/>
+<uses-permission android:name="android.permission.CAMERA"/>
+<uses-permission android:name="android.hardware.camera.autofocus"/>
+
+<uses-permission android:name="org.simalliance.openmobileapi.SMARTCARD" />
+
+<uses-permission android:name="android.permission.NFC" />
+<uses-feature android:name="android.hardware.nfc.hce"/>
+```
+
+## 2. Setup
+
+Set up the elepay SDK before processing payments.
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "" // test key or live key
+)
+Elepay.setup(configuration)
+```
+
+You need an <EText name="elepay" /> account to request an `appKey`.
+
+> 📘 We recommend running this configuration in your app’s `Application` class or the starting `Activity`.
+
+## 3. Payment processing
+
+### Charge processing
+
+After creating a charge data object, pass it to the method below to complete payment processing:<br />
+`Elepay.processPayment(chargeJsonData, fromActivity, resultHandler)`
+
+| Parameter name | Description                                                                                                                       |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| chargeJsonData | JSON object containing payment data. Created on the server side. The **elepay Android SDK** processes the payment with this data. |
+| fromActivity   | The `Activity` instance used to present UI during payment.                                                                        |
+| resultHandler  | Callback that notifies the payment result.                                                                                        |
+
+### Source processing
+
+After creating a source data object, pass it to the method below to complete processing:<br />
+`Elepay.processSource(sourceJsonData, fromActivity, resultHandler)`
+
+| Parameter name | Description                                                                                                                      |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| sourceJsonData | JSON object containing source data. Created on the server side. The **elepay Android SDK** processes the payment with this data. |
+| fromActivity   | The `Activity` instance used to present UI during payment.                                                                       |
+| resultHandler  | Callback that notifies the result.                                                                                               |
+
+### Checkout processing
+
+> 📘 Checkout requires elepay Android SDK 1.9.0 or later.
+
+After creating a checkout data object, pass it to the method below to complete the flow:<br />
+`Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
+
+| Parameter name   | Description                                                                                                                        |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| checkoutJsonData | JSON object containing checkout data. Created on the server side. The **elepay Android SDK** processes the payment with this data. |
+
+### Callback Activity configuration
+
+Add the callback `Activity` to your `AndroidManifest.xml` and register the URL scheme obtained from the elepay dashboard.
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.ElepayCallbackActivity"
+    android:launchMode="singleTask"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep1234567890abcdef" /> <!-- * Do not forget! Replace this scheme with the elepay-specific URL Scheme obtained on the “App Settings” page. -->
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+> 🚧 Do not forget
+>
+> In the snippet above, replace the `scheme` of `<data android:scheme="ep1234567890abcdef" />` with the elepay‑specific URL scheme. For how to obtain it, see “[Obtain URL Scheme for iOS / Android SDK](/guides/mobile/url-scheme)”.
+
+The processing result is contained in the `ElepayResult` argument of the `resultHandler` callback above.<br />
+`ElepayResult` has `Succeeded`, `Failed`, and `Canceled`. See the API docs for details.
+
+```kotlin
+// Example:
+Elepay.processPayment(chargeData = result.jsonObject, fromActivity = activity) { paymentRes ->
+    when (paymentRes) {
+        is ElepayResult.Succeeded -> print("Payment is processed successfully. id=${payResult.paymentId}")
+        is ElepayResult.Failed -> print("Payment error: ${payResult.error}")
+        is ElepayResult.Canceled -> print("Payment is cancelled. id=${payResult.paymentId}")
+    }
+}
+```
+
+### Error handling
+
+Errors returned from the elepay Android SDK may need to be handled for end users. Check the error type and the [error codes](/get-started/error-code) and provide appropriate guidance. Example:
+
+```kotlin
+when (paymentRes) {
+    is ElepayResult.Succeeded -> {
+        // succeeded
+    }
+    is ElepayResult.Failed -> {
+        when (paymentRes.error) {
+            is ElepayError.PaymentFailure -> {
+                if ((paymentRes.error as ElepayError.PaymentFailure).errorCode == "10110") {
+                    Log.d("Payment", "app not installed.")
+                }
+            }
+
+            is ElepayError.PermissionRequired -> {
+                Log.d("Payment", "Please grand the following permissions to complete payment. ${(paymentRes.error as ElepayError.PermissionRequired).permissions}")
+            }
+
+            else -> {
+                // Other error processing.
+            }
+        }
+    }
+    is ElepayResult.Canceled -> {
+        // canceled
+    }
+}
+```
+
+# UI customization
+
+## Specify UI theme
+
+You can change the SDK UI theme using the following setting.<br />
+You can also change the theme at runtime via the SDK API.
+
+```kotlin
+Elepay.changeTheme(ElepayTheme.Light)
+// or: ElepayTheme.Dark / ElepayTheme.System
+```
+
+> Notes
+>
+> 1. When specifying an <EText name="elepay" /> theme, the app’s configuration may change, which can cause the `Activity` that invokes the <EText name="elepay" /> payment flow to restart.  
+>    To avoid an Activity restart, add `uiMode` to `android:configChanges` of the Activity that invokes <EText name="elepay" /> in `AndroidManifest.xml`.
+> 2. `changeTheme` takes effect only if called before starting the payment flow.
+
+## Color customization
+
+You can customize the colors used in the elepay SDK UI.
+
+### System bar customization
+
+1. In `colors.xml`, you can change the following colors:
+
+- elepayColorPrimaryDark: Override of the Activity theme `colorPrimaryDark`. Mainly the status bar background color.
+- elepayNavigationBarBackground: Override of the Activity theme `navigationBarColor`. Background color of the bottom navigation bar.
+
+2. In any file under `res/values` that can contain boolean values (e.g., `bools.xml`), you can also change the following:
+
+- elepayWindowLightStatusBar: Same as `android:windowLightStatusBar`. Available on API 23+.
+- elepayWindowLightNavigationBar: Same as `android:windowLightNavigationBar`. Available on API 27+.
+
+### Customize SDK internal UI
+
+- elepayTopBarBackground: Toolbar background color.
+- elepayTopBarContent: Toolbar text and icon color.
+- elepayBackgroundNormal: Screen background color.
+- elepayCreditCardBackground: Background color of the card widget on the credit card entry screen.
+- elepayControlHighlight: Color for highlighted UI components.
+- elepayControlNormal: Color for UI components.
+- elepayTextColorPrimary: Main text color.
+- elepayTextSecondary: Secondary text color.
+- elepayTextOnControlHighlight: Text color displayed on highlighted UI components.
+- elepayTextColorHint: Hint text color.
+- elepayErrorTextColorOnNormalBackground: Error text color.
+- elepayColorDivider: Divider color for UI components.
+
+![3000](/docs/f726d1e-asdf.png 'asdf.png')
+
+> Notes
+> To customize the `Light` theme, specify the above values in `res/values/colors.xml` of your project.  
+> To customize the `Dark` theme, specify the above values in `res/values-night/colors.xml`.  
+> If you use `ElepayTheme.System`, you may need to specify values in both `res/values/colors.xml` and `res/values-night/colors.xml`. Configure as appropriate for your app.
+
+# Localization
+
+The elepay SDK supports multiple languages. By default it uses the system language. To use a different language, change the language defined by `LanguageKey` using one of the following methods:
+
+- Set `languageKey` in `ElepayConfiguration` at SDK initialization.
+
+```kotlin
+val configuration = ElepayConfiguration(
+  apiKey = "", // test key or live key
+  languageKey = LanguageKey.English
+)
+Elepay.setup(configuration)
+```
+
+- Use `Elepay.changeLanguageKey` to change the language.
+
+```kotlin
+Elepay.changeLanguageKey(LangaugeKey.English)
+```
+
+> 🚧 Note
+>
+> `Elepay.changeLanguageKey` takes effect only if called before `Elepay.processPayment`, so be mindful of when you change the language.
+
+# Settings for each payment method
+
+See the [Payment Methods](/guides/mobile/payment-methods-config#summary) page.

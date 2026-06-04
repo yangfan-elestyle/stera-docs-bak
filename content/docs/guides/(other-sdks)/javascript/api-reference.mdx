@@ -1,0 +1,219 @@
+---
+title: JavaScript API Reference
+---
+
+## Elepay
+
+**Kind**: global class
+
+### new Elepay(key, options)
+
+SDKを初期化
+
+**Returns**: `Elepay` - Elepay インスタンス
+
+| Param          | Type     | Description                                                                                             |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| key            | `string` | 必須 公開鍵                                                                                             |
+| options        | `object` | オプション                                                                                              |
+| options.locale | `string` | 言語設定。デフォルトはauto(ブラウザのロケールに応じて自動設定)で、他にja,en,zh-CN,zh-TWを指定できます。 |
+
+### elepay.handleCharge(charge) ⇒ `Promise`
+
+Charge オブジェクトを渡して、支払い処理を行います。
+
+**Kind**: instance method of `Elepay`<br />
+**Returns**: `Promise` - 支払い処理結果のPromise。frontUrl設定必要の決済方法はfrontUrlで決済結果を戻ります。
+
+| Param  | Type     | Description                                 |
+| ------ | -------- | ------------------------------------------- |
+| charge | `object` | 必須 サーバー側作成した Charge オブジェクト |
+
+**Example**
+
+```js
+elepay
+  .handleCharge(chargeObject)
+  .then(function (result) {
+    // 正常処理
+    if (result.type === 'cancel') {
+      // 支払いキャンセル
+    } else if (result.type === 'success') {
+      // 支払い成功
+    }
+  })
+  .catch(function (err) {
+    // エラー処理
+  });
+```
+
+### elepay.handleSource(source) ⇒ `Promise`
+
+Source オブジェクトを渡して、承認処理を行います。
+
+**Kind**: instance method of `Elepay`<br />
+**Returns**: `Promise` - 承認処理結果のPromise。frontUrl設定必要の決済方法はfrontUrlで承認結果を戻ります。
+
+| Param  | Type     | Description                                 |
+| ------ | -------- | ------------------------------------------- |
+| source | `object` | 必須 サーバー側作成した Source オブジェクト |
+
+**Example**
+
+```js
+elepay
+  .handleSource(source)
+  .then(function (result) {
+    // 正常処理
+    if (result.type === 'cancel') {
+      // キャンセル
+    } else if (result.type === 'success') {
+      // 承認成功
+    }
+  })
+  .catch(function (err) {
+    // エラー処理
+  });
+```
+
+### elepay.createCodeWidget(options) ⇒ `CodesWidget`
+
+EasyQRウィジェットを生成します
+
+**Kind**: instance method of `Elepay`
+**Returns**: `CodesWidget` - EasyQRウィジェットインスタンス
+
+| Param                         | Type    | Description                                                   |
+| ----------------------------- | ------- | ------------------------------------------------------------- |
+| options                       | object  | ウィジェットオプション                                        |
+| options.container             | string  | 配置先のDOM要素のCSSセレクターを表す文字列                    |
+| options.direction             | string  | ウィジェットレイアウト 縦:vertical(デフォルト) 横:horizontal  |
+| options.icon                  | boolean | trueならブランドアイコン入りQRコードを表示。デフォルトはfalse |
+| options.parts.amount          | boolean | trueなら金額を表示。デフォルトはtrue                          |
+| options.parts.paymentLogo     | boolean | trueなら決済方法アイコンを表示。デフォルトはtrue              |
+| options.parts.tip             | boolean | trueならヘルプメッセージを表示。デフォルトはtrue              |
+| options.theme.primaryColor    | boolean | メイン色                                                      |
+| options.theme.borderColor     | boolean | ウィジェット罫線色。null:罫線なし                             |
+| options.theme.backgroundColor | boolean | ウィジェット背景色。デフォルトは白                            |
+
+**Example**
+
+```js
+var widget = elepay.createCodeWidget({
+  container: '#widget',
+});
+widget.on('success', () => {
+  // 決済完了後処理
+});
+widget.on('expired', () => {
+  // 新しいEasyQRコードを生成するなと
+});
+widget.show('cod_028123beb9f8c853fa845f4');
+```
+
+### elepay.checkout(code) ⇒ `Promise`
+
+EasyCheckout 処理を行います。
+
+**Kind**: instance method of `Elepay`
+**Returns**: `Promise` - Checkout処理のPromise。エラーの場合だけ、処理する必要があります。
+
+| Param | Type     | Description                                   |
+| ----- | -------- | --------------------------------------------- |
+| code  | `object` | 必須 サーバー側作成した EasyQR オブジェクトID |
+
+**Example**
+
+```js
+elepay.checkout('cod_028123beb9f8c853fa845f4').catch(function (err) {
+  // エラー処理
+});
+```
+
+## CodesWidget
+
+EasyQRウィジェットクラス
+
+**Kind**: global class
+
+### codesWidget.show(code)
+
+EasyQRウィジェットを表示します
+
+**Kind**: instance method of `CodesWidget`
+
+| Param | Type   | Description                                   |
+| ----- | ------ | --------------------------------------------- |
+| code  | object | 必須 サーバー側作成した EasyQR オブジェクトID |
+
+**Example**
+
+```js
+widget.show('cod_028123beb9f8c853fa845f4');
+```
+
+### codesWidget.destroy()
+
+EasyQRウィジェットを破棄します
+
+**Kind**: instance method of `CodesWidget`
+
+### "success" (ev, codeObject)
+
+支払完了イベント
+
+**Kind**: event emitted by `CodesWidget`
+
+| Param      | Type   | Description              |
+| ---------- | ------ | ------------------------ |
+| ev         | object | イベント                 |
+| ev.type    | string | success                  |
+| codeObject | object | EasyQRコードオブジェクト |
+
+**Example**
+
+```js
+widget.on('success', function (ev, codeObject) {
+  // 決済完了後処理
+});
+```
+
+### "expired" (ev, codeObject)
+
+EasyQRコード期限切れイベント
+
+**Kind**: event emitted by `CodesWidget`
+
+| Param      | Type   | Description              |
+| ---------- | ------ | ------------------------ |
+| ev         | object | イベント                 |
+| ev.type    | string | expired                  |
+| codeObject | object | EasyQRコードオブジェクト |
+
+**Example**
+
+```js
+widget.on('expired', function (ev, codeObject) {
+  // 新しいEasyQRコードを生成するなと
+});
+```
+
+### "error" (ev, error)
+
+エラーイベント
+
+**Kind**: event emitted by `CodesWidget`
+
+| Param   | Type   | Description        |
+| ------- | ------ | ------------------ |
+| ev      | object | イベント           |
+| ev.type | string | error              |
+| error   | Error  | エラーオブジェクト |
+
+**Example**
+
+```js
+widget.on('error', function (ev, err) {
+  // エラー処理
+});
+```

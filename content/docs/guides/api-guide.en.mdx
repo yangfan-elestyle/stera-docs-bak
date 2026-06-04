@@ -1,0 +1,73 @@
+---
+title: Authentication / API Guide
+---
+
+# API Guide
+
+# Overview
+
+The <EText name="elepay" /> API is a REST‑based payments API. It supports operations used in day‑to‑day running such as charging and refunding.
+
+# Authentication
+
+To use the API, register an account and obtain API keys. There are two types of keys: Test key and Live key. The test key is used in the Test environment, and the live key is used in the Live environment. For details of the environments, see [Getting Started](/get-started/set-up).
+
+| No  | Name     | Purpose                                                                                  |
+| --- | -------- | ---------------------------------------------------------------------------------------- |
+| 1   | Test key | Does not connect to the live payment server and never creates real payment records.      |
+| 2   | Live key | Connects to the live payment server (available after your live application is approved). |
+
+The publishable key is the public API key embedded in your app’s payment page HTML and is used to create tokens. Server‑side API requests are authenticated using the secret key via HTTP Basic authentication by treating the secret key as the username and omitting the password. If you prefer Bearer authentication, use an HTTP Bearer header instead of Basic. Handle the secret key with care, as it grants access to all API operations.
+
+| No  | Name            | Purpose                                        |
+| --- | --------------- | ---------------------------------------------- |
+| 1   | Publishable key | Public key embedded in HTML for token creation |
+| 2   | Secret key      | Server‑side authentication secret              |
+
+> ## 📘 Basic authentication
+>
+> With Basic auth, concatenate the username and password with a colon `:` and send it Base64‑encoded.
+>
+> 1. Concatenate the secret key and an empty password with a colon:
+>    > `{SK_LIVE_KEY_HERE}:`
+> 2. Base64‑encode the value:
+>    > `c2tfbGl2ZV94eHh4eHh4eHh4eHh4eHh4eHh4eHg6`
+> 3. Send the encoded value in the HTTP Basic Authorization header:
+>    > `Authorization: Basic c2tfbGl2ZV94eHh4eHh4eHh4eHh4eHh4eHh4eHg6`
+
+> ## 📘 Bearer authentication
+>
+> To use Bearer authentication, send an HTTP Bearer header instead of the Basic header:
+>
+> > `Authorization: Bearer {SK_LIVE_KEY_HERE}`
+
+# Protocol
+
+For security, all API communication with the <EText name="elepay" /> servers must use HTTPS.
+
+# Methods
+
+Requests to the <EText name="elepay" /> API support three HTTP methods: GET, POST, and DELETE.
+
+# Response format
+
+All response data from the API is returned in JSON format.
+
+# Timestamps
+
+Date‑related data is represented as UNIX timestamps in the UTC time zone. Some fields such as expected transfer dates and execution dates that do not require seconds use the Date type (for example: 2023‑12‑01).
+
+# API Reference
+
+We provide the following APIs. For details, see the [API developer reference](/openapi).
+
+| No  | API    | Method   | Notes                  |
+| --- | ------ | -------- | ---------------------- |
+| 1   | Charge |          |                        |
+|     |        | list     | List charges           |
+|     |        | create   | Create a Charge object |
+|     |        | retrieve | Retrieve a charge      |
+| 2   | Refund |          |                        |
+|     |        | list     | List refunds           |
+|     |        | create   | Create a Refund object |
+|     |        | retrieve | Retrieve a refund      |
