@@ -1,0 +1,5 @@
+{
+  "title": "Checkout 收银台",
+  "defaultOpen": false,
+  "pages": ["elepay-hosted", "qrwidget"]
+}

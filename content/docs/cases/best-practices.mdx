@@ -1,0 +1,70 @@
+---
+title: ベストプラクティス
+---
+
+EasyCheckout を安定して連携いただくための推奨事項です。決済方式ごとの差異や内部処理は <EText name="elepay" /> 側で吸収するため、加盟店様は **charge の確定結果のみ** をご確認いただければ十分です。
+
+## 連携シーケンス
+
+<Mermaid
+  chart={`sequenceDiagram
+    autonumber
+    participant S as 加盟店サーバー
+    participant C as お客様
+    participant E as elepay
+    S->>E: Create EasyQR code（orderNo・金額）
+    E-->>S: code（id・codeUrl）
+    S->>C: QRコード / Checkout を表示
+    C->>E: QR を読み取り支払い
+    E-)S: Webhook: charge.succeeded / charge.revoked
+    S-->>E: 2xx
+    Note over E,S: 2xx 以外はリトライ（1分×3 → 10分×2）、未達なら同期 API で補完`}
+/>
+
+加盟店サーバーで EasyQR コードを作成 → お客様に表示 → お客様が支払い → <EText name="elepay" /> が結果を Webhook で通知、という流れです。受信時の実装は下記ベストプラクティスをご参照ください。
+
+## ステータスのライフサイクル
+
+<Mermaid
+  chart={`flowchart TD
+    A(["Create EasyQR code"]) --> P["pending / 未支払"]
+    P -->|"お客様が QR を読み取り支払い"| D{"決済結果"}
+    D -->|"成立"| C["captured / 支払済み"]
+    D -->|"失敗"| F["closed / 取消"]
+    P -->|"有効期限切れ・Close EasyQR code"| F
+    C -.->|"Webhook"| WS(["charge.succeeded"])
+    F -.->|"Webhook"| WR(["charge.revoked"])`}
+/>
+
+## ベストプラクティス
+
+### 1. Webhook を決済結果の唯一の正とする
+
+- 受信した [Webhook](/guides/webhook) は必ず `elepay-signature` を検証（HMAC-SHA256）してから処理します。
+- リダイレクトの `status` パラメータは画面遷移用です。結果判定には使わず、確定イベント `charge.succeeded`（成功）/ `charge.revoked`（取消）で判定します。
+
+### 2. Webhook は冪等に処理し、すぐに 2xx を返す
+
+- 同一イベントが再送される場合があるため、`orderNo` などをキーに冪等化し、二重処理を防ぎます。
+- 重い処理は非同期に回し、受信時はすぐ 2xx を返します。4xx / 5xx を返すと自動リトライ（1 分間隔 × 3 → 10 分間隔 × 2）されます。
+
+### 3. 取りこぼしに備えて照合（フォールバック）を用意する
+
+- Webhook が届かないケースに備え、[Retrieve EasyQR code](/openapi/code/retrieveCode) などの同期 API で結果を照合する経路を実装します。Webhook 単独に依存しないでください。
+
+### 4. 注文ごとに一意の `orderNo` を設定する
+
+- [Create EasyQR code](/openapi/code/createCode) で注文ごとに一意の `orderNo` を指定します。Webhook 受信時の注文突合に使え、同一 `orderNo` の重複作成も防止されます。
+
+### 5. 金額・通貨はサーバー側で確定する
+
+- コード作成はサーバー側（秘密鍵）で行い、公開鍵はクライアント表示用に限定します。金額をクライアント任せにせず、改ざんを防ぎます。
+
+### 6. 本番前に Test モードで検証する
+
+- Test / Live を切り替え、Webhook 受信を含めて Test モードで一通り検証してから Live に切り替えます。
+
+### 7. 有効期限と失敗時の導線を設計する
+
+- 利用シーンに応じた有効期限を設定します。有効期限が切れた未成立（`pending`）の決済は取り消され、`charge.revoked` が通知されます。
+- 期限切れ・失敗時は QR コードの再生成など、お客様が再試行できる導線を用意します。

@@ -1,0 +1,70 @@
+---
+title: Server
+---
+
+<EText name="elepay" /> ではさまざまな言語や EC
+サービスをサポートしております。より幅広い開発者の方をサポートするため、今後も
+SDK を増やしていく予定です。
+
+# 公式 SDK
+
+- Java
+- PHP
+- Ruby (準備中)
+- Python (準備中)
+
+## Java
+
+JDK 1.8以上が必要です。
+
+### 手動インストール
+
+Github から SDK をダウンロードし、libs の下にある jar ファイルをインポートします。
+
+### maven インストール
+
+elepay SDK の追加
+
+```xml
+<dependency>
+    <groupId>io.elepay</groupId>
+    <artifactId>elepay-java-sdk</artifactId>
+    <version>1.2.2</version>
+</dependency>
+```
+
+### gradle インストール
+
+elepay SDK の追加
+
+```groovy
+compile 'io.elepay:elepay-java-sdk:1.2.2'
+```
+
+## PHP
+
+PHP 7.3 以上が必要です。
+
+### 手動インストール
+
+```groovy
+require_once('/path/to/ElepayApi/vendor/autoload.php');
+```
+
+### Composer でインストール
+
+1.  `composer.json`に下記のコードを追加
+
+```json
+{
+  "require": {
+    "elestyle/elepay-php-sdk": ">=1.2.0"
+  }
+}
+```
+
+1.  `composer install`を実行
+
+```text
+composer install
+```

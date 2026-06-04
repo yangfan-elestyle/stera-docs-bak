@@ -1,0 +1,97 @@
+---
+title: 快速开始
+description: 用一次 API 调用创建你的第一个 EasyQR 收款二维码
+---
+
+跟随本指南，用一次 API 调用创建第一个 EasyQR 码，并在浏览器中看到一个真实可扫的收款二维码。全程使用测试模式，不会产生真实收款。
+
+<Callout title="EasyQR 是什么">
+EasyQR 是 <EText name="elepay" /> 提供的动态收款二维码：你的服务端创建一个 code，消费者扫码即可用 PayPay、信用卡等数十种方式付款。把二维码集成到网站或设备的完整方案见 [EasyCheckout](/cases/checkout)。
+</Callout>
+
+## 开始之前
+
+你只需要准备一样东西：**测试密钥（Secret Key）**。
+
+- 登录 <EText name="elepay" /> 管理后台，在左侧「開発設定 / API」中获取测试密钥，格式形如 `sk_test_…`。详细获取步骤见[初始设置](/get-started/set-up)。
+- 测试密钥对应**测试模式**：不连接真实支付渠道，也不会产生真实交易，可放心试跑。
+
+<Callout type="warn">
+Secret Key 拥有全部 API 操作权限，**仅可在服务端使用**，切勿提交到代码仓库或暴露在前端。
+</Callout>
+
+## 步骤 1：创建 EasyQR 码
+
+向 `POST /codes` 发送请求即可创建一个 EasyQR 码。把下面的 `sk_test_…` 替换为你自己的测试密钥后，可直接复制运行：
+
+```bash
+curl -X POST https://api.elepay.io/codes \
+  -H "Authorization: Bearer sk_test_xxxxxxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 500,
+    "currency": "JPY",
+    "orderNo": "quickstart-0001"
+  }'
+```
+
+<Callout title="认证方式">
+<EText name="elepay" /> 同时支持 Bearer 与 Basic 认证。上例使用 Bearer（密钥作为令牌）；若改用 Basic，则把密钥作为用户名、密码留空。详见 [API 指南](/guides/api-guide)。
+</Callout>
+
+请求字段（完整定义见 [Create EasyQR code](/openapi/code/createCode)）：
+
+| 字段 | 必填 | 说明 |
+| --- | --- | --- |
+| `amount` | 是 | 收款金额，整数。`JPY` 以日元为单位（`500` 即 ¥500） |
+| `orderNo` | 是 | 你系统侧的订单号，最长 50 位，便于对账 |
+| `currency` | 否 | 货币代码（ISO 4217），默认 `JPY` |
+
+创建成功返回 `201`，响应体是一个 code 对象（以下为示例，实际字段值因账户而异）：
+
+```json
+{
+  "id": "code_xxxxxxxxxxxxxxxx",
+  "object": "code",
+  "liveMode": false,
+  "amount": 500,
+  "currency": "JPY",
+  "orderNo": "quickstart-0001",
+  "status": "pending",
+  "codeUrl": "https://pay.elepay.io/code/xxxxxxxxxxxxxxxx",
+  "expiryTime": 1717200000000,
+  "createTime": 1717199400000
+}
+```
+
+需要重点关注的字段：
+
+| 字段 | 含义 |
+| --- | --- |
+| `id` | EasyQR 码的唯一标识，后续查询 / 关闭时使用 |
+| `liveMode` | `false` 表示测试模式（用测试密钥创建） |
+| `status` | 新建时为 `pending`（未支付）；支付完成后变为 `captured` |
+| `codeUrl` | **消费者支付落地页地址**——下一步就用它 |
+
+## 步骤 2：查看你的收款二维码
+
+把响应中的 `codeUrl` 复制到浏览器打开，你会看到一个由 <EText name="elepay" /> 托管的收银台页面：左侧是金额，右侧是收款二维码与可用的支付方式。
+
+![EasyQR 收银台页面](/docs/fdfa6f6c89671f21da0c49a86a440b156f6b48603faaf6ab5a40f530f3635091-image.png)
+
+消费者用手机扫描这个二维码，即可选择 PayPay、信用卡等方式付款。
+
+<Callout title="🎉 恭喜">
+这就是你用 API 创建的第一个 EasyQR 码——你已经走通了 <EText name="elepay" /> 收款最核心的一步：从创建到出码。
+</Callout>
+
+<Callout type="info">
+若二维码页面提示无可用支付方式，请先在管理后台「簡単決済 > 設定 > 決済方法管理」中启用至少一种支付方式。
+</Callout>
+
+## 下一步
+
+- **集成到你的网站或设备**：[EasyCheckout 接入](/cases/checkout)（托管页面 / 嵌入式 Widget 两种方式）
+- **查询支付状态**：[Retrieve EasyQR code](/openapi/code/retrieveCode)
+- **了解全部字段**：[Create EasyQR code](/openapi/code/createCode)
+- **上线真实收款**：在管理后台完成支付方式开通后，把测试密钥换成正式密钥（`sk_live_…`）即可

@@ -1,0 +1,144 @@
+---
+title: Extra Payment Parameters
+---
+
+## When the payment resource is `web`, `ios`, or `android`
+
+### Alipay+ (Alipay, AlipayHK, KakaoPay, GCash, TNG, etc.)
+
+| Field         | Description                      | Required                        |
+| ------------- | -------------------------------- | ------------------------------- |
+| **frontUrl**  | URL to redirect to after payment | Required when resource is `web` |
+| **userAgent** | Browser User‑Agent               | Required when resource is `web` |
+
+### Apple Pay
+
+| Field        | Description                                 | Required |
+| ------------ | ------------------------------------------- | -------- |
+| **shopName** | Payee name shown on Apple Pay authorization | Optional |
+
+### Google Pay
+
+| Field        | Description                                  | Required                                      |
+| ------------ | -------------------------------------------- | --------------------------------------------- |
+| **shopName** | Payee name shown on Google Pay authorization | Optional                                      |
+| **frontUrl** | URL to redirect to after payment             | Required when resource is `web` and using 3DS |
+
+### atone
+
+| Field           | Description                                | Required |
+| --------------- | ------------------------------------------ | -------- |
+| **productName** | Product name shown on the user’s statement | Optional |
+
+### LINE Pay
+
+| Field               | Description                                          | Required                                  |
+| ------------------- | ---------------------------------------------------- | ----------------------------------------- |
+| **frontUrl**        | URL to redirect to after payment                     | Required when resource is `web` or `liff` |
+| **productName**     | Product name shown on LINE Pay authorization screen  | Optional                                  |
+| **productImageUrl** | Product image shown on LINE Pay authorization screen | Optional                                  |
+
+### UnionPay
+
+| Field           | Description                                  | Required                        |
+| --------------- | -------------------------------------------- | ------------------------------- |
+| **frontUrl**    | URL to redirect to after payment             | Required when resource is `web` |
+| **productName** | Product name shown on UnionPay authorization | Optional                        |
+
+### au PAY
+
+| Field        | Description                      | Required                        |
+| ------------ | -------------------------------- | ------------------------------- |
+| **frontUrl** | URL to redirect to after payment | Required when resource is `web` |
+
+### Merpay
+
+| Field        | Description                      | Required                        |
+| ------------ | -------------------------------- | ------------------------------- |
+| **frontUrl** | URL to redirect to after payment | Required when resource is `web` |
+
+### d Payment (d払い)
+
+| Field        | Description                      | Required                        |
+| ------------ | -------------------------------- | ------------------------------- |
+| **frontUrl** | URL to redirect to after payment | Required when resource is `web` |
+
+### J‑Coin Pay
+
+| Field        | Description                      | Required                        |
+| ------------ | -------------------------------- | ------------------------------- |
+| **frontUrl** | URL to redirect to after payment | Required when resource is `web` |
+
+### PayPal
+
+No extra fields required.
+
+### Paidy
+
+| Field        | Description                                  | Required |
+| ------------ | -------------------------------------------- | -------- |
+| **shopName** | Store name shown on Paidy authorization page | Optional |
+
+### PayPay
+
+| Field           | Description                      | Required                        |
+| --------------- | -------------------------------- | ------------------------------- |
+| **frontUrl**    | URL to redirect to after payment | Required when resource is `web` |
+| **productName** | Product name                     | Optional                        |
+
+### WeChat Pay
+
+| Field           | Description                      | Required                         |
+| --------------- | -------------------------------- | -------------------------------- |
+| **frontUrl**    | URL to redirect to after payment | Required when resource is `web`  |
+| **productName** | Product name                     | Optional                         |
+| **openid**      | User openid                      | Required when resource is `mini` |
+
+### Rakuten Pay (RPay)
+
+| Field         | Description        | Required                        |
+| ------------- | ------------------ | ------------------------------- |
+| **frontUrl**  | URL to redirect to | Required when resource is `web` |
+| **userAgent** | Browser User‑Agent | Required when resource is `web` |
+
+### Atokara（アトカラ）
+
+| Field        | Description                      | Required |
+| ------------ | -------------------------------- | -------- |
+| **frontUrl** | URL to redirect to after payment | Required |
+| **fullName** |                                  | Required |
+| **zipCode**  |                                  | Required |
+| **address**  |                                  | Required |
+| **tel**      |                                  | Required |
+| **email**    |                                  | Required |
+
+## When the payment resource is `cpm`
+
+### Common fields
+
+| Field     | Description                             | Required |
+| --------- | --------------------------------------- | -------- |
+| **token** | Value of the scanned barcode or QR code | Required |
+
+## When the payment resource is `reader`
+
+### Common fields
+
+| Field        | Description        | Required |
+| ------------ | ------------------ | -------- |
+| **readerId** | Terminal reader ID | Required |
+
+## For Create EasyQR
+
+### Common fields
+
+| Field                    | Description                                                             | Required |
+| ------------------------ | ----------------------------------------------------------------------- | -------- |
+| **defaultPaymentMethod** | Payment brand to display by default. Users can switch to other methods. | Optional |
+
+## For credit cards
+
+| Field                   | Description                      | Required                                      |
+| ----------------------- | -------------------------------- | --------------------------------------------- |
+| **requestThreeDSecure** | Set to `true` to enable 3DS      | Optional                                      |
+| **frontUrl**            | URL to redirect to after payment | Required when resource is `web` and using 3DS |

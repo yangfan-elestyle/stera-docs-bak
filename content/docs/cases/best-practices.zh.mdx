@@ -1,0 +1,70 @@
+---
+title: 最佳实践
+---
+
+为稳定接入 EasyCheckout 的推荐事项。各决済方式的差异与内部处理均由 <EText name="elepay" /> 屏蔽，加盟店只需确认 **charge 的最终结果** 即可。
+
+## 集成时序
+
+<Mermaid
+  chart={`sequenceDiagram
+    autonumber
+    participant S as 加盟店服务器
+    participant C as 顾客
+    participant E as elepay
+    S->>E: Create EasyQR code（orderNo・金额）
+    E-->>S: code（id・codeUrl）
+    S->>C: 展示 QR 码 / Checkout
+    C->>E: 读取 QR 并支付
+    E-)S: Webhook: charge.succeeded / charge.revoked
+    S-->>E: 2xx
+    Note over E,S: 非 2xx 触发重试（1分×3 → 10分×2），最终未达则用同步 API 补偿`}
+/>
+
+加盟店服务器创建 EasyQR 码 → 展示给顾客 → 顾客支付 → <EText name="elepay" /> 通过 Webhook 通知结果。接收后的处理见下方最佳实践。
+
+## 状态生命周期
+
+<Mermaid
+  chart={`flowchart TD
+    A(["Create EasyQR code"]) --> P["pending / 未支付"]
+    P -->|"顾客读取 QR 并支付"| D{"支付结果"}
+    D -->|"成立"| C["captured / 已支付"]
+    D -->|"失败"| F["closed / 取消"]
+    P -->|"过期 / Close EasyQR code"| F
+    C -.->|"Webhook"| WS(["charge.succeeded"])
+    F -.->|"Webhook"| WR(["charge.revoked"])`}
+/>
+
+## 最佳实践
+
+### 1. 以 Webhook 为决済结果的唯一可信源
+
+- 收到 [Webhook](/guides/webhook) 后，务必先校验 `elepay-signature`（HMAC-SHA256）再处理。
+- 重定向上的 `status` 参数仅用于页面跳转，不要用它判定结果；以确定事件 `charge.succeeded`（成功）/ `charge.revoked`（取消）判定。
+
+### 2. Webhook 幂等处理并立即返回 2xx
+
+- 同一事件可能被重发，请以 `orderNo` 等为键做幂等，避免重复处理。
+- 重活异步处理，接收时立即返回 2xx。返回 4xx / 5xx 会触发自动重试（每 1 分钟 × 3 → 每 10 分钟 × 2）。
+
+### 3. 为漏收准备对账兜底
+
+- 为防 Webhook 未送达，请实现用 [Retrieve EasyQR code](/openapi/code/retrieveCode) 等同步 API 对账结果的兜底路径，不要单押 Webhook。
+
+### 4. 每笔订单设置唯一 `orderNo`
+
+- 在 [Create EasyQR code](/openapi/code/createCode) 为每笔订单指定唯一 `orderNo`。它用于 Webhook 接收时的订单突合，并可防止相同 `orderNo` 的重复创建。
+
+### 5. 金额与币种在服务端确定
+
+- 在服务端（秘密钥）创建 code，公开钥仅用于客户端展示。不要让客户端决定金额，以防篡改。
+
+### 6. 上线前先在 Test 模式验证
+
+- 切换 Test / Live，在 Test 模式下含 Webhook 接收完整验证后，再切到 Live。
+
+### 7. 设计有效期与失败导线
+
+- 按使用场景设置有效期。有效期到达时，未成立（`pending`）的支付会被取消并通知 `charge.revoked`。
+- 过期或失败时，为顾客提供重新生成 QR 码等可重试的恢复路径。

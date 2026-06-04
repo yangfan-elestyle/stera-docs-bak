@@ -1,28 +1,32 @@
 # AGENTS
 
-Elepay / SMCC 多租户文档站 (Next 16 + Fumadocs + Cloudflare Workers)。工程总览 -> [README.md](./README.md); 部署 -> [deploy.md](./deploy.md); 文档写法 -> [llm-doc-style.md](./llm-doc-style.md)。
+elepay / SMCC multi-tenant documentation site (Next 16 + Fumadocs + Cloudflare Workers). Project overview -> [README.md](./README.md); deployment -> [deploy.md](./deploy.md); doc authoring -> [llm-doc-style.md](./llm-doc-style.md).
 
-## 工作模式 (AI 全程闭环)
+## Workflow (fully autonomous AI loop)
 
-- 编辑文档 / 改代码 / OpenAPI 同步与重生成 / CHANGELOG / **本地预览部署** 全部由 AI 操作, 一般无需人工接入。
-- **预览部署**: 用本地 `wrangler` (个人账号, 已登录) 跑 `bunx opennextjs-cloudflare deploy`, 发到个人 CF, deploy 退出即完成 (AI 不验证 URL/链路, 人类验收), 不触及公司平台。流程 -> [deploy.md](./deploy.md)。
-- **公司正式发布**: 走 PR merge -> Actions, CF 公司凭证仅在 GitHub Secrets, 本地无法部署公司账号。
-- 极端情况开发人员本地手动调试: `bun run dev` + 两个 localhost。
-- 设计决策 (架构 / 选型 / 命名 / 依赖) 以 AI 判断为准, 非必要 MUST NOT 反问。用户 = 触发者 + 验收者。
+- The AI makes the optimal calls on its own, completes the work (doc edits & coding) & preview-deploy verification, and the necessary CHANGELOG. For non-blocking issues, MUST NOT ask the human back.
+  - Entirely AI-driven, no human intervention required.
+  - MUST NOT verify/accept via localhost preview; for preview deployment see -> [deploy.md](./deploy.md).
+  - Design decisions (architecture / tech selection / naming / dependencies) are the AI's call; unless necessary, MUST NOT ask back. The user = final acceptor.
 
-## 硬约束
+## Hard constraints
 
-- MUST NOT 直接编辑生成物: `.source/**` / `content/docs/openapi/(generated)/**` / `data/**` / `.next/**` / `.open-next/**` / `out/**` / `cloudflare-env.d.ts` / `next-env.d.ts`。
-- 改 `openapi.yaml` (或 `.en` / `.zh`) 后 MUST 跑 `bun run generate:data` 刷新; 新克隆仓库 MUST 先 `generate:data` 再 `dev` / `build`。
-- 改导航 / 排序 MUST 同步所有语言 `meta.[lang].json` (ja / en / zh), 否则菜单缺失或顺序错乱。
-- 多语言命名: `index.mdx` (默认 ja) / `index.en.mdx` / `index.zh.mdx`; 缺失语言回退 `index.mdx`。
-- **i18n 不走 URL**: `hideLocale: 'always'` (`lib/i18n.ts`) 使对外 URL 永远**不含** locale 前缀, 语言由 cookie 判断 (middleware 设置)。引用 / 构造站内 URL MUST NOT 加 `/ja` `/en` `/zh` (用 `/docs/xxx` 而非 `/en/docs/xxx`)。源码的 `app/[lang]` 段与内容文件 `index.[lang].mdx` 是内部 / 文件层 locale, 不映射到 URL。
-- CF Worker 内 `fetch()` 禁直连同账号资源 (`global_fetch_strictly_public`); Host / Proto 以请求 `Host` 头为唯一信源 (`lib/tenant.ts`), MUST NOT 依赖 `X-Forwarded-*`。
-- 导入用别名 `@/*` / `@/.source`, 避免相对路径穿越。
-- Git: 暂存区 MUST NOT 写 (可能存 diff, 可读); MUST NOT 主动 push; MUST NOT 直推 `master` / `develop` (仅 PR merge)。
+- MUST NOT directly edit generated artifacts: `.source/**` / `content/docs/openapi/(generated)/**` / `data/**` / `.next/**` / `.open-next/**` / `out/**` / `cloudflare-env.d.ts` / `next-env.d.ts`.
+- After changing `openapi.yaml` (or `.en` / `.zh`), MUST run `bun run generate:data` to refresh; a freshly cloned repo MUST run `generate:data` before `dev` / `build`.
+- When an mdx path changes, sync related mdx references and `lib/legacy-redirects.mjs`.
+- When changing navigation / ordering, MUST sync every language's `meta.[lang].json` (ja / en / zh), otherwise the menu goes missing or ends up out of order.
+- Multi-language naming: `index.mdx` (default ja) / `index.en.mdx` / `index.zh.mdx`; a missing language falls back to `index.mdx`.
+- **i18n does not go through the URL**: `hideLocale: 'always'` (`lib/i18n.ts`) keeps the public URL free of any locale prefix; the language is decided by cookie (set by middleware). When referencing / constructing in-site URLs, MUST NOT add `/ja` `/en` `/zh` (use `/docs/xxx`, not `/en/docs/xxx`). The source's `app/[lang]` segment and content files `index.[lang].mdx` are internal / file-level locale and do not map to the URL.
+- Import via the aliases `@/*` / `@/.source`; avoid relative-path traversal.
+- Git: MUST NOT write to the staging area; commit / push only when explicitly authorized in the session.
 
-## 文档约束
+## Fumadocs
 
-- 全部根目录 md MUST 简洁精炼, 重点突出, 零冗余; 写法规范 -> [llm-doc-style.md](./llm-doc-style.md), 审稿对照其"反模式"段。
-- 单一信源: 跨文档用 link 引用, MUST NOT 复述事实。
-- 能一行不写两行, 能列表不写段落。
+- Page conventions: in `meta*.json` `pages`, page/folder = `path`; link = `[Icon][Text](url)`, e.g. `"[x][x](../openapi)"`; external link = `external:[Icon][Text](url)`;
+- Fumadocs docs: https://www.fumadocs.dev/docs
+
+## Doc constraints
+
+- MUST be concise and to the point, with zero redundancy; for authoring rules see -> [llm-doc-style.md](./llm-doc-style.md), and review against its "anti-patterns" section.
+- Single source of truth: reference across docs via links, MUST NOT restate facts.
+- MUST NOT use `<!-- prettier-ignore -->` for markdown table tags

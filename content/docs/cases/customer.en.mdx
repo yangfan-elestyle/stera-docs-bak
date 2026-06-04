@@ -1,0 +1,57 @@
+---
+title: Create a Customer and Invite Card Registration
+---
+
+By using <EText name="elepay" />’s Customer feature, you can create customers to support recurring billing or to charge using registered payment methods. The Customer feature uses both the Client SDK and the API.
+
+Customer creation flow overview
+
+![](/docs/9e0464f-Screen_Shot_2020-08-26_at_0.48.22.png)
+
+# Create a customer via API
+
+## 1. Register a payment method
+
+The end user registers a payment method in a mobile app or on the web.
+
+## 2. Create the customer
+
+Your server calls [Create Customer](/openapi/customer/createCustomer) to create a customer linked to the user. If you need to register multiple payment methods, reuse the existing customer.
+
+## 3. Create a Source object
+
+Your server calls [Create Source](/openapi/customer/createSource) to create a Source object.
+
+## 4. Pass the Source object
+
+Your server returns the Source object from <EText name="elepay" /> to the Client SDK on the client.
+
+## 5. Registration (authorization)
+
+The Client SDK runs the registration process using the Source object.
+
+## 6. Registration (authorization) result
+
+After registration completes, the selected payment channel server returns the result.
+
+## 7. Receive webhook event
+
+If registration succeeds, <EText name="elepay" /> sends an event notification to the configured webhook URL.
+
+## 8. Charge recurrently
+
+Using `CustomerId` and `SourceId`, your server calls [Create Charge](/openapi/charge/createCharge) to process payments.
+
+> 📘 Supported payment methods for registration
+>
+> Currently supported methods:
+>
+> - Credit Card
+> - Paidy
+>   > The following payment methods require separate applications
+> - PayPay
+> - merpay
+> - au PAY
+> - d払い
+> - WeChat
+> - Alipay+

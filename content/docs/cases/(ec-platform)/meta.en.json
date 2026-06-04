@@ -1,0 +1,5 @@
+{
+  "title": "Integrate with EC Platform",
+  "defaultOpen": false,
+  "pages": ["ec-cube-plugin", "woocommerce-plugin", "allvalue"]
+}

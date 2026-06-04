@@ -41,4 +41,5 @@ content/docs/openapi/(generated)/
 
 # generated data
 /data/
-.mcp.json
+/CLAUDE.local.md
+/plan/*

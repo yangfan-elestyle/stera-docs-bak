@@ -1,0 +1,91 @@
+---
+title: Web 托管式 Checkout 开发
+---
+
+# 接入托管式 Checkout 页面
+
+当用户在网站上点击按钮时，将跳转到 <EText name="elepay" /> 托管的 Checkout 页面。
+
+> - 接入工作量：低代码，约 20 分钟
+> - 实现方式：托管页面
+> - UI 自由度：受限
+
+当用户已在站内完成商品选择并准备购买时，请按以下步骤接入。
+
+### 步骤 1：为所选商品创建 EasyQR 码
+
+#### 配置 Checkout 页面
+
+「[Create EasyQR code](/openapi/code/createCode)」示例：
+
+```sh
+--data '
+{
+  "currency": "JPY",
+  "extra": {
+    "defaultPaymentMethod": "paypay" # 指定品牌的支付 QR 码
+  },
+  "amount": 266,  # 显示合计金额
+  "items": [     # 显示各商品的明细
+    {
+      "name": "お茶",
+      "price": 108,
+      "count": 1
+    },
+    {
+      "name": "コーラ",
+      "price": 158,
+      "count": 1
+    }
+  ]
+}
+'
+
+```
+
+| 显示各商品的明细                                                                      | 仅显示合计金额                                                                        | 指定品牌的支付 QR 码                                                                  |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| ![](/docs/561e8f4eb56cc69195fae551b4003cac5f287b91c1180b97c414c572cb0e4d6c-image.png) | ![](/docs/fdfa6f6c89671f21da0c49a86a440b156f6b48603faaf6ab5a40f530f3635091-image.png) | ![](/docs/b839861abb314abe309c7774597672a0b092501ab38416b9a322e95c2da32a4d-image.png) |
+
+### 步骤 2：在站点上添加支付按钮并跳转到 Checkout 页面
+
+使用 JavaScript SDK 跳转到 Checkout 页面。SDK 将自动判断设备类型：桌面端跳转至 Checkout 页面，移动端跳转至 Payment 页面。
+
+```js
+<script src="https://js.elepay.io/v1/elepay.js"></script>
+<script>
+  var elepay = new Elepay("<公開鍵>")
+  elepay.checkout("<QRCode ID>")
+
+</script>
+```
+
+### 步骤 3：用户完成支付后，处理跳转页与支付状态
+
+支付流程结束后，重定向 URL 会携带状态参数（例如：status=captured），可在前端判断处理是否成功。
+
+- captured: 支付完成
+- cancelled: 支付已取消
+- failure: 支付失败
+
+> 例：[https://example.com/thank-you?status=captured](https://example.com/thank-you?status=captured)
+
+> 👍 如需更准确地掌握支付状态，推荐通过 Webhook 接收事件通知。
+>
+> 可在 <EText name="elepay" /> 的「[開発設定>Webhook]」中配置接收 URL。
+>
+> 支付成功时，<EText name="elepay" /> 会向配置的 Webhook URL 发送事件通知。
+
+### 其他设置
+
+#### Checkout 页面 UI 自定义
+
+用户看到的 Checkout 页面可在 <EText name="elepay" />「[簡単決済>設定>基本設定]」中调整图标与配色方案。
+
+#### 支付方式设置
+
+可在 <EText name="elepay" />「[簡単決済>設定>決済方法管理]」中管理可用的支付方式（查看、启用、禁用）。后续新增的支付方式也可立即使用。
+
+#### 添加位置信息
+
+创建 EasyQR 码时可附加位置信息，也可在 <EText name="elepay" />「[ロケーション]」中进行管理。

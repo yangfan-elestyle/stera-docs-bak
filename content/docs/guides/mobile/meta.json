@@ -1,0 +1,5 @@
+{
+  "title": "iOS / Android",
+  "defaultOpen": false,
+  "pages": ["ios", "android", "payment-methods-config", "url-scheme"]
+}

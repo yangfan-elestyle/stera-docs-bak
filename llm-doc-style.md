@@ -1,72 +1,72 @@
-# md 编写指南
+# md Authoring Guide
 
-高密度原则; 根目录所有 md (`AGENTS` / `README` / `deploy` / `CHANGELOG` 及本文) MUST 符合本指南。
+High-density principle; all root-level md files (`AGENTS` / `README` / `deploy` / `CHANGELOG` and this one) MUST follow this guide.
 
-## 分层 (单一信源, 互引不复述)
+## Layering (single source of truth, cross-reference instead of restating)
 
 <!-- prettier-ignore -->
-| 文件 | 内容 |
+| File | Content |
 |---|---|
-| `AGENTS.md` | LLM 约束 / 工作模式 / 硬规则 (`CLAUDE.md` 软链至此) |
-| `README.md` | 工程总览 / 结构 / 命令 / 架构说明 |
-| `deploy.md` | 发布流程 (人执行) |
-| `CHANGELOG.md` | 面向使用者的发版记录 |
-| `llm-doc-style.md` | 本文: md 写作元规范 |
+| `AGENTS.md` | LLM constraints / workflow / hard rules (`CLAUDE.md` symlinks here) |
+| `README.md` | Project overview / structure / commands / architecture notes |
+| `deploy.md` | AI preview deployment (ship to CF via wrangler) |
+| `CHANGELOG.md` | User-facing release notes |
+| `llm-doc-style.md` | This file: the md authoring meta-spec |
 
-跨文档用 `[xxx.md](./xxx.md)` 引用, MUST NOT 复述事实。
+Reference across docs via `[xxx.md](./xxx.md)`, MUST NOT restate facts.
 
-## 通用风格
+## General style
 
-- 能一行不写两行, 能列表不写段落
-- 短句; 用 `->` `/` `+` 替连接词
-- 强度词: MUST / MUST NOT / SHOULD
-- 短并列项 (≤12 中文/单元格) 用表格; 表格前紧贴 `<!-- prettier-ignore -->`
-- 长并列点用列表
-- CommonMark/GFM; MUST NOT Obsidian 语法 / HTML 折叠
-- 中文行文; 命令 / 术语 / 报错保留原文
+- One line beats two; a list beats a paragraph
+- Short sentences; use `->` `/` `+` in place of conjunctions
+- Strength words: MUST / MUST NOT / SHOULD
+- Short parallel items (≤12 CJK chars / cell) use a table; place `<!-- prettier-ignore -->` immediately before the table
+- Long parallel points use a list
+- CommonMark/GFM; MUST NOT use Obsidian syntax / HTML collapsibles
+- Prose in Chinese; keep commands / terms / error messages verbatim
 
-## 代码块
+## Code blocks
 
-- 所有 fenced code MUST 指定语言, MUST NOT 出现无语言标识的代码块
-- 支持 Shiki: `ts` `js` `tsx` `jsx` `vue` `json` `html` `css` `sh` `bash` `shell` `yaml` `xml` `md` `java` `kotlin` `swift` `php` `ruby` `python` `go` `cpp` `c` `cs` `rust` `dart` `sql` 等
-- 命令块注释贴 `#` 同行
+- Every fenced code block MUST declare a language; MUST NOT leave a code block without a language tag
+- Shiki support: `ts` `js` `tsx` `jsx` `vue` `json` `html` `css` `sh` `bash` `shell` `yaml` `xml` `md` `java` `kotlin` `swift` `php` `ruby` `python` `go` `cpp` `c` `cs` `rust` `dart` `sql`, etc.
+- Put command comments inline on the same line with `#`
 
 ## AGENTS.md
 
-- 只写 LLM 约束, MUST NOT 写工程说明 (结构 / 命令 / 拓扑 -> README)
-- 首段一行角色定位 + link 到 README / deploy / 本文
-- 必含: 工作模式 (AI 全程闭环, 含本地预览部署 -> 个人 CF; 公司发布走 Actions) / 硬约束 / 文档约束
-- `CLAUDE.md` 是本文件软链, 改 `AGENTS.md` 即同步
+- Write only LLM constraints; MUST NOT write engineering notes (structure / commands / topology -> README)
+- First paragraph: one-line role positioning + links to README / deploy / this file
+- MUST include: workflow (fully autonomous AI loop, including wrangler preview deployment and verification) / hard constraints / doc constraints
+- Git / staging safety belongs under hard constraints; commit / push requires explicit session authorization
+- `CLAUDE.md` is a symlink to this file; editing `AGENTS.md` syncs it
 
 ## README.md
 
-- 首段一行价值主张, MUST NOT 带 LLM 提示
-- 站点能力 / 命令 / 决済方式用表格
-- 命令块 fenced + `#` 注释同行
-- 部署细节抽到 `deploy.md`, 此处仅 link
-- 生成文件 / 架构注意点集中一处, MUST NOT 散落
+- First paragraph: one-line value proposition; MUST NOT carry LLM hints
+- Site capabilities / commands / payment methods use tables
+- Command blocks: fenced + `#` comments inline
+- Deployment details are extracted to `deploy.md`; only link here
+- Hard constraints on generated files link to AGENTS; architecture notes stay in one place, MUST NOT be scattered
 
 ## deploy.md
 
-- 顶部一行点明两条路径: 本地预览 (AI) / 公司发布 (Actions)
-- 本地预览部署: AI 用本地 `wrangler` (个人账号) -> 个人 CF, 命令 ≤ 3 行
-- 公司发布: TL;DR ≤ 4 行 + 触发规则表 (改动 -> PR -> staging -> master -> product)
-- 凭证仅在 GitHub Secrets / 禁直推 `master`·`develop`; 高危操作用 `>` 引用块标禁用条件
+- Write only AI preview deployment: the AI uses the locally logged-in `wrangler` to ship to CF, commands ≤ 3 lines
+- After `deploy` exits, take the `*.workers.dev` preview URL to verify and accept
+- MUST NOT write company release / branches / Actions / Secrets (irrelevant to the LLM; source of truth is in `.github/workflows/`)
 
 ## CHANGELOG.md (Keep a Changelog + SemVer)
 
-- **面向使用者**, 写他们感受得到的事
-- 写: 新功能 / 文档新增 / 行为修复 / 体验 / 安全
-- MUST NOT 写: 文件路径 / 函数名 / 组件名 / 依赖包名 / 重构细节 / "改了哪行"
-- 单条 ≤ 2 行, 单版本 ≤ 5 条
-- 段落: Added / Changed / Fixed / Removed / Security
-- 中文行文; 命令 / 术语保留原文
+- **User-facing**: write what they can actually perceive
+- Write: new features / new docs / behavior fixes / experience / security
+- MUST NOT write: file paths / function names / component names / dependency package names / refactor details / "which line changed"
+- ≤ 2 lines per entry, ≤ 5 entries per version
+- Sections: Added / Changed / Fixed / Removed / Security
+- Prose in Chinese; keep commands / terms verbatim
 
-## 反模式 (审稿时优先抓)
+## Anti-patterns (catch these first during review)
 
-- 段落式描述 -> 拆列表
-- 同一事实两个文件各写一遍 -> 留一处 + link
-- AGENTS 塞工程结构 / 命令 / 文件清单 -> 抽到 README
-- CHANGELOG 写"改了哪个文件 / 组件 / 依赖" -> 改写"用户看到什么变化"
-- 表格单元格塞长句 -> 改列表
-- fenced code 不写语言 -> 补语言标识
+- Paragraph-style description -> break into a list
+- The same fact written in two files -> keep one + link
+- AGENTS stuffed with engineering structure / commands / file lists -> extract to README
+- CHANGELOG saying "which file / component / dependency changed" -> rewrite as "what the user sees change"
+- Table cells stuffed with long sentences -> switch to a list
+- Fenced code with no language -> add the language tag

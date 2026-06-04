@@ -2,6 +2,24 @@
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [SemVer](https://semver.org/)。面向使用者, 中文行文, 命令 / 术语保留原文。
 
+## [0.1.5] - 2026-06-03
+
+### Added
+
+- 新增「快速开始」页 (日 / 英 / 简), 归入「开发准备」分组。
+- Checkout 新增「最佳实践」页 (日 / 英 / 简): 集成时序图与状态生命周期图、Webhook 处理步骤、以 charge 的 Webhook 判定结果、避免过度处理中间状态、有效期与重复创建、关闭 / 取消时的行为。
+- 为 EasyQR 嵌入页补充创建 EasyQR 码的 cURL 请求示例。
+- 文档支持 Mermaid 图表渲染。
+
+### Changed
+
+- 重构文档导航与目录结构: 新增「典型用例」分组, 将 Checkout、客户管理、EC 平台插件 (allvalue / EC-CUBE / WooCommerce) 归入其中; 「最佳实践」并入「开发指南」; SDK 文档导航重新编排。
+- 统一 elepay (小写) 与 API 的大小写书写。
+
+### Fixed
+
+- 修正 Webhook 事件发送表述, 去除具体事件类型名 (如 `charge.captured`), 统一为「发送事件通知」。
+
 ## [0.1.4] - 2026-05-27
 
 本次集中重构 OpenAPI **API Reference**。

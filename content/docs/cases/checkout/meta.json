@@ -1,0 +1,5 @@
+{
+  "title": "Checkout の実装",
+  "defaultOpen": false,
+  "pages": ["elepay-hosted", "qrwidget"]
+}
