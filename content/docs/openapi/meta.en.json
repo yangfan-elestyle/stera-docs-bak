@@ -1,0 +1,31 @@
+{
+  "title": "API Reference",
+  "root": true,
+  "sectionNotes": {
+    "Payments": "Create and manage payment codes, charges, refunds, and disputes.",
+    "Merchants": "Manage merchant locations and store-level settings.",
+    "Customers": "Create and manage customers and their saved payment methods.",
+    "Terminal": "Register and operate in-store payment terminals.",
+    "Services": "Issue invoices and manage recurring subscriptions."
+  },
+  "pages": [
+    "index",
+    "---Payments---",
+    "code",
+    "codesetting",
+    "charge",
+    "refund",
+    "dispute",
+    "paymentmethod",
+    "---Merchants---",
+    "location",
+    "---Customers---",
+    "customer",
+    "source",
+    "---Terminal---",
+    "terminal",
+    "---Services---",
+    "invoice",
+    "subscription"
+  ]
+}

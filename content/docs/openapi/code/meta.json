@@ -1,0 +1,8 @@
+{
+  "title": "Codes",
+  "pages": [
+    "../(generated)/code/createCode",
+    "../(generated)/code/retrieveCode",
+    "../(generated)/code/closeCode"
+  ]
+}

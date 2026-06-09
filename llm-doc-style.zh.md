@@ -10,7 +10,9 @@
 | `AGENTS.md` | LLM 约束 / 工作模式 / 硬规则 (`CLAUDE.md` 软链至此) |
 | `README.md` | 工程总览 / 结构 / 命令 / 架构说明 |
 | `deploy.md` | AI 预览部署 (wrangler 发 CF) |
+| `release.md` | 版本 / changelog (双文件) 发版流程 |
 | `CHANGELOG.md` | 面向使用者的发版记录 |
+| `CHANGELOG` | 面向开发者: 镜像 `CHANGELOG.md` + 每条加技术子项 |
 | `llm-doc-style.md` | 本文: md 写作元规范 |
 
 跨文档用 `[xxx.md](./xxx.md)` 引用, MUST NOT 复述事实。
@@ -53,14 +55,24 @@
 - deploy 退出后取 `*.workers.dev` 预览 URL 验证验收
 - MUST NOT 写公司发布 / 分支 / Actions / Secrets (与 LLM 无关, 信源在 `.github/workflows/`)
 
-## CHANGELOG.md (Keep a Changelog + SemVer)
+## CHANGELOG — 双文件 (Keep a Changelog + SemVer)
 
-- **面向使用者**, 写他们感受得到的事
+`CHANGELOG.md` (用户向) + `CHANGELOG` (开发者向), 同步推进 -> [release.md](./release.md)。
+
+### CHANGELOG.md (用户向)
+
+- 写用户感受得到的事
 - 写: 新功能 / 文档新增 / 行为修复 / 体验 / 安全
 - MUST NOT 写: 文件路径 / 函数名 / 组件名 / 依赖包名 / 重构细节 / "改了哪行"
 - 单条 ≤ 2 行, 单版本 ≤ 5 条
 - 段落: Added / Changed / Fixed / Removed / Security
 - 中文行文; 命令 / 术语保留原文
+
+### CHANGELOG (开发者向)
+
+- `CHANGELOG.md` 的超集: 每条 1:1 镜像, 缩进追加一行技术子项
+- 子项 MAY 写路径 / 函数 / 机制 (用户向规则的反向); ≤ 1 行, 文件 / 函数 / 机制级
+- 语言与 `CHANGELOG.md` 一致
 
 ## 反模式 (审稿时优先抓)
 

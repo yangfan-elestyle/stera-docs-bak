@@ -1,0 +1,12 @@
+{
+  "title": "Invoices",
+  "pages": [
+    "../(generated)/invoice/listInvoices",
+    "../(generated)/invoice/createInvoice",
+    "../(generated)/invoice/retrieveInvoice",
+    "../(generated)/invoice/updateInvoice",
+    "../(generated)/invoice/cancelInvoice",
+    "../(generated)/invoice/submitInvoice",
+    "../(generated)/invoice/sendInvoice"
+  ]
+}

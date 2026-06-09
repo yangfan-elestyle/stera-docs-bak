@@ -1,6 +1,10 @@
 import { docs } from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader } from 'fumadocs-core/source';
-import { findPath, flattenTree } from 'fumadocs-core/page-tree';
+import {
+  findPath,
+  flattenTree,
+  getPageTreeRoots,
+} from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from './i18n';
 import { openapiPlugin } from 'fumadocs-openapi/server';
@@ -148,50 +152,46 @@ export function getFilteredFooterItems(
   const tree = source.getPageTree(lang);
   if (!tree) return {};
 
-  // 技术方案:
-  // 1. 通过 fomadocs api O(1) 复杂度获取当前 page 的 index
-  // 2. 向前/向后扫描 O(n) - n 预计很小（最好情况为 1，最坏情况为 n)
+  // 邻居范围限定在当前页所在的 root tab，避免跨 tab 串页（如 (home) 末页 → openapi 首页）
+  const ownRoot = getPageTreeRoots(tree).find((root) =>
+    flattenTree(root.children).some((p) => p.url === page.url),
+  );
+  if (!ownRoot) return {};
 
-  // 1. fast flatten the tree
-  const allPages = flattenTree(tree.children);
-
-  // 2. find current page index
+  const allPages = flattenTree(ownRoot.children);
   const currentIndex = allPages.findIndex((p) => p.url === page.url);
   if (currentIndex === -1) return {};
 
-  // helper to check visibility
   const checkVisible = (item: (typeof allPages)[number]) => {
     const entry = source.getPageByHref(item.url, { language: lang });
     if (!entry) return false;
     return isPageVisibleForHost(entry.page, lang, host);
   };
 
-  // 3. scan backward for previous
-  let previous: { name: string; description?: string; url: string } | undefined;
+  // page.data.title 来自 mdx frontmatter (生成产物含 schema 校验, 必有非空 title);
+  // item.name 来自 meta.json / 自动派生, 兜底用. 无第三层是有意为之.
+  const getFooterTitle = (item: (typeof allPages)[number]) => {
+    const title = source.getNodePage(item, lang)?.data.title;
+    if (typeof title === 'string' && title.length > 0) return title;
+    return typeof item.name === 'string' ? item.name : '';
+  };
+
+  let previous: { name: string; url: string } | undefined;
   for (let i = currentIndex - 1; i >= 0; i--) {
     if (checkVisible(allPages[i])) {
       previous = {
-        name: String(allPages[i].name),
-        description:
-          allPages[i].description != null
-            ? String(allPages[i].description)
-            : undefined,
+        name: getFooterTitle(allPages[i]),
         url: allPages[i].url,
       };
       break;
     }
   }
 
-  // 4. scan forward for next
-  let next: { name: string; description?: string; url: string } | undefined;
+  let next: { name: string; url: string } | undefined;
   for (let i = currentIndex + 1; i < allPages.length; i++) {
     if (checkVisible(allPages[i])) {
       next = {
-        name: String(allPages[i].name),
-        description:
-          allPages[i].description != null
-            ? String(allPages[i].description)
-            : undefined,
+        name: getFooterTitle(allPages[i]),
         url: allPages[i].url,
       };
       break;

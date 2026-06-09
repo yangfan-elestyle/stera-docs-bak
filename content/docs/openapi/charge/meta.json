@@ -1,0 +1,11 @@
+{
+  "title": "Charges",
+  "pages": [
+    "../(generated)/charge/listCharges",
+    "../(generated)/charge/createCharge",
+    "../(generated)/charge/retrieveCharge",
+    "../(generated)/charge/revokeCharge",
+    "../(generated)/charge/captureCharge",
+    "../(generated)/charge/retrieveChargeStatus"
+  ]
+}

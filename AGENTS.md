@@ -4,7 +4,7 @@ elepay / SMCC multi-tenant documentation site (Next 16 + Fumadocs + Cloudflare W
 
 ## Workflow (fully autonomous AI loop)
 
-- The AI makes the optimal calls on its own, completes the work (doc edits & coding) & preview-deploy verification, and the necessary CHANGELOG. For non-blocking issues, MUST NOT ask the human back.
+- The AI makes the optimal calls on its own, completes the work (doc edits & coding) & preview-deploy verification. Release (version bump + dual CHANGELOG, flow -> [release.md](./release.md)) is user-triggered only — AI MUST NOT start it on its own. For non-blocking issues, MUST NOT ask the human back.
   - Entirely AI-driven, no human intervention required.
   - MUST NOT verify/accept via localhost preview; for preview deployment see -> [deploy.md](./deploy.md).
   - Design decisions (architecture / tech selection / naming / dependencies) are the AI's call; unless necessary, MUST NOT ask back. The user = final acceptor.
@@ -18,7 +18,7 @@ elepay / SMCC multi-tenant documentation site (Next 16 + Fumadocs + Cloudflare W
 - Multi-language naming: `index.mdx` (default ja) / `index.en.mdx` / `index.zh.mdx`; a missing language falls back to `index.mdx`.
 - **i18n does not go through the URL**: `hideLocale: 'always'` (`lib/i18n.ts`) keeps the public URL free of any locale prefix; the language is decided by cookie (set by middleware). When referencing / constructing in-site URLs, MUST NOT add `/ja` `/en` `/zh` (use `/docs/xxx`, not `/en/docs/xxx`). The source's `app/[lang]` segment and content files `index.[lang].mdx` are internal / file-level locale and do not map to the URL.
 - Import via the aliases `@/*` / `@/.source`; avoid relative-path traversal.
-- Git: MUST NOT write to the staging area; commit / push only when explicitly authorized in the session.
+- Git: MUST NOT write to the staging area; commit / push only when explicitly authorized in the session. Exception: the user-triggered release flow lets AI `git add` + commit (push stays with the user; no tag) -> [release.md](./release.md).
 
 ## Fumadocs
 

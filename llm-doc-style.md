@@ -10,7 +10,9 @@ High-density principle; all root-level md files (`AGENTS` / `README` / `deploy` 
 | `AGENTS.md` | LLM constraints / workflow / hard rules (`CLAUDE.md` symlinks here) |
 | `README.md` | Project overview / structure / commands / architecture notes |
 | `deploy.md` | AI preview deployment (ship to CF via wrangler) |
+| `release.md` | Version / changelog (two files) release flow |
 | `CHANGELOG.md` | User-facing release notes |
+| `CHANGELOG` | Developer-facing: mirror of `CHANGELOG.md` + per-entry technical sub-item |
 | `llm-doc-style.md` | This file: the md authoring meta-spec |
 
 Reference across docs via `[xxx.md](./xxx.md)`, MUST NOT restate facts.
@@ -53,14 +55,24 @@ Reference across docs via `[xxx.md](./xxx.md)`, MUST NOT restate facts.
 - After `deploy` exits, take the `*.workers.dev` preview URL to verify and accept
 - MUST NOT write company release / branches / Actions / Secrets (irrelevant to the LLM; source of truth is in `.github/workflows/`)
 
-## CHANGELOG.md (Keep a Changelog + SemVer)
+## CHANGELOG — two files (Keep a Changelog + SemVer)
 
-- **User-facing**: write what they can actually perceive
+`CHANGELOG.md` (user-facing) + `CHANGELOG` (developer-facing), kept in lockstep -> [release.md](./release.md).
+
+### CHANGELOG.md (user-facing)
+
+- Write what users can actually perceive
 - Write: new features / new docs / behavior fixes / experience / security
 - MUST NOT write: file paths / function names / component names / dependency package names / refactor details / "which line changed"
 - ≤ 2 lines per entry, ≤ 5 entries per version
 - Sections: Added / Changed / Fixed / Removed / Security
 - Prose in Chinese; keep commands / terms verbatim
+
+### CHANGELOG (developer-facing)
+
+- Superset of `CHANGELOG.md`: mirror every entry 1:1, append one indented sub-item carrying the technical change
+- Sub-items MAY name paths / functions / mechanisms (inverse of the user-facing rule); ≤ 1 line, file / function / mechanism level
+- Same language as `CHANGELOG.md`
 
 ## Anti-patterns (catch these first during review)
 

@@ -24,12 +24,12 @@ import image_sdks_url_scheme_img3_smcc from '@/public/docs/62d3dac-IMG_06672.png
 export const TENANT_TEXTS = {
   default: {
     elepay: 'elepay',
-    elepay_docs: 'elepay',
+    home_sidebar_title: 'elepay Docs',
     dashboard_url: 'https://dashboard.elepay.io/',
   },
   smcc: {
     elepay: 'stera smart one',
-    elepay_docs: 'stera smart one',
+    home_sidebar_title: 'stera smart one Docs',
     dashboard_url: 'https://dashboard.sterasmartone.com/',
   },
 } as const satisfies {

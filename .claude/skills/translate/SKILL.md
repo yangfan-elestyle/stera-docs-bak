@@ -63,6 +63,7 @@ allowed-tools:
 
 - 在代码块（`...`）中，绝对禁止翻译代码本身（如变量名、函数名、关键字等），但必须翻译代码中的注释部分。
 - 严禁修改、增添或删除任何原始的Markdown格式标记，包括空格和空行。
+- **固定术语**：`API Reference` 是产品/导航固定名称，日文、英文、简体中文均必须保留为完全相同的 `API Reference`，不得翻译为 `API リファレンス`、`API 参考`、`API 参考文档`、`API developer reference`、`API 开发者参考` 或其他变体；若源文出现这些变体，目标语言文件中统一写作 `API Reference`。
 - **OpenAPI YAML 输入特化**：仅翻译自然语言字段的字面值，包括但不限于 `info.title` / `info.description` / `info.summary`、`tags[].description`、`paths.*.*.summary` / `.description`、`paths.*.*.parameters[].description`、`paths.*.*.requestBody.description`、`paths.*.*.responses.*.description`、`components.schemas.*.title` / `.description`、`components.schemas.*.properties.*.description`、`components.parameters.*.description`、`components.responses.*.description`、`components.securitySchemes.*.description`、`externalDocs.description`、`servers[].description`；绝对禁止修改任何 YAML key、path / HTTP method、`$ref`、`enum` 值、`type` / `format` / `pattern`、`example` / `examples` 中的数据样本、URL、MIME 类型、数值、布尔值，以及 YAML 缩进、字段顺序、字符串引号风格与 `|` / `>` 块标量风格。
 - 翻译风格必须保持客观、严谨、正式的技术文档风格，避免任何口语化表达，不得加入任何个人情感或主观解释。
 - 不得对原文的逻辑和内容进行任何形式的修改、简化或引申，必须忠于原文。

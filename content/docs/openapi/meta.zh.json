@@ -1,0 +1,31 @@
+{
+  "title": "API Reference",
+  "root": true,
+  "sectionNotes": {
+    "Payments": "创建并管理支付码、收款、退款与争议。",
+    "Merchants": "管理商户门店与店铺级设置。",
+    "Customers": "创建并管理客户及其保存的支付方式。",
+    "Terminal": "注册并运营店内支付终端。",
+    "Services": "开具账单并管理周期性订阅。"
+  },
+  "pages": [
+    "index",
+    "---Payments---",
+    "code",
+    "codesetting",
+    "charge",
+    "refund",
+    "dispute",
+    "paymentmethod",
+    "---Merchants---",
+    "location",
+    "---Customers---",
+    "customer",
+    "source",
+    "---Terminal---",
+    "terminal",
+    "---Services---",
+    "invoice",
+    "subscription"
+  ]
+}

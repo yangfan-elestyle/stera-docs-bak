@@ -4,7 +4,7 @@ elepay / SMCC 多租户文档站 (Next 16 + Fumadocs + Cloudflare Workers)。工
 
 ## 工作模式 (AI 全程闭环)
 
-- AI 自行做最优抉择、完成需求开发(文档编辑&代码编写) & 预览部署验证、必要 CHANGELOG。非阻塞问题，MUST NOT 反问人类意见。
+- AI 自行做最优抉择、完成需求开发(文档编辑&代码编写) & 预览部署验证。Release (版本号 + 双文件 CHANGELOG, 流程 -> [release.md](./release.md)) 仅由用户主动触发, AI MUST NOT 自启。非阻塞问题，MUST NOT 反问人类意见。
   - 全部由 AI 操作, 无需人工接入
   - MUST NOT localhost 预览验证验收, 预览部署参考 -> [deploy.md](./deploy.md)。
   - 设计决策 (架构 / 选型 / 命名 / 依赖) 以 AI 判断为准, 非必要 MUST NOT 反问。用户 = 最终验收者。
@@ -18,7 +18,7 @@ elepay / SMCC 多租户文档站 (Next 16 + Fumadocs + Cloudflare Workers)。工
 - 多语言命名: `index.mdx` (默认 ja) / `index.en.mdx` / `index.zh.mdx`; 缺失语言回退 `index.mdx`。
 - **i18n 不走 URL**: `hideLocale: 'always'` (`lib/i18n.ts`) 使对外 URL 永远**不含** locale 前缀, 语言由 cookie 判断 (middleware 设置)。引用 / 构造站内 URL MUST NOT 加 `/ja` `/en` `/zh` (用 `/docs/xxx` 而非 `/en/docs/xxx`)。源码的 `app/[lang]` 段与内容文件 `index.[lang].mdx` 是内部 / 文件层 locale, 不映射到 URL。
 - 导入用别名 `@/*` / `@/.source`, 避免相对路径穿越。
-- Git: 暂存区 MUST NOT 写; Commit / push 仅在会话明确授权时执行;
+- Git: 暂存区 MUST NOT 写; Commit / push 仅在会话明确授权时执行; 例外: 用户主动触发的 release 流程允许 AI `git add` + commit (push 仍由用户, 不打 tag) -> [release.md](./release.md)。
 
 ## Fumadocs
 

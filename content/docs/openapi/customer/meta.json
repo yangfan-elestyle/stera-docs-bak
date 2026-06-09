@@ -1,0 +1,10 @@
+{
+  "title": "Customers",
+  "pages": [
+    "../(generated)/customer/listCustomers",
+    "../(generated)/customer/createCustomer",
+    "../(generated)/customer/retrieveCustomer",
+    "../(generated)/customer/updateCustomer",
+    "../(generated)/customer/deleteCustomer"
+  ]
+}

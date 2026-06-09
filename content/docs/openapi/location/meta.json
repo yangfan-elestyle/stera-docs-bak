@@ -1,0 +1,10 @@
+{
+  "title": "Locations",
+  "pages": [
+    "../(generated)/location/listChargeLocations",
+    "../(generated)/location/createChargeLocation",
+    "../(generated)/location/retrieveChargeLocation",
+    "../(generated)/location/updateChargeLocation",
+    "../(generated)/location/deleteChargeLocation"
+  ]
+}

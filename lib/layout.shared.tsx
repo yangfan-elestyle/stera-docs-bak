@@ -37,7 +37,7 @@ export function baseOptions(
             <Image src={elepay_logo} width={26} height={24} alt="Logo" />
           </EContainer>
           <EContainer tenant="default">
-            <EText name="elepay_docs" />
+            <EText name="elepay" />
           </EContainer>
         </>
       ),

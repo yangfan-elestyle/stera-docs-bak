@@ -1,5 +1,31 @@
 {
-  "title": "elepay OpenAPI",
+  "title": "API Reference",
   "root": true,
-  "pages": ["index", "...(generated)"]
+  "sectionNotes": {
+    "Payments": "決済コード・課金・返金・チャージバックの作成と管理。",
+    "Merchants": "店舗（ロケーション）と店舗単位の設定を管理。",
+    "Customers": "顧客と保存済みの決済手段の作成・管理。",
+    "Terminal": "店頭決済端末の登録と運用。",
+    "Services": "請求書の発行と継続課金（サブスクリプション）の管理。"
+  },
+  "pages": [
+    "index",
+    "---Payments---",
+    "code",
+    "codesetting",
+    "charge",
+    "refund",
+    "dispute",
+    "paymentmethod",
+    "---Merchants---",
+    "location",
+    "---Customers---",
+    "customer",
+    "source",
+    "---Terminal---",
+    "terminal",
+    "---Services---",
+    "invoice",
+    "subscription"
+  ]
 }
