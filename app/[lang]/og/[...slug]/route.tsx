@@ -37,7 +37,7 @@ export async function GET(
   if (!isPageVisibleForHost(page, lang, host)) notFound();
 
   const theme = THEME[detectTenantByHost(host)];
-  const brand = getTextValue('elepay_docs', host) ?? 'elepay';
+  const brand = getTextValue('elepay', host);
   const title = page.data.title;
   const description = getPageDescription(page);
 

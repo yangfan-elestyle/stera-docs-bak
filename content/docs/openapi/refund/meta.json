@@ -1,0 +1,8 @@
+{
+  "title": "Refunds",
+  "pages": [
+    "../(generated)/refund/listChargesRefunds",
+    "../(generated)/refund/createRefund",
+    "../(generated)/refund/retrieveChargeRefund"
+  ]
+}

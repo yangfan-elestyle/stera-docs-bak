@@ -1,0 +1,10 @@
+{
+  "title": "Sources",
+  "pages": [
+    "../(generated)/customer/listSources",
+    "../(generated)/customer/createSource",
+    "../(generated)/customer/retrieveSource",
+    "../(generated)/customer/deleteSource",
+    "../(generated)/customer/retrieveSourceStatus"
+  ]
+}

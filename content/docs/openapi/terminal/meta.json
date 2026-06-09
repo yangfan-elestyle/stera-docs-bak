@@ -1,0 +1,10 @@
+{
+  "title": "Square",
+  "pages": [
+    "../(generated)/terminal/listLocations",
+    "../(generated)/terminal/listReaders",
+    "../(generated)/terminal/createReader",
+    "../(generated)/terminal/getReader",
+    "../(generated)/terminal/deleteReader"
+  ]
+}

@@ -5,18 +5,14 @@ import {
   isPageVisibleForHost,
   source,
 } from '@/lib/source';
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-} from 'fumadocs-ui/page';
+import { DocsBody, DocsDescription, DocsPage } from 'fumadocs-ui/page';
 import { notFound, redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { getRequestHost, getRequestProtocol } from '@/lib/tenant';
+import DocsTitleBar from '@/components/DocsTitleBar';
 
 export const revalidate = false;
 
@@ -68,7 +64,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       footer={{ items: footerItems }}
       lastUpdate={page.data.lastModified}
     >
-      <DocsTitle>{page.data.title}</DocsTitle>
+      <DocsTitleBar title={page.data.title} pageUrl={page.url} />
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <MDX

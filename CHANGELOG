@@ -1,0 +1,23 @@
+# Changelog (developer)
+
+面向开发者, 镜像 [CHANGELOG.md](./CHANGELOG.md) 每条条目并补一行技术子项 (文件 / 函数 / 机制级)。写法 -> [llm-doc-style.md](./llm-doc-style.md); 触发与流程 -> [release.md](./release.md)。
+
+> 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自下一版起开始正式镜像。
+
+## [0.1.6] - 2026-06-09
+
+### Changed
+
+- 文档导航重构: 主文档独立成「Docs」侧栏 tab, 与「API Reference」「changelog」等 tab 并列, 公开 URL 不变。
+  - `content/docs/**` 整体迁入 `content/docs/(home)/` 路由组, 借 fumadocs `root:true` (新增 `(home)/meta.[lang].json`) 成为独立 tab; 顶层 `content/docs/meta.[lang].json` 精简至 tab 入口; `app/[lang]/(docs)/layout.tsx` 加 `tabs.transform` 按 host 把 `/` tab 标题替换为 `home_sidebar_title` (新增 `components/DocsTitleBar`)。同步抽出 `lib/nav-sections.ts` (`buildNavSections` + `NavSection`), `components/EHome.tsx`、`lib/llm-postprocess.ts` 不再各自拷贝 ~80 行 buildSections 逻辑; `EHome.root` 改必填, 主页 mdx 加 `root='/'`, 缺失由 TS 编译期拦截而非 silent 渲染错章节。
+- OpenAPI 侧栏统一为「API Reference」分组导航 (Payments / Merchants / Subscriptions 等)。
+  - `content/docs/openapi/meta.[lang].json` 顶层标题统一为 `API Reference`; `charge` / `customer` / `subscription` 等资源各自补 `meta.json` 完成分组。
+- 文档底部上 / 下一页链接改用页面标题, 不再附带 description。
+  - `lib/source.ts`: 上 / 下一页改读页面 `title` (回退 `name` / url 末段), 移除 description; `getFooterTitle` 删第三层 url-segment 兜底。
+- SMCC 站侧栏首 tab 文案随租户切换 (elepay 站「elepay Docs」, SMCC 站「stera smart one Docs」)。
+  - `lib/tenant-config.data.ts`: `elepay_docs` -> `home_sidebar_title`; `lib/layout.shared.tsx`、`app/[lang]/og/[...slug]/route.tsx` 改用 elepay 文案; `content/docs/(home)/meta.{,en,zh}.json` title 改中性 `Docs` 作为 transform 失效兜底。
+
+### Docs
+
+- 部署文档补 SMCC 租户的预览别名部署说明。
+  - `deploy.md` / `deploy.zh.md`: 补 SMCC 预览别名 (`smcc-elepay-docs.fan-yang2019.workers.dev`) 部署命令; 新增 `release.md` / `release.zh.md` 描述用户触发的 release 流程; `llm-doc-style.md` / `.zh.md` 固定术语 `API Reference` 不译。

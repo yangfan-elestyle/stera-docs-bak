@@ -43,3 +43,8 @@ content/docs/openapi/(generated)/
 /data/
 /CLAUDE.local.md
 /plan/*
+
+.mcp.json
+.codegraph/
+opencode.jsonc
+.codex/

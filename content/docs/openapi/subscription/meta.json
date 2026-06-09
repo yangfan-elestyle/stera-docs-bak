@@ -1,0 +1,13 @@
+{
+  "title": "Subscriptions",
+  "pages": [
+    "../(generated)/subscription/listSubscriptions",
+    "../(generated)/subscription/createSubscription",
+    "../(generated)/subscription/retrieveSubscription",
+    "../(generated)/subscription/updateSubscription",
+    "../(generated)/subscription/startSubscription",
+    "../(generated)/subscription/resumeSubscription",
+    "../(generated)/subscription/cancelSubscription",
+    "../(generated)/subscription/listSubscriptionPeriods"
+  ]
+}

@@ -2,6 +2,19 @@
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [SemVer](https://semver.org/)。面向使用者, 中文行文, 命令 / 术语保留原文。
 
+## [0.1.6] - 2026-06-09
+
+### Changed
+
+- 文档导航重构: 主文档独立成「Docs」侧栏 tab, 与「API Reference」「changelog」等 tab 并列, 公开 URL 不变。
+- OpenAPI 侧栏统一为「API Reference」分组导航 (Payments / Merchants / Subscriptions 等)。
+- 文档底部上 / 下一页链接改用页面标题, 不再附带 description。
+- SMCC 站侧栏首 tab 文案随租户切换 (elepay 站「elepay Docs」, SMCC 站「stera smart one Docs」)。
+
+### Docs
+
+- 部署文档补 SMCC 租户的预览别名部署说明。
+
 ## [0.1.5] - 2026-06-03
 
 ### Added

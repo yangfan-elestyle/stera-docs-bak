@@ -1,110 +1,20 @@
 import { headers } from 'next/headers';
 import { getFilteredTreeByHost } from '@/lib/source';
 import { getRequestHost } from '@/lib/tenant';
+import { buildNavSections } from '@/lib/nav-sections';
 import Link from 'next/link';
 
 type Props = {
   lang?: string;
+  // 当前 tab 的根页面 url（'/' 或 '/openapi'）: 作为取章节的范围锚点, 自身不计入列表.
+  // 必填: 漏传会拉错 tab 的章节, 让 TS 在编译期拦截.
+  root: string;
 };
 
-type SectionItem = {
-  title: string;
-  url?: string;
-  external?: boolean;
-};
-
-type Section = {
-  title: string;
-  description?: string;
-  items: SectionItem[];
-};
-
-// 动态生成首页 raw 索引数据
-function buildSections(lang: string, host: string): Section[] {
-  const tree: any = getFilteredTreeByHost(lang, host) as any;
-  const children: any[] = tree?.children ?? [];
-
-  const sections: Section[] = [];
-  let current: Section | null = null;
-
-  const flush = () => {
-    if (current && current.items.length > 0) sections.push(current);
-    current = null;
-  };
-
-  // 以---分隔符开始新章节
-  const startSection = (rawTitle?: string, description?: string) => {
-    const title = (rawTitle ?? '').replace(/^---|---$/g, '').trim();
-    flush();
-    current = { title, description, items: [] };
-  };
-
-  // 向章节中添加 item（page）
-  const addItem = (title: string, url?: string, external?: boolean) => {
-    if (!url || url === '/') return;
-    (current ??= { title: '', items: [] }).items.push({
-      title,
-      url,
-      external,
-    });
-  };
-
-  // 对于 folder，不在递归检索。只取 folder 本身的 link，或其第一个子 link。
-  // 当前 api 用于处理 folder 的第一个子节点查找。
-  const findFirstLink = (
-    nodes?: any[],
-  ): { url?: string; name?: string; external?: boolean } | undefined => {
-    if (!nodes) return undefined;
-    for (const n of nodes) {
-      if (!n) continue;
-      if (n.type === 'page') return n;
-      if (n.type === 'folder' && n.index) return n.index;
-    }
-    return undefined;
-  };
-
-  for (const node of children) {
-    if (!node) continue;
-
-    switch (node.type) {
-      case 'separator': {
-        startSection(
-          String(node.name ?? ''),
-          node.description ? String(node.description) : undefined,
-        );
-        break;
-      }
-      case 'page': {
-        addItem(String(node.name ?? ''), node.url, Boolean(node.external));
-        break;
-      }
-      case 'folder': {
-        const title = String(node?.name ?? '');
-        const indexUrl = node.index?.url as string | undefined;
-
-        if (indexUrl) {
-          addItem(title, indexUrl, Boolean(node.index?.external));
-        } else {
-          const first = findFirstLink(node.children);
-          if (first) {
-            addItem(title, first.url, Boolean(first.external));
-          }
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-
-  flush();
-  return sections;
-}
-
-export default async function EHome({ lang }: Props) {
+export default async function EHome({ lang, root }: Props) {
   const hdrs = await headers();
   const host = getRequestHost(hdrs);
-  // 简单归一化：zh* / cn* -> zh；en* -> en；其他 -> ja
+  // 简单归一化: zh* / cn* -> zh; en* -> en; 其他 -> ja
   const v = (lang ?? '').trim().toLowerCase();
   const currentLang: 'ja' | 'en' | 'zh' =
     v.startsWith('zh') || v.startsWith('cn')
@@ -113,7 +23,8 @@ export default async function EHome({ lang }: Props) {
         ? 'en'
         : 'ja';
 
-  const sections = buildSections(currentLang, host);
+  const tree = getFilteredTreeByHost(currentLang, host);
+  const sections = buildNavSections(tree, root);
 
   return (
     <div className="not-prose mx-auto w-full max-w-5xl text-[15px] leading-6">
