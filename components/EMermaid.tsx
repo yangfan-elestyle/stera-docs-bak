@@ -5,9 +5,9 @@ import { useTheme } from 'next-themes';
 
 /**
  * Mermaid 图表组件。mermaid 在客户端动态 import，不打进 SSR / Worker bundle。
- * MDX 用法: <Mermaid chart={`flowchart TD; A-->B;`} />
+ * MDX 用法: <EMermaid chart={`flowchart TD; A-->B;`} />
  */
-export function Mermaid({ chart }: { chart: string }) {
+export function EMermaid({ chart }: { chart: string }) {
   const id = useId();
   const [svg, setSvg] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,4 +57,4 @@ export function Mermaid({ chart }: { chart: string }) {
   );
 }
 
-export default Mermaid;
+export default EMermaid;

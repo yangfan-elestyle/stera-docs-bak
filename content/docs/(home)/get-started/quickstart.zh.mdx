@@ -22,11 +22,13 @@ Secret Key 拥有全部 API 操作权限，**仅可在服务端使用**，切勿
 
 ## 步骤 1：创建 EasyQR 码
 
-向 `POST /codes` 发送请求即可创建一个 EasyQR 码。把下面的 `sk_test_…` 替换为你自己的测试密钥后，可直接复制运行：
+向 `POST /codes` 发送请求即可创建一个 EasyQR 码。先将测试密钥设为环境变量，即可直接复制运行：
 
 ```bash
+export ELEPAY_SECRET_KEY=sk_test_… # ← 你的测试密钥
+
 curl -X POST https://api.elepay.io/codes \
-  -H "Authorization: Bearer sk_test_xxxxxxxxxxxxxxxx" \
+  -H "Authorization: Bearer $ELEPAY_SECRET_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "amount": 500,

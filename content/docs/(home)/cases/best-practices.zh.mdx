@@ -6,7 +6,7 @@ title: 最佳实践
 
 ## 集成时序
 
-<Mermaid
+<EMermaid
   chart={`sequenceDiagram
     autonumber
     participant S as 加盟店服务器
@@ -18,14 +18,14 @@ title: 最佳实践
     C->>E: 读取 QR 并支付
     E-)S: Webhook: charge.succeeded / charge.revoked
     S-->>E: 2xx
-    Note over E,S: 非 2xx 触发重试（1分×3 → 10分×2），最终未达则用同步 API 补偿`}
+    Note over E,S: 非 2xx 触发重试: 1分×3 → 10分×2，最终未达则用同步 API 补偿`}
 />
 
 加盟店服务器创建 EasyQR 码 → 展示给顾客 → 顾客支付 → <EText name="elepay" /> 通过 Webhook 通知结果。接收后的处理见下方最佳实践。
 
 ## 状态生命周期
 
-<Mermaid
+<EMermaid
   chart={`flowchart TD
     A(["Create EasyQR code"]) --> P["pending / 未支付"]
     P -->|"顾客读取 QR 并支付"| D{"支付结果"}

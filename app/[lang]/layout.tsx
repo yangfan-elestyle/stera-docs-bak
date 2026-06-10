@@ -64,7 +64,8 @@ export default async function Layout({
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers();
   const tenant = detectTenantByHost(getRequestHost(h));
-  const icon = tenant === 'smcc' ? '/favicon-smcc.ico' : '/favicon.ico';
+  const icon =
+    tenant === 'smcc' ? '/favicon-smcc.ico' : '/favicon-default.ico';
   return {
     icons: {
       icon,

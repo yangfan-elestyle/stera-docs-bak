@@ -2,6 +2,22 @@
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [SemVer](https://semver.org/)。面向使用者, 中文行文, 命令 / 术语保留原文。
 
+## [0.1.7] - 2026-06-09
+
+### Added
+
+- 文档详情页新增「查看 markdown」入口, 一键打开当前页的 Markdown 源文。
+
+### Changed
+
+- 改进 LLM / `.md` 导出: API Reference 现在输出完整的 OpenAPI 子文档 (paths / components / security / tags 按 `$ref` 递归); MDX 组件占位符渲染更稳定。
+
+### Fixed
+
+- SMCC 站非 HTML 路由 (如 `/favicon.ico`) 不再错用 elepay 的 favicon。
+- 快速开始 cURL 示例改用 `$ELEPAY_SECRET_KEY` 环境变量, 避免被 GitHub secret scanning 误判。
+- Checkout 最佳实践页 Mermaid 时序图: 修复半角括号触发的 parse error; 英文版 Note 拆行避免溢出。
+
 ## [0.1.6] - 2026-06-09
 
 ### Changed

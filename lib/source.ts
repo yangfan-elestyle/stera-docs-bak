@@ -8,9 +8,10 @@ import {
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from './i18n';
 import { openapiPlugin } from 'fumadocs-openapi/server';
-import { detectTenantByHost } from '@/lib/tenant';
+import { detectTenantByHost, getRequestOrigin } from '@/lib/tenant';
 import { sectionNotesPlugin } from '@/lib/plugins/section-notes';
 import { resolveLLMTags } from './llm-postprocess';
+import { getPageUrl } from './url';
 
 export const source = loader({
   i18n,
@@ -218,7 +219,7 @@ const CJK_GAP = new RegExp(`([${CJK}])\\s+(?=[${CJK}])`, 'g');
 
 /**
  * 清洗 structuredData 抽取的正文文本为可读纯文本:
- * structuredData 已排除代码块/Mermaid,但会保留 `**`/行内代码标记,且会丢弃行内 JSX
+ * structuredData 已排除代码块/EMermaid,但会保留 `**`/行内代码标记,且会丢弃行内 JSX
  * (如 <EText/>)留下空隙。此处剥离残留标记并修复空格。不动 `_`,避免误伤 snake_case。
  */
 function normalizeDescriptionText(raw: string): string {
@@ -270,9 +271,11 @@ export async function getLLMText(
   host: string,
 ) {
   const processed = await page.data.getText('processed');
-  const resolved = await resolveLLMTags(processed, host);
+  const resolved = await resolveLLMTags(processed, host, page.url);
+  const origin = getRequestOrigin(host);
+  const pageHref = getPageUrl(page.url, origin);
 
-  return `# ${page.data.title} (${page.url})
+  return `# ${page.data.title} (${pageHref})
 
 ${resolved}`;
 }
