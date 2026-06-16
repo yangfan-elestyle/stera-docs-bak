@@ -45,10 +45,10 @@ function MirroringResultDisplay({ data, reset, ...rest }: ResultDisplayProps) {
 export default defineClientConfig({
   playground: {
     // 认证框默认值: fumadocs 对 http bearer 硬编码 "Bearer " (playground/client.js useAuthInputs),
-    // 不读 yaml securityScheme。这里预填示例提示密钥格式; 用 sk_... 占位 (非真实 token 格式) 避免 GitHub secret scanning 误报。
+    // 不读 yaml securityScheme。这里预填示例提示密钥格式。
     transformAuthInputs(inputs) {
       return inputs.map((input) =>
-        input.defaultValue === 'Bearer ' ? { ...input, defaultValue: 'Bearer sk_...' } : input,
+        input.defaultValue === 'Bearer ' ? { ...input, defaultValue: 'Bearer sk_test_…' } : input,
       );
     },
     // 自定义结果展示, 把 Send 响应镜像到右侧响应面板。

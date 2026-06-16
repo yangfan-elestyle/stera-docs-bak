@@ -5,6 +5,7 @@ import {
   metaSchema,
 } from 'fumadocs-mdx/config';
 import lastModified from 'fumadocs-mdx/plugins/last-modified';
+import type { LLMsOptions } from 'fumadocs-core/mdx-plugins/remark-llms';
 import { z } from 'zod';
 
 // Extend frontmatter schema to support custom TOC max depth and redirect
@@ -16,13 +17,26 @@ const customFrontmatterSchema = frontmatterSchema.extend({
   visibleOnTenant: z.array(z.string()).optional(),
 });
 
+const llmsOptions: LLMsOptions = {
+  mdxAsPlaceholder: [
+    'APIPage',
+    'Callout',
+    'EContainer',
+    'EHome',
+    'EImg',
+    'EMermaid',
+    'ErrorCodeTable',
+    'EText',
+  ],
+};
+
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
 export const docs = defineDocs({
   docs: {
     schema: customFrontmatterSchema,
     postprocess: {
-      includeProcessedMarkdown: true,
+      includeProcessedMarkdown: llmsOptions,
     },
   },
   meta: {
@@ -36,5 +50,9 @@ export const docs = defineDocs({
 
 export default defineConfig({
   plugins: [lastModified()],
-  mdxOptions: {},
+  mdxOptions: {
+    remarkImageOptions: {
+      useImport: false,
+    },
+  },
 });

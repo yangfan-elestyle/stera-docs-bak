@@ -26,6 +26,17 @@ export function getRequestProtocol(host: string) {
   return 'https';
 }
 
+export function getRequestOrigin(host?: string | null): string | undefined {
+  const value = firstHeaderValue(host);
+  if (!value) return undefined;
+
+  try {
+    return new URL(`${getRequestProtocol(value)}://${value}`).origin;
+  } catch {
+    return undefined;
+  }
+}
+
 // Detect tenant from host. Current rule: host containing "smcc" -> smcc
 export function detectTenantByHost(host?: string | null): Tenant {
   if (!host) return 'default';

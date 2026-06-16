@@ -4,6 +4,27 @@
 
 > 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自下一版起开始正式镜像。
 
+## [0.1.7] - 2026-06-09
+
+### Added
+
+- 文档详情页新增「查看 markdown」入口, 一键打开当前页的 Markdown 源文。
+  - `components/DocsTitleBar.tsx` 加 markdown 链接; 新增 `lib/url.ts` 统一 `.md` / OG / 资源链接绝对化 (基于新增的 `getRequestOrigin` in `lib/tenant.ts`); `app/[lang]/(docs)/[[...slug]]/page.tsx`、`app/[lang]/layout.tsx`、`app/[lang]/llms.txt/route.ts`、`components/ai/page-actions.tsx` 切换使用。
+
+### Changed
+
+- 改进 LLM / `.md` 导出: API Reference 现在输出完整的 OpenAPI 子文档 (paths / components / security / tags 按 `$ref` 递归); MDX 组件占位符渲染更稳定。
+  - `source.config.ts` 启用 `mdxAsPlaceholder`; `lib/llm-postprocess.ts` 改用 fumadocs `renderPlaceholder` 替代自维护 regex / inline-code 切分; 新增 `lib/openapi-llm.ts` 将 APIPage 展开为含 paths / components / security / tags 的子文档, 按 `$ref` 递归收集; 顺手把 `components/Mermaid.tsx` 改名为 `EMermaid` 与 EHome / EText / EImg / EContainer 等自研 MDX 组件命名风格统一 (`mdx-components.tsx`、`source.config.ts` 占位符白名单、`lib/llm-postprocess.ts` 渲染分支、`lib/source.ts` 同步)。
+
+### Fixed
+
+- SMCC 站非 HTML 路由 (如 `/favicon.ico`) 不再错用 elepay 的 favicon。
+  - `middleware.ts` 把 `/favicon.ico` 按租户 307 重定向到 `favicon-default.ico` / `favicon-smcc.ico`; `public/favicon.ico` 重命名为 `favicon-default.ico`。
+- 快速开始 cURL 示例改用 `$ELEPAY_SECRET_KEY` 环境变量, 避免被 GitHub secret scanning 误判。
+  - `content/docs/(home)/get-started/quickstart.{mdx,en.mdx,zh.mdx}` 把 `sk_test_xx` 替换为 `$ELEPAY_SECRET_KEY`; `components/api-page.client.tsx` playground auth 默认值改为 `sk_test_…` 让前缀结构更直观。
+- Checkout 最佳实践页 Mermaid 时序图: 修复半角括号触发的 parse error; 英文版 Note 拆行避免溢出。
+  - `content/docs/(home)/cases/best-practices.{mdx,en.mdx,zh.mdx}` sequenceDiagram Note 去除半角括号; 英文版用 `<br/>` 拆行。
+
 ## [0.1.6] - 2026-06-09
 
 ### Changed

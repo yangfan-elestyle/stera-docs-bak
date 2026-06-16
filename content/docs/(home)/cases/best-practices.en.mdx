@@ -6,7 +6,7 @@ Recommendations for a stable EasyCheckout integration. Differences between payme
 
 ## Integration sequence
 
-<Mermaid
+<EMermaid
   chart={`sequenceDiagram
     autonumber
     participant S as Merchant server
@@ -18,14 +18,14 @@ Recommendations for a stable EasyCheckout integration. Differences between payme
     C->>E: Scan QR and pay
     E-)S: Webhook: charge.succeeded / charge.revoked
     S-->>E: 2xx
-    Note over E,S: Non-2xx triggers retry (1min x3 -> 10min x2); reconcile via sync API if undelivered`}
+    Note over E,S: Non-2xx → auto-retry:<br/>1min ×3, then 10min ×2.<br/>Fallback: reconcile via sync API`}
 />
 
 The merchant server creates an EasyQR code, shows it to the customer, the customer pays, and <EText name="elepay" /> notifies the result via Webhook. See the best practices below for how to handle it.
 
 ## Status lifecycle
 
-<Mermaid
+<EMermaid
   chart={`flowchart TD
     A(["Create EasyQR code"]) --> P["pending / unpaid"]
     P -->|"customer scans QR and pays"| D{"payment result"}

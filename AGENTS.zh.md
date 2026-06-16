@@ -18,6 +18,7 @@ elepay / SMCC 多租户文档站 (Next 16 + Fumadocs + Cloudflare Workers)。工
 - 多语言命名: `index.mdx` (默认 ja) / `index.en.mdx` / `index.zh.mdx`; 缺失语言回退 `index.mdx`。
 - **i18n 不走 URL**: `hideLocale: 'always'` (`lib/i18n.ts`) 使对外 URL 永远**不含** locale 前缀, 语言由 cookie 判断 (middleware 设置)。引用 / 构造站内 URL MUST NOT 加 `/ja` `/en` `/zh` (用 `/docs/xxx` 而非 `/en/docs/xxx`)。源码的 `app/[lang]` 段与内容文件 `index.[lang].mdx` 是内部 / 文件层 locale, 不映射到 URL。
 - 导入用别名 `@/*` / `@/.source`, 避免相对路径穿越。
+- 在 `components/**` 下新增 / 修改 MDX 组件 MUST 验证其 `<url>.md` 渲染输出; 仅使用现有组件编辑 mdx 文档时不强制。
 - Git: 暂存区 MUST NOT 写; Commit / push 仅在会话明确授权时执行; 例外: 用户主动触发的 release 流程允许 AI `git add` + commit (push 仍由用户, 不打 tag) -> [release.md](./release.md)。
 
 ## Fumadocs
@@ -30,3 +31,4 @@ elepay / SMCC 多租户文档站 (Next 16 + Fumadocs + Cloudflare Workers)。工
 - MUST 简洁精炼, 重点突出, 零冗余; 写法规范 -> [llm-doc-style.md](./llm-doc-style.md), 审稿对照其"反模式"段。
 - 单一信源: 跨文档用 link 引用, MUST NOT 复述事实。
 - MUST NOT 使用 `<!-- prettier-ignore -->` 做 markdown 的 table 标记
+- 根 `.md` (AGENTS / README / deploy / release / llm-doc-style) 与 `*.zh.md` MUST 保持同步。

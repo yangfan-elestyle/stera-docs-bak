@@ -4,6 +4,10 @@ import { headers } from 'next/headers';
 import { DocsTitle } from 'fumadocs-ui/page';
 import { getRequestHost } from '@/lib/tenant';
 import { getTextValue } from '@/lib/tenant-config';
+import {
+  MarkdownCopyButton,
+  ViewOptionsPopover,
+} from '@/components/ai/page-actions';
 
 export type DocsTitleAction = {
   text: string | { tenantTextKey: string };
@@ -30,13 +34,13 @@ function resolveActionText(
 export default async function DocsTitleBar({
   title,
   pageUrl,
+  markdownUrl,
 }: {
   title: string;
   pageUrl: string;
+  markdownUrl?: string;
 }) {
   const actions = DOCS_TITLE_ACTIONS[pageUrl];
-  if (!actions?.length) return <DocsTitle>{title}</DocsTitle>;
-
   const hdrs = await headers();
   const host = getRequestHost(hdrs);
 
@@ -44,7 +48,7 @@ export default async function DocsTitleBar({
     <div className="flex items-center justify-between gap-4">
       <DocsTitle>{title}</DocsTitle>
       <div className="flex shrink-0 items-center gap-2">
-        {actions.map((action) => {
+        {actions?.map((action) => {
           const text = resolveActionText(action.text, host);
           if (!text) return null;
           const Icon = action.icon ?? ExternalLink;
@@ -59,6 +63,12 @@ export default async function DocsTitleBar({
             </Link>
           );
         })}
+        {markdownUrl && (
+          <>
+            <MarkdownCopyButton markdownUrl={markdownUrl} />
+            <ViewOptionsPopover markdownUrl={markdownUrl} />
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { isPageVisibleForHost, source } from '@/lib/source';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { getRequestHost } from '@/lib/tenant';
+import { getRequestHost, getRequestOrigin } from '@/lib/tenant';
+import { getPageMarkdownUrl } from '@/lib/url';
 
 export const revalidate = false;
 
@@ -11,10 +12,11 @@ export async function GET(
 ) {
   const { lang } = await context.params;
   const host = getRequestHost(await headers());
+  const origin = getRequestOrigin(host);
   const lines = source
     .getPages(lang)
     .filter((p) => isPageVisibleForHost(p, lang, host))
-    .map((p) => `- [${p.data.title}](${p.url === '/' ? '/index' : p.url}.md)`);
+    .map((p) => `- [${p.data.title}](${getPageMarkdownUrl(p.url, origin)})`);
   return new NextResponse(
     `# Elepay Documentation\n\n${lines.join('\n')}\n`,
     {

@@ -13,6 +13,7 @@ import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { getRequestHost, getRequestProtocol } from '@/lib/tenant';
 import DocsTitleBar from '@/components/DocsTitleBar';
+import { getPageMarkdownPath, getPageUrl } from '@/lib/url';
 
 export const revalidate = false;
 
@@ -56,6 +57,8 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   // Compute footer items
   const footerItems = getFilteredFooterItems(page, lang, host);
 
+  const markdownUrl = getPageMarkdownPath(page.url);
+
   return (
     <DocsPage
       toc={filteredToc}
@@ -64,7 +67,11 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       footer={{ items: footerItems }}
       lastUpdate={page.data.lastModified}
     >
-      <DocsTitleBar title={page.data.title} pageUrl={page.url} />
+      <DocsTitleBar
+        title={page.data.title}
+        pageUrl={page.url}
+        markdownUrl={markdownUrl}
+      />
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <MDX
@@ -94,8 +101,8 @@ export async function generateMetadata(
     ...(requestBaseUrl
       ? {
           openGraph: {
-            url: `${requestBaseUrl.origin}${page.url}`,
-            images: `${requestBaseUrl.origin}${pageImage.url}`,
+            url: getPageUrl(page.url, requestBaseUrl.origin),
+            images: getPageUrl(pageImage.url, requestBaseUrl.origin),
           },
           metadataBase: requestBaseUrl,
         }
