@@ -1,34 +1,32 @@
 # AGENTS
 
-elepay / SMCC multi-tenant documentation site (Next 16 + Fumadocs + Cloudflare Workers). Project overview -> [README.md](./README.md); deployment -> [deploy.md](./deploy.md); doc authoring -> [llm-doc-style.md](./llm-doc-style.md).
+> 当前 project 是 AI Only 工程，人类输入的所有需求，都需要 AI(Claude Code、Codex...) 自主完成后续的所有工作。
+> 默认 MUST(必须强制遵守); 仅例外用 SHOULD/MAY/MUST NOT/NEVER 标注。
 
-## Workflow (fully autonomous AI loop)
+## 指令路由（MUST）
 
-- The AI makes the optimal calls on its own, completes the work (doc edits & coding) & preview-deploy verification. Release (version bump + dual CHANGELOG, flow -> [release.md](./release.md)) is user-triggered only — AI MUST NOT start it on its own. For non-blocking issues, MUST NOT ask the human back.
-  - Entirely AI-driven, no human intervention required.
-  - MUST NOT verify/accept via localhost preview; for preview deployment see -> [deploy.md](./deploy.md).
-  - Design decisions (architecture / tech selection / naming / dependencies) are the AI's call; unless necessary, MUST NOT ask back. The user = final acceptor.
+- 【MUST】代码 / 架构 / 命令 / 结构 / 硬约束 / Fumadocs 约定 → [README.md](./README.md)
+- 【MUST】调试 / 版本 / changelog / git commit+push / 预部署+发布 → [workflow.md](./workflow.md)
 
-## Hard constraints
+## 工作模式 (MUST、AI-only)
 
-- MUST NOT directly edit generated artifacts: `.source/**` / `content/docs/openapi/(generated)/**` / `data/**` / `.next/**` / `.open-next/**` / `out/**` / `cloudflare-env.d.ts` / `next-env.d.ts`.
-- After changing `openapi.yaml` (or `.en` / `.zh`), MUST run `bun run generate:data` to refresh; a freshly cloned repo MUST run `generate:data` before `dev` / `build`.
-- When an mdx path changes, sync related mdx references and `lib/legacy-redirects.mjs`.
-- When changing navigation / ordering, MUST sync every language's `meta.[lang].json` (ja / en / zh), otherwise the menu goes missing or ends up out of order.
-- Multi-language naming: `index.mdx` (default ja) / `index.en.mdx` / `index.zh.mdx`; a missing language falls back to `index.mdx`.
-- **i18n does not go through the URL**: `hideLocale: 'always'` (`lib/i18n.ts`) keeps the public URL free of any locale prefix; the language is decided by cookie (set by middleware). When referencing / constructing in-site URLs, MUST NOT add `/ja` `/en` `/zh` (use `/docs/xxx`, not `/en/docs/xxx`). The source's `app/[lang]` segment and content files `index.[lang].mdx` are internal / file-level locale and do not map to the URL.
-- Import via the aliases `@/*` / `@/.source`; avoid relative-path traversal.
-- When adding / modifying an MDX component under `components/**`, MUST verify its `<path>.md` render output; editing MDX content that only consumes existing components is exempt.
-- Git: MUST NOT write to the staging area; commit / push only when explicitly authorized in the session. Exception: the user-triggered release flow lets AI `git add` + commit (push stays with the user; no tag) -> [release.md](./release.md).
+- 【MUST】运行稳定 + 长久可持续 = 第一优先级；MUST NOT 引入随时间劣化的隐患（资源泄漏 / 硬编码时效值 / 未释放连接 / ...）
+- 【MUST】代码 / 测试 / 构建 / 部署 / 发布 全部由 AI(Claude Code、Codex、...) 执行，人类输入需求或咨询，AI 自主完成后续工作
+- 【MUST】workflow.md 中的所有操作（git push / deploy / publish 等）已预授权，AI 直接执行，MUST NOT 等待人类确认
+- 【MUST】决策 (架构 / 选型 / 命名 / 依赖 / ...) 需 AI 自行抉择, MUST NOT 拉人类进设计回路，MUST NOT 反问人类
+- 【MUST】决策前通过各种方式（本工程检索、在线检索、其他途径）获取项目/需求事实，根据事实进行最优决策
 
-## Fumadocs
+## 工作流程
 
-- Page conventions: in `meta*.json` `pages`, page/folder = `path`; link = `[Icon][Text](url)`, e.g. `"[x][x](../openapi)"`; external link = `external:[Icon][Text](url)`;
-- Fumadocs docs: https://www.fumadocs.dev/docs
+1. **分流**：判断人类输入是否涉及行为或交付物变更（feature / fix / config / 行为逻辑变更 = 需求变更）；纯咨询 / 纯文案·注释·md 内容调整（不改变运行行为或交付物）→ 直接响应或编辑，跳过后续步骤
+2. AI 抉择并执行后续工作；走 [workflow.md#调试](./workflow.md) 本地验证变更 = 默认交付终点
+3. 发布流程仅在人类明确发布指令时执行 [workflow.md#发布](./workflow.md) 完整流程；MUST NOT 自行发起发布
 
-## Doc constraints
+## 文档编写规范
 
-- MUST be concise and to the point, with zero redundancy; for authoring rules see -> [llm-doc-style.md](./llm-doc-style.md), and review against its "anti-patterns" section.
-- Single source of truth: reference across docs via links, MUST NOT restate facts.
-- MUST NOT use `<!-- prettier-ignore -->` for markdown table tags
-- Root `.md` (AGENTS / README / deploy / release / llm-doc-style) MUST be kept in sync with their `*.zh.md` counterparts.
+- 全部文档只供 AI 查看，MUST 简洁精炼, 零冗余; MUST NOT 废话填充
+- 能一行不写两行, 能一个单词不写两个单词, 能列表不写段落; 短句; `->` `/` `+` 替连接词
+- 强度词: MUST / MUST NOT / SHOULD / MAY / NEVER
+- 单一信源: 跨文档用 link 引用, MUST NOT 复述事实
+- AGENTS 只写 LLM 约束, MUST NOT 塞工程说明 / 命令 / 安装
+- 本段 = 全局写作标准; 其他 md 的 When Editing 仅补充各自特有约束

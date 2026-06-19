@@ -1,8 +1,27 @@
-# Changelog (developer)
+```When Editing
+本文档作用: 面向开发者的发版记录; CHANGELOG.md 的超集, 1:1 镜像 + 技术变更子项
+遵循 AGENTS.md 文档编写规范
+- 每条主项 = CHANGELOG.md 对应条目 (原文), 下方缩进子项承载技术变更
+- 子项 MAY 写路径 / 函数 / 机制; ≤ 1 行
+```
 
-面向开发者, 镜像 [CHANGELOG.md](./CHANGELOG.md) 每条条目并补一行技术子项 (文件 / 函数 / 机制级)。写法 -> [llm-doc-style.md](./llm-doc-style.md); 触发与流程 -> [release.md](./release.md)。
+# Changelog (developer, follow [CHANGELOG.md](./CHANGELOG.md))
 
-> 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自下一版起开始正式镜像。
+面向开发者, 镜像 [CHANGELOG.md](./CHANGELOG.md) 每条条目并补一行技术子项 (文件 / 函数 / 机制级)。写法与流程 -> [workflow.md](./workflow.md)。
+
+> 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自 0.1.6 起开始正式镜像。
+
+## [0.1.8] - 2026-06-18
+
+### Changed
+
+- AI 提问入口的预填 prompt 改按页面语言生成 (日 / 英 / 中), 不再固定英文。
+  - `components/ai/page-actions.tsx`: `ViewOptionsPopover` 经 `useParams().lang` 取语言, 新增 `PROMPT_TEMPLATES` (ja/en/zh) 生成预填问句, 缺省回退 ja。
+
+### Removed
+
+- 概要页 (文档首页 / API Reference 首页) 移除「查看 markdown」入口 (这些页无 Markdown 正文)。
+  - `app/[lang]/(docs)/[[...slug]]/page.tsx`: `page.url === '/' || '/openapi'` 时 `markdownUrl` 置 undefined。
 
 ## [0.1.7] - 2026-06-09
 
@@ -41,4 +60,5 @@
 ### Docs
 
 - 部署文档补 SMCC 租户的预览别名部署说明。
-  - `deploy.md` / `deploy.zh.md`: 补 SMCC 预览别名 (`smcc-elepay-docs.fan-yang2019.workers.dev`) 部署命令; 新增 `release.md` / `release.zh.md` 描述用户触发的 release 流程; `llm-doc-style.md` / `.zh.md` 固定术语 `API Reference` 不译。
+  - 部署 / 发布流程文档补 SMCC 预览别名部署命令与用户触发的 release 流程 (该批文档现已统一并入 [workflow.md](./workflow.md))。
+</content>
