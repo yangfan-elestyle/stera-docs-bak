@@ -10,6 +10,12 @@
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [SemVer](https://semver.org/)。面向使用者, 中文行文, 命令 / 术语保留原文。
 
+## [0.1.9] - 2026-08-17
+
+### Changed
+
+- EC-CUBE 插件说明页 (日 / 英 / 中) 更新收银台支付方式截图。
+
 ## [0.1.8] - 2026-06-18
 
 ### Changed

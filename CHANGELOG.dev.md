@@ -11,6 +11,13 @@
 
 > 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自 0.1.6 起开始正式镜像。
 
+## [0.1.9] - 2026-08-17
+
+### Changed
+
+- EC-CUBE 插件说明页 (日 / 英 / 中) 更新收银台支付方式截图。
+  - `content/docs/(home)/cases/(ec-platform)/ec-cube-plugin.{mdx,en.mdx,zh.mdx}` 引用改为 `public/docs/ec-cube-plugin-checkout-payment-methods.png`, 删除旧图 `fb43665-image-20200503-085731.png`。
+
 ## [0.1.8] - 2026-06-18
 
 ### Changed
