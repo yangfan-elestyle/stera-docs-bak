@@ -57,7 +57,9 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   // Compute footer items
   const footerItems = getFilteredFooterItems(page, lang, host);
 
-  const markdownUrl = getPageMarkdownPath(page.url);
+  // 概要页（EHome 导航卡片，无真实 markdown 正文）移除 markdown 相关功能
+  const isOverview = page.url === '/' || page.url === '/openapi';
+  const markdownUrl = isOverview ? undefined : getPageMarkdownPath(page.url);
 
   return (
     <DocsPage

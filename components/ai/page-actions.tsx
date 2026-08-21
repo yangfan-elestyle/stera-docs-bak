@@ -9,8 +9,18 @@ import {
   TextIcon,
 } from 'lucide-react';
 import { usePathname } from 'fumadocs-core/framework';
+import { useParams } from 'next/navigation';
 
 const cache = new Map<string, Promise<string>>();
+
+const PROMPT_TEMPLATES: Record<string, (url: string) => string> = {
+  ja: (url) =>
+    `${url} を読んでください。このドキュメントを唯一の正しい情報源として扱ってください。今後、リクエストパラメータ、レスポンス項目、バリデーションルール、およびエッジケースについて質問します。`,
+  en: (url) =>
+    `Read ${url} and treat it as the source of truth. I will ask questions about request parameters, response fields, validation rules, and edge cases.`,
+  zh: (url) =>
+    `阅读该文档${url} ，并将其视为唯一可信来源。后续我会询问请求参数、返回字段、校验规则以及边界情况。`,
+};
 
 const TRIGGER =
   'inline-flex items-center gap-1 rounded-md border bg-fd-secondary text-fd-secondary-foreground px-2 py-1.5 text-xs font-medium transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50';
@@ -50,6 +60,8 @@ export function MarkdownCopyButton({ markdownUrl }: { markdownUrl: string }) {
 
 export function ViewOptionsPopover({ markdownUrl }: { markdownUrl?: string }) {
   const pathname = usePathname();
+  const params = useParams() as { lang?: string };
+  const lang = params?.lang ?? 'ja';
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -73,7 +85,7 @@ export function ViewOptionsPopover({ markdownUrl }: { markdownUrl?: string }) {
     typeof window === 'undefined'
       ? pathname
       : new URL(pathname, window.location.origin).toString();
-  const q = `Read ${pageUrl}, I want to ask questions about it.`;
+  const q = (PROMPT_TEMPLATES[lang] ?? PROMPT_TEMPLATES.ja)(pageUrl);
 
   const items = [
     ...(markdownUrl

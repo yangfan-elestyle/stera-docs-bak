@@ -2,7 +2,7 @@
   "name": "@elepay/docs",
   "title": "Elepay Docs",
   "description": "Documentation for Elepay, a payment platform.",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "private": true,
   "scripts": {
     "generate:data": "bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts && bun run scripts/snapshot-error-codes.ts",
