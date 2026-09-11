@@ -691,8 +691,8 @@ paths:
         description: Invoice request
         required: true
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             application/json;charset=utf-8:
               schema:
@@ -861,7 +861,7 @@ paths:
               $ref: '#/components/schemas/TerminalReaderReq'
         required: true
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json;charset=utf-8:
@@ -1069,7 +1069,7 @@ paths:
               $ref: '#/components/schemas/SubscriptionReq'
         required: true
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json;charset=utf-8:
@@ -2174,6 +2174,10 @@ components:
           description: Object type
           type: string
           default: source
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
         liveMode:
           description: |
             Whether this is live mode

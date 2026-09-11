@@ -11,6 +11,18 @@
 
 > 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自 0.1.6 起开始正式镜像。
 
+## [0.1.10] - 2026-09-10
+
+### Fixed
+
+- API Reference: 创建发票 / 创建读卡器 / 创建订阅 三个接口的成功响应码由 `201` 更正为 `200` (与实装一致, 原文档记载有误)。
+  - `createInvoice` / `createReader` / `createSubscription` 改 `'201'` -> `'200'`, `createInvoice` 的 `description` 同时 `Created` -> `OK`; 对应上游 `elepay-charge-api` PR #306 (`e0240b37`)。
+
+### Added
+
+- API Reference: 客户来源 (Source) 对象补上所属客户 `customerId`。
+  - `SourceDto` 新增 `customerId` (`openapi.yaml` / `.en` / `.zh` 三份同步); 对应上游 `17ea2ed0`。该字段已在 charge-api `master`, 即已上生产。
+
 ## [0.1.9] - 2026-08-17
 
 ### Changed

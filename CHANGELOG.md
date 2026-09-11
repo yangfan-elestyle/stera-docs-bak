@@ -10,6 +10,16 @@
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [SemVer](https://semver.org/)。面向使用者, 中文行文, 命令 / 术语保留原文。
 
+## [0.1.10] - 2026-09-10
+
+### Fixed
+
+- API Reference: 创建发票 / 创建读卡器 / 创建订阅 三个接口的成功响应码由 `201` 更正为 `200` (与实装一致, 原文档记载有误)。
+
+### Added
+
+- API Reference: 客户来源 (Source) 对象补上所属客户 `customerId`。
+
 ## [0.1.9] - 2026-08-17
 
 ### Changed
