@@ -16,10 +16,9 @@
 
 - API Reference: 创建发票 / 创建读卡器 / 创建订阅 三个接口的成功响应码由 `201` 更正为 `200` (与实装一致, 原文档记载有误)。
 
-### Changed
+### Added
 
-- API Reference 追平上游 spec, 补上已上线但未记录的字段: 客户敬称 (`honorific` / `customerHonorific`)、org 级作用域 (`scope`)、客户来源的所属客户 (`customerId`)、便利店·银行转账的付款人信息 (`billName` / `billKana` / `billEmail` / `billPhone`)。
-- API Reference: EasyQR 码创建的 `amount` / `orderNo` 由固定必填改为随 `shouldCreateSource` 条件必填, 并移除已废弃的 `sourceId`。
+- API Reference: 客户来源 (Source) 对象补上所属客户 `customerId`。
 
 ## [0.1.9] - 2026-08-17
 

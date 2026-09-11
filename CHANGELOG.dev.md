@@ -18,13 +18,10 @@
 - API Reference: 创建发票 / 创建读卡器 / 创建订阅 三个接口的成功响应码由 `201` 更正为 `200` (与实装一致, 原文档记载有误)。
   - `createInvoice` / `createReader` / `createSubscription` 改 `'201'` -> `'200'`, `createInvoice` 的 `description` 同时 `Created` -> `OK`; 对应上游 `elepay-charge-api` PR #306 (`e0240b37`)。
 
-### Changed
+### Added
 
-- API Reference 追平上游 spec, 补上已上线但未记录的字段: 客户敬称 (`honorific` / `customerHonorific`)、org 级作用域 (`scope`)、客户来源的所属客户 (`customerId`)、便利店·银行转账的付款人信息 (`billName` / `billKana` / `billEmail` / `billPhone`)。
-  - `openapi.yaml` 由 `bun run scripts/sync-openapi.ts` 从上游 `client/elepay-client-sdk.yaml` 全量覆写 (脚本 `patchMissingTopLevelTags()` 自动补回 `- name: Location`); `openapi.en.yaml` / `openapi.zh.yaml` 人工同步同批字段。三份 key path 各 2988 个, 结构完全一致。
-  - 补齐的是 2026-05-13 (`899abd8`) 之后上游的 8 个 commit, 全部已在 charge-api `master`, 即已上生产。
-- API Reference: EasyQR 码创建的 `amount` / `orderNo` 由固定必填改为随 `shouldCreateSource` 条件必填, 并移除已废弃的 `sourceId`。
-  - `CodeReq` 删除 `required: [amount, orderNo]` 与 `sourceId`, `amount` / `orderNo` / `customerId` / `shouldCreateSource` 的 description 改为条件式; 对应上游 `15c734fc`。
+- API Reference: 客户来源 (Source) 对象补上所属客户 `customerId`。
+  - `SourceDto` 新增 `customerId` (`openapi.yaml` / `.en` / `.zh` 三份同步); 对应上游 `17ea2ed0`。该字段已在 charge-api `master`, 即已上生产。
 
 ## [0.1.9] - 2026-08-17
 
