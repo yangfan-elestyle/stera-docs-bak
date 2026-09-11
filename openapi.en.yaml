@@ -691,8 +691,8 @@ paths:
         description: Invoice request
         required: true
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             application/json;charset=utf-8:
               schema:
@@ -861,7 +861,7 @@ paths:
               $ref: '#/components/schemas/TerminalReaderReq'
         required: true
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json;charset=utf-8:
@@ -1069,7 +1069,7 @@ paths:
               $ref: '#/components/schemas/SubscriptionReq'
         required: true
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json;charset=utf-8:
@@ -1976,6 +1976,14 @@ components:
       enum:
         - active
         - deleted
+    Scope:
+      description: |
+        Scope. "org" is valid only for org key calls.
+      type: string
+      enum:
+        - app
+        - org
+      default: app
     CustomerReq:
       description: Customer request
       type: object
@@ -1984,6 +1992,12 @@ components:
           description: Name
           type: string
           maxLength: 255
+        honorific:
+          description: |
+            Honorific. Defaults to "様" when not specified. An empty string means "no honorific".
+            Allowed values: 様, 御中, 先生
+          type: string
+          maxLength: 32
         description:
           description: Description of the customer
           type: string
@@ -2008,6 +2022,8 @@ components:
             maxLength: 20
           additionalProperties:
             type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
     CustomerUpdateReq:
       description: Update customer request
       type: object
@@ -2020,6 +2036,12 @@ components:
           description: Name
           type: string
           maxLength: 255
+        honorific:
+          description: |
+            Honorific. Defaults to "様" when not specified. An empty string means "no honorific".
+            Allowed values: 様, 御中, 先生
+          type: string
+          maxLength: 32
         description:
           description: Description of the customer
           type: string
@@ -2069,6 +2091,12 @@ components:
           description: Name
           type: string
           maxLength: 255
+        honorific:
+          description: |
+            Honorific. Defaults to "様" when not specified. An empty string means "no honorific".
+            Allowed values: 様, 御中, 先生
+          type: string
+          maxLength: 32
         description:
           description: Description of the customer
           type: string
@@ -2174,6 +2202,10 @@ components:
           description: Object type
           type: string
           default: source
+        customerId:
+          description: Customer ID
+          type: string
+          maxLength: 32
         liveMode:
           description: |
             Whether this is live mode
@@ -2342,12 +2374,15 @@ components:
     CodeReq:
       type: object
       description: EasyQR code request
-      required:
-        - amount
-        - orderNo
       properties:
         amount:
-          description: Amount
+          description: >
+            Amount
+
+            Required when shouldCreateSource=false (default); specify a value greater than 0.
+
+            When shouldCreateSource=true, 0 or unspecified means registering the payment
+            method only (no payment occurs). Values greater than 0 are not supported at this time.
           type: integer
         currency:
           description: Currency code (ISO 4217)
@@ -2359,6 +2394,8 @@ components:
           description: |
             Merchant system order number (e.g., order number, payment ID, etc.).
             Maximum length is 50 characters.
+            Required when shouldCreateSource=false (default).
+            Cannot be specified when shouldCreateSource=true and only a payment method is registered.
           type: string
           maxLength: 50
         description:
@@ -2404,16 +2441,17 @@ components:
           type: string
           maxLength: 32
         customerId:
-          description: Customer ID
-          type: string
-          maxLength: 32
-        sourceId:
-          description: Customer source ID
+          description: |
+            Customer ID
+            Required when shouldCreateSource=true.
           type: string
           maxLength: 32
         shouldCreateSource:
-          description: |
+          description: >
             Whether a new customer source needs to be created with this code.
+
+            When true, customerId is required. amount must be 0 or unspecified (payment
+            method registration only), and orderNo cannot be specified.
           type: boolean
           default: false
     CodeDto:
@@ -2626,6 +2664,18 @@ components:
         billingNo:
           description: Billing number (for payment station)
           type: string
+        billName:
+          description: Customer name (convenience store / bank transfer; the name entered when the payment was accepted)
+          type: string
+        billKana:
+          description: Customer name in kana (convenience store / bank transfer; the kana name entered when the payment was accepted)
+          type: string
+        billEmail:
+          description: Destination for the payment information (convenience store / bank transfer; the email address entered when the payment was accepted)
+          type: string
+        billPhone:
+          description: Phone number (convenience store / bank transfer; the phone number entered when the payment was accepted)
+          type: string
     CodeItem:
       type: object
       description: Product information
@@ -2710,6 +2760,12 @@ components:
           type: string
         customerId:
           description: Customer ID
+          type: string
+          maxLength: 32
+        customerHonorific:
+          description: |
+            Honorific. When not specified, the customer's honorific is used. An empty string means "no honorific".
+            Allowed values: 様, 御中, 先生
           type: string
           maxLength: 32
         amount:
@@ -3181,6 +3237,12 @@ components:
           maxLength: 20
         customerId:
           description: Customer ID
+          type: string
+          maxLength: 32
+        customerHonorific:
+          description: |
+            Honorific. When not specified, the customer's honorific is used. An empty string means "no honorific".
+            Allowed values: 様, 御中, 先生
           type: string
           maxLength: 32
         currency:

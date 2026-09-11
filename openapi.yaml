@@ -691,8 +691,8 @@ paths:
         description: インボイスリクエスト
         required: true
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             application/json;charset=utf-8:
               schema:
@@ -861,7 +861,7 @@ paths:
               $ref: '#/components/schemas/TerminalReaderReq'
         required: true
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json;charset=utf-8:
@@ -1069,7 +1069,7 @@ paths:
               $ref: '#/components/schemas/SubscriptionReq'
         required: true
       responses:
-        '201':
+        '200':
           description: OK
           content:
             application/json;charset=utf-8:
@@ -1976,6 +1976,14 @@ components:
       enum:
         - active
         - deleted
+    Scope:
+      description: |
+        スコープ。"org" は org キー呼び出しのみ有効。
+      type: string
+      enum:
+        - app
+        - org
+      default: app
     CustomerReq:
       description: カスタマリクエスト
       type: object
@@ -1984,6 +1992,12 @@ components:
           description: 名前
           type: string
           maxLength: 255
+        honorific:
+          description: |
+            敬称。未指定の場合は「様」になります。空文字は「敬称なし」を意味します。
+            使用可能な値: 様、御中、先生
+          type: string
+          maxLength: 32
         description:
           description: カスタマに関する説明
           type: string
@@ -2008,6 +2022,8 @@ components:
             maxLength: 20
           additionalProperties:
             type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
     CustomerUpdateReq:
       description: カスタマ更新リクエスト
       type: object
@@ -2020,6 +2036,12 @@ components:
           description: 名前
           type: string
           maxLength: 255
+        honorific:
+          description: |
+            敬称。未指定の場合は「様」になります。空文字は「敬称なし」を意味します。
+            使用可能な値: 様、御中、先生
+          type: string
+          maxLength: 32
         description:
           description: カスタマに関する説明
           type: string
@@ -2069,6 +2091,12 @@ components:
           description: 名前
           type: string
           maxLength: 255
+        honorific:
+          description: |
+            敬称。未指定の場合は「様」になります。空文字は「敬称なし」を意味します。
+            使用可能な値: 様、御中、先生
+          type: string
+          maxLength: 32
         description:
           description: カスタマに関する説明
           type: string
@@ -2174,6 +2202,10 @@ components:
           description: 対象種類の表記
           type: string
           default: source
+        customerId:
+          description: カスタマID
+          type: string
+          maxLength: 32
         liveMode:
           description: |
             本番モードかどうか
@@ -2342,12 +2374,15 @@ components:
     CodeReq:
       type: object
       description: EasyQRコードリクエスト
-      required:
-        - amount
-        - orderNo
       properties:
         amount:
-          description: 金額
+          description: >
+            金額
+
+            shouldCreateSource=false（既定）の場合は必須で、0より大きい値を指定してください。
+
+            shouldCreateSource=true
+            の場合、0または未指定は支払方法の登録のみを意味します（決済は発生しません）。0より大きい値は現時点では未サポートです。
           type: integer
         currency:
           description: 通貨コード (ISO_4217)
@@ -2359,6 +2394,8 @@ components:
           description: |
             お客様側のシステムオーダーNo（例：注文番号、決済IDなど）
             最大桁数は50桁です。
+            shouldCreateSource=false（既定）の場合は必須です。
+            shouldCreateSource=true で支払方法の登録のみを行う場合は指定できません。
           type: string
           maxLength: 50
         description:
@@ -2404,16 +2441,17 @@ components:
           type: string
           maxLength: 32
         customerId:
-          description: カスタマID
-          type: string
-          maxLength: 32
-        sourceId:
-          description: カスタマソースID
+          description: |
+            カスタマID
+            shouldCreateSource=true の場合は必須です。
           type: string
           maxLength: 32
         shouldCreateSource:
-          description: |
+          description: >
             このコードで新しいカスタマソースを作成する必要があるかどうか。
+
+            true の場合、customerId は必須です。amount は0または未指定（支払方法の登録のみ）とし、orderNo
+            は指定できません。
           type: boolean
           default: false
     CodeDto:
@@ -2626,6 +2664,18 @@ components:
         billingNo:
           description: 請求番号（決済ステーション用）
           type: string
+        billName:
+          description: お客さま名（コンビニ・銀行振込、決済受付時に入力された氏名）
+          type: string
+        billKana:
+          description: お客さまカナ名（コンビニ・銀行振込、決済受付時に入力されたカナ氏名）
+          type: string
+        billEmail:
+          description: お支払い情報の送信先（コンビニ・銀行振込、決済受付時に入力されたメールアドレス）
+          type: string
+        billPhone:
+          description: 電話番号（コンビニ・銀行振込、決済受付時に入力された電話番号）
+          type: string
     CodeItem:
       type: object
       description: 商品情報
@@ -2710,6 +2760,12 @@ components:
           type: string
         customerId:
           description: カスタマID
+          type: string
+          maxLength: 32
+        customerHonorific:
+          description: |
+            敬称。未指定の場合はカスタマの敬称を使用します。空文字は「敬称なし」を意味します。
+            使用可能な値: 様、御中、先生
           type: string
           maxLength: 32
         amount:
@@ -3181,6 +3237,12 @@ components:
           maxLength: 20
         customerId:
           description: カスタマID
+          type: string
+          maxLength: 32
+        customerHonorific:
+          description: |
+            敬称。未指定の場合はカスタマの敬称を使用します。空文字は「敬称なし」を意味します。
+            使用可能な値: 様、御中、先生
           type: string
           maxLength: 32
         currency:
