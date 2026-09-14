@@ -1,5 +1,4 @@
 const URL_SCHEME_RE = /^[a-z][a-z0-9+.-]*:/i;
-const STATIC_MEDIA_RE = /^\/_next\/static\/media\/(.+)\.[^.]+(\.[^.]+)$/;
 
 export function getPageMarkdownPath(pageUrl: string): string {
   return `${pageUrl === '/' ? '/index' : pageUrl}.md`;
@@ -34,18 +33,5 @@ export function toAbsoluteUrl(
     return new URL(rawUrl, new URL(baseUrl ?? '/', origin)).toString();
   } catch {
     return rawUrl;
-  }
-}
-
-export function getPublicDocsPathFromStaticImage(
-  src: string,
-): string | undefined {
-  try {
-    const match = new URL(src, 'https://example.com').pathname.match(
-      STATIC_MEDIA_RE,
-    );
-    return match ? `/docs/${match[1]}${match[2]}` : undefined;
-  } catch {
-    return undefined;
   }
 }

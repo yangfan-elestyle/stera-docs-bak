@@ -1,9 +1,6 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 import { openapi } from '@/lib/openapi';
-import EText from '@/components/EText';
-import EImg from '@/components/EImg';
-import EContainer from '@/components/EContainer';
 import EHome from '@/components/EHome';
 import { ErrorCodeTable } from '@/components/ErrorCodeTable';
 import { EMermaid } from '@/components/EMermaid';
@@ -14,9 +11,6 @@ export function getMDXComponents(options?: MDXComponents): MDXComponents {
     ...defaultMdxComponents,
     APIPage,
     // Custom MDX components
-    EText,
-    EImg,
-    EContainer,
     EHome,
     ErrorCodeTable,
     EMermaid,

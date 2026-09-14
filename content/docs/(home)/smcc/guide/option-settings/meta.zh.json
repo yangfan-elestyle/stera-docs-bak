@@ -1,7 +1,6 @@
 {
   "title": "可选功能设置",
   "defaultOpen": false,
-  "visibleOnTenant": ["smcc"],
   "pages": [
     "issuing-coupon-codes",
     "campaign-settings",

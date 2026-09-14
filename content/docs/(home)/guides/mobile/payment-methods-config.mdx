@@ -120,14 +120,14 @@ ElepaySDK for iOS v3.2.1 以前の場合、PayPay アプリに遷移するため
 
 ##### iOS App の Callback URL Scheme について
 
-<EText name="elepay" /> デフォルト  *URL Scheme* 
+stera smart one デフォルト  *URL Scheme* 
 については、[こちら](/guides/mobile/ios)をご参照ください。
 
 #### Android
 
 > 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
 
-PayPay を使うために、<EText name="elepay" /> アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
+PayPay を使うために、stera smart one アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
 ```xml
 <activity
@@ -153,7 +153,7 @@ scheme より起動される Activity をカスタマイズする場合は、`jp
 
 > 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
 
-Merpay を使うために、<EText name="elepay" /> アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
+Merpay を使うために、stera smart one アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
 ```xml
 <activity
@@ -188,14 +188,14 @@ ElepaySDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するため
 
 ##### iOS App の Callback URL Scheme について
 
-<EText name="elepay" /> デフォルト  *URL Scheme* 
+stera smart one デフォルト  *URL Scheme* 
 については、[こちら](/guides/mobile/ios)をご参照ください。
 
 ### 楽天ペイ [#rpay]
 
 #### iOS
 
-RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開）をプロジェクトのビルド依存関係に追加する必要があります。RPayKit.framework の入手方法やビルド依存関係の追加方法については、<EText name="elepay" /> サポートまでお問い合わせください。
+RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開）をプロジェクトのビルド依存関係に追加する必要があります。RPayKit.framework の入手方法やビルド依存関係の追加方法については、stera smart one サポートまでお問い合わせください。
 
 ##### iOS 9 及び以降のシステムについて
 
@@ -207,14 +207,14 @@ RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開
 
 ##### iOS App の Callback URL Scheme について
 
-<EText name="elepay" /> デフォルト  *URL Scheme* 
+stera smart one デフォルト  *URL Scheme* 
 については、[こちら](/guides/mobile/ios)をご参照ください。
 
 #### Android
 
 RPay を使うには、elepay SDK の他に Rakuten Pay 独自の aar ファイル（非公開）をプロジェクトのビルド依存関係に追加する必要があります。ビルド依存関係の追加方法については、Android Developer の[公式サイト](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)にご参考ください。
 
-> 📘 Rakuten Pay aar ファイルのダウンロード先は、<EText name="elepay" /> サポートまでお問い合わせしてください。
+> 📘 Rakuten Pay aar ファイルのダウンロード先は、stera smart one サポートまでお問い合わせしてください。
 
 ### Apple Pay
 
@@ -235,7 +235,7 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 2.  Apply Pay 証明書の作成
     支払い情報を暗号化するために、証明書が必要です。
     以下の手順で証明書の作成します。
-    (1) <EText name="elepay" /> の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。
+    (1) stera smart one の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。
     (2) 入手した CSR ファイルで Apple Developer Site にアップロードし、ステップ１で登録した Apple Merchant ID を利用し、証明書を作成します。
     (3) 以降の証明書の利用方法は決済プロバイダーによって異なるため、下記の各プロバイダー説明をご参照ください。
 3.  Xcode に統合する
@@ -243,55 +243,10 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 
 詳細は[Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)  を参照してください。
 
-<EContainer tenant="default">
-
-##### Apple Pay（Stripe）
-
-Apple Developer サイトで作成した証明書を、<EText name="elepay" /> の `決済モジュール` 管理画面へアップロードしてください。
-
-##### Apple Pay（GMO / Paygent）
-
-CSR は加盟店ご自身で生成してください（<EText name="elepay" /> 管理画面からダウンロードできる CSR は使用しません）：
-
-1. Apple Developer にて、加盟店ご自身の CSR と Merchant ID を使用して証明書を作成してください。
-2. 作成した証明書を、ご自身で GMO / Paygent 管理画面へアップロードしてください（<EText name="elepay" /> 管理画面へのアップロードは不要です）。
-3. Apple Merchant ID のみ、<EText name="elepay" /> サポートチームへ提供してください。
-
-##### Apple Pay（Stripe · 中国銀聯）専用証明書の作成について
-
-**(「中国銀聯 Apple Pay」を申し込んだ場合のみ、このステップが必要です)**
-
-- [Apple Developer](https://developer.apple.com/account)  から、Certificate Signing Request (CSR)ファイルを作成してください。以下のガイドを参考してください。
-
-![](/docs/Apple_Developer1.png)
-
-- CSR ファイルを作成する時、必ず「Let me specify key pair information」項目をチェックしてください。
-
-![](/docs/Apple_Developer2.png)
-
-- 「Key Pair Information」画面で、Algorithm を「ECC」に指定し、Key Size を「256 bits」に指定してください。
-
-![](/docs/Apple_Developer3.png)
-
-- 作成した CSR ファイルを developer.apple.com にアップロードする時、
-  「Will payments associated with this Merchant ID be processed exclusively in China?」を「No」を選択してください。
-
-![](/docs/Apple_Developer4.png)
-
-- 作成した証明書(.cer)をダウンロードして、個人情報交換ファイル(.p12)を空文字列のパースワード でエクスポートしてください。
-- <EText name="elepay" /> の「開発設定」→「Apple Pay」→「Apple Pay Certificate
-  （中国）」に、上記証明書(.cer)と個人情報交換ファイル(.p12)をアップロードしてください。
-
-</EContainer>
-
-<EContainer tenant="smcc">
-
 ##### Apple Pay（GMO）
 
-1. Apple Merchant ID を <EText name="elepay" /> サポートチームへ提供してください。
+1. Apple Merchant ID を stera smart one サポートチームへ提供してください。
 2. Apple Developer サイトで作成した証明書を、ご自身で GMO 管理画面へアップロードしてください。
-
-</EContainer>
 
 ### Google Pay
 
@@ -370,7 +325,7 @@ Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play の�
 
 GMO チャネルでは、Test Mode（charge `liveMode=false`）で Google Pay を起動すると、SDK は Google Wallet が返却する実トークンを elepay が配信する `googlePayTestToken` に置き換え、GMO `ExecutePaymentFlow` に引き渡して 3DS2 認証を発火させます。
 
-開発段階で異なる 3DS2 シナリオ（チャレンジあり / チャレンジ免除、各種失敗コードなど）を再現したい場合は、<EText name="elepay" /> サポートチームへ test token の調整をご依頼ください。App 側のコード変更は不要です。
+開発段階で異なる 3DS2 シナリオ（チャレンジあり / チャレンジ免除、各種失敗コードなど）を再現したい場合は、stera smart one サポートチームへ test token の調整をご依頼ください。App 側のコード変更は不要です。
 
 ### PayPal
 
@@ -378,11 +333,11 @@ GMO チャネルでは、Test Mode（charge `liveMode=false`）で Google Pay �
 
 ##### iOS App の Callback URL Scheme について
 
-<EText name="elepay" /> デフォルト  *URL Scheme* 
+stera smart one デフォルト  *URL Scheme* 
 については、[こちら](/guides/mobile/ios)をご参照ください。
 
 それ以外にも、あなたのアプリの  *Bundle ID*  から始まる PayPal 専用  *URL Scheme*  を追加してください。
-[「<EText name="elepay" /> 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **PayPal**  項目を確認してください。
+[「stera smart one 管理画面」](https://dashboard.sterasmartone.com/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **PayPal**  項目を確認してください。
 
 ##### iOS 9 及び以降のシステムについて
 
@@ -409,7 +364,7 @@ Alipay アプリに遷移するために、Xcode の  **PROJECT** → **TARGE
 
 ##### iOS App の Callback URL Scheme について
 
-<EText name="elepay" /> デフォルト  *URL Scheme* 
+stera smart one デフォルト  *URL Scheme* 
 については、[こちら](/guides/mobile/ios)をご参照ください。
 
 #### Android
@@ -434,11 +389,11 @@ dependencies {
 
 ##### iOS App の Callback URL Scheme について
 
-<EText name="elepay" /> デフォルト  *URL Scheme* 
+stera smart one デフォルト  *URL Scheme* 
 については、[こちら](/guides/mobile/ios)をご参照ください。
 
 それ以外にも、WeChat 専用の  *URL Scheme* （`wx`から始まるもの）が必要です。
-[「elepay 管理画面」](https://dashboard.elepay.io/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **WeChat Pay**  項目を確認してください。なお、WeChat Pay が未開通の場合、該当項目は表示しません。
+[「stera smart one 管理画面」](https://dashboard.sterasmartone.com/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **WeChat Pay**  項目を確認してください。なお、WeChat Pay が未開通の場合、該当項目は表示しません。
 
 ##### iOS 9 及び以降のシステムについて
 
@@ -494,5 +449,5 @@ Union Pay 関連アプリに遷移するために、Xcode の  **PROJECT** →
 
 ##### iOS App の Callback URL Scheme について
 
-<EText name="elepay" /> デフォルト  *URL Scheme* 
+stera smart one デフォルト  *URL Scheme* 
 については、[こちら](/guides/mobile/ios)をご参照ください。

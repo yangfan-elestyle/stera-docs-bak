@@ -2,7 +2,6 @@
   "title": "iOS SDK",
   "defaultOpen": false,
   "pages": [
-    "app-clips",
     "external:[Download][elepay iOS Docs 下载](/docs/resources/ElepaySDK-iOS.doccarchive.zip)"
   ]
 }

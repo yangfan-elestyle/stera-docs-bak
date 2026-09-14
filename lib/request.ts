@@ -1,5 +1,3 @@
-export type Tenant = 'smcc' | 'default';
-
 type HeaderLike = {
   get(name: string): string | null;
 };
@@ -35,11 +33,4 @@ export function getRequestOrigin(host?: string | null): string | undefined {
   } catch {
     return undefined;
   }
-}
-
-// Detect tenant from host. Current rule: host containing "smcc" -> smcc
-export function detectTenantByHost(host?: string | null): Tenant {
-  if (!host) return 'default';
-  const h = String(host).toLowerCase();
-  return h.includes('smcc') ? 'smcc' : 'default';
 }

@@ -13,20 +13,15 @@ import { z } from 'zod';
 const customFrontmatterSchema = frontmatterSchema.extend({
   tocMaxDepth: z.number().int().positive().optional(),
   redirect: z.string().optional(),
-  // Tenant visibility: whitelist via `visibleOnTenant` (values are tenant keys like "smcc")
-  visibleOnTenant: z.array(z.string()).optional(),
 });
 
 const llmsOptions: LLMsOptions = {
   mdxAsPlaceholder: [
     'APIPage',
     'Callout',
-    'EContainer',
     'EHome',
-    'EImg',
     'EMermaid',
     'ErrorCodeTable',
-    'EText',
   ],
 };
 
@@ -40,9 +35,7 @@ export const docs = defineDocs({
     },
   },
   meta: {
-    // Allow folder-level tenant visibility control in meta.json
     schema: metaSchema.extend({
-      visibleOnTenant: z.array(z.string()).optional(),
       sectionNotes: z.record(z.string(), z.string()).optional(),
     }),
   },

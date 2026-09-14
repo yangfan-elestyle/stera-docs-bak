@@ -1,7 +1,7 @@
-import { getLLMText, isPageVisibleForHost, source } from '@/lib/source';
+import { getLLMText, source } from '@/lib/source';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { getRequestHost } from '@/lib/tenant';
+import { getRequestHost } from '@/lib/request';
 
 export const revalidate = false;
 
@@ -11,17 +11,13 @@ export async function GET(
 ) {
   const { lang } = await context.params;
   const host = getRequestHost(await headers());
-  const scan = source
-    .getPages(lang)
-    .filter((p) => isPageVisibleForHost(p, lang, host))
-    .map((p) => getLLMText(p, host));
+  const scan = source.getPages(lang).map((p) => getLLMText(p, host));
   const scanned = await Promise.all(scan);
 
   return new NextResponse(scanned.join('\n\n'), {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      // 内容按 host 过滤,跨 host 不可共享;明确 no-store
-      // 防止中间 CDN 误缓存把 SMCC 内容透给主站。
+      // 正文内嵌按请求 Host 生成的绝对 URL,跨 Host 不可共享;明确 no-store。
       'Cache-Control': 'no-store',
     },
   });

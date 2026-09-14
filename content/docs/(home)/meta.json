@@ -36,7 +36,6 @@
     "get-started/quickstart",
     "get-started/process",
     "get-started/refunds",
-    "get-started/test-card",
     "get-started/error-code",
     "---ユースケース---",
     "cases/checkout",

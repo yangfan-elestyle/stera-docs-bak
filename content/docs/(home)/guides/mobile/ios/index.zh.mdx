@@ -2,7 +2,7 @@
 title: iOS SDK
 ---
 
-**elepay iOS SDK** 是将 <EText name="elepay" /> 集成到 iOS 应用的开发包。<br />
+**elepay iOS SDK** 是将 stera smart one 集成到 iOS 应用的开发包。<br />
 本文将详细说明如何将 iOS 应用与 elepay SDK 对接。
 
 # 支持版本
@@ -38,22 +38,6 @@ pod 'ElepaySDK', '~> 3.0'
 pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
 ```
 
-<EContainer tenant="default">
-
-- 如需使用 Stripe，且 elepay SDK 版本不低于 2.2.0，请添加 `Stripe`。  
-   注意：若使用 ElepaySDK 2.x，请以 `pod 'Stripe', '~> 19.4.1'` 的方式添加。
-
-```ruby
-# 仅 ElepaySDK 3.0+ 支持 Stripe 21.x
-# 若使用 ElepaySDK 2.x，请使用 "pod 'Stripe', '~> 19.4.1'"
-
-pod 'Stripe', '~> 22.0'
-```
-
-> 🚧 由于 Stripe v23 停止支持 iOS 12，请在 elepay SDK 中配置 Stripe v22。
-
-</EContainer>
-
 - 如需使用 PayPal，且 elepay SDK 版本不低于 1.7.0，请添加 `Braintree`。  
    **注意：** 自 elepay SDK 4.0.0 起，已不再支持 Braintree。如需 PayPal，请使用 elepay SDK 3.x。
 
@@ -65,7 +49,7 @@ pod 'Braintree'
 
 ## 2. 通过 Swift Package Manager（SPM）安装
 
-> 📘 自 elepay iOS SDK 5.0 起，默认以 SPM（Swift Package Manager）作为分发方式；如有其他接入平台的诉求，请联系 <EText name="elepay" /> 团队。
+> 📘 自 elepay iOS SDK 5.0 起，默认以 SPM（Swift Package Manager）作为分发方式；如有其他接入平台的诉求，请联系 stera smart one 团队。
 
 **elepay iOS SDK** 自 3.1.1 起支持 SPM。<br />
 **elepay iOS SDK Chinese Payments Plugin** 自 2.0.2 起支持 SPM。
@@ -76,14 +60,6 @@ pod 'Braintree'
 - 仅在使用中国支付方式（Alipay、WeChat Pay、UnionPay）时，添加 `Elepay_ChinesePayments_Plugin`。  
    使用地址：`https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`  
    如需指定版本，请选择 2.0.2 及以上。
-<EContainer tenant="default">
-
-- 若使用 Stripe，请添加 `Stripe`。  
-   使用地址：`https://github.com/stripe/stripe-ios.git`  
-   如需指定版本，请选择 21.8.1 及以上。
-
-</EContainer>
-
 - 若使用 PayPal，请添加 `Braintree`。  
    注意：Braintree 5.x.x 不再支持 iOS 11，请使用 4.x.x。且 4.x.x 不支持 SPM，请通过 CocoaPods 安装或手动集成。
 
@@ -111,7 +87,7 @@ pod 'Braintree'
 
 ### 通用设置
 
-有关获取 <EText name="elepay" /> 专用 URL Scheme 的方法，请参阅「[获取 iOS / Android SDK 的 URL Scheme](/guides/mobile/url-scheme)」。
+有关获取 stera smart one 专用 URL Scheme 的方法，请参阅「[获取 iOS / Android SDK 的 URL Scheme](/guides/mobile/url-scheme)」。
 
 ![](/docs/URL_Scheme.png)
 
@@ -137,7 +113,7 @@ Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
 
 > 📘 关于 Public Key
 >
-> 请将 `ELEPAY_APP_PUBLIC_KEY` 替换为在[<EText name="elepay" /> 管理后台](https://dashboard.elepay.io/)中签发的值。
+> 请将 `ELEPAY_APP_PUBLIC_KEY` 替换为在[stera smart one 管理后台](https://dashboard.sterasmartone.com/)中签发的值。
 
 ## 4. 配置回调
 
@@ -375,7 +351,7 @@ case let .failed(let codeId, let error):
 
 > 🚧 关于支付结果处理
 >
-> App 内显示的支付结果仅用于提示用户。实际扣款结果请务必通过服务端的回调 API，并以 <EText name="elepay" /> 服务器发送的数据为准进行校验。_详情请参阅 elepay API 指南。_
+> App 内显示的支付结果仅用于提示用户。实际扣款结果请务必通过服务端的回调 API，并以 stera smart one 服务器发送的数据为准进行校验。_详情请参阅 elepay API 指南。_
 
 ### 1. 关于 Apple Pay
 
@@ -383,7 +359,7 @@ case let .failed(let codeId, let error):
 
 ![](/docs/xcodee_applepay.png)
 
-2. 将 Apple Pay 证书上传至[「<EText name="elepay" /> 管理后台」-「开发设置」-「Apple Pay」](https://dashboard.elepay.io/)。  
+2. 将 Apple Pay 证书上传至[「stera smart one 管理后台」-「开发设置」-「Apple Pay」](https://dashboard.sterasmartone.com/)。  
    证书的创建方法见[此文档](/guides/mobile/payment-methods-config#apple-pay)。
 
 ### 2. 关于 LSApplicationQueriesSchemes（iOS 9 及以上）

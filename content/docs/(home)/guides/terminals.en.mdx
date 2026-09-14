@@ -2,12 +2,12 @@
 title: Terminal Payments
 ---
 
-<EText name="elepay" /> provides in‑person payment capabilities via terminal
+stera smart one provides in‑person payment capabilities via terminal
 devices.
 
 By using a terminal, you can accept card‑present payments such as credit and debit cards. For cards with IC chips, a PIN entry may be required. Contactless payments and e‑money are also supported.
 
-> 🚧 Before using terminal payments, you must open an account with Square and complete the configuration on the <EText name="elepay" /> side.
+> 🚧 Before using terminal payments, you must open an account with Square and complete the configuration on the stera smart one side.
 
 High‑level flow until a payment can be accepted
 
@@ -21,7 +21,7 @@ Payment flow
 
 ### 1. Payment request
 
-Your server calls <EText name="elepay" />’s Charge API to create a payment request.
+Your server calls stera smart one’s Charge API to create a payment request.
 
 > 📘 Key request parameters
 >
@@ -40,7 +40,7 @@ Process payments such as credit cards, debit cards, and e‑money on the termina
 You can confirm the result by either of the following:
 
 **1. Receive a webhook event**
-Whether a payment succeeds or fails, <EText name="elepay" /> sends the corresponding event notification to the configured webhook URL.
+Whether a payment succeeds or fails, stera smart one sends the corresponding event notification to the configured webhook URL.
 
 **2. Retrieve payment status**
 Poll the Charge retrieval API to check status until the payment succeeds or times out (recommended timeout 60 seconds; poll every 10 seconds).

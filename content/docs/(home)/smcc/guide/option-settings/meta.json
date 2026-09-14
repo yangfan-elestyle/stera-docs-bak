@@ -1,7 +1,6 @@
 {
   "title": "オプション機能の設定",
   "defaultOpen": false,
-  "visibleOnTenant": ["smcc"],
   "pages": [
     "issuing-coupon-codes",
     "campaign-settings",

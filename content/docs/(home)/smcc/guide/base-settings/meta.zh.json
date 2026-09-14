@@ -1,7 +1,6 @@
 {
   "title": "基本功能设置",
   "defaultOpen": false,
-  "visibleOnTenant": ["smcc"],
   "pages": [
     "order-and-refund-processing",
     "about-product-editing",

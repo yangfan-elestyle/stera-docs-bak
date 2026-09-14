@@ -6,14 +6,14 @@ description: 1 回の API 呼び出しで、最初の EasyQR 決済用 QR コー
 本ガイドに従って、1 回の API 呼び出しで最初の EasyQR コードを作成し、ブラウザ上で実際にスキャンできる決済用 QR コードを確認しましょう。全工程でテストモードを使用するため、実際の決済は発生しません。
 
 <Callout title="EasyQR とは">
-EasyQR は <EText name="elepay" /> が提供する動的な決済用 QR コードです。サーバー側で code を 1 つ作成すると、お客様は QR コードをスキャンするだけで PayPay やクレジットカードなど数十種類の方法で支払えます。QR コードを Web サイトやデバイスに組み込む完全な方法は [EasyCheckout](/cases/checkout) をご覧ください。
+EasyQR は stera smart one が提供する動的な決済用 QR コードです。サーバー側で code を 1 つ作成すると、お客様は QR コードをスキャンするだけで PayPay やクレジットカードなど数十種類の方法で支払えます。QR コードを Web サイトやデバイスに組み込む完全な方法は [EasyCheckout](/cases/checkout) をご覧ください。
 </Callout>
 
 ## はじめる前に
 
 必要なものは **テスト用シークレットキー（Secret Key）** のみです。
 
-- <EText name="elepay" /> 管理画面にログインし、左側の「開発設定 / API」からテスト用シークレットキーを取得します。形式は `sk_test_…` のようになります。詳しい取得手順は[初期設定](/get-started/set-up)をご覧ください。
+- stera smart one 管理画面にログインし、左側の「開発設定 / API」からテスト用シークレットキーを取得します。形式は `sk_test_…` のようになります。詳しい取得手順は[初期設定](/get-started/set-up)をご覧ください。
 - テスト用シークレットキーは**テストモード**に対応します。実際の決済チャンネルには接続されず、実取引も発生しないため、安心して試せます。
 
 <Callout type="warn">
@@ -38,7 +38,7 @@ curl -X POST https://api.elepay.io/codes \
 ```
 
 <Callout title="認証方式">
-<EText name="elepay" /> は Bearer 認証と Basic 認証の両方に対応しています。上記の例では Bearer（シークレットキーをトークンとして使用）を利用しています。Basic を使う場合は、シークレットキーをユーザー名に指定し、パスワードは空にします。詳しくは [API ガイド](/guides/api-guide)をご覧ください。
+stera smart one は Bearer 認証と Basic 認証の両方に対応しています。上記の例では Bearer（シークレットキーをトークンとして使用）を利用しています。Basic を使う場合は、シークレットキーをユーザー名に指定し、パスワードは空にします。詳しくは [API ガイド](/guides/api-guide)をご覧ください。
 </Callout>
 
 リクエストフィールド（完全な定義は [Create EasyQR code](/openapi/code/createCode) を参照）：
@@ -79,14 +79,14 @@ curl -X POST https://api.elepay.io/codes \
 
 ## ステップ 2：決済用 QR コードを確認する
 
-レスポンス内の `codeUrl` をブラウザにコピーして開くと、<EText name="elepay" /> がホストするチェックアウトページが表示されます。左側に金額、右側に決済用 QR コードと利用可能な支払い方法が並びます。
+レスポンス内の `codeUrl` をブラウザにコピーして開くと、stera smart one がホストするチェックアウトページが表示されます。左側に金額、右側に決済用 QR コードと利用可能な支払い方法が並びます。
 
 ![EasyQR チェックアウトページ](/docs/fdfa6f6c89671f21da0c49a86a440b156f6b48603faaf6ab5a40f530f3635091-image.png)
 
 お客様がこの QR コードをスマートフォンでスキャンすれば、PayPay やクレジットカードなどの方法を選んで支払えます。
 
 <Callout title="🎉 おめでとうございます">
-これが API で作成した最初の EasyQR コードです——<EText name="elepay" /> 決済の中核である、作成から QR コード生成までの流れを確認できました。
+これが API で作成した最初の EasyQR コードです——stera smart one 決済の中核である、作成から QR コード生成までの流れを確認できました。
 </Callout>
 
 <Callout type="info">

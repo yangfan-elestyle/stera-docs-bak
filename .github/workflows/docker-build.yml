@@ -13,8 +13,8 @@
 # DOCS_ENV 于 next build 期被内联进产物 (错误码快照 + 运行期 API 地址),
 # 每环境一份镜像, 运行期不可切换。
 #
-# 单镜像同时服务 elepay / SMCC 两个租户: 租户由请求 Host 决定 (lib/tenant.ts),
-# 入口层须透传原始 Host。
+# 单租户站点 (stera smart one / SMCC); 入口层须透传原始 Host,
+# OG / canonical / llms 的绝对 URL 由请求 Host 生成。
 
 name: Build and Deploy Docker Image
 

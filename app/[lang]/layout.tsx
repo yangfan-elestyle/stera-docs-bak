@@ -1,7 +1,5 @@
 import '@/app/global.css';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { detectTenantByHost, getRequestHost } from '@/lib/tenant';
 import { i18n } from '@/lib/i18n';
 import { defineI18nUI } from 'fumadocs-ui/i18n';
 import { RootProvider } from 'fumadocs-ui/provider/next';
@@ -62,14 +60,10 @@ export default async function Layout({
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const h = await headers();
-  const tenant = detectTenantByHost(getRequestHost(h));
-  const icon =
-    tenant === 'smcc' ? '/favicon-smcc.ico' : '/favicon-default.ico';
   return {
     icons: {
-      icon,
-      shortcut: icon,
+      icon: '/favicon.ico',
+      shortcut: '/favicon.ico',
     },
     ...(process.env.DOCS_ENV !== 'product' && {
       other: { 'docs-env': process.env.DOCS_ENV || 'dev' },

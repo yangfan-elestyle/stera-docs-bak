@@ -4,7 +4,7 @@ title: Web ホスト型 Checkout の実装
 
 # ホスティングのCheckoutページを導入
 
-お客様がウェブサイトのボタンをクリックすると、<EText name="elepay" />ホスティングのCheckoutページに移動します。
+お客様がウェブサイトのボタンをクリックすると、stera smart oneホスティングのCheckoutページに移動します。
 
 > - 導入工数：ローコード、約20分
 > - 実装スタイル：ホスティングページ
@@ -72,9 +72,9 @@ Javascript SDKを利用して、Checkoutページへ移動します。Javascript
 {/* prettier-ignore */}
 > 👍 決済状況を正確に把握するためには、Webhookでイベント通知を受信する方法が最適です。
 >
-> <EText name="elepay" /> の[開発設定>Webhook] で受信URLを設定できます。
+> stera smart one の[開発設定>Webhook] で受信URLを設定できます。
 >
-> 支払いが成功の場合、<EText name="elepay" /> は Webhook に設定された URL に
+> 支払いが成功の場合、stera smart one は Webhook に設定された URL に
 >
 > イベント通知を送信します。
 
@@ -82,13 +82,13 @@ Javascript SDKを利用して、Checkoutページへ移動します。Javascript
 
 #### CheckoutページのUIカスタマイズ
 
-お客様が見るCheckoutページは、<EText name="elepay" />の[簡単決済>設定>基本設定] でアイコンやカラースキームなどを調整できます。
+お客様が見るCheckoutページは、stera smart oneの[簡単決済>設定>基本設定] でアイコンやカラースキームなどを調整できます。
 
 #### 決済方法の設定
 
 {/* prettier-ignore */}
-<EText name="elepay" /> の[簡単決済>設定>決済方法管理] で利用可能な決済方法の管理（確認・有効化・無効化）が可能です。今後追加される支払い手段も、すぐに利用できます。
+stera smart one の[簡単決済>設定>決済方法管理] で利用可能な決済方法の管理（確認・有効化・無効化）が可能です。今後追加される支払い手段も、すぐに利用できます。
 
 #### ロケーション情報を追加
 
-EasyQRコードの作成時にロケーション情報を追加できます。また、<EText name="elepay" />の[ロケーション]で管理可能です。
+EasyQRコードの作成時にロケーション情報を追加できます。また、stera smart oneの[ロケーション]で管理可能です。

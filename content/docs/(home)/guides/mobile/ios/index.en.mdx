@@ -2,7 +2,7 @@
 title: iOS SDK
 ---
 
-The **elepay iOS SDK** is an SDK for integrating <EText name="elepay" /> into iOS apps.<br />
+The **elepay iOS SDK** is an SDK for integrating stera smart one into iOS apps.<br />
 This guide explains in detail how to connect your iOS app with the elepay SDK.
 
 # Supported versions
@@ -38,22 +38,6 @@ pod 'ElepaySDK', '~> 3.0'
 pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
 ```
 
-<EContainer tenant="default">
-
-- Only when using Stripe and elepay SDK is 2.2.0 or later, add `Stripe`.
-   Note: If using ElepaySDK 2.x, add Stripe with `pod 'Stripe', '~> 19.4.1'`.
-
-```ruby
-# Only ElepaySDK 3.0 and above supports Stripe 21.x
-# Use "pod 'Stripe', '~> 19.4.1'" if you are using ElepaySDK 2.x
-
-pod 'Stripe', '~> 22.0'
-```
-
-> 🚧 Because Stripe v23 dropped iOS 12 support, configure Stripe v22 with the elepay SDK.
-
-</EContainer>
-
 - Only when using PayPal and elepay SDK is 1.7.0 or later, add `Braintree`.
    **Note:** From elepay SDK 4.0.0, Braintree support has ended. If you need PayPal, use elepay SDK 3.x.
 
@@ -65,7 +49,7 @@ pod 'Braintree'
 
 ## 2. Install via Swift Package Manager (SPM)
 
-> 📘 From elepay iOS SDK 5.0, SPM (Swift Package Manager) is the default distribution method. If you have requirements for other integration channels, please contact the <EText name="elepay" /> team.
+> 📘 From elepay iOS SDK 5.0, SPM (Swift Package Manager) is the default distribution method. If you have requirements for other integration channels, please contact the stera smart one team.
 
 **elepay iOS SDK** supports SPM from 3.1.1.<br />
 **elepay iOS SDK Chinese Payments Plugin** supports SPM from 2.0.2.
@@ -76,14 +60,6 @@ pod 'Braintree'
 - Only when using Chinese payments (Alipay, WeChat Pay, UnionPay), add `Elepay_ChinesePayments_Plugin`.  
    Use this URL: `https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`  
    Specify 2.0.2 or later if pinning versions.
-<EContainer tenant="default">
-
-- If you use Stripe, add `Stripe`.  
-   Use this URL: `https://github.com/stripe/stripe-ios.git`  
-   Specify 21.8.1 or later if pinning versions.
-
-</EContainer>
-
 - If you use PayPal, add `Braintree`.  
    Note: Braintree 5.x.x dropped iOS 11 support, so use 4.x.x. Also, 4.x.x does not support SPM, so install it via CocoaPods or manually.
 
@@ -111,7 +87,7 @@ In Xcode, go to **PROJECT** ＞ **TARGETS** ＞ **Info** and add an elepay‑spe
 
 ### Common settings
 
-See “[Obtaining URL Scheme for iOS / Android SDK](/guides/mobile/url-scheme)” for how to get the <EText name="elepay" />‑specific URL Scheme.
+See “[Obtaining URL Scheme for iOS / Android SDK](/guides/mobile/url-scheme)” for how to get the stera smart one‑specific URL Scheme.
 
 ![](/docs/URL_Scheme.png)
 
@@ -137,7 +113,7 @@ Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
 
 > 📘 About the Public Key
 >
-> Replace `ELEPAY_APP_PUBLIC_KEY` with the one issued on the [<EText name="elepay" /> dashboard](https://dashboard.elepay.io/).
+> Replace `ELEPAY_APP_PUBLIC_KEY` with the one issued on the [stera smart one dashboard](https://dashboard.sterasmartone.com/).
 
 ## 4. Configure callback
 
@@ -375,7 +351,7 @@ See the [Error Codes](/get-started/error-code) list.
 
 > 🚧 About handling payment results
 >
-> In‑app payment results should only be used for user‑facing confirmation. Always verify the actual charge result on your server using the callback API and the data sent by the <EText name="elepay" /> servers. _See the elepay API guide for details._
+> In‑app payment results should only be used for user‑facing confirmation. Always verify the actual charge result on your server using the callback API and the data sent by the stera smart one servers. _See the elepay API guide for details._
 
 ### 1. About Apple Pay
 
@@ -383,7 +359,7 @@ See the [Error Codes](/get-started/error-code) list.
 
 ![](/docs/xcodee_applepay.png)
 
-2. Upload your Apple Pay certificate to [“<EText name="elepay" /> Dashboard” → “Developer Settings” → “Apple Pay”](https://dashboard.elepay.io/).  
+2. Upload your Apple Pay certificate to [“stera smart one Dashboard” → “Developer Settings” → “Apple Pay”](https://dashboard.sterasmartone.com/).  
    For how to create the certificate, see [this document](/guides/mobile/payment-methods-config#apple-pay).
 
 ### 2. About LSApplicationQueriesSchemes (iOS 9 and later)

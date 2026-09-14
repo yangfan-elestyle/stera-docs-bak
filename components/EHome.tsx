@@ -1,6 +1,4 @@
-import { headers } from 'next/headers';
-import { getFilteredTreeByHost } from '@/lib/source';
-import { getRequestHost } from '@/lib/tenant';
+import { source } from '@/lib/source';
 import { buildNavSections } from '@/lib/nav-sections';
 import Link from 'next/link';
 
@@ -12,8 +10,6 @@ type Props = {
 };
 
 export default async function EHome({ lang, root }: Props) {
-  const hdrs = await headers();
-  const host = getRequestHost(hdrs);
   // 简单归一化: zh* / cn* -> zh; en* -> en; 其他 -> ja
   const v = (lang ?? '').trim().toLowerCase();
   const currentLang: 'ja' | 'en' | 'zh' =
@@ -23,8 +19,7 @@ export default async function EHome({ lang, root }: Props) {
         ? 'en'
         : 'ja';
 
-  const tree = getFilteredTreeByHost(currentLang, host);
-  const sections = buildNavSections(tree, root);
+  const sections = buildNavSections(source.pageTree[currentLang], root);
 
   return (
     <div className="not-prose mx-auto w-full max-w-5xl text-[15px] leading-6">

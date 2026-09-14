@@ -9,6 +9,5 @@
     "license-submission-guidelines",
     "apply-restriction",
     "store-photo-requirements"
-  ],
-  "visibleOnTenant": ["smcc"]
+  ]
 }

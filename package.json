@@ -1,7 +1,7 @@
 {
-  "name": "@elepay/docs",
-  "title": "Elepay Docs",
-  "description": "Documentation for Elepay, a payment platform.",
+  "name": "@sterasmartone/docs",
+  "title": "stera smart one Docs",
+  "description": "Documentation for stera smart one (SMCC).",
   "version": "0.1.10",
   "private": true,
   "scripts": {

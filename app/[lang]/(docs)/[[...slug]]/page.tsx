@@ -1,8 +1,7 @@
 import {
-  getFilteredFooterItems,
+  getFooterItems,
   getPageDescription,
   getPageImage,
-  isPageVisibleForHost,
   source,
 } from '@/lib/source';
 import { DocsBody, DocsDescription, DocsPage } from 'fumadocs-ui/page';
@@ -11,7 +10,7 @@ import { headers } from 'next/headers';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { getRequestHost, getRequestProtocol } from '@/lib/tenant';
+import { getRequestHost, getRequestProtocol } from '@/lib/request';
 import DocsTitleBar from '@/components/DocsTitleBar';
 import { getPageMarkdownPath, getPageUrl } from '@/lib/url';
 
@@ -35,11 +34,6 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const page = source.getPage(slug, lang);
   if (!page) notFound();
 
-  // Enforce tenant-based visibility to prevent direct access via URL
-  const hdrs = await headers();
-  const host = getRequestHost(hdrs);
-  if (!isPageVisibleForHost(page, lang, host)) notFound();
-
   // Handle redirect if specified in frontmatter
   if (page.data.redirect) {
     redirect(`/${lang}${page.data.redirect}`);
@@ -55,7 +49,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       : page.data.toc;
 
   // Compute footer items
-  const footerItems = getFilteredFooterItems(page, lang, host);
+  const footerItems = getFooterItems(page, lang);
 
   // 概要页（EHome 导航卡片，无真实 markdown 正文）移除 markdown 相关功能
   const isOverview = page.url === '/' || page.url === '/openapi';

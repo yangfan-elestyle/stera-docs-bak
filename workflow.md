@@ -30,14 +30,14 @@ docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
 docker run --rm -p 3000:3000 elepay-docs:local
 ```
 
-租户由 `Host` 决定, 验证必须带 Host 头:
+单租户, 任意 Host 内容一致; 冒烟四条:
 
 ```bash
-curl -sI -H 'Host: docs.stg.elepay.localhost' http://localhost:3000/
-curl -sI -H 'Host: docs-smcc.stg.elepay.localhost' http://localhost:3000/
+curl -sI http://localhost:3000/                 # 200
+curl -sI http://localhost:3000/favicon.ico      # 200, 非 404 (matcher 漏排除会 404)
+curl -s  http://localhost:3000/llms.txt | head  # 绝对 URL 正常
+curl -sI http://localhost:3000/get-started/set-up.md   # 200
 ```
-
-浏览器验证需在 `/etc/hosts` 把 `docs.stg.elepay.localhost` / `docs-smcc.stg.elepay.localhost` 指向 `127.0.0.1`, 再访问 <http://docs.stg.elepay.localhost:3000>。
 
 > 改代码后必须重跑 `docker build` (镜像无 HMR); 仅重跑 `docker run` 跑的是旧镜像。
 > `DOCS_ENV` 是构建期参数, `docker run -e DOCS_ENV=` 改不动已构建产物。

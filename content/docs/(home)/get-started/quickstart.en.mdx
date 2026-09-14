@@ -6,14 +6,14 @@ description: Create your first EasyQR payment QR code with a single API call
 Follow this guide to create your first EasyQR code with a single API call and see a real, scannable payment QR code in your browser. The entire flow runs in test mode, so no real payments are collected.
 
 <Callout title="What is EasyQR">
-EasyQR is a dynamic payment QR code provided by <EText name="elepay" />: your server creates a code, and the customer scans it to pay via dozens of methods such as PayPay and credit cards. For the complete approach to integrating the QR code into a website or device, see [EasyCheckout](/cases/checkout).
+EasyQR is a dynamic payment QR code provided by stera smart one: your server creates a code, and the customer scans it to pay via dozens of methods such as PayPay and credit cards. For the complete approach to integrating the QR code into a website or device, see [EasyCheckout](/cases/checkout).
 </Callout>
 
 ## Before you begin
 
 You only need to prepare one thing: a **test Secret Key**.
 
-- Log in to the <EText name="elepay" /> dashboard and obtain your test Secret Key under “開発設定 / API” on the left. It looks like `sk_test_…`. For detailed steps, see [Initial setup](/get-started/set-up).
+- Log in to the stera smart one dashboard and obtain your test Secret Key under “開発設定 / API” on the left. It looks like `sk_test_…`. For detailed steps, see [Initial setup](/get-started/set-up).
 - The test Secret Key corresponds to **test mode**: it does not connect to real payment channels and produces no real transactions, so you can try it freely.
 
 <Callout type="warn">
@@ -38,7 +38,7 @@ curl -X POST https://api.elepay.io/codes \
 ```
 
 <Callout title="Authentication methods">
-<EText name="elepay" /> supports both Bearer and Basic authentication. The example above uses Bearer (the key as the token); if you switch to Basic, use the key as the username and leave the password empty. For details, see the [API guide](/guides/api-guide).
+stera smart one supports both Bearer and Basic authentication. The example above uses Bearer (the key as the token); if you switch to Basic, use the key as the username and leave the password empty. For details, see the [API guide](/guides/api-guide).
 </Callout>
 
 Request fields (full definitions in [Create EasyQR code](/openapi/code/createCode)):
@@ -79,14 +79,14 @@ Key fields:
 
 ## Step 2: View your payment QR code
 
-Copy the `codeUrl` from the response and open it in a browser. You will see a checkout page hosted by <EText name="elepay" />: the amount on the left, and the payment QR code with available payment methods on the right.
+Copy the `codeUrl` from the response and open it in a browser. You will see a checkout page hosted by stera smart one: the amount on the left, and the payment QR code with available payment methods on the right.
 
 ![EasyQR checkout page](/docs/fdfa6f6c89671f21da0c49a86a440b156f6b48603faaf6ab5a40f530f3635091-image.png)
 
 The customer scans this QR code with their phone and can pay using methods such as PayPay or a credit card.
 
 <Callout title="🎉 Congratulations">
-This is the first EasyQR code you created with the API—you have now completed the core <EText name="elepay" /> payment flow: from creation to QR code generation.
+This is the first EasyQR code you created with the API—you have now completed the core stera smart one payment flow: from creation to QR code generation.
 </Callout>
 
 <Callout type="info">

@@ -1,7 +1,6 @@
 {
   "title": "Optional feature settings",
   "defaultOpen": false,
-  "visibleOnTenant": ["smcc"],
   "pages": [
     "issuing-coupon-codes",
     "campaign-settings",

@@ -3,16 +3,11 @@ import {
   renderPlaceholder,
   type PlaceholderData,
 } from 'fumadocs-core/mdx-plugins/remark-llms.runtime';
-import { getFilteredTreeByHost } from './source';
-import { detectTenantByHost, getRequestOrigin } from './tenant';
-import { getImageAsset, getTextValue } from './tenant-config';
+import { source } from './source';
+import { getRequestOrigin } from './request';
 import { buildNavSections } from './nav-sections';
 import { renderAPIPageMarkdown } from './openapi-llm';
-import {
-  getPageUrl,
-  getPublicDocsPathFromStaticImage,
-  toAbsoluteUrl,
-} from './url';
+import { getPageUrl, toAbsoluteUrl } from './url';
 
 type HomeLang = 'ja' | 'en' | 'zh';
 type PlaceholderAttrs = PlaceholderData['attributes'];
@@ -33,24 +28,6 @@ export async function resolveLLMTags(
 ): Promise<string> {
   const origin = getRequestOrigin(host);
   const rendered = await renderPlaceholder(markdown, {
-    EText({ attributes }) {
-      const name = attrString(attributes, 'name');
-      return name ? getTextValue(name, host) ?? '' : '';
-    },
-
-    EImg({ attributes }) {
-      const src = attrString(attributes, 'src');
-      if (!src) return '';
-      const asset = getImageAsset(src, host);
-      if (!asset) return '';
-      const href = toAbsoluteUrl(
-        getPublicDocsPathFromStaticImage(asset.src) ?? asset.src,
-        origin,
-        pageUrl,
-      );
-      return `![${attrString(attributes, 'alt') ?? ''}](${href})`;
-    },
-
     EHome({ attributes }) {
       const rawLang = (attrString(attributes, 'lang') ?? '').toLowerCase();
       const lang: HomeLang = rawLang.startsWith('zh')
@@ -59,7 +36,7 @@ export async function resolveLLMTags(
         ? 'en'
         : 'ja';
       const root = attrString(attributes, 'root') ?? '/';
-      return buildNavSections(getFilteredTreeByHost(lang, host), root)
+      return buildNavSections(source.pageTree[lang], root)
         .map((section) =>
           [
             section.title && `## ${section.title}`,
@@ -72,15 +49,6 @@ export async function resolveLLMTags(
             .join('\n\n'),
         )
         .join('\n\n');
-    },
-
-    EContainer({ attributes, children }) {
-      const tenant = detectTenantByHost(host).toLowerCase();
-      const allow = (attrString(attributes, 'tenant') ?? '')
-        .split(',')
-        .map((item) => item.trim().toLowerCase())
-        .filter(Boolean);
-      return allow.length === 0 || allow.includes(tenant) ? children : '';
     },
 
     Callout({ attributes, children }) {

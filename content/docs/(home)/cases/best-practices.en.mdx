@@ -2,7 +2,7 @@
 title: Best Practices
 ---
 
-Recommendations for a stable EasyCheckout integration. Differences between payment methods and internal processing are absorbed by <EText name="elepay" />, so you only need to check the **final charge result**.
+Recommendations for a stable EasyCheckout integration. Differences between payment methods and internal processing are absorbed by stera smart one, so you only need to check the **final charge result**.
 
 ## Integration sequence
 
@@ -21,7 +21,7 @@ Recommendations for a stable EasyCheckout integration. Differences between payme
     Note over E,S: Non-2xx → auto-retry:<br/>1min ×3, then 10min ×2.<br/>Fallback: reconcile via sync API`}
 />
 
-The merchant server creates an EasyQR code, shows it to the customer, the customer pays, and <EText name="elepay" /> notifies the result via Webhook. See the best practices below for how to handle it.
+The merchant server creates an EasyQR code, shows it to the customer, the customer pays, and stera smart one notifies the result via Webhook. See the best practices below for how to handle it.
 
 ## Status lifecycle
 

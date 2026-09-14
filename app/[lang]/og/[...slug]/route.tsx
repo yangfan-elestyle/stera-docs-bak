@@ -1,28 +1,14 @@
-import {
-  getPageDescription,
-  getPageImage,
-  isPageVisibleForHost,
-  source,
-} from '@/lib/source';
+import { getPageDescription, getPageImage, source } from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
-import { headers } from 'next/headers';
-import { detectTenantByHost, getRequestHost, type Tenant } from '@/lib/tenant';
-import { getTextValue } from '@/lib/tenant-config';
+import { SITE } from '@/lib/site';
 
 export const revalidate = false;
 
-// 按租户切换配色(背景统一深蓝,仅强调色/底部渐变线区分品牌)。
 // 不设 fonts:沿用 next/og 运行时回退以正常渲染 CJK(显式 fonts 仅含拉丁字形会导致豆腐块)。
-const THEME: Record<Tenant, { accent: string; gradient: string }> = {
-  default: {
-    accent: '#1098FF',
-    gradient: 'linear-gradient(90deg, #1098FF 0%, #0F44EC 55%, #6366F1 100%)',
-  },
-  smcc: {
-    accent: '#14B8A6',
-    gradient: 'linear-gradient(90deg, #2DD4BF 0%, #0EA5A4 55%, #0F766E 100%)',
-  },
+const THEME = {
+  accent: '#14B8A6',
+  gradient: 'linear-gradient(90deg, #2DD4BF 0%, #0EA5A4 55%, #0F766E 100%)',
 };
 
 export async function GET(
@@ -33,11 +19,7 @@ export async function GET(
   const page = source.getPage(slug.slice(0, -1), lang);
   if (!page) notFound();
 
-  const host = getRequestHost(await headers());
-  if (!isPageVisibleForHost(page, lang, host)) notFound();
-
-  const theme = THEME[detectTenantByHost(host)];
-  const brand = getTextValue('elepay', host);
+  const theme = THEME;
   const title = page.data.title;
   const description = getPageDescription(page);
 
@@ -66,7 +48,9 @@ export async function GET(
             }}
           />
           <div style={{ display: 'flex', fontSize: 32 }}>
-            <span style={{ color: '#FFFFFF', fontWeight: 600 }}>{brand}</span>
+            <span style={{ color: '#FFFFFF', fontWeight: 600 }}>
+              {SITE.brand}
+            </span>
             <span style={{ marginLeft: 12, color: '#7E8DA6', fontWeight: 500 }}>
               Docs
             </span>
@@ -115,9 +99,6 @@ export async function GET(
     {
       width: 1200,
       height: 630,
-      // OG 内容按 host 过滤 (SMCC 专属页隐藏于主站),跨 host 不可共享;明确 no-store
-      // 防止中间 CDN 误缓存把 SMCC 内容透给主站。
-      headers: { 'Cache-Control': 'no-store' },
     },
   );
 }

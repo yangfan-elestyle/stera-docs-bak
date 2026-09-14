@@ -1,19 +1,15 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
-import { getFilteredTreeByHost } from '@/lib/source';
+import { source } from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
 import { notFound } from 'next/navigation';
-import { headers } from 'next/headers';
-import { getRequestHost } from '@/lib/tenant';
-import { getTextValue } from '@/lib/tenant-config';
+import { SITE } from '@/lib/site';
 
 export default async function Layout({
   params,
   children,
 }: LayoutProps<'/[lang]'>) {
   const { lang } = await params;
-  const host = getRequestHost(await headers());
-  const tree = getFilteredTreeByHost(lang, host);
-  const homeTitle = getTextValue('home_sidebar_title', host);
+  const tree = source.pageTree[lang];
 
   if (!tree) {
     return notFound();
@@ -21,11 +17,11 @@ export default async function Layout({
 
   return (
     <DocsLayout
-      {...baseOptions(lang, host)}
+      {...baseOptions(lang)}
       tree={tree}
       tabs={{
         transform: (option) =>
-          option.url === '/' ? { ...option, title: homeTitle } : option,
+          option.url === '/' ? { ...option, title: SITE.docsTitle } : option,
       }}
     >
       {children}

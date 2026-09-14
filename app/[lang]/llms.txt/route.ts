@@ -1,7 +1,7 @@
-import { isPageVisibleForHost, source } from '@/lib/source';
+import { source } from '@/lib/source';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { getRequestHost, getRequestOrigin } from '@/lib/tenant';
+import { getRequestHost, getRequestOrigin } from '@/lib/request';
 import { getPageMarkdownUrl } from '@/lib/url';
 
 export const revalidate = false;
@@ -15,15 +15,13 @@ export async function GET(
   const origin = getRequestOrigin(host);
   const lines = source
     .getPages(lang)
-    .filter((p) => isPageVisibleForHost(p, lang, host))
     .map((p) => `- [${p.data.title}](${getPageMarkdownUrl(p.url, origin)})`);
   return new NextResponse(
-    `# Elepay Documentation\n\n${lines.join('\n')}\n`,
+    `# stera smart one Documentation\n\n${lines.join('\n')}\n`,
     {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
-        // 列表按 host 过滤,跨 host 不可共享;明确 no-store
-        // 防止中间 CDN 误缓存把 SMCC 内容透给主站。
+        // 链接是按请求 Host 生成的绝对 URL,跨 Host 不可共享;明确 no-store。
         'Cache-Control': 'no-store',
       },
     },

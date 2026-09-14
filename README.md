@@ -6,24 +6,23 @@
 - NEVER 写面向人类的 dev server 启动 / 预部署 / 发布命令 (→ workflow.md); 内容生成命令 (generate:data / sync:openapi) 属「命令」可留
 ```
 
-# elepay Docs
+# stera smart one Docs
 
-elepay 与业务线 stera smart one (SMCC) 的统一对外文档站: 多语言 (日 / 英 / 简)、多租户 (按域名分流)、以 Docker 镜像部署。一份代码替代既有两个 readme.io 站点, 按访问域名展示对应业务。
+stera smart one (SMCC) 对外文档站: 多语言 (日 / 英 / 简), 以 Docker 镜像部署。单租户, 无按域名分流。
 
 ## 使用
 
 <!-- prettier-ignore -->
-| 业务 | 本机 (配置 host) | prod |
-|---|---|---|
-| elepay | <http://docs.stg.elepay.localhost:3000> | <https://developer.elepay.io> |
-| SMCC | <http://docs-smcc.stg.elepay.localhost:3000> | <https://guides.sterasmartone.com> (暂未上线) |
+| 环境 | URL |
+|---|---|
+| 本机 | <http://localhost:3000> |
+| prod | <https://guides.sterasmartone.com> (暂未上线) |
 
 > staging 与 prod 是同一份镜像的不同构建 (差异仅 `DOCS_ENV`); 环境域名与 ingress 配置在 `elepay-io/ele-argocd-app`。
 
 ## 特性
 
 - 多语言 Docs & API Reference (日 / 英 / 简)
-- 按域名切换 elepay / SMCC, 共用内容共享一份
 - 全文搜索 (日 / 中分词)
 - AI 入口: 站内助手、LLM Markdown、`llms.txt` / `llms-full.txt`
 - 错误码从后端实时拉取, 失败回退内置快照
@@ -39,7 +38,7 @@ Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bu
 |---|---|
 | `app/[lang]` | App Router: 路由 / 布局 / OG / LLM 入口 / search API |
 | `content/docs` | 文档源 (`index.[lang].mdx` + `meta.[lang].json`) |
-| `lib` | `source.ts` (loader) / `i18n.ts` / `tenant.ts` |
+| `lib` | `source.ts` (loader) / `i18n.ts` / `request.ts` / `site.ts` (站点身份常量) |
 | `components` / `assets` / `public` | 组件 / 资源 / 静态文件 |
 | `scripts` | OpenAPI 生成与同步、错误码快照 |
 | `openapi*.yaml` | OpenAPI 源 (ja / en / zh) |
@@ -56,9 +55,9 @@ bun run sync:openapi     # 从上游私有仓库拉 ja 覆写并翻译 en / zh
 
 ## 架构注意点
 
-- **Host 信源**: 以请求 `Host` 头为唯一信源 (`lib/tenant.ts`), 勿依赖 `X-Forwarded-*`。入口层 (ALB / ingress) MUST 终止 TLS 并透传原始 Host, 否则租户判定与 OG / canonical URL 全错。
+- **Host 信源**: 以请求 `Host` 头为唯一信源 (`lib/request.ts`), 勿依赖 `X-Forwarded-*`。入口层 (ALB / ingress) MUST 终止 TLS 并透传原始 Host, 否则 OG / canonical / llms 的绝对 URL 全错。
 - **`DOCS_ENV` 是构建期变量**: `next.config.mjs` 的 `env` 把它内联进产物, 且决定 `generate:data` 抓哪个环境的错误码快照; 运行期 `-e DOCS_ENV=` 无效, 每环境一份镜像。
-- **Middleware 先于 `public/`**: i18n middleware 把裸路径 rewrite 成 `/{locale}/...`, 命中后不再回落文件系统路由。`public/` 下的静态文件 MUST 在 `middleware.ts` 的 matcher 中排除 (现排除 `docs/**.{png,jpg,jpeg,webp,zip}`), 新增静态资源类型时同步更新。
+- **Middleware 先于 `public/`**: i18n middleware 把裸路径 rewrite 成 `/{locale}/...`, 命中后不再回落文件系统路由。`public/` 下的静态文件 MUST 在 `middleware.ts` 的 matcher 中排除 (现排除 `favicon.ico` 与 `docs/**.{png,jpg,jpeg,webp,zip}`), 新增静态资源类型时同步更新。
 - **`public/` 缓存头**: Node 运行时对 `public/` 默认发 `max-age=0`, 长缓存在 `next.config.mjs` 的 `headers()` 中声明。
 - **构建需要 `.git`**: `source.config.ts` 的 `lastModified()` 插件按文件跑 `git log` 取最終更新日, 构建上下文缺 `.git` 或镜像内缺 `git` 都会让 `next build` 直接失败 -> CI MUST `fetch-depth: 0`, MUST NOT 从无 `.git` 的 tarball 构建。
 
@@ -71,7 +70,8 @@ bun run sync:openapi     # 从上游私有仓库拉 ja 覆写并翻译 en / zh
 - 多语言命名: `index.mdx` (默认 ja) / `index.en.mdx` / `index.zh.mdx`; 缺失语言回退 `index.mdx`。
 - **i18n 不走 URL**: `hideLocale: 'always'` (`lib/i18n.ts`) 使公开 URL 无 locale 前缀; 语言由 cookie 决定 (middleware 设置)。引用 / 构造站内 URL 时 MUST NOT 加 `/ja` `/en` `/zh` (用 `/docs/xxx`, 非 `/en/docs/xxx`)。源码 `app/[lang]` 段与内容文件 `index.[lang].mdx` 是内部 / 文件级 locale, 不映射到 URL。
 - 经别名 `@/*` / `@/.source` 导入; 避免相对路径穿越。
-- 新增 / 修改 `components/**` 下 MDX 组件时, MUST 验证其 `<path>.md` 渲染输出; 仅消费既有组件的 MDX 内容编辑除外。
+- 新增 / 修改 `components/**` 下 MDX 组件时, MUST 验证其 `<path>.md` 渲染输出; 仅消费既有组件的 MDX 内容编辑除外。新增组件须同步登记到 `mdx-components.tsx` + `source.config.ts` 的 `mdxAsPlaceholder` + `lib/llm-postprocess.ts` 的 handler, 漏登记会让 `.md` / `llms-full.txt` 输出残留原始 JSX。
+- 品牌名 / Dashboard URL 等站点身份文案集中在 `lib/site.ts`, MUST NOT 散落硬编码。
 
 ## Fumadocs 约定
 

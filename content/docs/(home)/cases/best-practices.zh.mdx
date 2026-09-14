@@ -2,7 +2,7 @@
 title: 最佳实践
 ---
 
-为稳定接入 EasyCheckout 的推荐事项。各决済方式的差异与内部处理均由 <EText name="elepay" /> 屏蔽，加盟店只需确认 **charge 的最终结果** 即可。
+为稳定接入 EasyCheckout 的推荐事项。各决済方式的差异与内部处理均由 stera smart one 屏蔽，加盟店只需确认 **charge 的最终结果** 即可。
 
 ## 集成时序
 
@@ -21,7 +21,7 @@ title: 最佳实践
     Note over E,S: 非 2xx 触发重试: 1分×3 → 10分×2，最终未达则用同步 API 补偿`}
 />
 
-加盟店服务器创建 EasyQR 码 → 展示给顾客 → 顾客支付 → <EText name="elepay" /> 通过 Webhook 通知结果。接收后的处理见下方最佳实践。
+加盟店服务器创建 EasyQR 码 → 展示给顾客 → 顾客支付 → stera smart one 通过 Webhook 通知结果。接收后的处理见下方最佳实践。
 
 ## 状态生命周期
 

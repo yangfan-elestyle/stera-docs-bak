@@ -2,7 +2,7 @@
 title: iOS SDK
 ---
 
-**elepay iOS SDK**  は <EText name="elepay" /> を iOS アプリに導入するための SDK です。<br />
+**elepay iOS SDK**  は stera smart one を iOS アプリに導入するための SDK です。<br />
 このガイドでは、elepay の SDK を iOS アプリと連携する方法について詳しく説明します。
 
 # 対応バージョン
@@ -38,22 +38,6 @@ pod 'ElepaySDK', '~> 3.0'
 pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
 ```
 
-<EContainer tenant="default">
-
--  Stripe を利用する、かつ elepay SDK が 2.2.0 以上の場合のみ、`Stripe`  を追加してください。
-    ご注意：ElepaySDK 2.x を利用する場合は、`pod 'Stripe', '~> 19.4.1'`  で Stripe を追加してください。
-
-```ruby
-# Only ElepaySDK 3.0 and above supports Stripe 21.x
-# Use "pod 'Stripe', '~> 19.4.1'" if you are using ElepaySDK 2.x
-
-pod 'Stripe', '~> 22.0'
-```
-
-> 🚧 Stripe v23 が iOS 12 のサポートを停止したため、elepay SDK では Stripe v22 までを設定してください。
-
-</EContainer>
-
 -  PayPal を利用する、かつ elepay SDK が 1.7.0 以降の場合のみ、`Braintree`を追加してください。
     **ご注意：** elepay SDK 4.0.0 からは Braintree のサポートが終了しました。PayPal を利用する場合は、elepay SDK 3.x をご利用ください。
 
@@ -65,7 +49,7 @@ pod 'Braintree'
 
 ## 2. Swift Package Manager (SPM)によるインストール
 
-> 📘 elepay iOS SDK 5.0 からは、SPM（Swift Package Manager）を標準の配布方式として提供しております。他のインテグレーション方式に関するご要望がございましたら、<EText name="elepay" /> チームまでお問い合わせください。
+> 📘 elepay iOS SDK 5.0 からは、SPM（Swift Package Manager）を標準の配布方式として提供しております。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
 
 **elepay iOS SDK**  は 3.1.1 から SPM に対応しました。<br />
 **elepay iOS SDK Chinese Payments Plugin**  は 2.0.2 から SPM に対応しました。
@@ -76,14 +60,6 @@ pod 'Braintree'
 -  中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin`  も追加します。
     こちらの URL をご利用ください： `https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`
     バージョンを指定する場合は、2.0.2 以降をご指定ください。
-<EContainer tenant="default">
-
--  Stripe を利用する場合は、`Stripe`  を追加してください。
-    こちらの URL をご利用ください：`https://github.com/stripe/stripe-ios.git`
-    バージョンを指定する場合は、21.8.1 以降をご指定ください。
-
-</EContainer>
-
 -  PayPal を利用する場合は、`Braintree`  を追加してください。
     ご注意：`Braintree`  の最新版 5.x.x は iOS 11 の対応が終了したため、4.x.x をご利用ください。また、4.x.x は SPM に対応していないため、Cocoapods で導入するか、手動でインストールしてください。
 
@@ -111,7 +87,7 @@ Xcode で、**PROJECT**  ＞  **TARGETS**  項目＞  **Info**  タグに�
 
 ### 共通の設定
 
-<EText name="elepay" /> 専用の URL Scheme の取得方法は「[iOS / Android SDK 用
+stera smart one 専用の URL Scheme の取得方法は「[iOS / Android SDK 用
 URL Scheme の取得](/guides/mobile/url-scheme)」へご参照ください。
 
 ![](/docs/URL_Scheme.png)
@@ -138,7 +114,7 @@ Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
 
 > 📘 Public Key について
 >
-> `ELEPAY_APP_PUBLIC_KEY`  を[「<EText name="elepay" /> 管理画面」](https://dashboard.elepay.io/)で発行したものに変更してください
+> `ELEPAY_APP_PUBLIC_KEY`  を[「stera smart one 管理画面」](https://dashboard.sterasmartone.com/)で発行したものに変更してください
 
 ## 4. callback の設定
 
@@ -464,7 +440,7 @@ case let .failed(let codeId, let error):
 
 > 🚧 支払い結果の処理について
 >
-> アプリ内の支払い結果は、ユーザーへの結果照会のみでご使用ください。実際の課金結果は必ずサーバー上の callback API を経由し、<EText name="elepay" /> サーバーから送信されたデータでご確認ください。 *詳しくは elepay API ガイドをご確認ください。*
+> アプリ内の支払い結果は、ユーザーへの結果照会のみでご使用ください。実際の課金結果は必ずサーバー上の callback API を経由し、stera smart one サーバーから送信されたデータでご確認ください。 *詳しくは elepay API ガイドをご確認ください。*
 
 ### 1. Apple Pay について
 
@@ -472,7 +448,7 @@ case let .failed(let codeId, let error):
 
 ![](/docs/xcodee_applepay.png)
 
-2.  Apple Pay の証明書を[「<EText name="elepay" /> 管理画面」-「開発設定」-「Apple Pay」](https://dashboard.elepay.io/)にアップロードしてください。
+2.  Apple Pay の証明書を[「stera smart one 管理画面」-「開発設定」-「Apple Pay」](https://dashboard.sterasmartone.com/)にアップロードしてください。
     証明書の作成方法は[こちらのドキュメント](/guides/mobile/payment-methods-config#apple-pay)でご参照ください。
 
 ### 2. LSApplicationQueriesSchemes（iOS 9 及び以降のシステム）について

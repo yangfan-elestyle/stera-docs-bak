@@ -2,8 +2,8 @@
 title: Android SDK
 ---
 
-**elepay Android SDK** 用于将 <EText name="elepay" /> 集成到 Android 应用中。<br />
-本文将详细说明如何将 Android 应用与 <EText name="elepay" /> SDK 对接。
+**elepay Android SDK** 用于将 stera smart one 集成到 Android 应用中。<br />
+本文将详细说明如何将 Android 应用与 stera smart one SDK 对接。
 
 # 支持版本
 
@@ -85,7 +85,7 @@ val configuration = ElepayConfiguration(
 Elepay.setup(configuration)
 ```
 
-申请 `appKey` 需要 <EText name="elepay" /> 账号。
+申请 `appKey` 需要 stera smart one 账号。
 
 > 📘 建议在应用的 `Application` 类或启动 `Activity` 中执行上述配置。
 
@@ -126,7 +126,7 @@ Elepay.setup(configuration)
 
 ### 回调 Activity 配置
 
-在 `AndroidManifest.xml` 中添加回调 `Activity`，并注册从 elepay 控制台获取的 URL Scheme。
+在 `AndroidManifest.xml` 中添加回调 `Activity`，并注册从 stera smart one 控制台获取的 URL Scheme。
 
 ```xml
 <activity
@@ -146,7 +146,7 @@ Elepay.setup(configuration)
 
 > 🚧 务必注意
 >
-> 上述代码中的 `<data android:scheme="ep1234567890abcdef" />` 的 `scheme` 需替换为 <EText name="elepay" /> 专用 URL Scheme。获取方式见「[获取 iOS / Android SDK 的 URL Scheme](/guides/mobile/url-scheme)」。
+> 上述代码中的 `<data android:scheme="ep1234567890abcdef" />` 的 `scheme` 需替换为 stera smart one 专用 URL Scheme。获取方式见「[获取 iOS / Android SDK 的 URL Scheme](/guides/mobile/url-scheme)」。
 
 处理结果包含在前述 `resultHandler` 回调参数 `ElepayResult` 中。<br />
 `ElepayResult` 包含 `Succeeded`、`Failed`、`Canceled` 三种情况。详见 API Reference。
@@ -207,7 +207,7 @@ Elepay.changeTheme(ElepayTheme.Light)
 
 > 注意
 >
-> 1. 指定 <EText name="elepay" /> 主题会导致系统修改应用的配置数据，可能引起发起 <EText name="elepay" /> 支付流程的 Activity 重启。  
+> 1. 指定 stera smart one 主题会导致系统修改应用的配置数据，可能引起发起 stera smart one 支付流程的 Activity 重启。  
 >    如需避免 Activity 重启，请在 `AndroidManifest.xml` 中为该 Activity 的 `android:configChanges` 增加 `uiMode`。
 > 2. 仅在发起支付流程前调用 `changeTheme` 才会生效。
 

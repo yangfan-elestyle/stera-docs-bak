@@ -2,11 +2,11 @@
 title: 错误代码
 ---
 
-本文列出了 <EText name="elepay" /> API 响应中包含的 `errorCode`。错误代码按首字符进行分类。
+本文列出了 stera smart one API 响应中包含的 `errorCode`。错误代码按首字符进行分类。
 
 - **M** : Merchant / API 端错误 — 请求内容存在问题等需要在商户端修正的错误
 - **U** : User / Transaction 错误 — 卡片被拒、余额不足等由终端用户引起的错误
-- **S** : System 错误 — <EText name="elepay" /> 或支付服务商侧发生的内部错误
+- **S** : System 错误 — stera smart one 或支付服务商侧发生的内部错误
 
 <ErrorCodeTable lang="zh" />
 
@@ -31,18 +31,18 @@ API 返回错误时，响应体的格式如下。
 
 | 字段            | 说明                                                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `errorCode`     | 上表中定义的 <EText name="elepay" /> 标准错误代码。请基于该值进行业务逻辑分支处理。                                                   |
+| `errorCode`     | 上表中定义的 stera smart one 标准错误代码。请基于该值进行业务逻辑分支处理。                                                   |
 | `code`          | 旧 5 位数格式的兼容代码（带 `9_` 前缀）。新项目开发中请勿使用。                                                                       |
 | `message`       | 错误消息。根据 `Accept-Language` 请求头返回日文 / 英文 / 中文（默认日文）。                                                           |
 | `requestId`     | 请求标识符。联系技术支持时请提供该值。                                                                                                |
 | `parameterName` | 校验错误时，存在问题的参数名。不适用时为 `null`。                                                                                     |
-| `providerError` | 透传返回支付服务商（Stripe / PayPay / GMO 等）的原始错误信息。可用于识别 <EText name="elepay" /> 尚未覆盖的服务商特定错误。           |
+| `providerError` | 透传返回支付服务商（Stripe / PayPay / GMO 等）的原始错误信息。可用于识别 stera smart one 尚未覆盖的服务商特定错误。           |
 
 ### 关于 `providerError`
 
-`providerError.code` 与 `providerError.message` 由**支付服务商侧定义**，各服务商的格式有所不同。长期运行下建议基于 `errorCode`（<EText name="elepay" /> 标准）进行分支处理，但在以下场景中 `providerError` 仍然有用。
+`providerError.code` 与 `providerError.message` 由**支付服务商侧定义**，各服务商的格式有所不同。长期运行下建议基于 `errorCode`（stera smart one 标准）进行分支处理，但在以下场景中 `providerError` 仍然有用。
 
-- 当新出现的服务商特定错误在 <EText name="elepay" /> 侧尚未转换为标准代码时
+- 当新出现的服务商特定错误在 stera smart one 侧尚未转换为标准代码时
 - 在服务商控制台或问询时需要使用原始代码时
 - 在日志或数据分析中按服务商分析错误趋势时
 
