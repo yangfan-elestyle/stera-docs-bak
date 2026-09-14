@@ -9,14 +9,12 @@
     "sync:openapi": "bun run scripts/sync-openapi.ts --translate",
     "build": "next build",
     "dev": "next dev",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "start": "next start",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
     "@elepay-io/chatbot": "^0.2.0",
-    "@opennextjs/cloudflare": "^1.19.9",
     "@orama/orama": "^3.1.18",
     "@orama/stopwords": "^3.1.18",
     "@orama/tokenizers": "^3.1.18",
@@ -42,8 +40,7 @@
     "postcss": "^8.5.14",
     "tailwindcss": "^4.2.4",
     "typescript": "^5.9.3",
-    "vite": "^7.3.3",
-    "wrangler": "^4.90.1"
+    "vite": "^7.3.3"
   },
   "patchedDependencies": {
     "fumadocs-openapi@10.8.1": "patches/fumadocs-openapi@10.8.1.patch",

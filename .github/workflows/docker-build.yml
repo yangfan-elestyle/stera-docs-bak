@@ -1,0 +1,58 @@
+# 必需 Secrets (Settings → Secrets and variables → Actions):
+#   PACKAGE_READ_TOKEN   拉取私有依赖 @elepay-io/* (bunfig.toml 用), 需 read:packages
+#   DEPLOY_PAT_TOKEN     向 elepay-io/ele-argocd-app 派发部署事件
+#
+# 部署模型 (GHCR 镜像 + ArgoCD):
+#   docker-build  → 构建并推送 ghcr.io/<owner>/<repo>, 标签含 sha-<sha>
+#   deploy-docker → repository_dispatch 到 elepay-io/ele-argocd-app,
+#                   environment = github.ref_name (master / develop), imageTag = sha-<sha>
+#
+# 触发规则 (master 与 develop 均禁止直接 push, 仅靠 PR merge 流入 → 产生 push 事件):
+#   push develop → DOCS_ENV=staging
+#   push master  → DOCS_ENV=product
+# DOCS_ENV 于 next build 期被内联进产物 (错误码快照 + 运行期 API 地址),
+# 每环境一份镜像, 运行期不可切换。
+#
+# 单镜像同时服务 elepay / SMCC 两个租户: 租户由请求 Host 决定 (lib/tenant.ts),
+# 入口层须透传原始 Host。
+
+name: Build and Deploy Docker Image
+
+on:
+  push:
+    branches: [master, develop]
+
+# 同分支串行, 避免并发推送同一 tag 与并发 ArgoCD 派发。
+concurrency:
+  group: docker-deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy
+    runs-on: self-hosted
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build and push Docker image
+        uses: elepay-io/.github/.github/actions/docker-build@master
+        with:
+          enable_cross_platform: 'false'
+          image_name: ${{ github.repository }}
+          build_args: |
+            DOCS_ENV=${{ github.ref_name == 'master' && 'product' || 'staging' }}
+          build_secrets: |
+            gh_packages_token=${{ secrets.PACKAGE_READ_TOKEN }}
+
+      - name: Deploy to server
+        uses: elepay-io/.github/.github/actions/deploy-docker@master
+        with:
+          pat_token: ${{ secrets.DEPLOY_PAT_TOKEN }}

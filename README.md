@@ -8,15 +8,17 @@
 
 # elepay Docs
 
-elepay 与业务线 stera smart one (SMCC) 的统一对外文档站: 多语言 (日 / 英 / 简)、多租户 (按域名分流)、部署于 Cloudflare Workers。一份代码替代既有两个 readme.io 站点, 按访问域名展示对应业务。
+elepay 与业务线 stera smart one (SMCC) 的统一对外文档站: 多语言 (日 / 英 / 简)、多租户 (按域名分流)、以 Docker 镜像部署。一份代码替代既有两个 readme.io 站点, 按访问域名展示对应业务。
 
 ## 使用
 
 <!-- prettier-ignore -->
-| 业务 | dev (配置 host) | staging | prod |
-|---|---|---|---|
-| elepay | <http://docs.stg.elepay.localhost:3000> | <https://staging-elepay-docs.elestyle.workers.dev> | <https://developer.elepay.io> |
-| SMCC | <http://docs-smcc.stg.elepay.localhost:3000> | <https://staging-smcc-elepay-docs.elestyle.workers.dev> | <https://guides.sterasmartone.com> (暂未上线) |
+| 业务 | 本机 (配置 host) | prod |
+|---|---|---|
+| elepay | <http://docs.stg.elepay.localhost:3000> | <https://developer.elepay.io> |
+| SMCC | <http://docs-smcc.stg.elepay.localhost:3000> | <https://guides.sterasmartone.com> (暂未上线) |
+
+> staging 与 prod 是同一份镜像的不同构建 (差异仅 `DOCS_ENV`); 环境域名与 ingress 配置在 `elepay-io/ele-argocd-app`。
 
 ## 特性
 
@@ -28,7 +30,7 @@ elepay 与业务线 stera smart one (SMCC) 的统一对外文档站: 多语言 (
 
 ## 技术栈
 
-Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bun。部署: Cloudflare Workers + OpenNext + Wrangler 4。
+Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bun。部署: Docker 多阶段构建 (bun 构建 → Next standalone 跑在 Node 24) → GHCR → ArgoCD。
 
 ## 项目结构
 
@@ -54,12 +56,15 @@ bun run sync:openapi     # 从上游私有仓库拉 ja 覆写并翻译 en / zh
 
 ## 架构注意点
 
-- **CF Worker fetch**: `global_fetch_strictly_public` 禁直连同账号资源, 拉同账号服务须走 service binding。
-- **Host 信源**: 以请求 `Host` 头为唯一信源 (`lib/tenant.ts`), 勿依赖 `X-Forwarded-*`。
+- **Host 信源**: 以请求 `Host` 头为唯一信源 (`lib/tenant.ts`), 勿依赖 `X-Forwarded-*`。入口层 (ALB / ingress) MUST 终止 TLS 并透传原始 Host, 否则租户判定与 OG / canonical URL 全错。
+- **`DOCS_ENV` 是构建期变量**: `next.config.mjs` 的 `env` 把它内联进产物, 且决定 `generate:data` 抓哪个环境的错误码快照; 运行期 `-e DOCS_ENV=` 无效, 每环境一份镜像。
+- **Middleware 先于 `public/`**: i18n middleware 把裸路径 rewrite 成 `/{locale}/...`, 命中后不再回落文件系统路由。`public/` 下的静态文件 MUST 在 `middleware.ts` 的 matcher 中排除 (现排除 `docs/**.{png,jpg,jpeg,webp,zip}`), 新增静态资源类型时同步更新。
+- **`public/` 缓存头**: Node 运行时对 `public/` 默认发 `max-age=0`, 长缓存在 `next.config.mjs` 的 `headers()` 中声明。
+- **构建需要 `.git`**: `source.config.ts` 的 `lastModified()` 插件按文件跑 `git log` 取最終更新日, 构建上下文缺 `.git` 或镜像内缺 `git` 都会让 `next build` 直接失败 -> CI MUST `fetch-depth: 0`, MUST NOT 从无 `.git` 的 tarball 构建。
 
 ## 硬约束
 
-- MUST NOT 直接编辑生成产物: `.source/**` / `content/docs/openapi/(generated)/**` / `data/**` / `.next/**` / `.open-next/**` / `out/**` / `cloudflare-env.d.ts` / `next-env.d.ts`。
+- MUST NOT 直接编辑生成产物: `.source/**` / `content/docs/openapi/(generated)/**` / `data/**` / `.next/**` / `out/**` / `next-env.d.ts`。
 - 改 `openapi.yaml` (或 `.en` / `.zh`) 后 MUST 跑 `bun run generate:data` 刷新; 新 clone 仓库 dev / build 前 MUST 先 `generate:data`。
 - mdx 路径变更时, 同步相关 mdx 引用与 `lib/legacy-redirects.mjs`。
 - 改导航 / 排序时, MUST 同步每种语言的 `meta.[lang].json` (ja / en / zh), 否则菜单缺失或乱序。

@@ -1,0 +1,31 @@
+# ai / ide
+# .git MUST NOT 排除: fumadocs-mdx last-modified 插件构建期要读 git 历史。
+.github
+.claude
+.codegraph
+.codex
+.idea
+.vscode
+.mcp.json
+opencode.jsonc
+plan
+
+# deps & build 产物 (镜像内重建)
+node_modules
+.next
+out
+build
+.source
+data
+content/docs/openapi/(generated)
+*.tsbuildinfo
+next-env.d.ts
+
+# local
+.env
+.env*.local
+.tmp
+.DS_Store
+
+# 文档 (不参与构建)
+/*.md

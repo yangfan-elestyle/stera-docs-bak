@@ -12,7 +12,7 @@ export function getRequestHost(headers: HeaderLike): string {
   return firstHeaderValue(headers.get('host'));
 }
 
-// Trust host (CF Custom Domain terminates TLS at edge);
+// Trust host: 入口层 (ALB / ingress) 终止 TLS 并透传原始 Host;
 // ignore X-Forwarded-Proto for the same reason getRequestHost ignores XFH.
 export function getRequestProtocol(host: string) {
   const hostname = host.split(':')[0];

@@ -9,22 +9,38 @@
 
 # 可用工具
 
-- `gh` 已登录 — PR 操作 / 拉私有依赖
-- `wrangler` 已登录, 仅可用不触网的本机命令 (`types` / `dev` / `deploy --dry-run`)
+- `gh` 已登录 (含 `read:packages`) — PR 操作 / 拉私有依赖 / 取 `GH_PACKAGES_TOKEN`
+- `docker` 可用 — 本机构建 + 运行验收
 - `bun` / `bunx` — 包管理 + 脚本执行
 
 # 调试
 
-本机 workerd 预览 = AI 唯一验收方式 (贴近生产运行时, 不需 CF 账号; 无 CF 远端预览可用)。
+迭代用 dev server (有 HMR):
 
 ```bash
-bunx opennextjs-cloudflare build     # next build + OpenNext 打包 → .open-next/
-bunx opennextjs-cloudflare preview   # 仅 wrangler dev, 读 .open-next/ 产物 → http://localhost:8787
+bun run dev    # http://localhost:3000
 ```
 
-验证： <http://localhost:8787> — Chrome DevTools MCP 检查页面
+验收用本机 docker 运行 (= AI 唯一交付判定, 与生产同一镜像):
 
-> 改代码后必须重跑 `build` + `preview` (无 HMR); 仅重跑 `preview` 跑的是旧产物。
+```bash
+export GH_PACKAGES_TOKEN="$(gh auth token)"
+docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
+  --build-arg DOCS_ENV=staging -t elepay-docs:local .
+docker run --rm -p 3000:3000 elepay-docs:local
+```
+
+租户由 `Host` 决定, 验证必须带 Host 头:
+
+```bash
+curl -sI -H 'Host: docs.stg.elepay.localhost' http://localhost:3000/
+curl -sI -H 'Host: docs-smcc.stg.elepay.localhost' http://localhost:3000/
+```
+
+浏览器验证需在 `/etc/hosts` 把 `docs.stg.elepay.localhost` / `docs-smcc.stg.elepay.localhost` 指向 `127.0.0.1`, 再访问 <http://docs.stg.elepay.localhost:3000>。
+
+> 改代码后必须重跑 `docker build` (镜像无 HMR); 仅重跑 `docker run` 跑的是旧镜像。
+> `DOCS_ENV` 是构建期参数, `docker run -e DOCS_ENV=` 改不动已构建产物。
 
 # 发布
 
@@ -34,21 +50,20 @@ bunx opennextjs-cloudflare preview   # 仅 wrangler dev, 读 .open-next/ 产物 
 
 依序执行:
 
-1. 验证: `bun run types:check` + OpenNext 构建 + `bunx wrangler deploy --dry-run`
+1. 验证: `bun run types:check` + `docker build`
 2. 写版本: `package.json#version` + `CHANGELOG.md` + `CHANGELOG.dev.md` 同步编辑
-3. 发布: 本地 commit 收尾 (push / PR / 部署由人类执行, PR merge 自动触发 GHA 部署)
+3. 发布: 本地 commit 收尾 (push / PR 由人类执行, PR merge 自动触发 GHA 构建 + 部署)
 
 ## 1. 验证
 
 ```bash
 bun run generate:data              # 仅 clone 后 / 源数据 (openapi.yaml, 错误码) 变更时
 bun run types:check                # fumadocs-mdx + next typegen + tsc --noEmit
-bunx opennextjs-cloudflare build   # OpenNext 构建 → .open-next/
-bunx wrangler deploy --dry-run     # 校验 wrangler.jsonc + bundle + bindings, 不上传
+docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
+  --build-arg DOCS_ENV=staging -t elepay-docs:local .
 ```
 
-> 尾部 esbuild 警告 (第三方库, 非致命) 属预期。
-> MUST NOT 跑 `opennextjs-cloudflare deploy` / `upload` / `wrangler deploy`。
+> MUST NOT 跑 `docker push` / 手动推 GHCR; 镜像只由 GHA 构建推送。
 
 ## 2. 写版本
 
@@ -64,4 +79,4 @@ git add <...>
 git commit -m "release: vX.Y.Z"
 ```
 
-> 部署触发规则见 `.github/workflows/deploy.yml` 头部注释 (develop merge → staging, develop → master merge → product)。AI MUST NOT 等待 / 轮询 CI 结果。
+> 部署触发规则见 `.github/workflows/docker-build.yml` 头部注释 (push develop → staging, push master → product; 两分支仅经 PR merge 产生 push)。AI MUST NOT 等待 / 轮询 CI 结果。

@@ -1,8 +1,0 @@
-# https://developers.cloudflare.com/workers/static-assets/headers
-# https://opennext.js.org/cloudflare/caching#static-assets-caching
-/_next/static/*
-  Cache-Control: public,max-age=31536000,immutable
-
-# public/docs/** 是 hash 命名的图片与版本化 SDK 包,内容不变 -> 30 天 + immutable。
-/docs/*
-  Cache-Control: public,max-age=2592000,immutable
