@@ -5,8 +5,7 @@
   "version": "0.1.10",
   "private": true,
   "scripts": {
-    "generate:data": "bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts && bun run scripts/snapshot-error-codes.ts",
-    "sync:openapi": "bun run scripts/sync-openapi.ts --translate",
+    "generate:data": "bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",

@@ -5,6 +5,10 @@ import openapiZh from '../openapi.zh.yaml';
 
 const outputDir = 'data/openapi';
 
+assertTagsDeclared('openapi.yaml', openapiJa);
+assertTagsDeclared('openapi.en.yaml', openapiEn);
+assertTagsDeclared('openapi.zh.yaml', openapiZh);
+
 await mkdir(outputDir, { recursive: true });
 
 await Promise.all([
@@ -12,6 +16,34 @@ await Promise.all([
   writeJson('openapi.en.json', openapiEn),
   writeJson('openapi.zh.json', openapiZh),
 ]);
+
+// generate-openapi.ts 用 groupBy: 'tag' 分组; 操作引用了未在顶层 `tags:` 声明的
+// tag 时 fumadocs 不报错, 只会静默产出错误的目录结构 -> 在生成入口显式拦截。
+function assertTagsDeclared(name: string, doc: unknown): void {
+  const d = doc as {
+    tags?: Array<{ name?: string }>;
+    paths?: Record<string, Record<string, unknown>>;
+  };
+  const declared = new Set(
+    (d.tags ?? []).map((t) => t?.name).filter((n): n is string => !!n),
+  );
+  const missing = new Set<string>();
+  for (const pathItem of Object.values(d.paths ?? {})) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+    for (const op of Object.values(pathItem)) {
+      const tags = (op as { tags?: unknown })?.tags;
+      if (!Array.isArray(tags)) continue;
+      for (const t of tags) {
+        if (typeof t === 'string' && !declared.has(t)) missing.add(t);
+      }
+    }
+  }
+  if (missing.size) {
+    throw new Error(
+      `${name}: 操作使用了未在顶层 \`tags:\` 声明的 tag: ${[...missing].sort().join(', ')}`,
+    );
+  }
+}
 
 async function writeJson(name: string, value: unknown) {
   const doc = structuredClone(value);

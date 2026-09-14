@@ -25,8 +25,8 @@ RUN apt-get update \
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# DOCS_ENV 是构建期参数: next.config.mjs 的 `env` 把它内联进产物, 且决定
-# generate:data 抓取哪个环境的错误码快照。运行期覆盖无效 -> 每环境一份镜像。
+# DOCS_ENV 是构建期参数: next.config.mjs 的 `env` 把它内联进产物
+# (非 product 时输出 <meta name="docs-env">)。运行期覆盖无效 -> 每环境一份镜像。
 ARG DOCS_ENV=staging
 ENV DOCS_ENV=${DOCS_ENV}
 ENV NEXT_TELEMETRY_DISABLED=1

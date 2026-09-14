@@ -19,7 +19,6 @@ const FENCE_RE =
   /^[ \t]{0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?^[ \t]{0,3}\1[ \t]*$/gm;
 const BLANK_LINES_RE = /(?:^[ \t]*\r?\n){2,}/gm;
 const HTML_ENTITY_RE = /&(quot|apos|amp|#x[0-9a-f]+|#\d+);/gi;
-let errorCodesPromise: ReturnType<typeof loadErrorCodes> | undefined;
 
 export async function resolveLLMTags(
   markdown: string,
@@ -59,9 +58,8 @@ export async function resolveLLMTags(
         .join('\n\n');
     },
 
-    async ErrorCodeTable() {
-      errorCodesPromise ??= loadErrorCodes();
-      return codeBlock('json', await errorCodesPromise);
+    ErrorCodeTable() {
+      return codeBlock('json', loadErrorCodes());
     },
 
     async APIPage({ attributes }) {

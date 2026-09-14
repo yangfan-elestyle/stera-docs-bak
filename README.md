@@ -3,7 +3,7 @@
 遵循 AGENTS.md 文档编写规范
 - 章节按需增删, 只留项目真有的; 首行一行价值主张
 - 短并列项用表格; 内容生成命令 fenced + `#` 注释同行
-- NEVER 写面向人类的 dev server 启动 / 预部署 / 发布命令 (→ workflow.md); 内容生成命令 (generate:data / sync:openapi) 属「命令」可留
+- NEVER 写面向人类的 dev server 启动 / 预部署 / 发布命令 (→ workflow.md); 内容生成命令 (generate:data) 属「命令」可留
 ```
 
 # stera smart one Docs
@@ -25,7 +25,7 @@ stera smart one (SMCC) 对外文档站: 多语言 (日 / 英 / 简), 以 Docker 
 - 多语言 Docs & API Reference (日 / 英 / 简)
 - 全文搜索 (日 / 中分词)
 - AI 入口: 站内助手、LLM Markdown、`llms.txt` / `llms-full.txt`
-- 错误码从后端实时拉取, 失败回退内置快照
+- 错误码表 (日 / 英 / 简)
 
 ## 技术栈
 
@@ -40,23 +40,22 @@ Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bu
 | `content/docs` | 文档源 (`index.[lang].mdx` + `meta.[lang].json`) |
 | `lib` | `source.ts` (loader) / `i18n.ts` / `request.ts` / `site.ts` (站点身份常量) |
 | `components` / `assets` / `public` | 组件 / 资源 / 静态文件 |
-| `scripts` | OpenAPI 生成与同步、错误码快照 |
+| `scripts` | OpenAPI JSON / MDX 生成 |
 | `openapi*.yaml` | OpenAPI 源 (ja / en / zh) |
+| `error-codes.json` | 错误码表源 |
 
 ## 内容生成命令
 
 ```bash
-bun run generate:data    # 生成 OpenAPI JSON/MDX + 错误码快照; clone 后 / OpenAPI 变更后必跑
-bun run sync:openapi     # 从上游私有仓库拉 ja 覆写并翻译 en / zh
+bun run generate:data    # openapi*.yaml -> data/openapi/*.json + (generated) mdx; clone 后 / OpenAPI 变更后必跑
 ```
 
-> `sync:openapi` 需 `gh` 已登录 (含 `repo` scope) + `claude` 已登录 (用于翻译); 仅要 ja 时直接跑 `scripts/sync-openapi.ts` (去掉 `--translate`)。跑完 OpenAPI 变更须再 `generate:data`。
 > 拉私有依赖 `@elepay-io/*` 需环境变量 `GH_PACKAGES_TOKEN` = 含 read 权限的 GitHub PAT。
 
 ## 架构注意点
 
 - **Host 信源**: 以请求 `Host` 头为唯一信源 (`lib/request.ts`), 勿依赖 `X-Forwarded-*`。入口层 (ALB / ingress) MUST 终止 TLS 并透传原始 Host, 否则 OG / canonical / llms 的绝对 URL 全错。
-- **`DOCS_ENV` 是构建期变量**: `next.config.mjs` 的 `env` 把它内联进产物, 且决定 `generate:data` 抓哪个环境的错误码快照; 运行期 `-e DOCS_ENV=` 无效, 每环境一份镜像。
+- **`DOCS_ENV` 是构建期变量**: `next.config.mjs` 的 `env` 把它内联进产物 (非 product 时输出 `<meta name="docs-env">`); 运行期 `-e DOCS_ENV=` 无效, 每环境一份镜像。
 - **Middleware 先于 `public/`**: i18n middleware 把裸路径 rewrite 成 `/{locale}/...`, 命中后不再回落文件系统路由。`public/` 下的静态文件 MUST 在 `middleware.ts` 的 matcher 中排除 (现排除 `favicon.ico` 与 `docs/**.{png,jpg,jpeg,webp,zip}`), 新增静态资源类型时同步更新。
 - **`public/` 缓存头**: Node 运行时对 `public/` 默认发 `max-age=0`, 长缓存在 `next.config.mjs` 的 `headers()` 中声明。
 - **构建需要 `.git`**: `source.config.ts` 的 `lastModified()` 插件按文件跑 `git log` 取最終更新日, 构建上下文缺 `.git` 或镜像内缺 `git` 都会让 `next build` 直接失败 -> CI MUST `fetch-depth: 0`, MUST NOT 从无 `.git` 的 tarball 构建。
@@ -64,7 +63,10 @@ bun run sync:openapi     # 从上游私有仓库拉 ja 覆写并翻译 en / zh
 ## 硬约束
 
 - MUST NOT 直接编辑生成产物: `.source/**` / `content/docs/openapi/(generated)/**` / `data/**` / `.next/**` / `out/**` / `next-env.d.ts`。
-- 改 `openapi.yaml` (或 `.en` / `.zh`) 后 MUST 跑 `bun run generate:data` 刷新; 新 clone 仓库 dev / build 前 MUST 先 `generate:data`。
+- 改 `openapi*.yaml` 后 MUST 跑 `bun run generate:data` 刷新; 新 clone 仓库 dev / build 前 MUST 先 `generate:data`。
+- 改 `openapi.yaml` (ja) 时 MUST 同时改 `openapi.en.yaml` / `openapi.zh.yaml`; 三份 yaml 的 path / operationId / `$ref` / enum MUST 完全一致, 仅自然语言字段 (summary / description / example 文案) 按语言不同。
+- OpenAPI 新增 tag 时 MUST 同时在三份 yaml 的顶层 `tags:` 声明, 否则 `generate:data` 直接报错。
+- 改 `error-codes.json` 无需生成步骤 (组件直接 import), 但每项 `message` MUST 含 `ja` / `en` / `zh-CN` 三个 key。
 - mdx 路径变更时, 同步相关 mdx 引用与 `lib/legacy-redirects.mjs`。
 - 改导航 / 排序时, MUST 同步每种语言的 `meta.[lang].json` (ja / en / zh), 否则菜单缺失或乱序。
 - 多语言命名: `index.mdx` (默认 ja) / `index.en.mdx` / `index.zh.mdx`; 缺失语言回退 `index.mdx`。

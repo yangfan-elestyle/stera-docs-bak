@@ -31,8 +31,7 @@ next-env.d.ts
 .tmp/
 
 content/docs/openapi/(generated)/
-.claude/*
-!.claude/skills/
+.claude/
 
 # generated data
 /data/

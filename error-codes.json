@@ -1,0 +1,783 @@
+[
+  {
+    "code": "M001000",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "There are problems with setting up the account.",
+      "zh-TW": "存在帳戶設置問題。",
+      "zh-CN": "存在账户设置问题。",
+      "ja": "アカウントの設定に問題があります。"
+    }
+  },
+  {
+    "code": "M001001",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The payment method is not valid.",
+      "zh-TW": "支付方法無效。",
+      "zh-CN": "支付方法无效。",
+      "ja": "決済方法は有効していません。"
+    }
+  },
+  {
+    "code": "M001002",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The payment method is incorrect.",
+      "zh-TW": "支付方法不正確。",
+      "zh-CN": "支付方法不正确。",
+      "ja": "決済方法が正しくありません。"
+    }
+  },
+  {
+    "code": "M001003",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "Terminal payment is not valid.",
+      "zh-TW": "終端支付無效。",
+      "zh-CN": "终端支付无效。",
+      "ja": "端末決済は有効ではありません。"
+    }
+  },
+  {
+    "code": "M001004",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "This payment method does not support authorization.",
+      "zh-TW": "該支付方式不支持授權。",
+      "zh-CN": "该支付方式不支持授权。",
+      "ja": "該当決済方法は承認をサポートしていません。"
+    }
+  },
+  {
+    "code": "M002001",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "Required parameters are missing.",
+      "zh-TW": "缺少必要參數。",
+      "zh-CN": "缺少必要参数。",
+      "ja": "必要なパラメータがありません。"
+    }
+  },
+  {
+    "code": "M002002",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The value of the parameter provided is incorrect.",
+      "zh-TW": "提供的參數值錯誤。",
+      "zh-CN": "提供的参数值有误。",
+      "ja": "提供されたパラメータの値が正しくありません。"
+    }
+  },
+  {
+    "code": "M002003",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The requested resource does not exist.",
+      "zh-TW": "請求的資源不存在。",
+      "zh-CN": "请求的资源不存在。",
+      "ja": "要求されたリソースは存在しません。"
+    }
+  },
+  {
+    "code": "M002004",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The resource already exists.",
+      "zh-TW": "資源已經存在。",
+      "zh-CN": "资源已经存在。",
+      "ja": "リソースが既に存在します。"
+    }
+  },
+  {
+    "code": "M002005",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "Unsupported operation.",
+      "zh-TW": "不支援的操作。",
+      "zh-CN": "不支持的操作。",
+      "ja": "サポートされていない操作。"
+    }
+  },
+  {
+    "code": "M002006",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The created resource exceeds the limit.",
+      "zh-TW": "創建的資源超過限制。",
+      "zh-CN": "创建的资源超过限制。",
+      "ja": "作成されたリソースが制限を超えています。"
+    }
+  },
+  {
+    "code": "M002007",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The order number has already been paid.",
+      "zh-TW": "該訂單號已經被支付。",
+      "zh-CN": "该订单号已经被支付。",
+      "ja": "該当注文番号はすでに支払済み。"
+    }
+  },
+  {
+    "code": "M002008",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The code has already been paid or cancelled.",
+      "zh-TW": "該Code已經被支付或者取消。",
+      "zh-CN": "该Code已经被支付或者取消。",
+      "ja": "該当コードはすでに支払われたか、またはキャンセルされています。"
+    }
+  },
+  {
+    "code": "M002009",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "This currency is not supported.",
+      "zh-TW": "不支援此貨幣。",
+      "zh-CN": "不支持此货币。",
+      "ja": "該当通貨はサポートされていません。"
+    }
+  },
+  {
+    "code": "M002010",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "This payment method does not support multiple authorizations.",
+      "zh-TW": "該支付方式不支持多次授權。",
+      "zh-CN": "该支付方法不支持多次授权。",
+      "ja": "この支払い方法は複数の承認をサポートしていません。"
+    }
+  },
+  {
+    "code": "M002012",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The terminal of this readerId is not valid.",
+      "zh-TW": "該readerId的終端不是有效的。",
+      "zh-CN": "该readerId的终端不是有效的。",
+      "ja": "このreaderIdの端末は有効ではありません。"
+    }
+  },
+  {
+    "code": "M003000",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The call method provided is incorrect.",
+      "zh-TW": "提供的調用方法錯誤。",
+      "zh-CN": "提供的调用方法有误。",
+      "ja": "提供されたコールメソッドが正しくありません。"
+    }
+  },
+  {
+    "code": "M004001",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The API key provided is invalid.",
+      "zh-TW": "提供的API金鑰無效。",
+      "zh-CN": "提供的API密钥无效。",
+      "ja": "提供されたAPIキーが無効です。"
+    }
+  },
+  {
+    "code": "M004002",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "Required authentication parameters are missing.",
+      "zh-TW": "缺少必要的認證參數。",
+      "zh-CN": "缺少必要的认证参数。",
+      "ja": "必要な認証パラメータがありません。"
+    }
+  },
+  {
+    "code": "M004003",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The requested operation is not allowed.",
+      "zh-TW": "不允許的操作。",
+      "zh-CN": "不允许的操作。",
+      "ja": "要求された操作は許可されていません。"
+    }
+  },
+  {
+    "code": "M005000",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "There have been too many requests in a short period of time.",
+      "zh-TW": "請求過於頻繁。",
+      "zh-CN": "请求太过频繁。",
+      "ja": "短時間に多くの要求がありました。"
+    }
+  },
+  {
+    "code": "M006000",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The current status is invalid.",
+      "zh-TW": "當前狀態無效。",
+      "zh-CN": "当前状态无效。",
+      "ja": "この操作は現在のステータスに対して実行できません。"
+    }
+  },
+  {
+    "code": "M006001",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "Another operation is currently in progress.",
+      "zh-TW": "另一個操作正在進行中。",
+      "zh-CN": "另一个操作正在进行中。",
+      "ja": "別の操作が進行中です。"
+    }
+  },
+  {
+    "code": "M006002",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The requested operation has already been completed.",
+      "zh-TW": "請求的操作已經完成。",
+      "zh-CN": "请求的操作已经完成。",
+      "ja": "要求された操作はすでに終了しています。"
+    }
+  },
+  {
+    "code": "M006003",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The code has already been paid or cancelled.",
+      "zh-TW": "該Code已經被支付或者取消。",
+      "zh-CN": "该Code已经被支付或者取消。",
+      "ja": "該当コードはすでに支払われたか、またはキャンセルされています。"
+    }
+  },
+  {
+    "code": "M006004",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "This code has already expired.",
+      "zh-TW": "該Code已經過期。",
+      "zh-CN": "该Code已经过期。",
+      "ja": "該当コードはすでに期限切れです。"
+    }
+  },
+  {
+    "code": "M006005",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The cancellation operation needs to be carried out on the terminal.",
+      "zh-TW": "取消操作需要在終端上進行。",
+      "zh-CN": "取消操作需要在终端上进行。",
+      "ja": "キャンセル操作は端末上で行う必要があります。"
+    }
+  },
+  {
+    "code": "M006006",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The payment is in dispute and cannot be refunded.",
+      "zh-TW": "該支付處於爭議中，無法退款。",
+      "zh-CN": "该支付处于争议中，无法退款。",
+      "ja": "この支払いは紛争中で、返金できません。"
+    }
+  },
+  {
+    "code": "M006007",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "Payments that have been completed cannot be cancelled, please use the refund operation.",
+      "zh-TW": "不能取消已經完成的支付，請使用退款操作。",
+      "zh-CN": "不能取消已经完成的支付，请使用退款操作",
+      "ja": "完了した支払いはキャンセルできません、返金操作を使用してください。"
+    }
+  },
+  {
+    "code": "M007001",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The merchant's transaction limit has been exceeded.",
+      "zh-TW": "超過商戶交易限制。",
+      "zh-CN": "超过商户交易限制。",
+      "ja": "マーチャントの取引限度額を超えています。"
+    }
+  },
+  {
+    "code": "M007002",
+    "httpStatus": 400,
+    "category": "merchant",
+    "message": {
+      "en": "The merchant's refund limit has been exceeded.",
+      "zh-TW": "超過商戶退款上限。",
+      "zh-CN": "超过商户退款上限。",
+      "ja": "マーチャントの返金上限を超えています。"
+    }
+  },
+  {
+    "code": "S001000",
+    "httpStatus": 500,
+    "category": "system",
+    "message": {
+      "en": "There was an internal error.",
+      "zh-TW": "發生了內部錯誤。",
+      "zh-CN": "发生了内部错误。",
+      "ja": "内部エラーが発生しました。"
+    }
+  },
+  {
+    "code": "S001001",
+    "httpStatus": 500,
+    "category": "system",
+    "message": {
+      "en": "There was a problem connecting to the payment service. Please try again later.",
+      "zh-TW": "連接支付服務時遇到問題，請稍候再試。",
+      "zh-CN": "连接支付服务时遇到问题，请稍候再试。",
+      "ja": "支払いサービスへの接続に問題がありました。後ほど再度お試しください。"
+    }
+  },
+  {
+    "code": "S002000",
+    "httpStatus": 500,
+    "category": "system",
+    "message": {
+      "en": "The system is currently undergoing maintenance.",
+      "zh-TW": "系統正在維護中。",
+      "zh-CN": "系统正在维护中。",
+      "ja": "システムは現在メンテナンス中です。"
+    }
+  },
+  {
+    "code": "S002001",
+    "httpStatus": 500,
+    "category": "system",
+    "message": {
+      "en": "The payment service provider is currently under maintenance. Please use an alternative payment method.",
+      "zh-TW": "該支付服務提供商正在維護中，請使用其他支付方式。",
+      "zh-CN": "该支付服务提供商正在维护中，请使用其他支付方式。",
+      "ja": "この支払いサービスプロバイダーは現在メンテナンス中です。別の支払い方法をご利用ください。"
+    }
+  },
+  {
+    "code": "U001000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Insufficient balance. Try another method or add funds.",
+      "zh-TW": "餘額不足，請嘗試其他支付方式或充值。",
+      "zh-CN": "余额不足，请尝试其他支付方式或充值。",
+      "ja": "残高不足です。他の方法を試すか、資金を追加してください。"
+    }
+  },
+  {
+    "code": "U001001",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Insufficient balance. Please add funds or use another payment method.",
+      "zh-TW": "餘額不足，請充值或使用其他支付方式。",
+      "zh-CN": "余额不足，请充值或使用其他支付方式。",
+      "ja": "残高不足です。資金を追加するか、別の支払方法を使用してください。"
+    }
+  },
+  {
+    "code": "U001002",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Credit limit not sufficient. Please use another card or payment method.",
+      "zh-TW": "信用卡額度不足，請使用其他卡片或支付方式。",
+      "zh-CN": "信用卡额度不足，请使用其他卡片或支付方式。",
+      "ja": "クレジット限度額が不十分です。別のカードまたは支払方法を使用してください。"
+    }
+  },
+  {
+    "code": "U002000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Payment limit exceeded. Try another method.",
+      "zh-TW": "超出支付限制，請嘗試其他支付方式。",
+      "zh-CN": "超出支付限制，请尝试其他支付方式。",
+      "ja": "支払い限度を超えました。他の方法を試してください。"
+    }
+  },
+  {
+    "code": "U002001",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Single transaction limit exceeded. Try a smaller amount or another method.",
+      "zh-TW": "超出單筆交易限額，請嘗試較小金額或其他支付方式。",
+      "zh-CN": "超出单笔交易限额，请尝试较小金额或其他支付方式。",
+      "ja": "1回の取引限度額を超えています。より少ない金額で試すか、別の方法を使用してください。"
+    }
+  },
+  {
+    "code": "U002002",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Daily transaction limit exceeded. Try again tomorrow or use another method.",
+      "zh-TW": "超出每日交易限額，請明天再試或使用其他支付方式。",
+      "zh-CN": "超出每日交易限额，请明天再试或使用其他支付方式。",
+      "ja": "1日の取引限度額を超えています。明日再試行するか、別の方法を使用してください。"
+    }
+  },
+  {
+    "code": "U002003",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Monthly transaction limit exceeded. Try again next month or use another method.",
+      "zh-TW": "超出每月交易限額，請下月再試或使用其他支付方式。",
+      "zh-CN": "超出每月交易限额，请下月再试或使用其他支付方式。",
+      "ja": "月間取引限度額を超えています。来月再試行するか、別の方法を使用してください。"
+    }
+  },
+  {
+    "code": "U003000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Incorrect payment info. Please verify or use another method.",
+      "zh-TW": "支付資訊錯誤，請核對或嘗試其他支付方式。",
+      "zh-CN": "支付信息错误，请核对或尝试其他支付方式。",
+      "ja": "支払情報に誤りがあります。確認するか、他の方法を試してください。"
+    }
+  },
+  {
+    "code": "U003001",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Incorrect card number. Please check and try again.",
+      "zh-TW": "卡號錯誤，請檢查後再試。",
+      "zh-CN": "卡号错误，请检查后再试。",
+      "ja": "カード番号が誤っています。確認してから再試行してください。"
+    }
+  },
+  {
+    "code": "U003002",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Card expired. Use another card or payment method.",
+      "zh-TW": "該卡已過期，請使用其他卡或支付方式。",
+      "zh-CN": "该卡已过期，请使用其他卡或支付方式。",
+      "ja": "カードの有効期限が切れています。別のカードまたは支払方法を使用してください。"
+    }
+  },
+  {
+    "code": "U003003",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Invalid CVC. Please check and try again.",
+      "zh-TW": "CVC無效，請檢查後再試。",
+      "zh-CN": "CVC无效，请检查后再试。",
+      "ja": "CVCが無効です。確認してから再試行してください。"
+    }
+  },
+  {
+    "code": "U003004",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Incorrect address. Please verify and try again.",
+      "zh-TW": "地址錯誤，請核對後再試。",
+      "zh-CN": "地址错误，请核对后再试。",
+      "ja": "住所に誤りがあります。確認してから再試行してください。"
+    }
+  },
+  {
+    "code": "U003005",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Incorrect password. Please check and try again.",
+      "zh-TW": "密碼錯誤，請檢查後再試。",
+      "zh-CN": "密码错误，请检查后再试。",
+      "ja": "パスワードが間違っています。確認してから再試行してください。"
+    }
+  },
+  {
+    "code": "U003006",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "The QR code is invalid. Please refresh your payment QR code or try a different method.",
+      "zh-TW": "QR碼無效，請刷新支付QR碼或嘗試其他方式。",
+      "zh-CN": "二维码无效，请刷新支付二维码或尝试其他方式。",
+      "ja": "QRコードが無効です。支払いQRコードを更新するか、別の方法を試してください。"
+    }
+  },
+  {
+    "code": "U003007",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "The QR code may have been used. Please check if your payment was successful or refresh the QR code.",
+      "zh-TW": "QR碼可能已被使用，請檢查支付是否成功或刷新QR碼。",
+      "zh-CN": "二维码可能已被使用，请检查支付是否成功或刷新二维码。",
+      "ja": "QRコードは既に使用されている可能性があります。支払いが成功したか確認するか、QRコードを更新してください。"
+    }
+  },
+  {
+    "code": "U003008",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "The QR code has expired. Please refresh your payment QR code and try again.",
+      "zh-TW": "QR碼已過期，請刷新支付QR碼後再試。",
+      "zh-CN": "二维码已过期，请刷新支付二维码后再试。",
+      "ja": "QRコードの有効期限が切れています。支払いQRコードを更新して再試行してください。"
+    }
+  },
+  {
+    "code": "U003009",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "3D Secure authentication failed. Try again or use another method.",
+      "zh-TW": "3D安全認證失敗，請重試或使用其他支付方式。",
+      "zh-CN": "3D安全认证失败，请重试或使用其他支付方式。",
+      "ja": "3Dセキュア認証に失敗しました。再試行するか、別の方法を使用してください。"
+    }
+  },
+  {
+    "code": "U003010",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Account settings incorrect. Please update settings and try again.",
+      "zh-TW": "帳戶設置錯誤，請更新設置後再試。",
+      "zh-CN": "账户设置错误，请更新设置后再试。",
+      "ja": "アカウント設定に誤りがあります。設定を更新してから再試行してください。"
+    }
+  },
+  {
+    "code": "U003011",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Authorization expired. Please reauthorize and try again.",
+      "zh-TW": "授權已過期，請重新授權後再試。",
+      "zh-CN": "授权已过期，请重新授权后再试。",
+      "ja": "承認の有効期限が切れています。再承認してから再試行してください。"
+    }
+  },
+  {
+    "code": "U004000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Transaction rejected. Try another method or contact your bank.",
+      "zh-TW": "交易被拒，請嘗試其他支付方式或聯繫銀行。",
+      "zh-CN": "交易被拒，请尝试其他支付方式或联系银行。",
+      "ja": "取引が拒否されました。他の方法を試すか、銀行に連絡してください。"
+    }
+  },
+  {
+    "code": "U004001",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Currency not supported. Try another currency or method.",
+      "zh-TW": "不支援該貨幣，請嘗試其他貨幣或支付方式。",
+      "zh-CN": "不支持该货币，请尝试其他货币或支付方式。",
+      "ja": "この通貨はサポートされていません。他の通貨または方法を試してください。"
+    }
+  },
+  {
+    "code": "U004002",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Card type not supported. Please use a different card or method.",
+      "zh-TW": "不支援此類卡，請使用其他類型的卡或支付方式。",
+      "zh-CN": "不支持此类卡，请使用其他类型的卡或支付方式。",
+      "ja": "このカードタイプはサポートされていません。別のカードまたは方法を試してください。"
+    }
+  },
+  {
+    "code": "U004003",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Transaction type not supported. Try another method.",
+      "zh-TW": "不支援此交易類型，請嘗試其他支付方式。",
+      "zh-CN": "不支持此交易类型，请尝试其他支付方式。",
+      "ja": "この取引タイプはサポートされていません。他の方法を試してください。"
+    }
+  },
+  {
+    "code": "U004004",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Account deactivated. Contact support or use another account.",
+      "zh-TW": "帳戶已停用，請聯繫客服或使用其他帳戶。",
+      "zh-CN": "账户已停用，请联系客服或使用其他账户。",
+      "ja": "アカウントが無効になっています。サポートに連絡するか、別のアカウントを使用してください。"
+    }
+  },
+  {
+    "code": "U004005",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Account reported lost. Contact your bank or use another account.",
+      "zh-TW": "帳戶已報失，請聯繫銀行或使用其他帳戶。",
+      "zh-CN": "账户已报失，请联系银行或使用其他账户。",
+      "ja": "アカウントが紛失と報告されました。銀行に連絡するか、別のアカウントを使用してください。"
+    }
+  },
+  {
+    "code": "U004006",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Transaction location not supported. Try another location or method.",
+      "zh-TW": "不支援此交易地點，請嘗試其他地點或支付方式。",
+      "zh-CN": "不支持此交易地点，请尝试其他地点或支付方式。",
+      "ja": "この取引場所はサポートされていません。他の場所または方法を試してください。"
+    }
+  },
+  {
+    "code": "U005000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Too many attempts. Please wait before retrying.",
+      "zh-TW": "嘗試次數過多，請稍後再試。",
+      "zh-CN": "尝试次数过多，请稍后再试。",
+      "ja": "試行回数が多すぎます。再試行する前にお待ちください。"
+    }
+  },
+  {
+    "code": "U006000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Payment cancelled. Try again or use another method.",
+      "zh-TW": "支付已取消，請重新嘗試或使用其他支付方式。",
+      "zh-CN": "支付已取消，请重新尝试或使用其他支付方式。",
+      "ja": "支払いがキャンセルされました。再試行するか、他の方法を使用してください。"
+    }
+  },
+  {
+    "code": "U006001",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Authorization denied. Try another method or contact support.",
+      "zh-TW": "授權被拒絕，請嘗試其他支付方式或聯繫客服。",
+      "zh-CN": "授权被拒绝，请尝试其他支付方式或联系客服。",
+      "ja": "承認が拒否されました。他の方法を試すか、サポートに連絡してください。"
+    }
+  },
+  {
+    "code": "U007000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Transaction deadline exceeded. Please retry or use another method.",
+      "zh-TW": "超過交易期限，請重新嘗試或使用其他支付方式。",
+      "zh-CN": "超过交易期限，请重新尝试或使用其他支付方式。",
+      "ja": "取引期限を超えました。再試行するか、他の方法を使用してください。"
+    }
+  },
+  {
+    "code": "U007001",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Payment deadline exceeded. Please retry or use another method.",
+      "zh-TW": "支付截止日期已過，請重試或使用其他支付方式。",
+      "zh-CN": "支付截止日期已过，请重试或使用其他支付方式。",
+      "ja": "支払期限を超えています。再試行するか、別の方法を使用してください。"
+    }
+  },
+  {
+    "code": "U007002",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Refund deadline exceeded. Contact support for assistance.",
+      "zh-TW": "退款截止日期已過，請聯繫客服尋求幫助。",
+      "zh-CN": "退款截止日期已过，请联系客服寻求帮助。",
+      "ja": "返金期限を超えています。サポートに連絡して支援を受けてください。"
+    }
+  },
+  {
+    "code": "U008000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Amount out of range. Adjust and retry.",
+      "zh-TW": "金額超出範圍，請調整後重試。",
+      "zh-CN": "金额超出范围，请调整后重试。",
+      "ja": "金額が範囲外です。調整して再試行してください。"
+    }
+  },
+  {
+    "code": "U008001",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Amount too large. Please reduce and try again.",
+      "zh-TW": "金額過大，請減少金額後重試。",
+      "zh-CN": "金额过大，请减少金额后重试。",
+      "ja": "金額が大きすぎます。減らしてから再試行してください。"
+    }
+  },
+  {
+    "code": "U008002",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Amount too small. Please increase and try again.",
+      "zh-TW": "金額過小，請增加金額後重試。",
+      "zh-CN": "金额过小，请增加金额后重试。",
+      "ja": "金額が小さすぎます。増やしてから再試行してください。"
+    }
+  },
+  {
+    "code": "U009000",
+    "httpStatus": 400,
+    "category": "user",
+    "message": {
+      "en": "Further action required. Please follow the instructions.",
+      "zh-TW": "需要進一步操作，請按照指示操作。",
+      "zh-CN": "需要进一步操作，请按照指示操作。",
+      "ja": "追加のアクションが必要です。指示に従ってください。"
+    }
+  }
+]

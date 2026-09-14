@@ -57,7 +57,7 @@ curl -sI http://localhost:3000/get-started/set-up.md   # 200
 ## 1. 验证
 
 ```bash
-bun run generate:data              # 仅 clone 后 / 源数据 (openapi.yaml, 错误码) 变更时
+bun run generate:data              # 仅 clone 后 / openapi*.yaml 变更时
 bun run types:check                # fumadocs-mdx + next typegen + tsc --noEmit
 docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
   --build-arg DOCS_ENV=staging -t elepay-docs:local .
