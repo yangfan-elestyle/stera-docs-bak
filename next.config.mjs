@@ -1,5 +1,4 @@
 import { createMDX } from 'fumadocs-mdx/next';
-import { legacyRedirects } from './lib/legacy-redirects.mjs';
 
 const withMDX = createMDX();
 
@@ -37,13 +36,6 @@ const config = {
         },
       ],
     };
-  },
-  async redirects() {
-    return legacyRedirects.map((r) => ({
-      source: r.source,
-      destination: r.destination,
-      permanent: true,
-    }));
   },
 };
 

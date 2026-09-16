@@ -1,5 +1,4 @@
 # 必需 Secrets (Settings → Secrets and variables → Actions):
-#   PACKAGE_READ_TOKEN   拉取私有依赖 @elepay-io/* (bunfig.toml 用), 需 read:packages
 #   DEPLOY_PAT_TOKEN     向 elepay-io/ele-argocd-app 派发部署事件
 #
 # 部署模型 (GHCR 镜像 + ArgoCD):
@@ -52,8 +51,6 @@ jobs:
           image_name: ${{ github.repository }}
           build_args: |
             DOCS_ENV=${{ github.ref_name == 'master' && 'product' || 'staging' }}
-          build_secrets: |
-            gh_packages_token=${{ secrets.PACKAGE_READ_TOKEN }}
 
       - name: Deploy to server
         uses: elepay-io/.github/.github/actions/deploy-docker@master

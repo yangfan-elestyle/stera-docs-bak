@@ -56,8 +56,6 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 > 内容库固定在 `data/cms.db` (路径写死, 不走 env), 线上由持久卷挂在 `/app/data`。
 > 空库启动会自动灌一次 seed, 与 `import:seed` 是同一段代码。
 
-> 拉私有依赖 `@elepay-io/*` 需环境变量 `GH_PACKAGES_TOKEN` = 含 read 权限的 GitHub PAT。
-
 ## 架构注意点
 
 - **Host 信源**: 以请求 `Host` 头为唯一信源 (`lib/request.ts`), 勿依赖 `X-Forwarded-*`。入口层 (ALB / ingress) MUST 终止 TLS 并透传原始 Host, 否则 OG / canonical / llms 的绝对 URL 全错。
@@ -75,7 +73,7 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 - 改 `openapi.yaml` (ja) 时 MUST 同时改 `openapi.en.yaml` / `openapi.zh.yaml`; 三份 yaml 的 path / operationId / `$ref` / enum MUST 完全一致, 仅自然语言字段 (summary / description / example 文案) 按语言不同。
 - OpenAPI 新增 tag 时 MUST 同时在三份 yaml 的顶层 `tags:` 声明, 否则 `generate:data` 直接报错。
 - 改 `error-codes.json` 无需生成步骤 (组件直接 import), 但每项 `message` MUST 含 `ja` / `en` / `zh-CN` 三个 key。
-- mdx 路径变更时, 同步相关 mdx 引用与 `lib/legacy-redirects.mjs`。
+- mdx 路径变更时, 同步相关 mdx 引用。
 - 改导航 / 排序时, MUST 同步每种语言的 `meta.[lang].json` (ja / en / zh), 否则菜单缺失或乱序。
 - 多语言命名: `index.mdx` (默认 ja) / `index.en.mdx` / `index.zh.mdx`; 缺失语言回退 `index.mdx`。
 - **i18n 不走 URL**: `hideLocale: 'always'` (`lib/i18n.ts`) 使公开 URL 无 locale 前缀; 语言由 cookie 决定 (middleware 设置)。引用 / 构造站内 URL 时 MUST NOT 加 `/ja` `/en` `/zh` (用 `/docs/xxx`, 非 `/en/docs/xxx`)。源码 `app/[lang]` 段与内容文件 `index.[lang].mdx` 是内部 / 文件级 locale, 不映射到 URL。

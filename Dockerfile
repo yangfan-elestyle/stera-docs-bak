@@ -1,19 +1,17 @@
 # syntax=docker/dockerfile:1
 
-# deps: 仅解析依赖。GH_PACKAGES_TOKEN 走 BuildKit secret, 不落任何镜像层。
+# deps: 仅解析依赖。全部来自公共 registry, 无需 token。
 FROM oven/bun:1.4.2-slim AS deps
 WORKDIR /app
 
 # postinstall 跑 fumadocs-mdx, 需要 source.config.ts; patchedDependencies 需要 patches/。
 # source.config.ts 与运行期共用 lib/content-schema.ts (一份 schema, 两条编译路径),
 # esbuild 解析不到它 postinstall 会直接失败 -> 这一层必须单独带上。
-COPY package.json bun.lock bunfig.toml source.config.ts ./
+COPY package.json bun.lock source.config.ts ./
 COPY lib/content-schema.ts ./lib/content-schema.ts
 COPY patches ./patches
 
-RUN --mount=type=secret,id=gh_packages_token \
-    GH_PACKAGES_TOKEN="$(cat /run/secrets/gh_packages_token 2>/dev/null || true)" \
-    bun install --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 # builder: 生成数据 + next build (output: 'standalone')。
 FROM oven/bun:1.4.2-slim AS builder

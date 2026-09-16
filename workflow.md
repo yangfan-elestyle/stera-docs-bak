@@ -9,7 +9,7 @@
 
 # 可用工具
 
-- `gh` 已登录 (含 `read:packages`) — PR 操作 / 拉私有依赖 / 取 `GH_PACKAGES_TOKEN`
+- `gh` 已登录 — PR 操作
 - `docker` 可用 — 本机构建 + 运行验收
 - `bun` / `bunx` — 包管理 + 脚本执行
 
@@ -24,10 +24,8 @@ bun run dev    # http://localhost:3000
 验收用本机 docker 运行 (= AI 唯一交付判定, 与生产同一镜像):
 
 ```bash
-export GH_PACKAGES_TOKEN="$(gh auth token)"
-docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
-  --build-arg DOCS_ENV=staging -t stera-docs:local .
-docker run --rm -p 3000:3000 stera-docs:local
+docker build --build-arg DOCS_ENV=staging -t stera-docs:local .
+docker run --rm -p 3000:3000 -v stera-data:/app/data stera-docs:local
 ```
 
 单租户, 任意 Host 内容一致; 冒烟四条:
@@ -59,8 +57,7 @@ curl -sI http://localhost:3000/get-started/set-up.md   # 200
 ```bash
 bun run generate:data              # 仅 clone 后 / openapi*.yaml 变更时
 bun run types:check                # fumadocs-mdx + next typegen + tsc --noEmit
-docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
-  --build-arg DOCS_ENV=staging -t stera-docs:local .
+docker build --build-arg DOCS_ENV=staging -t stera-docs:local .
 ```
 
 > MUST NOT 跑 `docker push` / 手动推 GHCR; 镜像只由 GHA 构建推送。
