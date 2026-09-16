@@ -31,7 +31,7 @@ function getRequestBaseUrl(hdrs: Awaited<ReturnType<typeof headers>>) {
   }
 }
 
-export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
+export default async function Page(props: PageProps<'/[lang]/[...slug]'>) {
   const { slug, lang } = await props.params;
   const src = await getSource();
   const page = src.getPage(slug, lang);
@@ -55,7 +55,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const footerItems = getFooterItems(src, page, lang);
 
   // 概要页（EHome 导航卡片，无真实 markdown 正文）移除 markdown 相关功能
-  const isOverview = page.url === '/' || page.url === '/openapi';
+  const isOverview = page.url === '/overview' || page.url === '/openapi';
   const markdownUrl = isOverview ? undefined : getPageMarkdownPath(page.url);
 
   return (
@@ -84,7 +84,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
 }
 
 export async function generateMetadata(
-  props: PageProps<'/[lang]/[[...slug]]'>,
+  props: PageProps<'/[lang]/[...slug]'>,
 ): Promise<Metadata> {
   const { slug, lang } = await props.params;
   const page = (await getSource()).getPage(slug, lang);

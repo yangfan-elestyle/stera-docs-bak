@@ -11,7 +11,7 @@
     "FAQ": "See frequently asked questions for more help."
   },
   "pages": [
-    "index",
+    "overview",
     "---SaaS Guides---",
     "smcc/guide/stera-smart-one-app-manual",
     "smcc/guide/quick-start-guide",

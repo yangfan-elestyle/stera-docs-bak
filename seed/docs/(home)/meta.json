@@ -11,7 +11,7 @@
     "よくある質問": "よくある質問を確認し、利用に関する追加のヘルプを得られます。"
   },
   "pages": [
-    "index",
+    "overview",
     "---SaaS Guides---",
     "smcc/guide/stera-smart-one-app-manual",
     "smcc/guide/quick-start-guide",

@@ -11,7 +11,7 @@
     "常见问题": "查看常见问题解答，获取更多使用方面的帮助。"
   },
   "pages": [
-    "index",
+    "overview",
     "---SaaS Guides---",
     "smcc/guide/stera-smart-one-app-manual",
     "smcc/guide/quick-start-guide",

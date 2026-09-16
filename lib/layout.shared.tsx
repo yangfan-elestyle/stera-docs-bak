@@ -6,7 +6,17 @@ import stera_logo_dark from '@/assets/stera-logo-dark.svg';
 import { i18n } from './i18n';
 import { SITE } from './site';
 
-export function baseOptions(_locale: string): BaseLayoutProps {
+// 顶部导航的几条主入口。落地页 (HomeLayout) 与文档页 (DocsLayout) 共用同一份,
+// 从落地页点进文档、再从文档点回落地页都走这里。
+const NAV_LINKS: Record<string, { docs: string; api: string; home: string }> = {
+  ja: { docs: 'ドキュメント', api: 'API リファレンス', home: 'ホーム' },
+  en: { docs: 'Documentation', api: 'API reference', home: 'Home' },
+  zh: { docs: '文档', api: 'API 参考', home: '首页' },
+};
+
+export function baseOptions(locale: string): BaseLayoutProps {
+  const labels = NAV_LINKS[locale] ?? NAV_LINKS.ja;
+
   return {
     i18n,
     nav: {
@@ -29,6 +39,9 @@ export function baseOptions(_locale: string): BaseLayoutProps {
     },
     githubUrl: 'https://github.com/elestyle',
     links: [
+      { type: 'main', text: labels.home, url: '/' },
+      { type: 'main', text: labels.docs, url: '/overview' },
+      { type: 'main', text: labels.api, url: '/openapi' },
       {
         type: 'icon',
         icon: <LayoutDashboard />,

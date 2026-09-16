@@ -106,6 +106,14 @@ F3. CI/CD 逐项核对并跑通
     - `.github/workflows/docker-build.yml` 现只留 `workflow_dispatch`, 恢复方式写在文件头部
     - `PACKAGE_READ_TOKEN` 已不需要: 私有依赖连同 Chatbot 一起删了
 
+## H. 落地页 [ok]
+
+H1. [ok] `/` 改为落地页 (fumadocs `HomeLayout`), 文档总览移到 `/overview`
+    - 顶部导航 首页 / 文档 / API 参考 三条主入口, 落地页与文档页共用同一份 links
+    - 文案在 `lib/landing.ts`, 三语言各一份, 走发版而非 CMS
+      (它不是文档页, 不进 slug 体系, 也不该出现在侧边栏与搜索里)
+    - MUST NOT 把文档搬到 `/docs/*`: 该前缀已被 `public/docs/**` 的图片占用
+
 ## G. 收尾 [ok]
 
 G1. [ok] 删 `lib/legacy-redirects.mjs` + `next.config.mjs` 的 `redirects()`

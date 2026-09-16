@@ -20,8 +20,9 @@ export default async function Layout({
       {...baseOptions(lang)}
       tree={tree}
       tabs={{
+        // Docs tab 的 url 取自该 root 文件夹的首个页面, 即总览页 /overview
         transform: (option) =>
-          option.url === '/' ? { ...option, title: SITE.docsTitle } : option,
+          option.url === '/overview' ? { ...option, title: SITE.docsTitle } : option,
       }}
     >
       {children}
