@@ -1,7 +1,7 @@
 import { openapiDocs } from 'fumadocs-mdx:collections/server';
 import { dynamicLoader } from 'fumadocs-core/source/dynamic';
 import { createContentSource } from '@/lib/cms/source';
-import { createSeedProvider } from '@/lib/cms/provider';
+import { createDbProvider } from '@/lib/cms/db-provider';
 import type { CompiledDoc } from '@/lib/cms/mdx';
 import { flattenTree, getPageTreeRoots, type Root } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
@@ -18,7 +18,7 @@ import { getPageUrl } from './url';
 // 换数据源只需替换下面的 provider, 消费侧的 `await source.get()` 不动。
 export const source = dynamicLoader(
   {
-    docs: createContentSource(createSeedProvider()),
+    docs: createContentSource(createDbProvider()),
     openapi: openapiDocs.toFumadocsSource(),
   },
   {

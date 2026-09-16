@@ -34,13 +34,19 @@ export function createContentSource(
     async files(): Promise<VirtualFile<CmsSourceConfig>[]> {
       const { docs, metas } = await provider.load();
 
-      const pages = docs.map<VirtualFile<CmsSourceConfig>>((record) => {
+      const pages: VirtualFile<CmsSourceConfig>[] = [];
+      for (const record of docs) {
         const { frontmatter } = parseFrontmatter(record.source);
         const parsed = docFrontmatterSchema.safeParse(frontmatter);
         if (!parsed.success) {
-          throw new Error(
-            `[cms] frontmatter 不合法: ${record.path}\n${parsed.error.message}`,
+          // 跳过而非抛错: dynamicLoader 会把 files() 的 rejected promise 一直缓存到
+          // 下次 revalidate(), 一条坏数据抛出来等于整站持续 500 且只能靠再写一次库恢复。
+          // 真正的拦截点在写入侧 —— 保存时用同一份 schema 校验并拒绝。
+          console.error(
+            `[cms] 跳过 frontmatter 不合法的页面 ${record.path}:`,
+            parsed.error.issues,
           );
+          continue;
         }
 
         // 每条记录一份 memo: files() 的结果被 dynamicLoader 缓存到下次 revalidate,
@@ -58,18 +64,21 @@ export function createContentSource(
           },
         };
 
-        return { type: 'page', path: record.path, data };
-      });
+        pages.push({ type: 'page', path: record.path, data });
+      }
 
-      const navigation = metas.map<VirtualFile<CmsSourceConfig>>((record) => {
+      const navigation: VirtualFile<CmsSourceConfig>[] = [];
+      for (const record of metas) {
         const parsed = docMetaSchema.safeParse(record.data);
         if (!parsed.success) {
-          throw new Error(
-            `[cms] meta 不合法: ${record.path}\n${parsed.error.message}`,
+          console.error(
+            `[cms] 跳过不合法的 meta ${record.path}:`,
+            parsed.error.issues,
           );
+          continue;
         }
-        return { type: 'meta', path: record.path, data: parsed.data };
-      });
+        navigation.push({ type: 'meta', path: record.path, data: parsed.data });
+      }
 
       return [...pages, ...navigation];
     },

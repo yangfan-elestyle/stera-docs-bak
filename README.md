@@ -50,7 +50,11 @@ Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bu
 
 ```bash
 bun run generate:data    # openapi*.yaml -> data/openapi/*.json + (generated) mdx; clone 后 / OpenAPI 变更后必跑
+bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建库时用
 ```
+
+> 内容库固定在 `data/cms.db` (路径写死, 不走 env), 线上由持久卷挂在 `/app/data`。
+> 空库启动会自动灌一次 seed, 与 `import:seed` 是同一段代码。
 
 > 拉私有依赖 `@elepay-io/*` 需环境变量 `GH_PACKAGES_TOKEN` = 含 read 权限的 GitHub PAT。
 

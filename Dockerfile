@@ -51,6 +51,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 # 手写内容在运行期读取 (lib/cms), 不进构建产物 -> 必须单独复制进 runner。
 COPY --from=builder --chown=nextjs:nodejs /app/seed ./seed
 
+# 内容库落在 /app/data, 线上由持久卷挂在这里 (MUST 块存储: SQLite 的文件锁在
+# NFS / EFS 上会坏库且不报错)。目录要先归 nextjs, 否则空卷首启建库直接 EACCES。
+RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
+
 USER nextjs
 EXPOSE 3000
 
