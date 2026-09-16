@@ -37,7 +37,7 @@ export default async function EditDocPage({
     slug;
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)] flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
         breadcrumbs={[
           { label: '内容', href: '/admin/content' },

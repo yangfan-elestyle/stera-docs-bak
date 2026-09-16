@@ -11,6 +11,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { cn } from '@/lib/admin/cn';
 import { saveNavAction } from '@/lib/admin/actions/navigation';
@@ -44,88 +45,22 @@ interface MetaShape {
 
 const SEPARATOR = /^---(.*)---$/;
 
-export function NavEditor({
-  entries,
-  locales,
-}: {
-  entries: NavSeed[];
-  locales: string[];
-}) {
-  const dirs = useMemo(
-    () => [...new Set(entries.map((entry) => entry.dir))],
-    [entries],
-  );
-  const [dir, setDir] = useState(dirs[0] ?? '');
-  const [locale, setLocale] = useState(locales[0]);
-
-  const seed = entries.find(
-    (entry) => entry.dir === dir && entry.locale === locale,
-  );
-
-  return (
-    <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
-      <aside className="space-y-1">
-        <p className="px-2 pb-1 text-xs font-medium text-fd-muted-foreground">
-          导航文件
-        </p>
-        {dirs.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => setDir(item)}
-            className={cn(
-              'flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-sm transition-colors',
-              dir === item
-                ? 'bg-fd-primary/10 text-fd-primary'
-                : 'text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground',
-            )}
-          >
-            <ListTree className="size-3.5 shrink-0" />
-            {/* 只显示末两段: 整条路径一截断, (other-sdks) 与 (other-sdks)/javascript 就长得一样了 */}
-            <span
-              className="truncate font-mono text-xs"
-              title={item || '(根目录)'}
-            >
-              {item ? item.split('/').slice(-2).join('/') : '(根目录)'}
-            </span>
-          </button>
-        ))}
-      </aside>
-
-      {seed ? (
-        <NavForm
-          key={`${dir}:${locale}`}
-          seed={seed}
-          locales={locales}
-          onLocale={setLocale}
-          locale={locale}
-        />
-      ) : (
-        <p className="text-sm text-fd-muted-foreground">
-          该目录下没有这一语言的导航文件。
-        </p>
-      )}
-    </div>
-  );
-}
-
-function NavForm({
-  seed,
+export function NavPanel({
+  dir,
   locale,
-  locales,
-  onLocale,
+  json,
 }: {
-  seed: NavSeed;
+  dir: string;
   locale: string;
-  locales: string[];
-  onLocale: (locale: string) => void;
+  json: string;
 }) {
-  const [meta, setMeta] = useState<MetaShape>(() => JSON.parse(seed.json));
+  const [meta, setMeta] = useState<MetaShape>(() => JSON.parse(json));
   const [raw, setRaw] = useState(() =>
-    JSON.stringify(JSON.parse(seed.json), null, 2),
+    JSON.stringify(JSON.parse(json), null, 2),
   );
   const [mode, setMode] = useState('form');
   const [saving, setSaving] = useState(false);
+  const router = useRouter();
   const [rawError, setRawError] = useState<string>();
 
   // 表单改了就同步进 raw, 切到 JSON 页签看到的永远是当前状态
@@ -175,8 +110,8 @@ function NavForm({
 
   const save = async () => {
     setSaving(true);
-    let json = raw;
-    if (mode === 'form') json = JSON.stringify(meta, null, 2);
+    let payload = raw;
+    if (mode === 'form') payload = JSON.stringify(meta, null, 2);
     else {
       try {
         JSON.parse(raw);
@@ -186,11 +121,12 @@ function NavForm({
         return;
       }
     }
-    const result = await saveNavAction({ dir: seed.dir, locale, json });
+    const result = await saveNavAction({ dir, locale, json: payload });
     setSaving(false);
     if (result.ok) {
       setRawError(undefined);
-      if (mode === 'raw') setMeta(JSON.parse(json));
+      if (mode === 'raw') setMeta(JSON.parse(payload));
+      router.refresh();
       toast.success('导航已保存', { description: '侧边栏与站点已同步更新' });
     } else {
       toast.error('保存失败', { description: result.error });
@@ -200,24 +136,6 @@ function NavForm({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="inline-flex items-center gap-1 rounded-lg bg-fd-muted p-1">
-          {locales.map((item) => (
-            <button
-              key={item}
-              type="button"
-              onClick={() => onLocale(item)}
-              className={cn(
-                'rounded-md px-3 py-1 text-sm font-medium transition-colors',
-                locale === item
-                  ? 'bg-fd-card text-fd-foreground shadow-sm'
-                  : 'text-fd-muted-foreground hover:text-fd-foreground',
-              )}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-
         <Tabs value={mode} onValueChange={setMode}>
           <TabsList>
             <TabsTrigger value="form">

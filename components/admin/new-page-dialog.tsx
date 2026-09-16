@@ -23,10 +23,13 @@ export function NewPageDialog({
   dirs,
   locales,
   defaultLocale,
+  compact,
 }: {
   dirs: string[];
   locales: string[];
   defaultLocale: string;
+  /** 放在左树头部时只留图标, 省出横向空间 */
+  compact?: boolean;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -49,6 +52,7 @@ export function NewPageDialog({
         });
         setOpen(false);
         router.push(`/admin/content/${result.slug}`);
+        router.refresh();
       } else {
         toast.error('创建失败', { description: result.error });
       }
@@ -68,9 +72,14 @@ export function NewPageDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="primary" size="sm">
+        <Button
+          variant={compact ? 'ghost' : 'primary'}
+          size={compact ? 'icon-sm' : 'sm'}
+          aria-label="新建页面"
+          title="新建页面"
+        >
           <FilePlus2 />
-          新建页面
+          {compact ? null : '新建页面'}
         </Button>
       </DialogTrigger>
       <DialogContent

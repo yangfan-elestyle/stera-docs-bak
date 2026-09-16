@@ -9,7 +9,6 @@ export default async function ShellLayout({ children }: { children: React.ReactN
 
   const commands: CommandItem[] = [
     { id: 'nav:content', title: '内容列表', href: '/admin/content', group: '前往' },
-    { id: 'nav:navigation', title: '导航结构', href: '/admin/navigation', group: '前往' },
     ...(user.role === 'admin'
       ? [{ id: 'nav:users', title: '账号管理', href: '/admin/users', group: '前往' }]
       : []),

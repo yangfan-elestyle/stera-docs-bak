@@ -7,7 +7,6 @@ import {
   BookText,
   ChevronsUpDown,
   LayoutDashboard,
-  ListTree,
   LogOut,
   Monitor,
   Moon,
@@ -50,7 +49,6 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: '/admin', label: '概要', icon: LayoutDashboard, exact: true },
   { href: '/admin/content', label: '内容', icon: BookText },
-  { href: '/admin/navigation', label: '导航', icon: ListTree },
   { href: '/admin/users', label: '账号', icon: Users, adminOnly: true },
 ];
 

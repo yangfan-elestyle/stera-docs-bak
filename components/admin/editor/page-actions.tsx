@@ -68,6 +68,7 @@ export function PageActions({ slug }: { slug: string }) {
                   if (result.ok) {
                     toast.success('页面已删除');
                     router.push('/admin/content');
+                    router.refresh();
                   } else {
                     toast.error('删除失败', { description: result.error });
                   }

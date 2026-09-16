@@ -39,7 +39,7 @@ Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bu
 | `app/(site)/[lang]` | 站点: 路由 / 布局 / OG / LLM 入口 |
 | `app/(admin)/admin` | 后台: 登录 / 内容编辑 / 导航编辑 / 账号管理 |
 | `lib/auth` | 账号 / 会话 / 权限 |
-| `components/admin` | 后台 UI: 组件层 / 编辑器 (CodeMirror) / 导航编辑器 |
+| `components/admin` | 后台 UI: 组件层 / 内容工作区 (左树 + 编辑器 + 预览) |
 | `seed/docs` | 手写文档源 (`index.[lang].mdx` + `meta.[lang].json`), 运行期编译 |
 | `content/docs` | OpenAPI 脚本产物 + 其排序 `meta.json`, 构建期编译 |
 | `lib/cms` | 运行时内容源: mdx 编译 / provider / dynamic source |
@@ -68,6 +68,7 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 - **后台是独立 root layout**: `app/(site)` 与 `app/(admin)` 各一个 `<html>`; `/admin` MUST 在 `middleware.ts` 的 matcher 里排除, 否则被 i18n rewrite 成 `/{locale}/admin` 而 404。
 - **取 loader MUST 走 `getSource()`**: Next 给 page 与 route handler 打不同入口 bundle, `dynamicLoader` 的失效状态是模块级变量, 保存时的 `revalidate()` 到不了另一份实例 -> 表现为页面已更新但 `.md` / `llms.txt` 还是旧的。`getSource()` 每次对一下库里的版本指纹, MUST NOT 直接调 `source.get()`。
 - **持久卷装两样东西**: `data/cms.db` 与 `data/uploads/`。后台上传的图片 MUST NOT 写进 `public/` —— 那是构建期产物, 下次发版就没了。图片按内容哈希命名, 经 `app/uploads/[name]` 路由长缓存返回; `/uploads` MUST 在 `middleware.ts` 的 matcher 里排除。
+- **后台左树直接由站点 pageTree 转换而来** (`lib/cms/tree.ts`): 层级、排序、分段说明与线上侧边栏逐节点一致, MUST NOT 另拼一套。树建在 `content/layout.tsx` 里, 跨页面跳转不重挂, 展开状态与滚动位置都留着; 保存后 MUST `router.refresh()` 让它跟上。
 - **编辑器预览是独立路由 + iframe**: MUST NOT 改成 server action 返回 JSX —— 那要求预览用到的每个 client component 都在该 action 的 React Client Manifest 里, 而 fumadocs-ui 的 Heading / CodeBlock 只在站点路由图里注册过, 生产构建必定报 `Could not find the module ... in the React Client Manifest`。
 - **草稿存库不存内存**: 预览路由与保存动作分属不同入口 bundle, 模块级变量互不可见 (与 `getSource()` 同一个坑)。
 - **强制改初始密码 MUST NOT 放在 `requireUser()` 里重定向**: 改密页与其他后台页共用同一层受守卫的布局, 那样会重定向到自己。服务端硬拦截在 `requireWriter()`, 引导在 `AppShell` 客户端做。

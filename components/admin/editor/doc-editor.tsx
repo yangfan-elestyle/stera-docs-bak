@@ -15,6 +15,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/admin/cn';
@@ -38,6 +39,7 @@ import {
   DialogContent,
   Tooltip,
 } from '../ui/primitives';
+import { useWorkspaceLocale } from '../workspace/workspace';
 import { CodeMirrorEditor, type CodeMirrorHandle } from './codemirror';
 import {
   FrontmatterFields,
@@ -75,7 +77,9 @@ export function DocEditor({
   locales: LocaleSeed[];
   defaultLocale: string;
 }) {
-  const [active, setActive] = useState(defaultLocale);
+  // 语言状态与左树共用: 切页签时左树也跟着换语言, 才像在操作同一个侧边栏
+  const { locale: active, setLocale: setActive } =
+    useWorkspaceLocale(defaultLocale);
   const [view, setView] = useState<ViewMode>('split');
   const [previewVersion, setPreviewVersion] = useState(0);
   const [previewState, setPreviewState] = useState<
@@ -88,6 +92,7 @@ export function DocEditor({
   } | null>(null);
   const [metaOpen, setMetaOpen] = useState(false);
   const editorRef = useRef<CodeMirrorHandle>(null);
+  const router = useRouter();
 
   const [states, setStates] = useState<Record<string, LocaleState>>(() =>
     Object.fromEntries(
@@ -196,6 +201,8 @@ export function DocEditor({
           updatedAt: result.updatedAt,
           draftAt: null,
         });
+        // 左树建在 layout 的 server 组件里, 不 refresh 的话标题改了树上还是旧的
+        router.refresh();
         toast.success(`${locale} 已保存`, {
           description: '前台页面与搜索已同步更新',
         });
