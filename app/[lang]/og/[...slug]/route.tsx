@@ -16,7 +16,7 @@ export async function GET(
   { params }: RouteContext<'/[lang]/og/[...slug]'>,
 ) {
   const { slug, lang } = await params;
-  const page = source.getPage(slug.slice(0, -1), lang);
+  const page = (await source.get()).getPage(slug.slice(0, -1), lang);
   if (!page) notFound();
 
   const theme = THEME;
@@ -103,8 +103,8 @@ export async function GET(
   );
 }
 
-export function generateStaticParams() {
-  return source.getPages().map((page) => ({
+export async function generateStaticParams() {
+  return (await source.get()).getPages().map((page) => ({
     lang: page.locale,
     slug: getPageImage(page).segments,
   }));

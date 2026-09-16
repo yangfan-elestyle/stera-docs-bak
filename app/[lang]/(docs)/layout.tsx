@@ -9,7 +9,7 @@ export default async function Layout({
   children,
 }: LayoutProps<'/[lang]'>) {
   const { lang } = await params;
-  const tree = source.pageTree[lang];
+  const tree = (await source.get()).getPageTree(lang);
 
   if (!tree) {
     return notFound();

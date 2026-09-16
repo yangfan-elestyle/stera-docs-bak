@@ -3,13 +3,12 @@ import {
   renderPlaceholder,
   type PlaceholderData,
 } from 'fumadocs-core/mdx-plugins/remark-llms.runtime';
-import { source } from './source';
+import type { Root } from 'fumadocs-core/page-tree';
 import { getRequestOrigin } from './request';
 import { buildNavSections } from './nav-sections';
 import { renderAPIPageMarkdown } from './openapi-llm';
 import { getPageUrl, toAbsoluteUrl } from './url';
 
-type HomeLang = 'ja' | 'en' | 'zh';
 type PlaceholderAttrs = PlaceholderData['attributes'];
 
 const MARKDOWN_RESOURCE_RE =
@@ -20,22 +19,19 @@ const FENCE_RE =
 const BLANK_LINES_RE = /(?:^[ \t]*\r?\n){2,}/gm;
 const HTML_ENTITY_RE = /&(quot|apos|amp|#x[0-9a-f]+|#\d+);/gi;
 
+// pageTree 由调用方传入而非 `import { source }`: 后者会在渲染期反过来引用正在渲染它的
+// loader, 且动态源下每次 import 拿到的都不再是同一棵树。
 export async function resolveLLMTags(
   markdown: string,
   host: string,
+  pageTree: Root,
   pageUrl?: string,
 ): Promise<string> {
   const origin = getRequestOrigin(host);
   const rendered = await renderPlaceholder(markdown, {
     EHome({ attributes }) {
-      const rawLang = (attrString(attributes, 'lang') ?? '').toLowerCase();
-      const lang: HomeLang = rawLang.startsWith('zh')
-        ? 'zh'
-        : rawLang.startsWith('en')
-        ? 'en'
-        : 'ja';
       const root = attrString(attributes, 'root') ?? '/';
-      return buildNavSections(source.pageTree[lang], root)
+      return buildNavSections(pageTree, root)
         .map((section) =>
           [
             section.title && `## ${section.title}`,

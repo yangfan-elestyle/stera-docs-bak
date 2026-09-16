@@ -31,7 +31,8 @@ function getRequestBaseUrl(hdrs: Awaited<ReturnType<typeof headers>>) {
 
 export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const { slug, lang } = await props.params;
-  const page = source.getPage(slug, lang);
+  const src = await source.get();
+  const page = src.getPage(slug, lang);
   if (!page) notFound();
 
   // Handle redirect if specified in frontmatter
@@ -49,7 +50,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       : page.data.toc;
 
   // Compute footer items
-  const footerItems = getFooterItems(page, lang);
+  const footerItems = getFooterItems(src, page, lang);
 
   // 概要页（EHome 导航卡片，无真实 markdown 正文）移除 markdown 相关功能
   const isOverview = page.url === '/' || page.url === '/openapi';
@@ -71,8 +72,8 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <MDX
-          components={getMDXComponents({
-            a: createRelativeLink(source, page),
+          components={getMDXComponents(src.getPageTree(lang), {
+            a: createRelativeLink(src, page),
           })}
         />
       </DocsBody>
@@ -84,7 +85,7 @@ export async function generateMetadata(
   props: PageProps<'/[lang]/[[...slug]]'>,
 ): Promise<Metadata> {
   const { slug, lang } = await props.params;
-  const page = source.getPage(slug, lang);
+  const page = (await source.get()).getPage(slug, lang);
   if (!page) notFound();
 
   const hdrs = await headers();

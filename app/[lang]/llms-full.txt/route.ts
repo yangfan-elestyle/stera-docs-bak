@@ -11,7 +11,9 @@ export async function GET(
 ) {
   const { lang } = await context.params;
   const host = getRequestHost(await headers());
-  const scan = source.getPages(lang).map((p) => getLLMText(p, host));
+  const src = await source.get();
+  const tree = src.getPageTree(lang);
+  const scan = src.getPages(lang).map((p) => getLLMText(p, host, tree));
   const scanned = await Promise.all(scan);
 
   return new NextResponse(scanned.join('\n\n'), {

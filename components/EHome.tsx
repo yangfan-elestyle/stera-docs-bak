@@ -1,25 +1,18 @@
-import { source } from '@/lib/source';
 import { buildNavSections } from '@/lib/nav-sections';
+import type { Root } from 'fumadocs-core/page-tree';
 import Link from 'next/link';
 
 type Props = {
-  lang?: string;
   // 当前 tab 的根页面 url（'/' 或 '/openapi'）: 作为取章节的范围锚点, 自身不计入列表.
   // 必填: 漏传会拉错 tab 的章节, 让 TS 在编译期拦截.
   root: string;
+  // 由 mdx-components 在渲染期绑定注入, mdx 作者不写这个属性.
+  // MUST NOT 改成组件内 `import { source }`: 那是在渲染期反过来引用正在渲染它的 loader.
+  pageTree?: Root;
 };
 
-export default async function EHome({ lang, root }: Props) {
-  // 简单归一化: zh* / cn* -> zh; en* -> en; 其他 -> ja
-  const v = (lang ?? '').trim().toLowerCase();
-  const currentLang: 'ja' | 'en' | 'zh' =
-    v.startsWith('zh') || v.startsWith('cn')
-      ? 'zh'
-      : v.startsWith('en')
-        ? 'en'
-        : 'ja';
-
-  const sections = buildNavSections(source.pageTree[currentLang], root);
+export default function EHome({ root, pageTree }: Props) {
+  const sections = pageTree ? buildNavSections(pageTree, root) : [];
 
   return (
     <div className="not-prose mx-auto w-full max-w-5xl text-[15px] leading-6">

@@ -5,7 +5,7 @@ import { stopwords as japaneseStopwords } from '@orama/stopwords/japanese';
 import { createTokenizer as createMandarinTokenizer } from '@orama/tokenizers/mandarin';
 import { stopwords as mandarinStopwords } from '@orama/stopwords/mandarin';
 
-const searchApi = createFromSource(source, {
+const searchApi = createFromSource(() => source.get(), {
   localeMap: {
     en: { language: 'english' },
     ja: {

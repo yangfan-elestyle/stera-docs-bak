@@ -1,6 +1,6 @@
 import { docs, openapiDocs } from 'fumadocs-mdx:collections/server';
-import { type InferPageType, loader } from 'fumadocs-core/source';
-import { flattenTree, getPageTreeRoots } from 'fumadocs-core/page-tree';
+import { dynamicLoader } from 'fumadocs-core/source/dynamic';
+import { flattenTree, getPageTreeRoots, type Root } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from './i18n';
 import { openapiPlugin } from 'fumadocs-openapi/server';
@@ -9,28 +9,33 @@ import { sectionNotesPlugin } from '@/lib/plugins/section-notes';
 import { resolveLLMTags } from './llm-postprocess';
 import { getPageUrl } from './url';
 
-export const source = loader({
-  i18n,
-  baseUrl: '/',
-  // 两个 source 合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...`
-  // 是跨 source 引用, 靠这份合并 storage 才解析得到。
-  source: {
+// dynamicLoader 而非 loader: 后续 docs 会换成 DB 支撑的动态源, 届时只替换 input 里的
+// docs 一项, 消费侧的 `await source.get()` 不动。
+// 两个 source 合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...`
+// 是跨 source 引用, 靠这份合并 storage 才解析得到。
+export const source = dynamicLoader(
+  {
     docs: docs.toFumadocsSource(),
     openapi: openapiDocs.toFumadocsSource(),
   },
-  plugins: [
-    lucideIconsPlugin(),
-    openapiPlugin(),
-    sectionNotesPlugin(),
-  ],
-});
+  {
+    i18n,
+    baseUrl: '/',
+    plugins: [lucideIconsPlugin(), openapiPlugin(), sectionNotesPlugin()],
+  },
+);
+
+// get() 被 React cache() 包着, 同一次请求内多次调用复用同一实例, 消费侧可以随处 await。
+export type DocsSource = Awaited<ReturnType<typeof source.get>>;
+export type DocsPage = typeof source.$inferPage;
 
 // 页脚 previous/next: 邻居范围限定在当前页所在的 root tab，避免跨 tab 串页
 export function getFooterItems(
-  page: InferPageType<typeof source>,
+  src: DocsSource,
+  page: DocsPage,
   lang: string,
 ) {
-  const tree = source.getPageTree(lang);
+  const tree = src.getPageTree(lang);
   if (!tree) return {};
 
   // 如 (home) 末页 → openapi 首页
@@ -46,7 +51,7 @@ export function getFooterItems(
   // page.data.title 来自 mdx frontmatter (生成产物含 schema 校验, 必有非空 title);
   // item.name 来自 meta.json / 自动派生, 兜底用. 无第三层是有意为之.
   const getFooterTitle = (item: (typeof allPages)[number]) => {
-    const title = source.getNodePage(item, lang)?.data.title;
+    const title = src.getNodePage(item, lang)?.data.title;
     if (typeof title === 'string' && title.length > 0) return title;
     return typeof item.name === 'string' ? item.name : '';
   };
@@ -60,7 +65,7 @@ export function getFooterItems(
   };
 }
 
-export function getPageImage(page: InferPageType<typeof source>) {
+export function getPageImage(page: DocsPage) {
   const segments = [...page.slugs, 'image.png'];
 
   return {
@@ -96,9 +101,7 @@ function normalizeDescriptionText(raw: string): string {
  *   3. undefined(交由调用方决定是否省略)
  * 用于 SEO meta 与 OG 预览图。
  */
-export function getPageDescription(
-  page: InferPageType<typeof source>,
-): string | undefined {
+export function getPageDescription(page: DocsPage): string | undefined {
   const explicit = page.data.description?.trim();
   if (explicit) return explicit;
 
@@ -125,11 +128,12 @@ export function getPageDescription(
 }
 
 export async function getLLMText(
-  page: InferPageType<typeof source>,
+  page: DocsPage,
   host: string,
+  pageTree: Root,
 ) {
   const processed = await page.data.getText('processed');
-  const resolved = await resolveLLMTags(processed, host, page.url);
+  const resolved = await resolveLLMTags(processed, host, pageTree, page.url);
   const origin = getRequestOrigin(host);
   const pageHref = getPageUrl(page.url, origin);
 

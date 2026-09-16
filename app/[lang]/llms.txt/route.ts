@@ -13,7 +13,7 @@ export async function GET(
   const { lang } = await context.params;
   const host = getRequestHost(await headers());
   const origin = getRequestOrigin(host);
-  const lines = source
+  const lines = (await source.get())
     .getPages(lang)
     .map((p) => `- [${p.data.title}](${getPageMarkdownUrl(p.url, origin)})`);
   return new NextResponse(

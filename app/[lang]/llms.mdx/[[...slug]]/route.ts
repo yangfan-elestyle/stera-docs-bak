@@ -11,12 +11,13 @@ export async function GET(
   { params }: RouteContext<'/[lang]/llms.mdx/[[...slug]]'>,
 ) {
   const { slug, lang } = await params;
-  const page = source.getPage(slug, lang);
+  const src = await source.get();
+  const page = src.getPage(slug, lang);
   if (!page) notFound();
 
   const host = getRequestHost(await headers());
 
-  return new NextResponse(await getLLMText(page, host), {
+  return new NextResponse(await getLLMText(page, host, src.getPageTree(lang)), {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
       // 正文内嵌按请求 Host 生成的绝对 URL,跨 Host 不可共享;明确 no-store。
