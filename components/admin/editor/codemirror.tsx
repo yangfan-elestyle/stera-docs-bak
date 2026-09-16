@@ -163,6 +163,10 @@ const SNIPPETS = [
   },
 ];
 
+function imageFiles(list: FileList | null | undefined): File[] {
+  return [...(list ?? [])].filter((file) => file.type.startsWith('image/'));
+}
+
 function mdxCompletions(context: CompletionContext) {
   const word = context.matchBefore(/<[\w"= ]*/);
   if (!word || (word.from === word.to && !context.explicit)) return null;
@@ -181,6 +185,7 @@ export function CodeMirrorEditor({
   value,
   onChange,
   onSave,
+  onFiles,
   placeholder,
   handleRef,
   className,
@@ -188,6 +193,8 @@ export function CodeMirrorEditor({
   value: string;
   onChange: (value: string) => void;
   onSave?: () => void;
+  /** 拖入 / 粘贴的图片文件, 由调用方上传并插入 */
+  onFiles?: (files: File[]) => void;
   placeholder?: string;
   handleRef?: Ref<CodeMirrorHandle>;
   className?: string;
@@ -196,8 +203,10 @@ export function CodeMirrorEditor({
   const view = useRef<EditorView>(null);
   const onChangeRef = useRef(onChange);
   const onSaveRef = useRef(onSave);
+  const onFilesRef = useRef(onFiles);
   onChangeRef.current = onChange;
   onSaveRef.current = onSave;
+  onFilesRef.current = onFiles;
 
   useEffect(() => {
     if (!host.current) return;
@@ -243,6 +252,23 @@ export function CodeMirrorEditor({
       ]),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) onChangeRef.current(update.state.doc.toString());
+      }),
+      // 截图直接粘进来 / 从访达拖进来就能上传, 这是写文档时最高频的动作
+      EditorView.domEventHandlers({
+        paste(event) {
+          const files = imageFiles(event.clipboardData?.files);
+          if (files.length === 0 || !onFilesRef.current) return false;
+          event.preventDefault();
+          onFilesRef.current(files);
+          return true;
+        },
+        drop(event) {
+          const files = imageFiles(event.dataTransfer?.files);
+          if (files.length === 0 || !onFilesRef.current) return false;
+          event.preventDefault();
+          onFilesRef.current(files);
+          return true;
+        },
       }),
     ];
 

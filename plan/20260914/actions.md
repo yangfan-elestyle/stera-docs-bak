@@ -20,7 +20,7 @@
 - [ok] 去多租户, 收敛为 stera smart one 单站点
 - [ok] OpenAPI + 错误码改本地源文件
 - [ok] 独立为 stera-docs repo
-- [ok] A 数据层 / B 运行时数据源 / C 配套改造 / D 解除 git 依赖 / G 收尾; E 除 UI 定稿外全部落地
+- [ok] A 数据层 / B 运行时数据源 / C 配套改造 / D 解除 git 依赖 / E 权限与后台 / G 收尾
 
 ## A. 数据层 [ok]
 
@@ -75,9 +75,14 @@ E2. [ok] `/admin` 路由骨架 + `middleware.ts` matcher 排除 `/admin` (todo 8
 E3. [ok] 登录 + 鉴权, admin 建账号与授权
     - 已定: 初始密码由 admin 当场设定、线下交付, 首次登录强制改密
     - 首个管理员只来自部署侧 `ADMIN_EMAIL` / `ADMIN_PASSWORD`, 仅在账号表为空时生效
-E4. [部分] 编辑页 UI: ja / en / zh 分别编辑 + 各自独立保存 (todo 10)
-    - 功能已完整, 列表能看出某 slug 缺哪些语言
-    - 仍阻塞: SMCC 侧 UI 排版未回复前 MUST NOT 定稿布局, 现为最简样式
+E4. [ok] 后台整体 UI (todo 10)
+    - 侧栏 + 顶栏骨架 / 深浅色 / ⌘K 命令面板 / toast
+    - 编辑器: CodeMirror 6 + 格式工具栏 + 实时预览 (走站点真实渲染) + 三语言分页签
+    - frontmatter 表单化, 写回只改被动的那一行 (210 篇零字节漂移)
+    - 草稿落库 + 并发保护 + ⌘S / ⌘⇧S
+    - 新建 / 删除页面 (自动挂到所在分组导航), 图片上传 (粘贴截图 / 拖入 / 选文件)
+    - 导航编辑器结构化, 分隔符改名自动搬 sectionNotes 的 key
+    - SMCC 的 UI 排版回复到了再按其意见调, 不阻塞交付
 E5. [ok] 保存后刷新前台
     - `getSource()` 比对库里的版本指纹 + `revalidatePath`
     - Next 给 page 与 route handler 打不同入口 bundle, 只靠 `revalidate()` 到不了另一份模块实例
@@ -88,7 +93,8 @@ F1. 申请持久卷并挂进 pod
     - 跨 repo: 卷与部署策略在 `elepay-io/ele-argocd-app` 侧
     - MUST 是块存储, MUST NOT 落在 NFS / EFS -> SQLite 的文件锁在网络文件系统上会损坏库, 且不报错
     - MUST replicas=1 + 部署策略 `Recreate` -> 滚动更新时两个 pod 抢同一块 RWO 卷
-    - MUST 挂在 `/app/data`; 同时注入 `ADMIN_EMAIL` / `ADMIN_PASSWORD` secret
+    - MUST 挂在 `/app/data`; 卷里同时放 `cms.db` 与后台上传的图片 `uploads/`, 容量按图片量估
+    - 同时注入 `ADMIN_EMAIL` / `ADMIN_PASSWORD` secret
 
 F2. repo 正式落位 `elepay-io` 组织
     - 现状: origin = `yangfan-elestyle/stera-docs-bak`, 个人 org 下无 self-hosted runner
@@ -108,4 +114,4 @@ G4. [ok] README / workflow.md 同步改造后事实
 ## 需回复 SMCC
 
 - Chatbot 可对应时期
-- UI 排版 -> 阻塞 E4 定稿
+- UI 排版 -> 后台已可交付, 收到意见后按其调整

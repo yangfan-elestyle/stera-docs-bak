@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import {
   BookText,
@@ -36,6 +36,7 @@ import { CommandPalette } from './command-palette';
 export interface ShellUser {
   email: string;
   role: 'admin' | 'editor';
+  mustChangePassword: boolean;
 }
 
 interface NavItem {
@@ -65,8 +66,16 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // 引导在客户端做: 改密页与其他页共用这层布局, 在服务端守卫里重定向会指向自己。
+  // 服务端的硬拦截在 requireWriter(), 绕过这里也写不进任何东西。
+  const locked = user.mustChangePassword && pathname !== '/admin/account';
+  useEffect(() => {
+    if (locked) router.replace('/admin/account');
+  }, [locked, router]);
 
   // 侧栏折叠状态存本地: 编辑长文时收起侧栏是常态, 每次刷新都弹回来很烦人
   useEffect(() => {
@@ -198,7 +207,20 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {locked ? (
+            <div className="grid h-[60vh] place-items-center px-6 text-center">
+              <div className="space-y-2">
+                <p className="font-medium">请先修改初始密码</p>
+                <p className="text-sm text-fd-muted-foreground">
+                  正在跳转到账号页…
+                </p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
+        </main>
       </div>
 
       <CommandPalette

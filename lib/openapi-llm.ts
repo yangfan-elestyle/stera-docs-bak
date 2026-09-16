@@ -80,17 +80,17 @@ async function loadOpenAPIDocument(document: string): Promise<OpenAPIDocument> {
   return promise;
 }
 
-const OPENAPI_DOCUMENT_LOADERS: Record<
-  string,
-  () => Promise<OpenAPIDocument>
-> = {
-  './openapi.yaml': async () =>
-    (await import('@/data/openapi/openapi.json')).default as OpenAPIDocument,
-  './openapi.en.yaml': async () =>
-    (await import('@/data/openapi/openapi.en.json')).default as OpenAPIDocument,
-  './openapi.zh.yaml': async () =>
-    (await import('@/data/openapi/openapi.zh.json')).default as OpenAPIDocument,
-};
+const OPENAPI_DOCUMENT_LOADERS: Record<string, () => Promise<OpenAPIDocument>> =
+  {
+    './openapi.yaml': async () =>
+      (await import('@/data/openapi/openapi.json')).default as OpenAPIDocument,
+    './openapi.en.yaml': async () =>
+      (await import('@/data/openapi/openapi.en.json'))
+        .default as OpenAPIDocument,
+    './openapi.zh.yaml': async () =>
+      (await import('@/data/openapi/openapi.zh.json'))
+        .default as OpenAPIDocument,
+  };
 
 function buildEndpointSpec(
   spec: OpenAPIDocument,
@@ -255,7 +255,7 @@ function setJsonPointer(root: JsonObject, pointer: string, value: unknown) {
   let current = root;
 
   for (const part of parts.slice(0, -1)) {
-    current = (current[part] ??= {});
+    current = current[part] ??= {};
   }
   current[parts.at(-1)!] = value;
 }

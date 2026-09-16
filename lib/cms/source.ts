@@ -52,7 +52,8 @@ export function createContentSource(
         // 每条记录一份 memo: files() 的结果被 dynamicLoader 缓存到下次 revalidate,
         // 同一页反复访问只编译一次。
         let compiled: Promise<CompiledDoc> | undefined;
-        const load = () => (compiled ??= compileDoc(record.source, record.path));
+        const load = () =>
+          (compiled ??= compileDoc(record.source, record.path));
 
         const data: CmsDocData = {
           ...parsed.data,

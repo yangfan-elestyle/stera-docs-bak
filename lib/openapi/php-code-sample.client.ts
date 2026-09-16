@@ -51,7 +51,9 @@ function enhancePhpCurlSnippet(snippet: string): string {
   if (firstSetoptIdx >= 0) {
     lines.splice(firstSetoptIdx, 0, returnTransferLine);
   } else {
-    const initIdx = lines.findIndex((line) => line.startsWith('$ch = curl_init('));
+    const initIdx = lines.findIndex((line) =>
+      line.startsWith('$ch = curl_init('),
+    );
     if (initIdx >= 0) {
       lines.splice(initIdx + 1, 0, '', returnTransferLine);
     }
@@ -84,4 +86,3 @@ function hasBody(body: unknown): boolean {
   if (typeof body === 'object') return Object.keys(body).length > 0;
   return true;
 }
-

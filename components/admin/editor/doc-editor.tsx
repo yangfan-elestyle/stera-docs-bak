@@ -29,6 +29,7 @@ import {
   saveDocAction,
   stageDraftAction,
 } from '@/lib/admin/actions/content';
+import { uploadImageAction } from '@/lib/admin/actions/uploads';
 import { Button } from '../ui/button';
 import {
   Badge,
@@ -259,6 +260,26 @@ export function DocEditor({
     });
   };
 
+  /* ---------- 图片: 工具栏选择 / 粘贴截图 / 拖入文件 ---------- */
+  const uploadFiles = useCallback(async (files: File[]) => {
+    const id = toast.loading(`正在上传 ${files.length} 张图片…`);
+    const inserted: string[] = [];
+    for (const file of files) {
+      const form = new FormData();
+      form.set('file', file);
+      const result = await uploadImageAction(form);
+      if (result.ok) {
+        const alt = file.name.replace(/\.[^.]+$/, '');
+        inserted.push(`![${alt}](${result.url})`);
+      } else {
+        toast.error(`${file.name} 上传失败`, { description: result.error, id });
+        return;
+      }
+    }
+    editorRef.current?.insertBlock(inserted.join('\n\n'));
+    toast.success(`已插入 ${inserted.length} 张图片`, { id });
+  }, []);
+
   const words = countWords(state.body);
 
   return (
@@ -400,14 +421,18 @@ export function DocEditor({
               </div>
             ) : null}
 
-            <EditorToolbar editor={editorRef} />
+            <EditorToolbar
+              editor={editorRef}
+              onPickImages={(files) => void uploadFiles(files)}
+            />
 
             <div className="min-h-0 flex-1 overflow-hidden">
               <CodeMirrorEditor
                 value={state.body}
                 onChange={(body) => patch(active, { body })}
                 onSave={() => void save(active)}
-                placeholder="用 Markdown 写正文, 输入 < 可插入站内组件…"
+                onFiles={(files) => void uploadFiles(files)}
+                placeholder="用 Markdown 写正文; 输入 < 插入组件, 截图可直接粘贴"
                 handleRef={editorRef}
                 className="h-full overflow-auto"
               />

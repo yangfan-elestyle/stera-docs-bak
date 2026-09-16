@@ -40,8 +40,9 @@ export function normalizeEmail(email: string): string {
 }
 
 export function countUsers(): number {
-  return (getDb().prepare('SELECT count(*) AS n FROM users').get() as { n: number })
-    .n;
+  return (
+    getDb().prepare('SELECT count(*) AS n FROM users').get() as { n: number }
+  ).n;
 }
 
 export function listUsers(): User[] {

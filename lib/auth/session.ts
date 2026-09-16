@@ -34,7 +34,9 @@ export async function destroySession(): Promise<void> {
   const store = await cookies();
   const token = store.get(COOKIE)?.value;
   if (token) {
-    getDb().prepare('DELETE FROM sessions WHERE token_hash = ?').run(digest(token));
+    getDb()
+      .prepare('DELETE FROM sessions WHERE token_hash = ?')
+      .run(digest(token));
   }
   store.delete(COOKIE);
 }
@@ -48,8 +50,12 @@ export async function getSessionUser(): Promise<User | undefined> {
   db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
 
   const row = db
-    .prepare('SELECT user_id FROM sessions WHERE token_hash = ? AND expires_at > ?')
-    .get(digest(token), Date.now()) as unknown as { user_id: string } | undefined;
+    .prepare(
+      'SELECT user_id FROM sessions WHERE token_hash = ? AND expires_at > ?',
+    )
+    .get(digest(token), Date.now()) as unknown as
+    | { user_id: string }
+    | undefined;
 
   return row ? findUserById(row.user_id) : undefined;
 }

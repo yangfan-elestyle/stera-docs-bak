@@ -31,7 +31,9 @@ export function getDraft(
     .get(userId, slug, locale) as unknown as
     | { content: string; updated_at: number }
     | undefined;
-  return row ? { content: row.content, updatedAt: new Date(row.updated_at) } : undefined;
+  return row
+    ? { content: row.content, updatedAt: new Date(row.updated_at) }
+    : undefined;
 }
 
 export function clearDraft(userId: string, slug: string, locale: string): void {
@@ -51,7 +53,11 @@ export function listDrafts(userId: string): {
       .prepare(
         'SELECT slug, locale, updated_at FROM drafts WHERE user_id = ? ORDER BY updated_at DESC',
       )
-      .all(userId) as unknown as { slug: string; locale: string; updated_at: number }[]
+      .all(userId) as unknown as {
+      slug: string;
+      locale: string;
+      updated_at: number;
+    }[]
   ).map((row) => ({
     slug: row.slug,
     locale: row.locale,

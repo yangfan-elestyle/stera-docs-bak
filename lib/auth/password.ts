@@ -33,7 +33,11 @@ export function checkPasswordStrength(password: string): string | undefined {
   if (password.length < PASSWORD_MIN_LENGTH) {
     return `密码至少 ${PASSWORD_MIN_LENGTH} 位`;
   }
-  if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {
+  if (
+    !/[a-z]/.test(password) ||
+    !/[A-Z]/.test(password) ||
+    !/\d/.test(password)
+  ) {
     return '密码需同时包含大写字母、小写字母与数字';
   }
   return undefined;

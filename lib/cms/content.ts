@@ -89,14 +89,20 @@ export function listSlugs(): SlugSummary[] {
 
 export function slugExists(slug: string): boolean {
   return (
-    (getDb().prepare('SELECT count(*) AS n FROM docs WHERE slug = ?').get(slug) as {
-      n: number;
-    }).n > 0
+    (
+      getDb()
+        .prepare('SELECT count(*) AS n FROM docs WHERE slug = ?')
+        .get(slug) as {
+        n: number;
+      }
+    ).n > 0
   );
 }
 
 /** 一个 slug 的全部语言版本, 缺失的语言返回 undefined */
-export function getSlugDocs(slug: string): Record<string, DocEntry | undefined> {
+export function getSlugDocs(
+  slug: string,
+): Record<string, DocEntry | undefined> {
   const out: Record<string, DocEntry | undefined> = {};
   for (const locale of i18n.languages) out[locale] = getDoc(slug, locale);
   return out;
@@ -104,7 +110,9 @@ export function getSlugDocs(slug: string): Record<string, DocEntry | undefined> 
 
 export function getDoc(slug: string, locale: string): DocEntry | undefined {
   const row = getDb()
-    .prepare('SELECT slug, locale, content, updated_at FROM docs WHERE slug = ? AND locale = ?')
+    .prepare(
+      'SELECT slug, locale, content, updated_at FROM docs WHERE slug = ? AND locale = ?',
+    )
     .get(slug, locale) as unknown as
     | { slug: string; locale: string; content: string; updated_at: number }
     | undefined;
@@ -127,7 +135,9 @@ export function validateDocSource(source: string): string | undefined {
   const parsed = docFrontmatterSchema.safeParse(frontmatter);
   if (parsed.success) return undefined;
   return parsed.error.issues
-    .map((issue) => `${issue.path.join('.') || 'frontmatter'}: ${issue.message}`)
+    .map(
+      (issue) => `${issue.path.join('.') || 'frontmatter'}: ${issue.message}`,
+    )
     .join('; ');
 }
 
@@ -169,7 +179,9 @@ export function saveDoc(
 }
 
 export function deleteDoc(slug: string, locale: string): void {
-  getDb().prepare('DELETE FROM docs WHERE slug = ? AND locale = ?').run(slug, locale);
+  getDb()
+    .prepare('DELETE FROM docs WHERE slug = ? AND locale = ?')
+    .run(slug, locale);
 }
 
 export interface NavEntry {
@@ -182,7 +194,9 @@ export interface NavEntry {
 export function listNav(): NavEntry[] {
   return (
     getDb()
-      .prepare('SELECT dir, locale, data, updated_at FROM navigation ORDER BY dir, locale')
+      .prepare(
+        'SELECT dir, locale, data, updated_at FROM navigation ORDER BY dir, locale',
+      )
       .all() as unknown as {
       dir: string;
       locale: string;
@@ -198,7 +212,9 @@ export function listNav(): NavEntry[] {
 }
 
 export function getNav(dir: string, locale: string): NavEntry | undefined {
-  return listNav().find((entry) => entry.dir === dir && entry.locale === locale);
+  return listNav().find(
+    (entry) => entry.dir === dir && entry.locale === locale,
+  );
 }
 
 /** meta 的 sectionNotes 是非标准字段, schema 里显式带着, 漏掉侧边栏分段描述会静默消失。 */
@@ -225,4 +241,89 @@ export function saveNav(dir: string, locale: string, json: string): void {
        ON CONFLICT(dir, locale) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`,
     )
     .run(dir, locale, json, Date.now());
+}
+
+/* ------------------------------------------------------------------ *
+ * 新建 / 删除页面
+ * ------------------------------------------------------------------ */
+
+/** slug 归属哪一份导航: 取「是它前缀」的最深那个 meta 目录 */
+export function navDirFor(slug: string): string | undefined {
+  const dirs = [...new Set(listNav().map((entry) => entry.dir))];
+  return dirs
+    .filter((dir) => dir === '' || slug === dir || slug.startsWith(`${dir}/`))
+    .sort((a, b) => b.length - a.length)[0];
+}
+
+export function listNavDirs(): string[] {
+  return [...new Set(listNav().map((entry) => entry.dir))].sort();
+}
+
+const TEMPLATE = (title: string) =>
+  `---\ntitle: ${JSON.stringify(title)}\n---\n\n`;
+
+export interface CreatePageInput {
+  slug: string;
+  title: string;
+  locales: string[];
+}
+
+export function createPage(input: CreatePageInput): void {
+  if (slugExists(input.slug)) throw new Error('这个路径已经有页面了');
+  if (!/^[\w()\-./]+$/.test(input.slug)) {
+    throw new Error('路径只能用英文字母、数字、-、_、/ 与括号');
+  }
+
+  const db = getDb();
+  db.exec('BEGIN');
+  try {
+    for (const locale of input.locales) {
+      assertLocale(locale);
+      saveDoc(input.slug, locale, TEMPLATE(input.title));
+    }
+    // 不挂进导航的话页面存在但侧边栏看不到 —— meta 里写了 pages 就只显示列出的条目
+    const dir = navDirFor(input.slug);
+    if (dir !== undefined) {
+      const entry = dir === '' ? input.slug : input.slug.slice(dir.length + 1);
+      for (const nav of listNav().filter((item) => item.dir === dir)) {
+        const data = JSON.parse(nav.data) as { pages?: string[] };
+        if (Array.isArray(data.pages) && !data.pages.includes(entry)) {
+          data.pages.push(entry);
+          saveNav(dir, nav.locale, JSON.stringify(data, null, 2));
+        }
+      }
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
+export function deletePage(slug: string): void {
+  const db = getDb();
+  db.exec('BEGIN');
+  try {
+    db.prepare('DELETE FROM docs WHERE slug = ?').run(slug);
+    db.prepare('DELETE FROM drafts WHERE slug = ?').run(slug);
+
+    // 导航里留着孤儿条目会让侧边栏出现点不开的链接
+    for (const nav of listNav()) {
+      const data = JSON.parse(nav.data) as { pages?: string[] };
+      if (!Array.isArray(data.pages)) continue;
+      const entry = nav.dir === '' ? slug : slug.slice(nav.dir.length + 1);
+      const next = data.pages.filter((page) => page !== entry);
+      if (next.length !== data.pages.length) {
+        saveNav(
+          nav.dir,
+          nav.locale,
+          JSON.stringify({ ...data, pages: next }, null, 2),
+        );
+      }
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
 }

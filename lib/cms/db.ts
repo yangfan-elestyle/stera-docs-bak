@@ -95,13 +95,17 @@ export function getDb(): DatabaseSync {
 }
 
 export function migrate(db: DatabaseSync): void {
-  const row = db.prepare('PRAGMA user_version').get() as { user_version: number };
-  for (let v = row.user_version; v < MIGRATIONS.length; v++) db.exec(MIGRATIONS[v]);
+  const row = db.prepare('PRAGMA user_version').get() as {
+    user_version: number;
+  };
+  for (let v = row.user_version; v < MIGRATIONS.length; v++)
+    db.exec(MIGRATIONS[v]);
   db.exec(`PRAGMA user_version = ${MIGRATIONS.length}`);
 }
 
 export function countDocs(db: DatabaseSync): number {
-  return (db.prepare('SELECT count(*) AS n FROM docs').get() as { n: number }).n;
+  return (db.prepare('SELECT count(*) AS n FROM docs').get() as { n: number })
+    .n;
 }
 
 /**

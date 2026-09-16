@@ -4,7 +4,11 @@ import { createContentSource } from '@/lib/cms/source';
 import { createDbProvider } from '@/lib/cms/db-provider';
 import { contentVersion } from '@/lib/cms/version';
 import type { CompiledDoc } from '@/lib/cms/mdx';
-import { flattenTree, getPageTreeRoots, type Root } from 'fumadocs-core/page-tree';
+import {
+  flattenTree,
+  getPageTreeRoots,
+  type Root,
+} from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from './i18n';
 import { openapiPlugin } from 'fumadocs-openapi/server';
@@ -62,17 +66,15 @@ export async function getSource(): Promise<DocsSource> {
 export async function loadDoc(page: DocsPage): Promise<CompiledDoc> {
   const data = page.data as Record<string, unknown>;
   if (typeof data.load === 'function') {
-    return (await (data.load as () => Promise<CompiledDoc>)()) satisfies CompiledDoc;
+    return (await (
+      data.load as () => Promise<CompiledDoc>
+    )()) satisfies CompiledDoc;
   }
   return data as unknown as CompiledDoc;
 }
 
 // 页脚 previous/next: 邻居范围限定在当前页所在的 root tab，避免跨 tab 串页
-export function getFooterItems(
-  src: DocsSource,
-  page: DocsPage,
-  lang: string,
-) {
+export function getFooterItems(src: DocsSource, page: DocsPage, lang: string) {
   const tree = src.getPageTree(lang);
   if (!tree) return {};
 
@@ -173,11 +175,7 @@ export async function getPageDescription(
     : text;
 }
 
-export async function getLLMText(
-  page: DocsPage,
-  host: string,
-  pageTree: Root,
-) {
+export async function getLLMText(page: DocsPage, host: string, pageTree: Root) {
   const processed = await page.data.getText('processed');
   const resolved = await resolveLLMTags(processed, host, pageTree, page.url);
   const origin = getRequestOrigin(host);

@@ -35,6 +35,12 @@ const compiler = createCompiler({
   remarkImageOptions: {
     useImport: false,
     publicDir: path.join(process.cwd(), 'public'),
+    // 默认是 throw。对 CMS 来说一个写错的图片路径不该让整页 500, 而且后台上传的图
+    // 存在持久卷上 (见 lib/cms/uploads.ts), 本来就不在 publicDir 里量不到尺寸。
+    // 代价: 这类图片渲染时没有 width/height。站点图片已是 unoptimized, 可以接受。
+    onError: (error: Error) => {
+      console.warn('[cms] 取图片尺寸失败, 按无尺寸渲染:', error.message);
+    },
   },
   remarkPlugins: [
     [remarkStructure, { exportAs: 'structuredData' }],
@@ -64,7 +70,9 @@ function processedMarkdown(): Plugin<[]> {
 }
 
 export interface CompiledDoc {
-  body: (props: { components?: MDXComponents }) => ReactNode | Promise<ReactNode>;
+  body: (props: {
+    components?: MDXComponents;
+  }) => ReactNode | Promise<ReactNode>;
   toc: TOCItemType[];
   structuredData: unknown;
   /** remarkLLMs 产出的 markdown, 供 llms.txt / <path>.md 一系输出用 */

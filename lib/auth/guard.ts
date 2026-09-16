@@ -25,12 +25,26 @@ export async function currentUser(): Promise<User | undefined> {
 export async function requireUser(): Promise<User> {
   const user = await currentUser();
   if (!user) redirect('/admin/login');
-  if (user.mustChangePassword) redirect('/admin/password');
+  return user;
+}
+
+/**
+ * 写操作的守卫: 还在用管理员给的初始密码时一律拒绝。
+ *
+ * 强制改密 MUST NOT 放在 requireUser 里做重定向 —— 改密页本身在同一个受守卫的
+ * 布局下, 那样会自己重定向到自己, 浏览器最后被弹回站点首页。
+ * 引导由 AppShell 在客户端做, 这里是服务端的硬拦截。
+ */
+export async function requireWriter(): Promise<User> {
+  const user = await requireUser();
+  if (user.mustChangePassword) {
+    throw new Error('请先修改初始密码后再编辑内容');
+  }
   return user;
 }
 
 export async function requireAdmin(): Promise<User> {
-  const user = await requireUser();
+  const user = await requireWriter();
   if (user.role !== 'admin') redirect('/admin/content');
   return user;
 }

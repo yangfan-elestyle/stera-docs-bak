@@ -1,10 +1,12 @@
 'use server';
 
-import { requireUser } from '@/lib/auth/guard';
+import { requireWriter } from '@/lib/auth/guard';
 import { compileDoc } from '@/lib/cms/mdx';
 import {
   StaleWriteError,
+  createPage,
   deleteDoc,
+  deletePage,
   saveDoc,
   validateDocSource,
 } from '@/lib/cms/content';
@@ -21,7 +23,7 @@ export async function saveDocAction(input: {
   content: string;
   expectedUpdatedAt?: number;
 }): Promise<SaveResult> {
-  const user = await requireUser();
+  const user = await requireWriter();
 
   // 唯一的拦截点: 读取侧只会跳过坏行, 靠它兜底等于坏内容先落库再整页消失
   const invalid = validateDocSource(input.content);
@@ -53,7 +55,7 @@ export async function deleteLocaleAction(input: {
   slug: string;
   locale: string;
 }): Promise<{ ok: boolean; error?: string }> {
-  const user = await requireUser();
+  const user = await requireWriter();
   deleteDoc(input.slug, input.locale);
   clearDraft(user.id, input.slug, input.locale);
   revalidateContent();
@@ -80,7 +82,7 @@ export async function stageDraftAction(input: {
   locale: string;
   content: string;
 }): Promise<StageResult> {
-  const user = await requireUser();
+  const user = await requireWriter();
 
   const invalid = validateDocSource(input.content);
   if (invalid) return { ok: false, error: `frontmatter 不合法 —— ${invalid}` };
@@ -100,6 +102,37 @@ export async function discardDraftAction(input: {
   slug: string;
   locale: string;
 }): Promise<void> {
-  const user = await requireUser();
+  const user = await requireWriter();
   clearDraft(user.id, input.slug, input.locale);
+}
+
+export async function createPageAction(input: {
+  slug: string;
+  title: string;
+  locales: string[];
+}): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
+  await requireWriter();
+  if (!input.title.trim()) return { ok: false, error: '标题不能为空' };
+  if (input.locales.length === 0) return { ok: false, error: '至少选一种语言' };
+
+  try {
+    createPage({ ...input, title: input.title.trim() });
+    revalidateContent();
+    return { ok: true, slug: input.slug };
+  } catch (error) {
+    return { ok: false, error: (error as Error).message };
+  }
+}
+
+export async function deletePageAction(input: {
+  slug: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  await requireWriter();
+  try {
+    deletePage(input.slug);
+    revalidateContent();
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: (error as Error).message };
+  }
 }

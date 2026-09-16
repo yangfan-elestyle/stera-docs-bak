@@ -9,5 +9,5 @@ export const openapi = createOpenAPI({
       './openapi.yaml': openapiJa,
       './openapi.zh.yaml': openapiZh,
       './openapi.en.yaml': openapiEn,
-    }) as any,
+    } as any),
 });

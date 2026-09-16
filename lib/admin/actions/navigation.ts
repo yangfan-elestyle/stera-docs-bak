@@ -1,6 +1,6 @@
 'use server';
 
-import { requireUser } from '@/lib/auth/guard';
+import { requireWriter } from '@/lib/auth/guard';
 import { saveNav, validateNavSource } from '@/lib/cms/content';
 import { revalidateContent } from '@/lib/cms/revalidate';
 
@@ -9,7 +9,7 @@ export async function saveNavAction(input: {
   locale: string;
   json: string;
 }): Promise<{ ok: boolean; error?: string }> {
-  await requireUser();
+  await requireWriter();
 
   const invalid = validateNavSource(input.json);
   if (invalid) return { ok: false, error: invalid };

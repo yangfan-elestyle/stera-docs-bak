@@ -4,10 +4,7 @@ export function getPageMarkdownPath(pageUrl: string): string {
   return `${pageUrl === '/' ? '/index' : pageUrl}.md`;
 }
 
-export function getPageMarkdownUrl(
-  pageUrl: string,
-  origin?: string,
-): string {
+export function getPageMarkdownUrl(pageUrl: string, origin?: string): string {
   return toAbsoluteUrl(getPageMarkdownPath(pageUrl), origin);
 }
 

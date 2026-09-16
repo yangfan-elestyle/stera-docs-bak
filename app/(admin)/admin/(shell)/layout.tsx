@@ -26,7 +26,11 @@ export default async function ShellLayout({ children }: { children: React.ReactN
   ];
 
   return (
-    <AppShell user={{ email: user.email, role: user.role }} commands={commands} logoutAction={logout}>
+    <AppShell user={{
+        email: user.email,
+        role: user.role,
+        mustChangePassword: user.mustChangePassword,
+      }} commands={commands} logoutAction={logout}>
       {children}
     </AppShell>
   );

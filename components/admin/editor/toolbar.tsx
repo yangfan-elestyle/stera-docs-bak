@@ -15,6 +15,7 @@ import {
   Table,
   Sparkles,
 } from 'lucide-react';
+import { useRef } from 'react';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -46,10 +47,13 @@ const COMPONENTS = [
 export function EditorToolbar({
   editor,
   disabled,
+  onPickImages,
 }: {
   editor: React.RefObject<CodeMirrorHandle | null>;
   disabled?: boolean;
+  onPickImages?: (files: File[]) => void;
 }) {
+  const fileInput = useRef<HTMLInputElement>(null);
   const run = (fn: (handle: CodeMirrorHandle) => void) => () => {
     if (editor.current) fn(editor.current);
   };
@@ -114,11 +118,6 @@ export function EditorToolbar({
         e.insertBlock('| 列一 | 列二 |\n| --- | --- |\n| 内容 | 内容 |'),
       ),
     },
-    {
-      icon: ImageIcon,
-      label: '图片',
-      run: run((e) => e.insertBlock('![说明](/docs/xxxx.png)')),
-    },
   ] as const;
 
   return (
@@ -142,6 +141,30 @@ export function EditorToolbar({
       )}
 
       <span className="mx-1 h-5 w-px bg-fd-border" />
+
+      <Tooltip content="插入图片 · 也可直接粘贴截图或拖入文件">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          disabled={disabled}
+          aria-label="插入图片"
+          onClick={() => fileInput.current?.click()}
+        >
+          <ImageIcon />
+        </Button>
+      </Tooltip>
+      <input
+        ref={fileInput}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+        multiple
+        hidden
+        onChange={(event) => {
+          const files = [...(event.target.files ?? [])];
+          event.target.value = '';
+          if (files.length > 0) onPickImages?.(files);
+        }}
+      />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
