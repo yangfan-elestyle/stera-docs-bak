@@ -20,131 +20,92 @@
 - [ok] 去多租户, 收敛为 stera smart one 单站点
 - [ok] OpenAPI + 错误码改本地源文件
 - [ok] 独立为 stera-docs repo
+- [ok] A 数据层 / B 运行时数据源 / C 配套改造 / D 解除 git 依赖 / G 收尾; E 除 UI 定稿外全部落地
 
-## A. 数据层
+## A. 数据层 [ok]
 
-A1. 接 SQLite driver, db 文件路径写死常量
-    - 优先 `node:sqlite` -> Node 24 内置, 无原生依赖; 选 `better-sqlite3` 则注意 deps 阶段是 bun 镜像而 runner 是 `node:24`, 原生模块 ABI 会对不上
-    - 句柄 MUST 单例复用, MUST NOT 每请求新建 -> dev HMR 会泄漏
+A1. [ok] 接 SQLite driver, db 文件路径写死常量 (`data/cms.db`)
+    - 用 `node:sqlite` -> Node 24 内置, 无原生依赖, bun 1.4 下同样可用
+    - 句柄懒加载单例: 模块加载即连库会让 `next build` 在构建机上凭空造出 db 文件
 
 A2. [ok] 拆内容集合: `openapi/(generated)` 留构建期, 手写文档独立集合 (todo 1)
     - 两组 glob MUST 互斥且并集 = `content/docs` 全量 (实测 246 / 168, 零遗漏零重复)
-    - 验收: `types:check` + `generate:data` + `build` 通过; 375 份基准产物 diff 全等
+    - picomatch 把裸 `(` `)` 当分组, route group 目录要写成 `[(]home[)]`; 数组里的 `!pattern` 不做减法
 
-A3. 建表 + migration 脚本 (todo 2)
-    - 正文表: 正文 / frontmatter / `updated_at`; 唯一键 `(slug, locale)`
-    - 导航表: `meta.json` 同样按语言三份, MUST 含非标准字段 `sectionNotes`
-    - 验收: migration 可重复执行且结果一致
+A3. [ok] 建表 + migration 脚本 (todo 2)
+    - `docs(slug, locale, content, updated_at)` / `navigation(dir, locale, data, updated_at)`
+    - migration 用 `PRAGMA user_version` 记进度, 可重复执行
 
-A4. 写导入脚本 `content/` -> DB (todo 3)
-    - 建库即重跑, 不做增量与幂等
-    - 验收: 入库 210 行正文 + 36 份 meta; 抽样比对正文 + frontmatter + meta 排序 + `sectionNotes`
+A4. [ok] 写导入脚本 `seed/docs` -> DB (todo 3)
+    - `bun run import:seed` 与「空库首启自动灌入」共用同一个 `importSeed`
+    - 灌完仍为空则抛错并点名 seed 目录
 
-## B. 运行时数据源
+## B. 运行时数据源 [ok]
 
-B1. 接 `@fumadocs/mdx-remote` + `dynamicLoader({ docs: 动态源, openapi: 静态源 })` (todo 4)
+B1. [ok] 接 `@fumadocs/mdx-remote` + `dynamicLoader({ docs: 动态源, openapi: 静态源 })` (todo 4)
 
-B2. frontmatter 补 zod 校验 -> `compile()` 返回值不经校验
-    - MUST 覆盖自定义字段 `tocMaxDepth` (3 处在用) 与 `redirect` (schema 有, 内容 0 处)
+B2. [ok] frontmatter zod 校验 (含 `tocMaxDepth` / `redirect`)
+    - 写入侧拒绝是唯一拦截点; 读取侧只跳过坏行并点名日志
+    - MUST NOT 在 `files()` 里抛: dynamicLoader 会缓存 rejected promise 到下次 revalidate, 一条坏数据 = 整站持续 500
 
-B3. `sectionNotes` 接回 fumadocs storage
-    - `lib/plugins/section-notes.ts` 走 `this.storage.read(metaPath)` 读 meta; 入库后读不到会让分隔符描述静默消失且不报错
-    - 验收: 三语言 sidebar 分段描述与切换前一致
+B3. [ok] `sectionNotes` 接回 fumadocs storage —— 三语言 sidebar 分段描述逐条比对一致
 
-B4. 切到 DB 源, 手写 mdx 移出 `content/` 转为随仓 seed
-    - `data/` 同时在 `.gitignore` 与 `.dockerignore` 里 -> 删掉文件态内容后, 210 页只剩本机 db 一份, 新建卷 = 空站
-    - 故手写 mdx MUST 移到 `seed/docs/` 继续入 git 并进镜像; 启动时 docs 表为空则跑 migration + 导入
-    - 切之前先跑一遍文件态产物留作比对基准, 切完逐页 diff
-    - 验收: 正文 / TOC / sidebar / 面包屑 / previous-next / 图片 全一致; 141 处无语言前缀的站内绝对链接 (`](/openapi/refund/createRefund)` 形态) 仍走通 i18n rewrite
-    - 验收: `content/docs/openapi/(generated)/` 之外无手写 mdx
+B4. [ok] 切到 DB 源, 手写 mdx 移出 `content/` 转为随仓 seed (`seed/docs`)
+    - `seed/updated-at.json` 保住最終更新日: `git mv` 之后 `git log -- seed/docs/...` 只剩搬家那一个 commit
 
-## C. 随 B 同批改, 漏掉会静默坏掉
+## C. 随 B 同批改 [ok]
 
-C1. 全文搜索改传函数 `createFromSource(getSource)` (todo 5)
-    - `@orama/tokenizers` 的 japanese / mandarin `localeMap` 配置可原样保留
-    - `app/api/search/route.ts` 的 `staticGET` 导出现已无消费方, 一并删
+C1. [ok] 全文搜索改传函数 `createFromSource(getSource)`
+C2. [ok] llms 链路改喂运行期编译产出的 `_markdown`
+C3. [ok] 导航数据改渲染期注入 (EHome 与 `lib/llm-postprocess.ts` 两处)
+C4. [ok] 最終更新日取内容源 `updated_at`
+C5. [ok] 删 OG 路由的 `generateStaticParams` —— 构建期不再读内容源
+C6. [ok] 运行期编译链补齐 `remarkStructure` 与 `remarkLLMs`, 与构建期逐项对齐
 
-C2. llms 链路改喂 DB 正文
-    - `lib/source.ts:126` 的 `page.data.getText('processed')` 在 DB 源下取不到: `raw` 读文件系统, `processed` 依赖构建期 `includeProcessedMarkdown`
-    - 影响 `llms.txt` / `llms-full.txt` / `llms.mdx/[[...slug]]`, 以及 `next.config.mjs` rewrite 过来的 `<path>.md`
-    - 顺带清 `mdxAsPlaceholder` 白名单死项 `EContainer` / `EImg` / `EText`
-    - 验收: 四类输出与切换前一致
+## D. 解除 git 构建依赖 [ok] (todo 12)
 
-C3. 导航数据改渲染期注入 (todo 6)
-    - `components/EHome.tsx` 与 `lib/llm-postprocess.ts` 都 `import { source }` 后取 `source.pageTree[lang]`, 两处都要改 (todo 6 只写了 EHome)
-
-C4. 最終更新日取 DB `updated_at` (todo 7)
-
-C5. 删 `app/[lang]/og/[...slug]/route.tsx:106` 的 `generateStaticParams`
-    - 它在构建期调 `source.getPages()`; 内容进 DB 后会让 `next build` 反过来依赖 db 文件, 而线上 db 在运行期挂载卷上, 构建机看不到
-    - OG 路由已是 `revalidate = false`, 改按需生成后首次访问渲染一次即长期缓存
-    - 验收: 构建全程不碰 db 文件
-
-C6. 运行时 MDX preset 的 `remarkStructureOptions` MUST NOT 关成 `false`, 传对象时 MUST NOT 带 `exportAs`
-    - `structuredData` 同时支撑 `getPageDescription` (`lib/source.ts:101`) 与搜索索引
-    - 导出名由 preset 覆写而来, 非插件默认: `fumadocs-core/dist/content/mdx/preset-runtime.js:18-20` 传 `{ exportAs: 'structuredData', ...remarkStructureOptions }`, 而 `remarkStructure` 自身默认 `exportAs: false`
-    - 展开顺序在后 -> 传 `{ exportAs: ... }` 会盖掉导出名, 效果等同关闭; 传不含 `exportAs` 的对象安全
-
-## D. 解除 git 构建依赖 (todo 12)
-
-D1. 确认构建期只剩 openapi 集合后, 去掉 `source.config.ts` 的 `lastModified()`
-    - 该插件对每个文件跑 `git log`, 是已知唯一的构建期 git 依赖
-
-D2. 拆掉为它存在的三处基建
-    - Dockerfile 删 `apt-get install git`; `.dockerignore` 删「`.git` MUST NOT 排除」约定; CI 删 `fetch-depth: 0`; README 硬约束同步删
-    - 动手前 MUST 全仓复核还有没有别的地方读 git 历史, 漏一处会静默坏
-    - 验收: 从无 `.git` 的构建上下文能构建成功
+D1. [ok] 去掉 `source.config.ts` 的 `lastModified()`
+D2. [ok] Dockerfile 去 `git` / `.dockerignore` 反过来排除 `.git` / CI 去 `fetch-depth: 0` / README 同步
+    - 验收: 从 `git ls-files` 导出的无 `.git` 上下文能 `docker build`, 产物与本机全等
 
 ## E. 权限 + 在线编辑
 
-E1. 用户表 + 会话: admin / editor 两角色, 账号名 = 邮箱 (todo 9)
-    - MUST NOT 接邮件服务, MUST NOT 开放自助注册
-    - mdx-remote 默认允许代码执行 -> 能写库 = 能在服务端执行代码, 按 RCE 边界设计而非普通内容权限
+E1. [ok] 用户表 + 会话: admin / editor 两角色, 账号名 = 邮箱 (todo 9)
+E2. [ok] `/admin` 路由骨架 + `middleware.ts` matcher 排除 `/admin` (todo 8)
+E3. [ok] 登录 + 鉴权, admin 建账号与授权
+    - 已定: 初始密码由 admin 当场设定、线下交付, 首次登录强制改密
+    - 首个管理员只来自部署侧 `ADMIN_EMAIL` / `ADMIN_PASSWORD`, 仅在账号表为空时生效
+E4. [部分] 编辑页 UI: ja / en / zh 分别编辑 + 各自独立保存 (todo 10)
+    - 功能已完整, 列表能看出某 slug 缺哪些语言
+    - 仍阻塞: SMCC 侧 UI 排版未回复前 MUST NOT 定稿布局, 现为最简样式
+E5. [ok] 保存后刷新前台
+    - `getSource()` 比对库里的版本指纹 + `revalidatePath`
+    - Next 给 page 与 route handler 打不同入口 bundle, 只靠 `revalidate()` 到不了另一份模块实例
 
-E2. `/admin` 路由骨架 + `middleware.ts` matcher 排除 `/admin` (todo 8)
-    - 不排除会被 i18n rewrite 成 `/{locale}/admin`
-    - MUST NOT 重写整段 matcher: `.md` 与 `llms.txt` 是真实路由, 依赖这个 rewrite
-
-E3. 登录 + 鉴权, admin 建账号与授权
-    - 待定: 初始密码如何交给 editor, 首次登录是否强制改密
-
-E4. 编辑页 UI: ja / en / zh 分别编辑 + 各自独立保存 (todo 10)
-    - 被阻塞: SMCC 侧 UI 排版未回复前 MUST NOT 定稿布局
-    - 需能看出某 slug 缺哪些语言
-
-E5. 保存后调 `revalidate(name)` + Next 的 `revalidatePath`
-    - `revalidate(name)` 只清 dynamicLoader 的 sourceCache; 页面路由是 `revalidate = false`, 不动 Next 路由缓存则前台仍发旧 HTML
-    - 进程内缓存能代表全局的前提是 F1 的 `replicas=1`, MUST NOT 当成扩容开关
-    - 验收: 保存后前台正文 + 搜索结果同步更新
-
-## F. 部署链路 (本机全绿之后再打通, 但卷要早申请)
+## F. 部署链路 (待人工发起)
 
 F1. 申请持久卷并挂进 pod
-    - 跨 repo: 卷与部署策略在 `elepay-io/ele-argocd-app` 侧; 只卡上线不卡开发, SHOULD 尽早发起
+    - 跨 repo: 卷与部署策略在 `elepay-io/ele-argocd-app` 侧
     - MUST 是块存储, MUST NOT 落在 NFS / EFS -> SQLite 的文件锁在网络文件系统上会损坏库, 且不报错
     - MUST replicas=1 + 部署策略 `Recreate` -> 滚动更新时两个 pod 抢同一块 RWO 卷
+    - MUST 挂在 `/app/data`; 同时注入 `ADMIN_EMAIL` / `ADMIN_PASSWORD` secret
 
 F2. repo 正式落位 `elepay-io` 组织
-    - 现状: origin = `yangfan-elestyle/stera-docs-bak`, 个人备份 repo; workflow run 在 develop 上 `queued` 从未启动 -> 个人 org 下无 self-hosted runner, 属预期内
+    - 现状: origin = `yangfan-elestyle/stera-docs-bak`, 个人 org 下无 self-hosted runner
 
 F3. CI/CD 逐项核对并跑通
-    - self-hosted runner / `PACKAGE_READ_TOKEN` / `DEPLOY_PAT_TOKEN` / `elepay-io/ele-argocd-app` 侧 image 引用 (`image_name: ${{ github.repository }}` 随 repo 名变)
-    - workflow 文件本身在 D2 已被改过, 这里只是首次真跑
-    - 验收: develop 一次 push 走完 build + 推 GHCR + dispatch, 并真正部署上
+    - self-hosted runner / `DEPLOY_PAT_TOKEN` / `elepay-io/ele-argocd-app` 侧 image 引用 (`image_name: ${{ github.repository }}` 随 repo 名变)
+    - `.github/workflows/docker-build.yml` 现只留 `workflow_dispatch`, 恢复方式写在文件头部
+    - `PACKAGE_READ_TOKEN` 已不需要: 私有依赖连同 Chatbot 一起删了
 
-## G. 收尾
+## G. 收尾 [ok]
 
-G1. 删 `lib/legacy-redirects.mjs` (237 行) + `next.config.mjs` 的 `redirects()`
-    - 映射的是已下线 elepay 文档站的 `/docs/*` `/sdks/*` 旧路径; stera-docs 是新域名新站, 没有历史外链要接
-
-G2. 删 `docs/多租户编写指南.md`
-
-G3. 定 `@elepay-io/chatbot` 依赖去留 -> Chatbot 不在本 PJ 范围
-    - 若删, Dockerfile + CI 的 `PACKAGE_READ_TOKEN` / `gh_packages_token` 私有源链路可一并去掉
-
-G4. README / workflow.md 同步改造后事实
+G1. [ok] 删 `lib/legacy-redirects.mjs` + `next.config.mjs` 的 `redirects()`
+G2. [ok] 删 `docs/多租户编写指南.md`
+G3. [ok] 删 `@elepay-io/chatbot` 与 ChatbotLauncher -> 连的是 elepay 的知识库, 挂在 SMCC 站上会用错知识源; 私有 registry 链路一并拆掉
+G4. [ok] README / workflow.md 同步改造后事实
 
 ## 需回复 SMCC
 
 - Chatbot 可对应时期
-- UI 排版 -> 阻塞 E4
+- UI 排版 -> 阻塞 E4 定稿

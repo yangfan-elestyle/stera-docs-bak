@@ -18,27 +18,34 @@
 迭代用 dev server (有 HMR):
 
 ```bash
-bun run dev    # http://localhost:3000
+bun run import:seed   # 只在 data/cms.db 缺失或要重置内容时跑
+bun run dev           # http://localhost:3000
 ```
 
 验收用本机 docker 运行 (= AI 唯一交付判定, 与生产同一镜像):
 
 ```bash
 docker build --build-arg DOCS_ENV=staging -t stera-docs:local .
-docker run --rm -p 3000:3000 -v stera-data:/app/data stera-docs:local
+docker run --rm -p 3000:3000 -v stera-data:/app/data \
+  -e ADMIN_EMAIL=ops@example.com -e ADMIN_PASSWORD='<12 位以上, 含大小写与数字>' \
+  stera-docs:local
 ```
 
-单租户, 任意 Host 内容一致; 冒烟四条:
+单租户, 任意 Host 内容一致; 冒烟六条:
 
 ```bash
-curl -sI http://localhost:3000/                 # 200
-curl -sI http://localhost:3000/favicon.ico      # 200, 非 404 (matcher 漏排除会 404)
-curl -s  http://localhost:3000/llms.txt | head  # 绝对 URL 正常
+curl -sI http://localhost:3000/                        # 200
+curl -sI http://localhost:3000/favicon.ico             # 200, 非 404 (matcher 漏排除会 404)
+curl -s  http://localhost:3000/llms.txt | head         # 绝对 URL 正常
 curl -sI http://localhost:3000/get-started/set-up.md   # 200
+curl -s  'http://localhost:3000/api/search?query=stera&locale=ja' | head -c 80   # 有结果
+curl -sI http://localhost:3000/admin/login             # 200, 未登录不 500
 ```
 
 > 改代码后必须重跑 `docker build` (镜像无 HMR); 仅重跑 `docker run` 跑的是旧镜像。
 > `DOCS_ENV` 是构建期参数, `docker run -e DOCS_ENV=` 改不动已构建产物。
+> 空卷首启会自动灌 `seed/docs`; 卷里已有数据则不再灌, 编辑结果不会被覆盖。
+> `ADMIN_EMAIL` / `ADMIN_PASSWORD` 只在账号表为空时生效, 之后改它们没有任何作用。
 
 # 发布
 
