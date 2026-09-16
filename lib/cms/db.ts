@@ -52,6 +52,19 @@ const MIGRATIONS: string[] = [
   );
   CREATE INDEX sessions_user_id ON sessions(user_id);
   `,
+  `
+  -- 草稿: 编辑中的未保存内容, 每人每 (slug, locale) 一份。
+  -- 存库而不是存进程内存: 预览是独立路由, Next 给它和保存动作打的是不同入口 bundle,
+  -- 模块级变量互相看不见。落库顺带换来「浏览器崩了草稿还在」。
+  CREATE TABLE drafts (
+    user_id    TEXT    NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    slug       TEXT    NOT NULL,
+    locale     TEXT    NOT NULL,
+    content    TEXT    NOT NULL,
+    updated_at INTEGER NOT NULL,
+    PRIMARY KEY (user_id, slug, locale)
+  ) WITHOUT ROWID;
+  `,
 ];
 
 let instance: DatabaseSync | undefined;

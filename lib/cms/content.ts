@@ -19,10 +19,26 @@ export interface DocEntry {
 
 export interface SlugSummary {
   slug: string;
+  /** 所属分区 = slug 第一个非 route-group 段, 列表按它分组 */
+  section: string;
   /** 已存在的语言; 缺哪几种一眼能看出来 */
   locales: string[];
+  /** 各语言标题, 用于搜索与缺失提示 */
+  titles: Record<string, string>;
   title: string;
+  chars: number;
   updatedAt: Date;
+}
+
+function sectionOf(slug: string): string {
+  const parts = slug.split('/').filter((part) => !/^\(.*\)$/.test(part));
+  return parts.length > 1 ? parts[0] : '顶层';
+}
+
+function titleOf(content: string): string | undefined {
+  const { frontmatter } = parseFrontmatter(content);
+  const title = (frontmatter as { title?: unknown })?.title;
+  return typeof title === 'string' && title ? title : undefined;
 }
 
 export function listSlugs(): SlugSummary[] {
@@ -42,23 +58,48 @@ export function listSlugs(): SlugSummary[] {
   for (const row of rows) {
     const entry = map.get(row.slug) ?? {
       slug: row.slug,
+      section: sectionOf(row.slug),
       locales: [],
+      titles: {},
       title: row.slug,
+      chars: 0,
       updatedAt: new Date(0),
     };
     entry.locales.push(row.locale);
-    // 标题优先取默认语言那份, 列表里才不会中英混排
-    if (row.locale === i18n.defaultLanguage || entry.title === entry.slug) {
-      const { frontmatter } = parseFrontmatter(row.content);
-      const title = (frontmatter as { title?: unknown })?.title;
-      if (typeof title === 'string' && title) entry.title = title;
+    const title = titleOf(row.content);
+    if (title) entry.titles[row.locale] = title;
+    if (row.locale === i18n.defaultLanguage) {
+      entry.chars = row.content.length;
+      if (title) entry.title = title;
     }
     const updated = new Date(row.updated_at);
     if (updated > entry.updatedAt) entry.updatedAt = updated;
     map.set(row.slug, entry);
   }
 
+  for (const entry of map.values()) {
+    if (entry.title === entry.slug) {
+      // 默认语言缺失时退而取任意一种语言的标题, 别在列表里显示裸 slug
+      entry.title = Object.values(entry.titles)[0] ?? entry.slug;
+    }
+  }
+
   return [...map.values()].sort((a, b) => a.slug.localeCompare(b.slug));
+}
+
+export function slugExists(slug: string): boolean {
+  return (
+    (getDb().prepare('SELECT count(*) AS n FROM docs WHERE slug = ?').get(slug) as {
+      n: number;
+    }).n > 0
+  );
+}
+
+/** 一个 slug 的全部语言版本, 缺失的语言返回 undefined */
+export function getSlugDocs(slug: string): Record<string, DocEntry | undefined> {
+  const out: Record<string, DocEntry | undefined> = {};
+  for (const locale of i18n.languages) out[locale] = getDoc(slug, locale);
+  return out;
 }
 
 export function getDoc(slug: string, locale: string): DocEntry | undefined {
@@ -90,15 +131,41 @@ export function validateDocSource(source: string): string | undefined {
     .join('; ');
 }
 
-export function saveDoc(slug: string, locale: string, content: string): void {
+export class StaleWriteError extends Error {
+  constructor(readonly current: Date) {
+    super('内容已被其他人改动');
+  }
+}
+
+/**
+ * @param expectedUpdatedAt 打开编辑器时看到的时间戳; 与库里不一致说明中途被别人改过。
+ *   三种语言的编辑器同页常开, 隔一阵再保存会把别人的改动整段盖掉, 这里挡一道。
+ */
+export function saveDoc(
+  slug: string,
+  locale: string,
+  content: string,
+  expectedUpdatedAt?: number,
+): Date {
   assertLocale(locale);
 
+  const existing = getDoc(slug, locale);
+  if (
+    existing &&
+    expectedUpdatedAt !== undefined &&
+    existing.updatedAt.getTime() !== expectedUpdatedAt
+  ) {
+    throw new StaleWriteError(existing.updatedAt);
+  }
+
+  const now = Date.now();
   getDb()
     .prepare(
       `INSERT INTO docs (slug, locale, content, updated_at) VALUES (?, ?, ?, ?)
        ON CONFLICT(slug, locale) DO UPDATE SET content = excluded.content, updated_at = excluded.updated_at`,
     )
-    .run(slug, locale, content, Date.now());
+    .run(slug, locale, content, now);
+  return new Date(now);
 }
 
 export function deleteDoc(slug: string, locale: string): void {
