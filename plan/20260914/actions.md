@@ -94,6 +94,7 @@ F1. 申请持久卷并挂进 pod
     - MUST 是块存储, MUST NOT 落在 NFS / EFS -> SQLite 的文件锁在网络文件系统上会损坏库, 且不报错
     - MUST replicas=1 + 部署策略 `Recreate` -> 滚动更新时两个 pod 抢同一块 RWO 卷
     - MUST 挂在 `/app/data`; 卷里同时放 `cms.db` 与后台上传的图片 `uploads/`, 容量按图片量估
+    - `uploads/` 没有 seed 也没有恢复路径, 卷是唯一副本 -> 按有状态数据对待, MUST NOT 当缓存卷
     - 同时注入 `ADMIN_EMAIL` / `ADMIN_PASSWORD` secret
 
 F2. repo 正式落位 `elepay-io` 组织

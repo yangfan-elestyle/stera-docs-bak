@@ -43,8 +43,16 @@ export async function requireWriter(): Promise<User> {
   return user;
 }
 
+/** 页面渲染用: 只判角色。初始密码的引导由 AppShell 做, 这里再拦会变成抛异常页。 */
 export async function requireAdmin(): Promise<User> {
-  const user = await requireWriter();
+  const user = await requireUser();
   if (user.role !== 'admin') redirect('/admin/content');
+  return user;
+}
+
+/** 管理类写操作用: 角色 + 初始密码两道都要过。 */
+export async function requireAdminWriter(): Promise<User> {
+  const user = await requireWriter();
+  if (user.role !== 'admin') throw new Error('需要管理员权限');
   return user;
 }

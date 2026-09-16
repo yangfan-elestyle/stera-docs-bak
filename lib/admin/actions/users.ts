@@ -1,6 +1,6 @@
 'use server';
 
-import { requireAdmin } from '@/lib/auth/guard';
+import { requireAdminWriter } from '@/lib/auth/guard';
 import { checkPasswordStrength } from '@/lib/auth/password';
 import { revokeUserSessions } from '@/lib/auth/session';
 import {
@@ -24,7 +24,7 @@ export async function createAccountAction(input: {
   password: string;
   role: Role;
 }): Promise<UserResult> {
-  await requireAdmin();
+  await requireAdminWriter();
 
   const email = normalizeEmail(input.email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
@@ -43,7 +43,7 @@ export async function updateRoleAction(input: {
   id: string;
   role: Role;
 }): Promise<UserResult> {
-  const me = await requireAdmin();
+  const me = await requireAdminWriter();
   if (input.role !== 'admin' && input.role !== 'editor')
     return { ok: false, error: '角色不合法' };
   if (input.id === me.id && input.role !== 'admin') {
@@ -63,7 +63,7 @@ export async function resetPasswordAction(input: {
   id: string;
   password: string;
 }): Promise<UserResult> {
-  await requireAdmin();
+  await requireAdminWriter();
   const weak = checkPasswordStrength(input.password);
   if (weak) return { ok: false, error: weak };
   const target = findUserById(input.id);
@@ -81,7 +81,7 @@ export async function resetPasswordAction(input: {
 export async function deleteAccountAction(input: {
   id: string;
 }): Promise<UserResult> {
-  const me = await requireAdmin();
+  const me = await requireAdminWriter();
   if (input.id === me.id) return { ok: false, error: '不能删除当前登录的账号' };
   const target = findUserById(input.id);
   if (!target) return { ok: false, error: '账号不存在' };

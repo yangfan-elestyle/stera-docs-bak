@@ -311,6 +311,9 @@ export function deletePage(slug: string): void {
     for (const nav of listNav()) {
       const data = JSON.parse(nav.data) as { pages?: string[] };
       if (!Array.isArray(data.pages)) continue;
+      // dir 不是这个 slug 的前缀时, slice 出来的是一段无意义的字符, 可能正好撞上
+      // 别的目录里某个真实条目而把它误删 —— 必须先判前缀
+      if (nav.dir !== '' && !slug.startsWith(`${nav.dir}/`)) continue;
       const entry = nav.dir === '' ? slug : slug.slice(nav.dir.length + 1);
       const next = data.pages.filter((page) => page !== entry);
       if (next.length !== data.pages.length) {
