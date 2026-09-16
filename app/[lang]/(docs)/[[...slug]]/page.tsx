@@ -1,5 +1,6 @@
 import {
   getFooterItems,
+  getLastModified,
   getPageDescription,
   getPageImage,
   loadDoc,
@@ -63,7 +64,7 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
       full={page.data.full}
       tableOfContent={{ style: 'clerk' }}
       footer={{ items: footerItems }}
-      lastUpdate={page.data.lastModified}
+      lastUpdate={getLastModified(page)}
     >
       <DocsTitleBar
         title={page.data.title}

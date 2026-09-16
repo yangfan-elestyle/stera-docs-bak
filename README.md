@@ -37,7 +37,9 @@ Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bu
 | 路径 | 说明 |
 |---|---|
 | `app/[lang]` | App Router: 路由 / 布局 / OG / LLM 入口 / search API |
-| `content/docs` | 文档源 (`index.[lang].mdx` + `meta.[lang].json`) |
+| `seed/docs` | 手写文档源 (`index.[lang].mdx` + `meta.[lang].json`), 运行期编译 |
+| `content/docs` | OpenAPI 脚本产物 + 其排序 `meta.json`, 构建期编译 |
+| `lib/cms` | 运行时内容源: mdx 编译 / provider / dynamic source |
 | `lib` | `source.ts` (loader) / `i18n.ts` / `request.ts` / `site.ts` (站点身份常量) |
 | `components` / `assets` / `public` | 组件 / 资源 / 静态文件 |
 | `scripts` | OpenAPI JSON / MDX 生成 |
@@ -58,11 +60,13 @@ bun run generate:data    # openapi*.yaml -> data/openapi/*.json + (generated) md
 - **`DOCS_ENV` 是构建期变量**: `next.config.mjs` 的 `env` 把它内联进产物 (非 product 时输出 `<meta name="docs-env">`); 运行期 `-e DOCS_ENV=` 无效, 每环境一份镜像。
 - **Middleware 先于 `public/`**: i18n middleware 把裸路径 rewrite 成 `/{locale}/...`, 命中后不再回落文件系统路由。`public/` 下的静态文件 MUST 在 `middleware.ts` 的 matcher 中排除 (现排除 `favicon.ico` 与 `docs/**.{png,jpg,jpeg,webp,zip}`), 新增静态资源类型时同步更新。
 - **`public/` 缓存头**: Node 运行时对 `public/` 默认发 `max-age=0`, 长缓存在 `next.config.mjs` 的 `headers()` 中声明。
-- **构建需要 `.git`**: `source.config.ts` 的 `lastModified()` 插件按文件跑 `git log` 取最終更新日, 构建上下文缺 `.git` 或镜像内缺 `git` 都会让 `next build` 直接失败 -> CI MUST `fetch-depth: 0`, MUST NOT 从无 `.git` 的 tarball 构建。
+- **构建不读内容**: 手写文档在运行期由 `lib/cms` 编译, 构建期只处理 `content/docs/openapi/(generated)/`。`next build` MUST NOT 依赖内容源 (含 db / git 历史) -> MUST NOT 给页面路由加 `generateStaticParams`。
+- **运行期编译链 MUST 与构建期对齐**: `lib/cms/mdx.ts` 手工补齐 `remarkStructure` 与 `remarkLLMs`, 且 `remarkLLMs` MUST 在 transform 阶段、`this` 绑 processor 调用; 漏一项会让页面描述 / 搜索索引 / `.md` 输出静默降级或直接抛错。
 
 ## 硬约束
 
 - MUST NOT 直接编辑生成产物: `.source/**` / `content/docs/openapi/(generated)/**` / `data/**` / `.next/**` / `out/**` / `next-env.d.ts`。
+- `seed/updated-at.json` 是手写页最終更新日的基线 (取自内容搬家前的 git 历史), 改 `seed/docs/**` 时同步更新对应条目。
 - 改 `openapi*.yaml` 后 MUST 跑 `bun run generate:data` 刷新; 新 clone 仓库 dev / build 前 MUST 先 `generate:data`。
 - 改 `openapi.yaml` (ja) 时 MUST 同时改 `openapi.en.yaml` / `openapi.zh.yaml`; 三份 yaml 的 path / operationId / `$ref` / enum MUST 完全一致, 仅自然语言字段 (summary / description / example 文案) 按语言不同。
 - OpenAPI 新增 tag 时 MUST 同时在三份 yaml 的顶层 `tags:` 声明, 否则 `generate:data` 直接报错。
@@ -72,7 +76,7 @@ bun run generate:data    # openapi*.yaml -> data/openapi/*.json + (generated) md
 - 多语言命名: `index.mdx` (默认 ja) / `index.en.mdx` / `index.zh.mdx`; 缺失语言回退 `index.mdx`。
 - **i18n 不走 URL**: `hideLocale: 'always'` (`lib/i18n.ts`) 使公开 URL 无 locale 前缀; 语言由 cookie 决定 (middleware 设置)。引用 / 构造站内 URL 时 MUST NOT 加 `/ja` `/en` `/zh` (用 `/docs/xxx`, 非 `/en/docs/xxx`)。源码 `app/[lang]` 段与内容文件 `index.[lang].mdx` 是内部 / 文件级 locale, 不映射到 URL。
 - 经别名 `@/*` / `@/.source` 导入; 避免相对路径穿越。
-- 新增 / 修改 `components/**` 下 MDX 组件时, MUST 验证其 `<path>.md` 渲染输出; 仅消费既有组件的 MDX 内容编辑除外。新增组件须同步登记到 `mdx-components.tsx` + `source.config.ts` 的 `mdxAsPlaceholder` + `lib/llm-postprocess.ts` 的 handler, 漏登记会让 `.md` / `llms-full.txt` 输出残留原始 JSX。
+- 新增 / 修改 `components/**` 下 MDX 组件时, MUST 验证其 `<path>.md` 渲染输出; 仅消费既有组件的 MDX 内容编辑除外。新增组件须同步登记到 `mdx-components.tsx` + `source.config.ts` 与 `lib/cms/mdx.ts` 两处 `mdxAsPlaceholder` + `lib/llm-postprocess.ts` 的 handler, 漏登记会让 `.md` / `llms-full.txt` 输出残留原始 JSX。
 - 品牌名 / Dashboard URL 等站点身份文案集中在 `lib/site.ts`, MUST NOT 散落硬编码。
 
 ## Fumadocs 约定

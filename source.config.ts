@@ -1,5 +1,4 @@
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
-import lastModified from 'fumadocs-mdx/plugins/last-modified';
 import type { LLMsOptions } from 'fumadocs-core/mdx-plugins/remark-llms';
 import { docFrontmatterSchema, docMetaSchema } from './lib/content-schema';
 
@@ -32,10 +31,10 @@ export const openapiDocs = defineDocs({
   },
 });
 
+// 无 plugins: 原来的 lastModified() 按文件跑 `git log`, 是全仓唯一的构建期 git 依赖。
+// 构建期集合现在只剩 (generated)/, 它不入 git, git log 一律返回空 -> 插件已无产出。
+// 手写页的最終更新日改由内容源自带 (seed/updated-at.json, 入库后为 DB 的 updated_at)。
 export default defineConfig({
-  // (generated)/ 不入 git, `git log` 对它一律返回空 -> 该插件对本集合实际已无产出,
-  // 留着只为保住 DocData 的 lastModified 类型槽位; D 组一并清掉。
-  plugins: [lastModified()],
   mdxOptions: {
     remarkImageOptions: {
       useImport: false,

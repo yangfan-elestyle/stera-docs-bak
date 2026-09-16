@@ -1,5 +1,5 @@
 # ai / ide
-# .git MUST NOT 排除: fumadocs-mdx last-modified 插件构建期要读 git 历史。
+.git
 .github
 .claude
 .codegraph

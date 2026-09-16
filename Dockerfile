@@ -19,12 +19,6 @@ RUN --mount=type=secret,id=gh_packages_token \
 FROM oven/bun:1.4.2-slim AS builder
 WORKDIR /app
 
-# fumadocs-mdx 的 last-modified 插件按文件跑 `git log` 取最終更新日,
-# 缺 git 或缺 .git 目录都会让 next build 直接失败 -> 二者都必须在构建阶段就位。
-RUN apt-get update \
- && apt-get install -y --no-install-recommends git \
- && rm -rf /var/lib/apt/lists/*
-
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 

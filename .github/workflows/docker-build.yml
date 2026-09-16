@@ -44,8 +44,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Build and push Docker image
         uses: elepay-io/.github/.github/actions/docker-build@master

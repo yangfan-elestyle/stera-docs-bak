@@ -83,6 +83,12 @@ export function getFooterItems(
   };
 }
 
+// 最終更新日只有手写页有: 它来自内容源 (seed/updated-at.json, 入库后是 DB 的 updated_at)。
+// openapi 生成页是脚本产物且不入 git, 没有这个概念, 页面上不显示。
+export function getLastModified(page: DocsPage): Date | undefined {
+  return (page.data as { lastModified?: Date }).lastModified;
+}
+
 export function getPageImage(page: DocsPage) {
   const segments = [...page.slugs, 'image.png'];
 
