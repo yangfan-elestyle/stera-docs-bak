@@ -3,11 +3,14 @@
 > 一步一动, 验收不过 MUST NOT 进下一步。站点尚未上线, 无存量线上数据与用户, 不做灰度 / 兼容 / 回滚设计。
 > 注意事项与源码结论见 [todo-from-ai.md](./todo-from-ai.md); 约束与已定事项见 [feature.md](./feature.md)。
 > A 到 E 全在本机完成, 构建验证用本机 `docker build`; 部署链路 (F) 留到本机全绿之后。
+> 及时 commit。没完成一个 sub task 就需要进行 commit 收工，然后进行下一项。
 
 ## 入 CMS 的范围
 
 - 入库可编辑: 全部手写内容 = 210 个 mdx (70 slug × ja/en/zh) + 36 个手写 `meta*.json`
-- 留构建期: `content/docs/openapi/(generated)/` 153 页 + 其 15 个 `meta*.json` -> 脚本从 `openapi*.yaml` 生成, 手改会被下次 `generate:data` 覆盖
+- 留构建期: `content/docs/openapi/(generated)/` 153 页 -> 脚本从 `openapi*.yaml` 生成, 手改会被下次 `generate:data` 覆盖
+- 留构建期: `openapi/meta*.json` + `openapi/*/meta*.json` 共 15 份 -> 手写且入 git, 但 `pages` 直接写 `../(generated)/charge/createCharge` 引用脚本产物, 增删 API 必须与 yaml 同步改, 属发版动作
+  - 代价: `openapi/meta.json` 里 5 条 `sectionNotes` 描述文案随之留在发版侧, SMCC 改不了
 - `error-codes.json` 留本地数据文件走发版; 但嵌 `<ErrorCodeTable />` 的 3 个 `error-code.*.mdx` 页本身入 CMS
 - `content/docs/openapi/index.*.mdx` 3 页是手写落地页, 入 CMS
 
@@ -24,9 +27,9 @@ A1. 接 SQLite driver, db 文件路径写死常量
     - 优先 `node:sqlite` -> Node 24 内置, 无原生依赖; 选 `better-sqlite3` 则注意 deps 阶段是 bun 镜像而 runner 是 `node:24`, 原生模块 ABI 会对不上
     - 句柄 MUST 单例复用, MUST NOT 每请求新建 -> dev HMR 会泄漏
 
-A2. 拆内容集合: `openapi/(generated)` 留构建期, 手写文档独立集合 (todo 1)
-    - 现为单 collection 同时覆盖 `(home)` + `openapi/(generated)`
-    - 验收: `bun run generate:data` + `bun run types:check` + `bun run build` 通过, openapi 页与 sidebar 不变
+A2. [ok] 拆内容集合: `openapi/(generated)` 留构建期, 手写文档独立集合 (todo 1)
+    - 两组 glob MUST 互斥且并集 = `content/docs` 全量 (实测 246 / 168, 零遗漏零重复)
+    - 验收: `types:check` + `generate:data` + `build` 通过; 375 份基准产物 diff 全等
 
 A3. 建表 + migration 脚本 (todo 2)
     - 正文表: 正文 / frontmatter / `updated_at`; 唯一键 `(slug, locale)`
@@ -48,7 +51,9 @@ B3. `sectionNotes` 接回 fumadocs storage
     - `lib/plugins/section-notes.ts` 走 `this.storage.read(metaPath)` 读 meta; 入库后读不到会让分隔符描述静默消失且不报错
     - 验收: 三语言 sidebar 分段描述与切换前一致
 
-B4. 切到 DB 源, 删文件态手写 mdx 与旧集合配置
+B4. 切到 DB 源, 手写 mdx 移出 `content/` 转为随仓 seed
+    - `data/` 同时在 `.gitignore` 与 `.dockerignore` 里 -> 删掉文件态内容后, 210 页只剩本机 db 一份, 新建卷 = 空站
+    - 故手写 mdx MUST 移到 `seed/docs/` 继续入 git 并进镜像; 启动时 docs 表为空则跑 migration + 导入
     - 切之前先跑一遍文件态产物留作比对基准, 切完逐页 diff
     - 验收: 正文 / TOC / sidebar / 面包屑 / previous-next / 图片 全一致; 141 处无语言前缀的站内绝对链接 (`](/openapi/refund/createRefund)` 形态) 仍走通 i18n rewrite
     - 验收: `content/docs/openapi/(generated)/` 之外无手写 mdx
@@ -107,7 +112,9 @@ E4. 编辑页 UI: ja / en / zh 分别编辑 + 各自独立保存 (todo 10)
     - 被阻塞: SMCC 侧 UI 排版未回复前 MUST NOT 定稿布局
     - 需能看出某 slug 缺哪些语言
 
-E5. 保存后调 `revalidate(name)` 刷新动态源
+E5. 保存后调 `revalidate(name)` + Next 的 `revalidatePath`
+    - `revalidate(name)` 只清 dynamicLoader 的 sourceCache; 页面路由是 `revalidate = false`, 不动 Next 路由缓存则前台仍发旧 HTML
+    - 进程内缓存能代表全局的前提是 F1 的 `replicas=1`, MUST NOT 当成扩容开关
     - 验收: 保存后前台正文 + 搜索结果同步更新
 
 ## F. 部署链路 (本机全绿之后再打通, 但卷要早申请)

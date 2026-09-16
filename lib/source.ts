@@ -1,4 +1,4 @@
-import { docs } from 'fumadocs-mdx:collections/server';
+import { docs, openapiDocs } from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader } from 'fumadocs-core/source';
 import { flattenTree, getPageTreeRoots } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
@@ -12,7 +12,12 @@ import { getPageUrl } from './url';
 export const source = loader({
   i18n,
   baseUrl: '/',
-  source: docs.toFumadocsSource(),
+  // 两个 source 合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...`
+  // 是跨 source 引用, 靠这份合并 storage 才解析得到。
+  source: {
+    docs: docs.toFumadocsSource(),
+    openapi: openapiDocs.toFumadocsSource(),
+  },
   plugins: [
     lucideIconsPlugin(),
     openapiPlugin(),
