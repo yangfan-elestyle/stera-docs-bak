@@ -1,5 +1,8 @@
-import { docs, openapiDocs } from 'fumadocs-mdx:collections/server';
+import { openapiDocs } from 'fumadocs-mdx:collections/server';
 import { dynamicLoader } from 'fumadocs-core/source/dynamic';
+import { createContentSource } from '@/lib/cms/source';
+import { createSeedProvider } from '@/lib/cms/provider';
+import type { CompiledDoc } from '@/lib/cms/mdx';
 import { flattenTree, getPageTreeRoots, type Root } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from './i18n';
@@ -9,13 +12,13 @@ import { sectionNotesPlugin } from '@/lib/plugins/section-notes';
 import { resolveLLMTags } from './llm-postprocess';
 import { getPageUrl } from './url';
 
-// dynamicLoader 而非 loader: 后续 docs 会换成 DB 支撑的动态源, 届时只替换 input 里的
-// docs 一项, 消费侧的 `await source.get()` 不动。
-// 两个 source 合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...`
-// 是跨 source 引用, 靠这份合并 storage 才解析得到。
+// docs 是动态源 (运行期编译), openapi 是静态源 (构建期编译), dynamicLoader 原生支持混用。
+// 两者合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...` 与
+// `openapi/meta.json` 里的 `index` 都是跨 source 引用, 靠这份合并 storage 才解析得到。
+// 换数据源只需替换下面的 provider, 消费侧的 `await source.get()` 不动。
 export const source = dynamicLoader(
   {
-    docs: docs.toFumadocsSource(),
+    docs: createContentSource(createSeedProvider()),
     openapi: openapiDocs.toFumadocsSource(),
   },
   {
@@ -28,6 +31,21 @@ export const source = dynamicLoader(
 // get() 被 React cache() 包着, 同一次请求内多次调用复用同一实例, 消费侧可以随处 await。
 export type DocsSource = Awaited<ReturnType<typeof source.get>>;
 export type DocsPage = typeof source.$inferPage;
+
+/**
+ * 取正文 / TOC / structuredData。
+ *
+ * 两类页面数据形状不同: openapi 生成页在构建期就把三者写进 data, CMS 页只带 frontmatter,
+ * 正文编译推迟到 `load()`。消费侧 MUST 走这里, MUST NOT 直接读 `page.data.body`
+ * —— CMS 页上那个字段不存在, 且不会报错, 只会渲染出空白正文。
+ */
+export async function loadDoc(page: DocsPage): Promise<CompiledDoc> {
+  const data = page.data as Record<string, unknown>;
+  if (typeof data.load === 'function') {
+    return (await (data.load as () => Promise<CompiledDoc>)()) satisfies CompiledDoc;
+  }
+  return data as unknown as CompiledDoc;
+}
 
 // 页脚 previous/next: 邻居范围限定在当前页所在的 root tab，避免跨 tab 串页
 export function getFooterItems(
@@ -101,13 +119,15 @@ function normalizeDescriptionText(raw: string): string {
  *   3. undefined(交由调用方决定是否省略)
  * 用于 SEO meta 与 OG 预览图。
  */
-export function getPageDescription(page: DocsPage): string | undefined {
+export async function getPageDescription(
+  page: DocsPage,
+): Promise<string | undefined> {
   const explicit = page.data.description?.trim();
   if (explicit) return explicit;
 
-  const contents = (
-    page.data as { structuredData?: { contents?: { content?: string }[] } }
-  ).structuredData?.contents;
+  const { structuredData } = await loadDoc(page);
+  const contents = (structuredData as { contents?: { content?: string }[] })
+    ?.contents;
   if (!contents?.length) return undefined;
 
   // 多取一些原始文本,清洗(可能缩短)后再截断。

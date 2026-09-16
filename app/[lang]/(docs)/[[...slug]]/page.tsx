@@ -2,6 +2,7 @@ import {
   getFooterItems,
   getPageDescription,
   getPageImage,
+  loadDoc,
   source,
 } from '@/lib/source';
 import { DocsBody, DocsDescription, DocsPage } from 'fumadocs-ui/page';
@@ -40,14 +41,14 @@ export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
     redirect(`/${lang}${page.data.redirect}`);
   }
 
-  const MDX = page.data.body;
+  const { body: MDX, toc } = await loadDoc(page);
 
   // Filter TOC based on tocMaxDepth from frontmatter
   const tocMaxDepth = page.data.tocMaxDepth;
   const filteredToc =
     tocMaxDepth !== undefined
-      ? page.data.toc.filter((item) => item.depth <= tocMaxDepth)
-      : page.data.toc;
+      ? toc.filter((item) => item.depth <= tocMaxDepth)
+      : toc;
 
   // Compute footer items
   const footerItems = getFooterItems(src, page, lang);
@@ -94,7 +95,7 @@ export async function generateMetadata(
 
   return {
     title: page.data.title,
-    description: getPageDescription(page),
+    description: await getPageDescription(page),
     ...(requestBaseUrl
       ? {
           openGraph: {

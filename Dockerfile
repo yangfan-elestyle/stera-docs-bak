@@ -5,7 +5,10 @@ FROM oven/bun:1.4.2-slim AS deps
 WORKDIR /app
 
 # postinstall 跑 fumadocs-mdx, 需要 source.config.ts; patchedDependencies 需要 patches/。
+# source.config.ts 与运行期共用 lib/content-schema.ts (一份 schema, 两条编译路径),
+# esbuild 解析不到它 postinstall 会直接失败 -> 这一层必须单独带上。
 COPY package.json bun.lock bunfig.toml source.config.ts ./
+COPY lib/content-schema.ts ./lib/content-schema.ts
 COPY patches ./patches
 
 RUN --mount=type=secret,id=gh_packages_token \
@@ -50,6 +53,9 @@ RUN groupadd --system --gid 1001 nodejs \
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# 手写内容在运行期读取 (lib/cms), 不进构建产物 -> 必须单独复制进 runner。
+COPY --from=builder --chown=nextjs:nodejs /app/seed ./seed
 
 USER nextjs
 EXPOSE 3000

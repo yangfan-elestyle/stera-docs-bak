@@ -1,4 +1,4 @@
-import { getPageDescription, getPageImage, source } from '@/lib/source';
+import { getPageDescription, source } from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 import { SITE } from '@/lib/site';
@@ -21,7 +21,7 @@ export async function GET(
 
   const theme = THEME;
   const title = page.data.title;
-  const description = getPageDescription(page);
+  const description = await getPageDescription(page);
 
   return new ImageResponse(
     (
@@ -103,9 +103,6 @@ export async function GET(
   );
 }
 
-export async function generateStaticParams() {
-  return (await source.get()).getPages().map((page) => ({
-    lang: page.locale,
-    slug: getPageImage(page).segments,
-  }));
-}
+// 不做 generateStaticParams: 它会让 next build 反过来依赖内容源, 而内容进 DB 后
+// db 在运行期挂载卷上, 构建机看不到。本路由已是 revalidate = false,
+// 改按需生成后首次访问渲染一次即长期缓存。
