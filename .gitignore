@@ -36,7 +36,6 @@ content/docs/openapi/(generated)/
 # generated data
 /data/
 /CLAUDE.local.md
-/plan/*
 
 .mcp.json
 .codegraph/

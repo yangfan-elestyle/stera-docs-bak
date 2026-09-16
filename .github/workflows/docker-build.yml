@@ -7,7 +7,11 @@
 #   deploy-docker → repository_dispatch 到 elepay-io/ele-argocd-app,
 #                   environment = github.ref_name (master / develop), imageTag = sha-<sha>
 #
-# 触发规则 (master 与 develop 均禁止直接 push, 仅靠 PR merge 流入 → 产生 push 事件):
+# 自动触发已暂停: repo 尚未落位 elepay-io, 个人 org 下无 self-hosted runner,
+# push 只会让 job 无限 queued。当前仅保留手动 workflow_dispatch。
+# 恢复时把下方 `on:` 的 push 块取消注释, 并去掉 workflow_dispatch。
+#
+# 原触发规则 (master 与 develop 均禁止直接 push, 仅靠 PR merge 流入 → 产生 push 事件):
 #   push develop → DOCS_ENV=staging
 #   push master  → DOCS_ENV=product
 # DOCS_ENV 于 next build 期被内联进产物,
@@ -19,8 +23,9 @@
 name: Build and Deploy Docker Image
 
 on:
-  push:
-    branches: [master, develop]
+  workflow_dispatch:
+  # push:
+  #   branches: [master, develop]
 
 # 同分支串行, 避免并发推送同一 tag 与并发 ArgoCD 派发。
 concurrency:
