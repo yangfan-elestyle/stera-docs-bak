@@ -1,4 +1,4 @@
-import { getPageDescription, source } from '@/lib/source';
+import { getPageDescription, getSource } from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 import { SITE } from '@/lib/site';
@@ -16,7 +16,7 @@ export async function GET(
   { params }: RouteContext<'/[lang]/og/[...slug]'>,
 ) {
   const { slug, lang } = await params;
-  const page = (await source.get()).getPage(slug.slice(0, -1), lang);
+  const page = (await getSource()).getPage(slug.slice(0, -1), lang);
   if (!page) notFound();
 
   const theme = THEME;

@@ -3,8 +3,8 @@ import {
   getLastModified,
   getPageDescription,
   getPageImage,
+  getSource,
   loadDoc,
-  source,
 } from '@/lib/source';
 import { DocsBody, DocsDescription, DocsPage } from 'fumadocs-ui/page';
 import { notFound, redirect } from 'next/navigation';
@@ -33,7 +33,7 @@ function getRequestBaseUrl(hdrs: Awaited<ReturnType<typeof headers>>) {
 
 export default async function Page(props: PageProps<'/[lang]/[[...slug]]'>) {
   const { slug, lang } = await props.params;
-  const src = await source.get();
+  const src = await getSource();
   const page = src.getPage(slug, lang);
   if (!page) notFound();
 
@@ -87,7 +87,7 @@ export async function generateMetadata(
   props: PageProps<'/[lang]/[[...slug]]'>,
 ): Promise<Metadata> {
   const { slug, lang } = await props.params;
-  const page = (await source.get()).getPage(slug, lang);
+  const page = (await getSource()).getPage(slug, lang);
   if (!page) notFound();
 
   const hdrs = await headers();

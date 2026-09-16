@@ -2,6 +2,7 @@ import { openapiDocs } from 'fumadocs-mdx:collections/server';
 import { dynamicLoader } from 'fumadocs-core/source/dynamic';
 import { createContentSource } from '@/lib/cms/source';
 import { createDbProvider } from '@/lib/cms/db-provider';
+import { contentVersion } from '@/lib/cms/version';
 import type { CompiledDoc } from '@/lib/cms/mdx';
 import { flattenTree, getPageTreeRoots, type Root } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
@@ -15,7 +16,7 @@ import { getPageUrl } from './url';
 // docs 是动态源 (运行期编译), openapi 是静态源 (构建期编译), dynamicLoader 原生支持混用。
 // 两者合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...` 与
 // `openapi/meta.json` 里的 `index` 都是跨 source 引用, 靠这份合并 storage 才解析得到。
-// 换数据源只需替换下面的 provider, 消费侧的 `await source.get()` 不动。
+// 换数据源只需替换下面的 provider, 消费侧的 `await getSource()` 不动。
 export const source = dynamicLoader(
   {
     docs: createContentSource(createDbProvider()),
@@ -28,9 +29,28 @@ export const source = dynamicLoader(
   },
 );
 
-// get() 被 React cache() 包着, 同一次请求内多次调用复用同一实例, 消费侧可以随处 await。
 export type DocsSource = Awaited<ReturnType<typeof source.get>>;
 export type DocsPage = typeof source.$inferPage;
+
+let seenVersion: string | undefined;
+
+/**
+ * 取 loader 的唯一入口。消费侧 MUST 走这里, MUST NOT 直接调 `source.get()`。
+ *
+ * dynamicLoader 的失效状态是模块级变量, 而 Next 给 page 与 route handler 打的是不同的
+ * 入口 bundle —— 保存动作里调的 `revalidate()` 到不了 route handler 那份模块实例,
+ * 表现为「页面已更新但 .md / llms.txt 还是旧的」。实测生产构建下确实如此。
+ * 所以改成每次都跟库里的版本指纹对一下, 变了就本实例自己失效一次。
+ * 代价是一条 max+count 查询, 相对一次编译可以忽略。
+ */
+export async function getSource(): Promise<DocsSource> {
+  const version = contentVersion();
+  if (seenVersion !== version) {
+    source.revalidate('docs');
+    seenVersion = version;
+  }
+  return source.get();
+}
 
 /**
  * 取正文 / TOC / structuredData。

@@ -30,6 +30,28 @@ const MIGRATIONS: string[] = [
     PRIMARY KEY (dir, locale)
   ) WITHOUT ROWID;
   `,
+  `
+  -- 账号: 账号名即邮箱, 由 admin 在后台直接创建, 不接邮件服务 / 不开放自助注册。
+  -- 能写内容 = 能在服务端执行代码 (mdx 允许代码执行), 故按 RCE 边界管, 不是普通内容权限。
+  CREATE TABLE users (
+    id                   TEXT    NOT NULL PRIMARY KEY,
+    email                TEXT    NOT NULL UNIQUE,
+    password_hash        TEXT    NOT NULL,
+    role                 TEXT    NOT NULL CHECK (role IN ('admin', 'editor')),
+    must_change_password INTEGER NOT NULL DEFAULT 0,
+    created_at           INTEGER NOT NULL,
+    updated_at           INTEGER NOT NULL
+  );
+
+  -- 会话: 存 token 的 sha256, 泄库也拿不到可用 cookie
+  CREATE TABLE sessions (
+    token_hash TEXT    NOT NULL PRIMARY KEY,
+    user_id    TEXT    NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL
+  );
+  CREATE INDEX sessions_user_id ON sessions(user_id);
+  `,
 ];
 
 let instance: DatabaseSync | undefined;
@@ -50,6 +72,7 @@ export function getDb(): DatabaseSync {
   // WAL: 读写不互相阻塞。前提是块存储本地卷, 网络文件系统 (NFS / EFS) 上文件锁会坏库。
   db.exec('PRAGMA journal_mode = WAL');
   db.exec('PRAGMA busy_timeout = 5000');
+  db.exec('PRAGMA foreign_keys = ON');
 
   migrate(db);
   if (countDocs(db) === 0) importSeed(db);

@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { getLLMText, source } from '@/lib/source';
+import { getLLMText, getSource } from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import { getRequestHost } from '@/lib/request';
@@ -11,7 +11,7 @@ export async function GET(
   { params }: RouteContext<'/[lang]/llms.mdx/[[...slug]]'>,
 ) {
   const { slug, lang } = await params;
-  const src = await source.get();
+  const src = await getSource();
   const page = src.getPage(slug, lang);
   if (!page) notFound();
 

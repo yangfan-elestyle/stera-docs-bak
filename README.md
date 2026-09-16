@@ -36,7 +36,9 @@ Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bu
 <!-- prettier-ignore -->
 | 路径 | 说明 |
 |---|---|
-| `app/[lang]` | App Router: 路由 / 布局 / OG / LLM 入口 / search API |
+| `app/(site)/[lang]` | 站点: 路由 / 布局 / OG / LLM 入口 |
+| `app/(admin)/admin` | 后台: 登录 / 内容编辑 / 导航编辑 / 账号管理 |
+| `lib/auth` | 账号 / 会话 / 权限 |
 | `seed/docs` | 手写文档源 (`index.[lang].mdx` + `meta.[lang].json`), 运行期编译 |
 | `content/docs` | OpenAPI 脚本产物 + 其排序 `meta.json`, 构建期编译 |
 | `lib/cms` | 运行时内容源: mdx 编译 / provider / dynamic source |
@@ -62,6 +64,9 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 - **`DOCS_ENV` 是构建期变量**: `next.config.mjs` 的 `env` 把它内联进产物 (非 product 时输出 `<meta name="docs-env">`); 运行期 `-e DOCS_ENV=` 无效, 每环境一份镜像。
 - **Middleware 先于 `public/`**: i18n middleware 把裸路径 rewrite 成 `/{locale}/...`, 命中后不再回落文件系统路由。`public/` 下的静态文件 MUST 在 `middleware.ts` 的 matcher 中排除 (现排除 `favicon.ico` 与 `docs/**.{png,jpg,jpeg,webp,zip}`), 新增静态资源类型时同步更新。
 - **`public/` 缓存头**: Node 运行时对 `public/` 默认发 `max-age=0`, 长缓存在 `next.config.mjs` 的 `headers()` 中声明。
+- **后台是独立 root layout**: `app/(site)` 与 `app/(admin)` 各一个 `<html>`; `/admin` MUST 在 `middleware.ts` 的 matcher 里排除, 否则被 i18n rewrite 成 `/{locale}/admin` 而 404。
+- **取 loader MUST 走 `getSource()`**: Next 给 page 与 route handler 打不同入口 bundle, `dynamicLoader` 的失效状态是模块级变量, 保存时的 `revalidate()` 到不了另一份实例 -> 表现为页面已更新但 `.md` / `llms.txt` 还是旧的。`getSource()` 每次对一下库里的版本指纹, MUST NOT 直接调 `source.get()`。
+- **首个管理员只来自部署侧**: `ADMIN_EMAIL` + `ADMIN_PASSWORD` 且仅在账号表为空时生效。MUST NOT 加自助注册或「首次访问即成为管理员」的 setup 页 —— mdx 默认允许代码执行, 拿到编辑权等于能在服务端跑代码。
 - **构建不读内容**: 手写文档在运行期由 `lib/cms` 编译, 构建期只处理 `content/docs/openapi/(generated)/`。`next build` MUST NOT 依赖内容源 (含 db / git 历史) -> MUST NOT 给页面路由加 `generateStaticParams`。
 - **运行期编译链 MUST 与构建期对齐**: `lib/cms/mdx.ts` 手工补齐 `remarkStructure` 与 `remarkLLMs`, 且 `remarkLLMs` MUST 在 transform 阶段、`this` 绑 processor 调用; 漏一项会让页面描述 / 搜索索引 / `.md` 输出静默降级或直接抛错。
 
