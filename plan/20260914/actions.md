@@ -1,6 +1,6 @@
 # Actions
 
-> 一步一动, 验收不过 MUST NOT 进下一步。站点尚未上线, 无存量线上数据与用户, 不做灰度 / 兼容 / 回滚设计。
+> 一步一动, 验收不过 MUST NOT 进下一步。本仓库尚无任何用户与存量数据, 不做灰度 / 兼容 / 回滚设计。
 > 注意事项与源码结论见 [todo-from-ai.md](./todo-from-ai.md); 约束与已定事项见 [feature.md](./feature.md)。
 > A 到 E 全在本机完成, 构建验证用本机 `docker build`; 部署链路 (F) 留到本机全绿之后。
 > 及时 commit。没完成一个 sub task 就需要进行 commit 收工，然后进行下一项。

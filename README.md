@@ -16,9 +16,10 @@ stera smart one (SMCC) 对外文档站: 多语言 (日 / 英 / 简), 以 Docker 
 | 环境 | URL |
 |---|---|
 | 本机 | <http://localhost:3000> |
-| prod | <https://guides.sterasmartone.com> (现为改造前的旧站, 本仓库上线后替换) |
+| prod | <https://guides.sterasmartone.com> |
 
 > staging 与 prod 是同一份镜像的不同构建 (差异仅 `DOCS_ENV`); 环境域名与 ingress 配置在 `elepay-io/ele-argocd-app`。
+> prod 域名目前由另一套平台提供内容, 本仓库是它的替代者; 切换前本仓库无任何用户。
 
 ## 特性
 
