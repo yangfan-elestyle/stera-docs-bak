@@ -2,16 +2,3 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 @import 'fumadocs-openapi/css/preset.css';
-
-/*
- * 品牌强调色。站点主题用 fumadocs 的 neutral 预设 (近乎黑白), 落地页全用它会显得很「IT」;
- * 这里只给落地页一个品牌色变量, 不改文档页的既有配色。取值与 OG 图的品牌色一致。
- */
-:root {
-  --color-brand: #0d9488;
-  --color-brand-strong: #0f766e;
-}
-.dark {
-  --color-brand: #2dd4bf;
-  --color-brand-strong: #5eead4;
-}

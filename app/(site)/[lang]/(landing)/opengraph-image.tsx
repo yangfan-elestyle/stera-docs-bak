@@ -51,7 +51,7 @@ export default async function Image({ params }: { params: Promise<{ lang: string
               color: '#FFFFFF',
             }}
           >
-            {`${copy.title}${copy.titleAccent}`}
+            {copy.title}
           </div>
           <div
             style={{
@@ -62,7 +62,7 @@ export default async function Image({ params }: { params: Promise<{ lang: string
               color: '#9BA8BD',
             }}
           >
-            {copy.subtitle.slice(0, 90)}
+            {copy.lead[0].slice(0, 80)}
           </div>
         </div>
 

@@ -108,9 +108,11 @@ F3. CI/CD 逐项核对并跑通
 
 ## H. 落地页 [ok]
 
-H1. [ok] `/` 改为落地页 (fumadocs `HomeLayout`), 文档总览移到 `/overview`
-    - 顶部导航 首页 / 文档 / API 参考 三条主入口, 落地页与文档页共用同一份 links
-    - 文案在 `lib/landing.ts`, 三语言各一份, 走发版而非 CMS
+H1. [ok] `/` 改为文档门户首页 (fumadocs `HomeLayout`), 文档总览移到 `/overview`
+    - 版式对齐 SMCC 现网 guides.sterasmartone.com: 左对齐标题 + 引导语 + 两个按钮 + 分栏索引
+    - 栏目由真实导航树生成, 不另维护一份链接清单
+    - 顶部导航 首页 / 文档 / API 参考 三条主入口, 首页与文档页共用同一份 links
+    - 只有标题与两段引导语是固定文案 (`lib/landing.ts`, 三语言), 走发版而非 CMS
       (它不是文档页, 不进 slug 体系, 也不该出现在侧边栏与搜索里)
     - MUST NOT 把文档搬到 `/docs/*`: 该前缀已被 `public/docs/**` 的图片占用
 
