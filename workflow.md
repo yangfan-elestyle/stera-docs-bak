@@ -26,8 +26,8 @@ bun run dev    # http://localhost:3000
 ```bash
 export GH_PACKAGES_TOKEN="$(gh auth token)"
 docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
-  --build-arg DOCS_ENV=staging -t elepay-docs:local .
-docker run --rm -p 3000:3000 elepay-docs:local
+  --build-arg DOCS_ENV=staging -t stera-docs:local .
+docker run --rm -p 3000:3000 stera-docs:local
 ```
 
 单租户, 任意 Host 内容一致; 冒烟四条:
@@ -60,7 +60,7 @@ curl -sI http://localhost:3000/get-started/set-up.md   # 200
 bun run generate:data              # 仅 clone 后 / openapi*.yaml 变更时
 bun run types:check                # fumadocs-mdx + next typegen + tsc --noEmit
 docker build --secret id=gh_packages_token,env=GH_PACKAGES_TOKEN \
-  --build-arg DOCS_ENV=staging -t elepay-docs:local .
+  --build-arg DOCS_ENV=staging -t stera-docs:local .
 ```
 
 > MUST NOT 跑 `docker push` / 手动推 GHCR; 镜像只由 GHA 构建推送。
