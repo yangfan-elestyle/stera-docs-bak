@@ -2,7 +2,7 @@
   "name": "@sterasmartone/docs",
   "title": "stera smart one Docs",
   "description": "Documentation for stera smart one (SMCC).",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "generate:data": "bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts",

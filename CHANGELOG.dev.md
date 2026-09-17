@@ -11,6 +11,26 @@
 
 > 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自 0.1.6 起开始正式镜像。
 
+## [0.2.0] - 2026-09-17
+
+### Added
+
+- 后台管理界面支持日 / 英 / 中三语, 右上角随时切换; 首次进入按浏览器语言自动选择。
+  - `lib/admin/i18n/` 275 键 x 3 份字典 (ja 为真源, `AdminDict` 约束漏键即编译错误), locale 取 cookie `stera_admin_locale` > `Accept-Language` > ja, 独立于 `FD_LOCALE`。
+
+### Fixed
+
+- 内网 http 预览站登录后每次操作都退回登录页。
+  - `lib/auth/session.ts`: 会话 cookie 的 `secure` 由 `getRequestProtocol(host)` 决定, 不跟 `NODE_ENV`。
+
+- 后台的错误提示在英 / 中界面下仍显示日语。
+  - `lib/cms/errors.ts` 的 `CmsError` 带错误码, 由 `lib/admin/cms-error.ts` 在 action 层翻 (`lib/cms/*` 被 `import:seed` 复用, 不能拉 `next/headers`)。
+
+### Removed
+
+- 文档站导航栏的 GitHub 链接。
+  - `lib/layout.shared.tsx` 去 `githubUrl`, `app/(site)/[lang]/layout.tsx` 同步删 `editOnGithub` 译文。
+
 ## [0.1.10] - 2026-09-10
 
 ### Fixed
