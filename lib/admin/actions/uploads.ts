@@ -2,6 +2,7 @@
 
 import { requireWriter } from '@/lib/auth/guard';
 import { storeUpload } from '@/lib/cms/uploads';
+import { getAdminT } from '@/lib/admin/i18n/server';
 
 export type UploadActionResult =
   | { ok: true; url: string; name: string }
@@ -13,7 +14,9 @@ export async function uploadImageAction(
   await requireWriter();
 
   const file = formData.get('file');
-  if (!(file instanceof File)) return { ok: false, error: '没有收到文件' };
+  if (!(file instanceof File)) {
+    return { ok: false, error: (await getAdminT())('error.noFile') };
+  }
 
   try {
     const result = await storeUpload(file);

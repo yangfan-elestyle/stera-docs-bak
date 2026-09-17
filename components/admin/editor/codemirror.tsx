@@ -36,6 +36,9 @@ import {
 } from '@codemirror/view';
 import { tags as t } from '@lezer/highlight';
 import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
+import type { T } from '@/lib/admin/i18n';
+import { insertText } from '@/lib/admin/insert-text';
+import { useT } from '../i18n';
 
 export interface CodeMirrorHandle {
   /** 在光标处替换选区, 返回替换后的全文 */
@@ -140,49 +143,61 @@ const highlight = HighlightStyle.define([
 ]);
 
 // 站内自定义组件的补全: 输入 `<` 即可挑, MDX 作者不用记语法。
-const SNIPPETS = [
-  {
-    label: '<Callout>',
-    detail: '提示框',
-    body: '<Callout title="标题">\n  内容\n</Callout>',
-  },
-  {
-    label: '<Callout type="warn">',
-    detail: '警告框',
-    body: '<Callout type="warn" title="注意">\n  内容\n</Callout>',
-  },
-  {
-    label: '<EMermaid>',
-    detail: '流程图',
-    body: '<EMermaid chart={`graph TD;\n  A-->B;\n`} />',
-  },
-  {
-    label: '<ErrorCodeTable />',
-    detail: '错误码表',
-    body: '<ErrorCodeTable />',
-  },
-];
+// 补全项的说明文字 (t) 跟界面语言, 插进正文的模板 (ins) 跟内容语言。
+function snippets(t: T, contentLocale: string) {
+  const ins = insertText(contentLocale);
+  return [
+    {
+      label: '<Callout>',
+      detail: t('snippet.calloutDetail'),
+      body: `<Callout title="${ins.calloutTitle}">\n  ${ins.calloutBody}\n</Callout>`,
+    },
+    {
+      label: '<Callout type="warn">',
+      detail: t('snippet.calloutWarnDetail'),
+      body: `<Callout type="warn" title="${ins.warnTitle}">\n  ${ins.calloutBody}\n</Callout>`,
+    },
+    {
+      label: '<EMermaid>',
+      detail: t('snippet.mermaidDetail'),
+      body: '<EMermaid chart={`graph TD;\n  A-->B;\n`} />',
+    },
+    {
+      label: '<ErrorCodeTable />',
+      detail: t('snippet.errorCodeDetail'),
+      body: '<ErrorCodeTable />',
+    },
+  ];
+}
 
 function imageFiles(list: FileList | null | undefined): File[] {
   return [...(list ?? [])].filter((file) => file.type.startsWith('image/'));
 }
 
-function mdxCompletions(context: CompletionContext) {
-  const word = context.matchBefore(/<[\w"= ]*/);
-  if (!word || (word.from === word.to && !context.explicit)) return null;
-  return {
-    from: word.from,
-    options: SNIPPETS.map((snippet) => ({
-      label: snippet.label,
-      detail: snippet.detail,
-      type: 'class',
-      apply: snippet.body,
-    })),
+// 走 ref 而不是把 t / locale 直接闭进扩展: 扩展只在 useEffect 里装一次, 直接闭包会让
+// 切语言后补全项停在旧语言, 除非重建整个 EditorView (会丢光标与撤销栈)。
+function mdxCompletions(
+  tRef: React.RefObject<T>,
+  localeRef: React.RefObject<string>,
+) {
+  return (context: CompletionContext) => {
+    const word = context.matchBefore(/<[\w"= ]*/);
+    if (!word || (word.from === word.to && !context.explicit)) return null;
+    return {
+      from: word.from,
+      options: snippets(tRef.current, localeRef.current).map((snippet) => ({
+        label: snippet.label,
+        detail: snippet.detail,
+        type: 'class',
+        apply: snippet.body,
+      })),
+    };
   };
 }
 
 export function CodeMirrorEditor({
   value,
+  contentLocale,
   onChange,
   onSave,
   onFiles,
@@ -191,6 +206,8 @@ export function CodeMirrorEditor({
   className,
 }: {
   value: string;
+  /** 正在编辑的那个语言文件。补全插入的模板按它取, 不按界面语言 */
+  contentLocale: string;
   onChange: (value: string) => void;
   onSave?: () => void;
   /** 拖入 / 粘贴的图片文件, 由调用方上传并插入 */
@@ -199,6 +216,11 @@ export function CodeMirrorEditor({
   handleRef?: Ref<CodeMirrorHandle>;
   className?: string;
 }) {
+  const t = useT();
+  const tRef = useRef(t);
+  tRef.current = t;
+  const localeRef = useRef(contentLocale);
+  localeRef.current = contentLocale;
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView>(null);
   const onChangeRef = useRef(onChange);
@@ -224,7 +246,7 @@ export function CodeMirrorEditor({
       bracketMatching(),
       closeBrackets(),
       highlightSelectionMatches(),
-      autocompletion({ override: [mdxCompletions] }),
+      autocompletion({ override: [mdxCompletions(tRef, localeRef)] }),
       EditorView.lineWrapping,
       markdown({ base: markdownLanguage, codeLanguages: languages }),
       syntaxHighlighting(highlight),

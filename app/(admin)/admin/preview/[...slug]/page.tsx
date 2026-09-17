@@ -7,6 +7,7 @@ import { getDoc } from '@/lib/cms/content';
 import { getDraft } from '@/lib/cms/drafts';
 import { compileDoc } from '@/lib/cms/mdx';
 import { getSource } from '@/lib/source';
+import { getAdminI18n } from '@/lib/admin/i18n/server';
 import { splitDoc } from '@/lib/admin/frontmatter';
 
 // 预览必须现编现渲, 任何缓存都会让编辑者看到上一版
@@ -30,6 +31,8 @@ export default async function PreviewPage({
   const user = await requireUser();
   const slug = (await params).slug.map(decodeURIComponent).join('/');
   const locale = (await searchParams).locale ?? 'ja';
+  // 提示文案跟界面语言走; 正文渲染跟 locale (正在编辑的内容语言) 走, 两者是不同的东西
+  const { t } = await getAdminI18n();
 
   // 草稿优先, 没有草稿就渲染库里已保存的那份
   const source =
@@ -38,7 +41,7 @@ export default async function PreviewPage({
   if (!source) {
     return (
       <Shell>
-        <p className="text-sm text-fd-muted-foreground">这一语言还没有内容。</p>
+        <p className="text-sm text-fd-muted-foreground">{t('preview.noContent')}</p>
       </Shell>
     );
   }
@@ -73,7 +76,9 @@ export default async function PreviewPage({
         <div className="flex gap-3 rounded-lg border border-red-500/30 bg-red-500/8 p-4 text-sm">
           <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400" />
           <div className="min-w-0 space-y-1">
-            <p className="font-medium text-red-700 dark:text-red-400">这段内容渲染失败</p>
+            <p className="font-medium text-red-700 dark:text-red-400">
+              {t('preview.renderFailed')}
+            </p>
             <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs text-fd-muted-foreground">
               {(error instanceof Error ? error.message : String(error))
                 .split('\n')

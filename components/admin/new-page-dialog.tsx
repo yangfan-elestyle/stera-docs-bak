@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { createPageAction } from '@/lib/admin/actions/content';
 import { cn } from '@/lib/admin/cn';
+import { useT } from './i18n';
 import { Button } from './ui/button';
 import { Field, Input, useFieldId } from './ui/field';
 import {
@@ -40,6 +41,7 @@ export function NewPageDialog({
   const [title, setTitle] = useState('');
   const [picked, setPicked] = useState<string[]>([...locales]);
   const [pending, startTransition] = useTransition();
+  const t = useT();
 
   const slug = [dir, name].filter(Boolean).join('/');
 
@@ -47,14 +49,14 @@ export function NewPageDialog({
     startTransition(async () => {
       const result = await createPageAction({ slug, title, locales: picked });
       if (result.ok) {
-        toast.success('页面已创建', {
-          description: '已自动挂到所在分组的导航末尾',
+        toast.success(t('newPage.created'), {
+          description: t('newPage.createdDesc'),
         });
         setOpen(false);
         router.push(`/admin/content/${result.slug}`);
         router.refresh();
       } else {
-        toast.error('创建失败', { description: result.error });
+        toast.error(t('newPage.createFailed'), { description: result.error });
       }
     });
   };
@@ -75,26 +77,26 @@ export function NewPageDialog({
         <Button
           variant={compact ? 'ghost' : 'primary'}
           size={compact ? 'icon-sm' : 'sm'}
-          aria-label="新建页面"
-          title="新建页面"
+          aria-label={t('newPage.button')}
+          title={t('newPage.button')}
         >
           <FilePlus2 />
-          {compact ? null : '新建页面'}
+          {compact ? null : t('newPage.button')}
         </Button>
       </DialogTrigger>
       <DialogContent
-        title="新建页面"
-        description="新页面会自动挂到所属分组的导航末尾, 位置之后可以在「导航」里调整。"
+        title={t('newPage.button')}
+        description={t('newPage.dialogDesc')}
       >
         <div className="space-y-3">
-          <Field label="所属分组" hint="决定页面在侧边栏的位置">
+          <Field label={t('newPage.group')} hint={t('newPage.groupHint')}>
             <DirSelect value={dir} onChange={setDir} dirs={dirs} />
           </Field>
 
           <Field
-            label="页面路径"
+            label={t('newPage.path')}
             required
-            hint={slug ? `完整路径: ${slug}` : '英文小写, 用 - 连接单词'}
+            hint={slug ? t('newPage.pathFull', { slug }) : t('newPage.pathHint')}
           >
             <Input
               value={name}
@@ -106,15 +108,15 @@ export function NewPageDialog({
             />
           </Field>
 
-          <Field label="标题" required hint="可以之后在编辑器里改">
+          <Field label={t('newPage.title')} required hint={t('newPage.titleHint')}>
             <Input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              placeholder="例: 新しいガイド"
+              placeholder={t('newPage.titlePlaceholder')}
             />
           </Field>
 
-          <Field label="创建哪些语言" hint="没创建的语言在前台会回退到默认语言">
+          <Field label={t('newPage.locales')} hint={t('newPage.localesHint')}>
             <div className="flex gap-2">
               {locales.map((locale) => {
                 const on = picked.includes(locale);
@@ -137,7 +139,7 @@ export function NewPageDialog({
                     )}
                   >
                     {locale}
-                    {locale === defaultLocale ? ' (默认)' : ''}
+                    {locale === defaultLocale ? t('newPage.defaultSuffix') : ''}
                   </button>
                 );
               })}
@@ -150,7 +152,7 @@ export function NewPageDialog({
               size="sm"
               onClick={() => setOpen(false)}
             >
-              取消
+              {t('common.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -159,7 +161,7 @@ export function NewPageDialog({
               disabled={!name || !title || picked.length === 0}
               onClick={submit}
             >
-              创建并编辑
+              {t('newPage.submit')}
             </Button>
           </div>
         </div>
@@ -177,6 +179,7 @@ function DirSelect({
   onChange: (value: string) => void;
   dirs: string[];
 }) {
+  const t = useT();
   const id = useFieldId();
   return (
     <Select
@@ -189,7 +192,7 @@ function DirSelect({
       <SelectContent className="max-h-72 overflow-y-auto">
         {dirs.map((dir) => (
           <SelectItem key={dir || '(root)'} value={dir || '(root)'}>
-            <span className="font-mono text-xs">{dir || '(根目录)'}</span>
+            <span className="font-mono text-xs">{dir || t('common.rootDir')}</span>
           </SelectItem>
         ))}
       </SelectContent>

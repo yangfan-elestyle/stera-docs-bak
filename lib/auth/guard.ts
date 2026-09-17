@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { getAdminT } from '@/lib/admin/i18n/server';
 import { countUsers, createUser } from './users';
 import { getSessionUser } from './session';
 import type { User } from './users';
@@ -38,7 +39,7 @@ export async function requireUser(): Promise<User> {
 export async function requireWriter(): Promise<User> {
   const user = await requireUser();
   if (user.mustChangePassword) {
-    throw new Error('请先修改初始密码后再编辑内容');
+    throw new Error((await getAdminT())('error.mustChangePasswordFirst'));
   }
   return user;
 }
@@ -53,6 +54,8 @@ export async function requireAdmin(): Promise<User> {
 /** 管理类写操作用: 角色 + 初始密码两道都要过。 */
 export async function requireAdminWriter(): Promise<User> {
   const user = await requireWriter();
-  if (user.role !== 'admin') throw new Error('需要管理员权限');
+  if (user.role !== 'admin') {
+    throw new Error((await getAdminT())('error.adminRequired'));
+  }
   return user;
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '../i18n';
 import { Field, Input, Textarea, useFieldId } from '../ui/field';
 import {
   Select,
@@ -26,11 +27,12 @@ export function FrontmatterFields({
   onChange: (key: keyof FrontmatterValues, value: string | boolean) => void;
   disabled?: boolean;
 }) {
+  const t = useT();
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Field
-        label="摘要"
-        hint="留空时自动取正文首段, 用于搜索结果与分享卡片"
+        label={t('fm.description')}
+        hint={t('fm.descriptionHint')}
         className="md:col-span-2"
       >
         <Textarea
@@ -41,7 +43,7 @@ export function FrontmatterFields({
         />
       </Field>
 
-      <Field label="目录层级" hint="右侧目录最深显示到第几级标题, 默认全部">
+      <Field label={t('fm.tocDepth')} hint={t('fm.tocDepthHint')}>
         <TocDepthSelect
           value={values.tocMaxDepth}
           disabled={disabled}
@@ -49,7 +51,7 @@ export function FrontmatterFields({
         />
       </Field>
 
-      <Field label="跳转到" hint="填写后本页会 302 到该站内路径, 一般留空">
+      <Field label={t('fm.redirect')} hint={t('fm.redirectHint')}>
         <Input
           value={values.redirect}
           disabled={disabled}
@@ -71,6 +73,7 @@ function TocDepthSelect({
   disabled?: boolean;
   onChange: (value: string) => void;
 }) {
+  const t = useT();
   const id = useFieldId();
   return (
     <Select
@@ -82,10 +85,10 @@ function TocDepthSelect({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="auto">默认(全部)</SelectItem>
-        <SelectItem value="1">只到 # 一级</SelectItem>
-        <SelectItem value="2">到 ## 二级</SelectItem>
-        <SelectItem value="3">到 ### 三级</SelectItem>
+        <SelectItem value="auto">{t('fm.tocAuto')}</SelectItem>
+        <SelectItem value="1">{t('fm.tocH1')}</SelectItem>
+        <SelectItem value="2">{t('fm.tocH2')}</SelectItem>
+        <SelectItem value="3">{t('fm.tocH3')}</SelectItem>
       </SelectContent>
     </Select>
   );

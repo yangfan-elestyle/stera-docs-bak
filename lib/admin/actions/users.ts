@@ -1,7 +1,11 @@
 'use server';
 
 import { requireAdminWriter } from '@/lib/auth/guard';
-import { checkPasswordStrength } from '@/lib/auth/password';
+import {
+  PASSWORD_MIN_LENGTH,
+  checkPasswordStrength,
+  type PasswordIssue,
+} from '@/lib/auth/password';
 import { revokeUserSessions } from '@/lib/auth/session';
 import {
   countAdmins,
@@ -14,10 +18,18 @@ import {
   setRole,
   type Role,
 } from '@/lib/auth/users';
+import { getAdminT } from '@/lib/admin/i18n/server';
+import type { T } from '@/lib/admin/i18n';
 
 export type UserResult =
   | { ok: true; message: string }
   | { ok: false; error: string };
+
+function passwordError(issue: PasswordIssue, t: T): string {
+  return issue === 'tooShort'
+    ? t('error.passwordTooShort', { min: PASSWORD_MIN_LENGTH })
+    : t('error.passwordWeak');
+}
 
 export async function createAccountAction(input: {
   email: string;
@@ -25,18 +37,19 @@ export async function createAccountAction(input: {
   role: Role;
 }): Promise<UserResult> {
   await requireAdminWriter();
+  const t = await getAdminT();
 
   const email = normalizeEmail(input.email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
-    return { ok: false, error: '邮箱格式不正确' };
+    return { ok: false, error: t('error.badEmail') };
   if (input.role !== 'admin' && input.role !== 'editor')
-    return { ok: false, error: '角色不合法' };
+    return { ok: false, error: t('error.badRole') };
   const weak = checkPasswordStrength(input.password);
-  if (weak) return { ok: false, error: weak };
-  if (findUserWithHash(email)) return { ok: false, error: '该邮箱已存在' };
+  if (weak) return { ok: false, error: passwordError(weak, t) };
+  if (findUserWithHash(email)) return { ok: false, error: t('error.emailExists') };
 
   createUser({ email, password: input.password, role: input.role });
-  return { ok: true, message: `${email} 已创建, 对方首次登录会被强制改密` };
+  return { ok: true, message: t('ok.userCreated', { email }) };
 }
 
 export async function updateRoleAction(input: {
@@ -44,19 +57,20 @@ export async function updateRoleAction(input: {
   role: Role;
 }): Promise<UserResult> {
   const me = await requireAdminWriter();
+  const t = await getAdminT();
   if (input.role !== 'admin' && input.role !== 'editor')
-    return { ok: false, error: '角色不合法' };
+    return { ok: false, error: t('error.badRole') };
   if (input.id === me.id && input.role !== 'admin') {
-    return { ok: false, error: '不能降级当前登录的账号' };
+    return { ok: false, error: t('error.noDowngradeSelf') };
   }
   const target = findUserById(input.id);
-  if (!target) return { ok: false, error: '账号不存在' };
+  if (!target) return { ok: false, error: t('error.userNotFound') };
   if (target.role === 'admin' && input.role !== 'admin' && countAdmins() <= 1) {
-    return { ok: false, error: '至少保留一个管理员' };
+    return { ok: false, error: t('error.lastAdmin') };
   }
 
   setRole(input.id, input.role);
-  return { ok: true, message: '角色已更新' };
+  return { ok: true, message: t('ok.roleUpdated') };
 }
 
 export async function resetPasswordAction(input: {
@@ -64,31 +78,30 @@ export async function resetPasswordAction(input: {
   password: string;
 }): Promise<UserResult> {
   await requireAdminWriter();
+  const t = await getAdminT();
   const weak = checkPasswordStrength(input.password);
-  if (weak) return { ok: false, error: weak };
+  if (weak) return { ok: false, error: passwordError(weak, t) };
   const target = findUserById(input.id);
-  if (!target) return { ok: false, error: '账号不存在' };
+  if (!target) return { ok: false, error: t('error.userNotFound') };
 
   // 重置即踢下线: 否则对方旧会话还能继续用旧凭据操作
   setPassword(input.id, input.password, true);
   revokeUserSessions(input.id);
-  return {
-    ok: true,
-    message: `${target.email} 的密码已重置, 对方需重新登录并改密`,
-  };
+  return { ok: true, message: t('ok.passwordReset', { email: target.email }) };
 }
 
 export async function deleteAccountAction(input: {
   id: string;
 }): Promise<UserResult> {
   const me = await requireAdminWriter();
-  if (input.id === me.id) return { ok: false, error: '不能删除当前登录的账号' };
+  const t = await getAdminT();
+  if (input.id === me.id) return { ok: false, error: t('error.noDeleteSelf') };
   const target = findUserById(input.id);
-  if (!target) return { ok: false, error: '账号不存在' };
+  if (!target) return { ok: false, error: t('error.userNotFound') };
   if (target.role === 'admin' && countAdmins() <= 1) {
-    return { ok: false, error: '至少保留一个管理员' };
+    return { ok: false, error: t('error.lastAdmin') };
   }
 
   deleteUser(input.id);
-  return { ok: true, message: `${target.email} 已删除` };
+  return { ok: true, message: t('ok.userDeleted', { email: target.email }) };
 }

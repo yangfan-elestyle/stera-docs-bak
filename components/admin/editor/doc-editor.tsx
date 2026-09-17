@@ -39,6 +39,7 @@ import {
   DialogContent,
   Tooltip,
 } from '../ui/primitives';
+import { useAdminI18n, useT } from '../i18n';
 import { useWorkspaceLocale } from '../workspace/workspace';
 import { CodeMirrorEditor, type CodeMirrorHandle } from './codemirror';
 import {
@@ -46,6 +47,7 @@ import {
   type FrontmatterValues,
 } from './frontmatter-fields';
 import { EditorToolbar } from './toolbar';
+import { insertText } from '@/lib/admin/insert-text';
 
 export interface LocaleSeed {
   locale: string;
@@ -66,7 +68,10 @@ interface LocaleState {
 
 type ViewMode = 'edit' | 'split' | 'preview';
 
-const EMPTY_DOC = '---\ntitle: 新页面\n---\n\n';
+/** 空文档的骨架。标题按内容语言给 —— 它会落进那个语言的 mdx 文件 */
+function emptyDoc(contentLocale: string): string {
+  return `---\ntitle: ${insertText(contentLocale).newPageTitle}\n---\n\n`;
+}
 
 export function DocEditor({
   slug,
@@ -77,6 +82,7 @@ export function DocEditor({
   locales: LocaleSeed[];
   defaultLocale: string;
 }) {
+  const { locale: uiLocale, t } = useAdminI18n();
   // 语言状态与左树共用: 切页签时左树也跟着换语言, 才像在操作同一个侧边栏
   const { locale: active, setLocale: setActive } =
     useWorkspaceLocale(defaultLocale);
@@ -98,7 +104,7 @@ export function DocEditor({
     Object.fromEntries(
       locales.map((seed) => {
         const source = seed.content ?? '';
-        const parts = splitDoc(source || EMPTY_DOC);
+        const parts = splitDoc(source || emptyDoc(seed.locale));
         return [
           seed.locale,
           {
@@ -203,13 +209,13 @@ export function DocEditor({
         });
         // 左树建在 layout 的 server 组件里, 不 refresh 的话标题改了树上还是旧的
         router.refresh();
-        toast.success(`${locale} 已保存`, {
-          description: '前台页面与搜索已同步更新',
+        toast.success(t('editor.savedToast', { locale }), {
+          description: t('editor.savedToastDesc'),
         });
       } else {
         patch(locale, { saving: false });
         if (result.conflictAt) setConflict({ locale, at: result.conflictAt });
-        else toast.error('保存失败', { description: result.error });
+        else toast.error(t('editor.saveFailed'), { description: result.error });
       }
     },
     [patch, slug, states],
@@ -269,7 +275,7 @@ export function DocEditor({
 
   /* ---------- 图片: 工具栏选择 / 粘贴截图 / 拖入文件 ---------- */
   const uploadFiles = useCallback(async (files: File[]) => {
-    const id = toast.loading(`正在上传 ${files.length} 张图片…`);
+    const id = toast.loading(t('editor.uploading', { count: files.length }));
     const inserted: string[] = [];
     for (const file of files) {
       const form = new FormData();
@@ -279,13 +285,16 @@ export function DocEditor({
         const alt = file.name.replace(/\.[^.]+$/, '');
         inserted.push(`![${alt}](${result.url})`);
       } else {
-        toast.error(`${file.name} 上传失败`, { description: result.error, id });
+        toast.error(t('editor.uploadFailed', { name: file.name }), {
+          description: result.error,
+          id,
+        });
         return;
       }
     }
     editorRef.current?.insertBlock(inserted.join('\n\n'));
-    toast.success(`已插入 ${inserted.length} 张图片`, { id });
-  }, []);
+    toast.success(t('editor.uploaded', { count: inserted.length }), { id });
+  }, [t]);
 
   const words = countWords(state.body);
 
@@ -318,12 +327,12 @@ export function DocEditor({
                 {isDirty ? (
                   <span
                     className="size-1.5 rounded-full bg-amber-500"
-                    aria-label="有未保存修改"
+                    aria-label={t('editor.unsaved')}
                   />
                 ) : missing ? (
                   <span
                     className="size-1.5 rounded-full bg-red-500"
-                    aria-label="缺此语言"
+                    aria-label={t('editor.localeMissing')}
                   />
                 ) : null}
               </button>
@@ -336,8 +345,8 @@ export function DocEditor({
         <div className="ml-auto flex items-center gap-2">
           <span className="hidden text-xs text-fd-muted-foreground sm:inline">
             {state.updatedAt
-              ? `保存于 ${formatRelative(state.updatedAt)}`
-              : '尚未保存过'}
+              ? t('editor.savedAt', { time: formatRelative(state.updatedAt, uiLocale) })
+              : t('editor.neverSaved')}
           </span>
           {dirtyLocales.length > 1 ? (
             <Button
@@ -347,7 +356,7 @@ export function DocEditor({
                 dirtyLocales.forEach((locale) => void save(locale))
               }
             >
-              保存全部 ({dirtyLocales.length})
+              {t('editor.saveAll', { count: dirtyLocales.length })}
             </Button>
           ) : null}
           <Button
@@ -358,7 +367,7 @@ export function DocEditor({
             onClick={() => void save(active)}
           >
             {!state.saving ? <Save /> : null}
-            保存 {active}
+            {t('editor.saveOne', { locale: active })}
             <kbd className="ml-1 hidden rounded border border-white/25 px-1 font-mono text-[10px] md:inline">
               ⌘S
             </kbd>
@@ -378,7 +387,7 @@ export function DocEditor({
               body: parts.body,
               draftAt: null,
             });
-            toast.info('已恢复草稿');
+            toast.info(t('editor.draftRestored'));
           }}
           onDiscard={() => {
             void discardDraftAction({ slug, locale: active });
@@ -400,11 +409,11 @@ export function DocEditor({
               <input
                 value={fm.title}
                 onChange={(event) => changeField('title', event.target.value)}
-                placeholder="页面标题（必填）"
-                aria-label="页面标题"
+                placeholder={t('editor.titlePlaceholder')}
+                aria-label={t('editor.titleLabel')}
                 className="min-w-0 flex-1 bg-transparent text-lg font-semibold outline-none placeholder:font-normal placeholder:text-fd-muted-foreground"
               />
-              {!fm.title ? <Badge tone="danger">缺标题</Badge> : null}
+              {!fm.title ? <Badge tone="danger">{t('editor.titleMissing')}</Badge> : null}
               <Button
                 variant="ghost"
                 size="sm"
@@ -412,7 +421,7 @@ export function DocEditor({
                 aria-expanded={metaOpen}
               >
                 <Settings2 />
-                更多设置
+                {t('editor.moreSettings')}
                 <ChevronDown
                   className={cn(
                     'transition-transform',
@@ -430,33 +439,35 @@ export function DocEditor({
 
             <EditorToolbar
               editor={editorRef}
+              contentLocale={active}
               onPickImages={(files) => void uploadFiles(files)}
             />
 
             <div className="min-h-0 flex-1 overflow-hidden">
               <CodeMirrorEditor
                 value={state.body}
+                contentLocale={active}
                 onChange={(body) => patch(active, { body })}
                 onSave={() => void save(active)}
                 onFiles={(files) => void uploadFiles(files)}
-                placeholder="用 Markdown 写正文; 输入 < 插入组件, 截图可直接粘贴"
+                placeholder={t('editor.bodyPlaceholder')}
                 handleRef={editorRef}
                 className="h-full overflow-auto"
               />
             </div>
 
             <div className="flex items-center gap-3 border-t border-fd-border px-4 py-1.5 text-[11px] text-fd-muted-foreground md:px-6">
-              <span>{words} 字</span>
-              <span>{state.body.split('\n').length} 行</span>
+              <span>{t('editor.words', { count: words })}</span>
+              <span>{t('editor.lines', { count: state.body.split('\n').length })}</span>
               {dirty ? (
                 <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
                   <span className="size-1.5 rounded-full bg-current" />
-                  未保存
+                  {t('editor.dirty')}
                 </span>
               ) : (
                 <span className="flex items-center gap-1">
                   <Check className="size-3" />
-                  已保存
+                  {t('editor.clean')}
                 </span>
               )}
               <Link
@@ -464,7 +475,7 @@ export function DocEditor({
                 target="_blank"
                 className="ml-auto flex items-center gap-1 transition-colors hover:text-fd-foreground"
               >
-                在站点打开
+                {t('editor.openOnSite')}
                 <ExternalLink className="size-3" />
               </Link>
             </div>
@@ -480,7 +491,7 @@ export function DocEditor({
           >
             <div className="flex items-center gap-2 border-b border-fd-border px-4 py-1.5 text-[11px] text-fd-muted-foreground md:px-6">
               <Eye className="size-3" />
-              实时预览 · 与站点同一套渲染
+              {t('editor.previewNote')}
               {previewState === 'staging' ? (
                 <Loader2 className="ml-auto size-3 animate-spin" />
               ) : null}
@@ -490,7 +501,7 @@ export function DocEditor({
                 <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400" />
                 <div className="min-w-0 space-y-1">
                   <p className="font-medium text-red-700 dark:text-red-400">
-                    内容有语法错误
+                    {t('editor.syntaxError')}
                   </p>
                   <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs text-fd-muted-foreground">
                     {previewError}
@@ -500,7 +511,7 @@ export function DocEditor({
             ) : (
               <iframe
                 key={`${active}-${previewVersion}`}
-                title="预览"
+                title={t('editor.previewLabel')}
                 src={`/admin/preview/${slug}?locale=${active}&v=${previewVersion}`}
                 className="min-h-0 flex-1 border-0 bg-fd-background"
               />
@@ -514,12 +525,13 @@ export function DocEditor({
         onOpenChange={(open) => !open && setConflict(null)}
       >
         <DialogContent
-          title="内容已被其他人改动"
+          title={t('editor.conflictTitle')}
           description={
             conflict
-              ? `${conflict.locale} 这份内容在 ${formatRelative(
-                  conflict.at,
-                )}被改过。继续保存会覆盖对方的修改。`
+              ? t('editor.conflictDesc', {
+                  locale: conflict.locale,
+                  time: formatRelative(conflict.at, uiLocale),
+                })
               : undefined
           }
         >
@@ -531,7 +543,7 @@ export function DocEditor({
                 onClick={() => location.reload()}
               >
                 <RotateCcw />
-                放弃我的修改, 重新载入
+                {t('editor.discardMine')}
               </Button>
             </DialogClose>
             <Button
@@ -542,7 +554,7 @@ export function DocEditor({
                 setConflict(null);
               }}
             >
-              仍然覆盖保存
+              {t('editor.overwrite')}
             </Button>
           </div>
         </DialogContent>
@@ -558,10 +570,11 @@ function ViewSwitch({
   view: ViewMode;
   onChange: (view: ViewMode) => void;
 }) {
+  const t = useT();
   const options = [
-    { value: 'edit', icon: PenLine, label: '只看编辑器' },
-    { value: 'split', icon: Columns2, label: '分栏' },
-    { value: 'preview', icon: Eye, label: '只看预览' },
+    { value: 'edit', icon: PenLine, label: t('editor.viewEdit') },
+    { value: 'split', icon: Columns2, label: t('editor.viewSplit') },
+    { value: 'preview', icon: Eye, label: t('editor.viewPreview') },
   ] as const;
 
   return (
@@ -596,18 +609,17 @@ function DraftBanner({
   onRestore: () => void;
   onDiscard: () => void;
 }) {
+  const { locale, t } = useAdminI18n();
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-amber-500/30 bg-amber-500/8 px-4 py-2 text-sm md:px-6">
       <FileWarning className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
-      <span>
-        有一份 {formatRelative(at)}的未保存草稿, 可能来自上次意外关闭页面。
-      </span>
+      <span>{t('editor.draftBanner', { time: formatRelative(at, locale) })}</span>
       <div className="ml-auto flex gap-2">
         <Button size="sm" variant="secondary" onClick={onRestore}>
-          恢复草稿
+          {t('editor.restoreDraft')}
         </Button>
         <Button size="sm" variant="ghost" onClick={onDiscard}>
-          丢弃
+          {t('editor.discardDraft')}
         </Button>
       </div>
     </div>

@@ -152,7 +152,6 @@ export const zh: AdminDict = {
   'tree.missingBadge': '缺 {count}',
 
   // ---- 编辑器 ----
-  'editor.newPageTitle': '新页面',
   'editor.savedToast': '{locale} 已保存',
   'editor.savedToastDesc': '前台页面与搜索已同步更新',
   'editor.saveFailed': '保存失败',
@@ -234,24 +233,6 @@ export const zh: AdminDict = {
   'snippet.mermaidDetail': '流程图',
   'snippet.errorCodeDetail': '错误码表',
 
-  // ---- 插入文本 ----
-  'insert.calloutTitle': '标题',
-  'insert.calloutBody': '内容',
-  'insert.warnTitle': '注意',
-  'insert.bold': '粗体',
-  'insert.italic': '斜体',
-  'insert.linkText': '链接文字',
-  'insert.heading': '标题',
-  'insert.listItem1': '项目一',
-  'insert.listItem2': '项目二',
-  'insert.step1': '第一步',
-  'insert.step2': '第二步',
-  'insert.quote': '引用内容',
-  'insert.tableCol1': '列一',
-  'insert.tableCol2': '列二',
-  'insert.tableCell': '内容',
-  'insert.mermaidStart': '开始',
-  'insert.mermaidEnd': '结束',
 
   // ---- 导航编辑器 ----
   'navEditor.saved': '导航已保存',
@@ -267,7 +248,6 @@ export const zh: AdminDict = {
   'navEditor.addSeparator': '分隔符',
   'navEditor.addItem': '条目',
   'navEditor.separatorBadge': '分段',
-  'navEditor.newSeparator': '---新分段---',
   'navEditor.pathPlaceholder': '页面或文件夹路径, 如 get-started 或 ../openapi',
   'navEditor.notePlaceholder': '这一分段的说明文字(显示在侧边栏分隔符下方), 可留空',
   'navEditor.jsonHint': '结构编辑器覆盖不到的字段可以在这里直接改。保存时会做 schema 校验。',

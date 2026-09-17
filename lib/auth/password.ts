@@ -29,16 +29,19 @@ export function verifyPassword(password: string, stored: string): boolean {
 // 弱口令 = 拿到服务端代码执行权, 门槛按此定, 不是按「普通后台」定。
 export const PASSWORD_MIN_LENGTH = 12;
 
-export function checkPasswordStrength(password: string): string | undefined {
-  if (password.length < PASSWORD_MIN_LENGTH) {
-    return `密码至少 ${PASSWORD_MIN_LENGTH} 位`;
-  }
+/** 返回错误码而非文案: 这是个纯模块, 把 locale 注进来只为两条消息不值当 */
+export type PasswordIssue = 'tooShort' | 'weak';
+
+export function checkPasswordStrength(
+  password: string,
+): PasswordIssue | undefined {
+  if (password.length < PASSWORD_MIN_LENGTH) return 'tooShort';
   if (
     !/[a-z]/.test(password) ||
     !/[A-Z]/.test(password) ||
     !/\d/.test(password)
   ) {
-    return '密码需同时包含大写字母、小写字母与数字';
+    return 'weak';
   }
   return undefined;
 }

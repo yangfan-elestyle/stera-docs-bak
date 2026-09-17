@@ -1,5 +1,6 @@
 'use client';
 
+import { useT } from '../i18n';
 import { NavPanel } from '../nav-editor/nav-editor';
 import { useWorkspaceLocale } from './workspace';
 
@@ -14,13 +15,14 @@ export function NavPanelHost({
   json: Record<string, string>;
   defaultLocale: string;
 }) {
+  const t = useT();
   const { locale } = useWorkspaceLocale(defaultLocale);
   const current = json[locale];
 
   if (!current) {
     return (
       <p className="p-6 text-sm text-fd-muted-foreground">
-        这一组在 {locale} 下没有导航文件。
+        {t('content.navMissing', { locale })}
       </p>
     );
   }

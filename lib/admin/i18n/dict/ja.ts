@@ -157,7 +157,6 @@ export const ja = {
   'tree.missingBadge': '不足 {count}',
 
   // ---- 编辑器 ----
-  'editor.newPageTitle': '新しいページ',
   'editor.savedToast': '{locale} を保存しました',
   'editor.savedToastDesc': 'サイトのページと検索が更新されました',
   'editor.saveFailed': '保存に失敗しました',
@@ -239,24 +238,6 @@ export const ja = {
   'snippet.mermaidDetail': 'フローチャート',
   'snippet.errorCodeDetail': 'エラーコード表',
 
-  // ---- 插入文本 (写进正文, 见 toolbar.tsx 注释) ----
-  'insert.calloutTitle': 'タイトル',
-  'insert.calloutBody': '内容',
-  'insert.warnTitle': '注意',
-  'insert.bold': '太字',
-  'insert.italic': '斜体',
-  'insert.linkText': 'リンクテキスト',
-  'insert.heading': '見出し',
-  'insert.listItem1': '項目 1',
-  'insert.listItem2': '項目 2',
-  'insert.step1': 'ステップ 1',
-  'insert.step2': 'ステップ 2',
-  'insert.quote': '引用文',
-  'insert.tableCol1': '列 1',
-  'insert.tableCol2': '列 2',
-  'insert.tableCell': '内容',
-  'insert.mermaidStart': '開始',
-  'insert.mermaidEnd': '終了',
 
   // ---- 导航编辑器 ----
   'navEditor.saved': 'ナビゲーションを保存しました',
@@ -272,7 +253,6 @@ export const ja = {
   'navEditor.addSeparator': '区切り',
   'navEditor.addItem': '項目',
   'navEditor.separatorBadge': '区切り',
-  'navEditor.newSeparator': '---新しい区切り---',
   'navEditor.pathPlaceholder': 'ページまたはフォルダのパス (例: get-started、../openapi)',
   'navEditor.notePlaceholder': 'この区切りの説明文 (サイドバーの区切り線の下に表示)。空欄可',
   'navEditor.jsonHint': '構造エディタで扱えないフィールドはここで直接編集できます。保存時に schema 検証を行います。',

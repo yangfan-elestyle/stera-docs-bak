@@ -11,6 +11,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { formatRelative } from '@/lib/admin/text';
+import { useAdminI18n, useT } from './i18n';
 import {
   createAccountAction,
   deleteAccountAction,
@@ -60,6 +61,7 @@ function randomPassword(): string {
 export function UsersPanel({ rows, meId }: { rows: UserRow[]; meId: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const { locale, t } = useAdminI18n();
 
   const run = (action: () => Promise<UserResult>) => {
     startTransition(async () => {
@@ -76,9 +78,7 @@ export function UsersPanel({ rows, meId }: { rows: UserRow[]; meId: string }) {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-2">
-        <p className="text-sm text-fd-muted-foreground">
-          能编辑内容 = 能在服务端执行代码, 账号只发给受信任的人。
-        </p>
+        <p className="text-sm text-fd-muted-foreground">{t('users.warning')}</p>
         <CreateDialog onDone={run} />
       </div>
 
@@ -86,13 +86,13 @@ export function UsersPanel({ rows, meId }: { rows: UserRow[]; meId: string }) {
         <table className="w-full text-sm">
           <thead className="bg-fd-card/60 text-left text-xs text-fd-muted-foreground">
             <tr>
-              <th className="px-4 py-2.5 font-medium">账号</th>
-              <th className="px-4 py-2.5 font-medium">角色</th>
+              <th className="px-4 py-2.5 font-medium">{t('users.colAccount')}</th>
+              <th className="px-4 py-2.5 font-medium">{t('common.role')}</th>
               <th className="hidden px-4 py-2.5 font-medium sm:table-cell">
-                状态
+                {t('users.colStatus')}
               </th>
               <th className="hidden px-4 py-2.5 font-medium md:table-cell">
-                创建于
+                {t('common.createdAt')}
               </th>
               <th className="px-4 py-2.5" />
             </tr>
@@ -106,7 +106,7 @@ export function UsersPanel({ rows, meId }: { rows: UserRow[]; meId: string }) {
                       {row.email.slice(0, 2).toUpperCase()}
                     </span>
                     <span className="truncate">{row.email}</span>
-                    {row.id === meId ? <Badge>你</Badge> : null}
+                    {row.id === meId ? <Badge>{t('users.you')}</Badge> : null}
                   </span>
                 </td>
                 <td className="px-4 py-2.5">
@@ -133,13 +133,13 @@ export function UsersPanel({ rows, meId }: { rows: UserRow[]; meId: string }) {
                 </td>
                 <td className="hidden px-4 py-2.5 sm:table-cell">
                   {row.mustChangePassword ? (
-                    <Badge tone="warning">待首次改密</Badge>
+                    <Badge tone="warning">{t('users.pendingChange')}</Badge>
                   ) : (
-                    <Badge tone="success">正常</Badge>
+                    <Badge tone="success">{t('users.normal')}</Badge>
                   )}
                 </td>
                 <td className="hidden whitespace-nowrap px-4 py-2.5 text-xs text-fd-muted-foreground md:table-cell">
-                  {formatRelative(row.createdAt)}
+                  {formatRelative(row.createdAt, locale)}
                 </td>
                 <td className="px-4 py-2.5 text-right">
                   <RowMenu row={row} meId={meId} onDone={run} />
@@ -162,6 +162,7 @@ function RowMenu({
   meId: string;
   onDone: (action: () => Promise<UserResult>) => void;
 }) {
+  const t = useT();
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [password, setPassword] = useState('');
@@ -170,7 +171,7 @@ function RowMenu({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon-sm" aria-label="更多操作">
+          <Button variant="ghost" size="icon-sm" aria-label={t('common.more')}>
             <MoreHorizontal />
           </Button>
         </DropdownMenuTrigger>
@@ -182,7 +183,7 @@ function RowMenu({
             }}
           >
             <KeyRound />
-            重置密码
+            {t('users.resetPassword')}
           </DropdownMenuItem>
           {row.id !== meId ? (
             <>
@@ -192,7 +193,7 @@ function RowMenu({
                 onSelect={() => setDeleteOpen(true)}
               >
                 <Trash2 />
-                删除账号
+                {t('users.deleteUser')}
               </DropdownMenuItem>
             </>
           ) : null}
@@ -201,13 +202,13 @@ function RowMenu({
 
       <Dialog open={resetOpen} onOpenChange={setResetOpen}>
         <DialogContent
-          title="重置密码"
-          description={`为 ${row.email} 设置新的初始密码, 线下交给本人。对方会被立刻踢下线, 下次登录必须改密。`}
+          title={t('users.resetPassword')}
+          description={t('users.resetDesc', { email: row.email })}
         >
           <div className="space-y-3">
             <Field
-              label="新的初始密码"
-              hint="已自动生成一个强密码, 也可以自己改"
+              label={t('users.newInitialPassword')}
+              hint={t('users.generatedHint')}
             >
               <Input
                 value={password}
@@ -221,7 +222,7 @@ function RowMenu({
                 size="sm"
                 onClick={() => setResetOpen(false)}
               >
-                取消
+                {t('common.cancel')}
               </Button>
               <Button
                 variant="primary"
@@ -231,7 +232,7 @@ function RowMenu({
                   onDone(() => resetPasswordAction({ id: row.id, password }));
                 }}
               >
-                重置
+                {t('users.reset')}
               </Button>
             </div>
           </div>
@@ -240,8 +241,8 @@ function RowMenu({
 
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent
-          title="删除账号"
-          description={`${row.email} 将被立即删除, 其所有登录状态一并失效。此操作不可撤销。`}
+          title={t('users.deleteUser')}
+          description={t('users.deleteDesc', { email: row.email })}
         >
           <div className="flex justify-end gap-2">
             <Button
@@ -249,7 +250,7 @@ function RowMenu({
               size="sm"
               onClick={() => setDeleteOpen(false)}
             >
-              取消
+              {t('common.cancel')}
             </Button>
             <Button
               variant="danger"
@@ -259,7 +260,7 @@ function RowMenu({
                 onDone(() => deleteAccountAction({ id: row.id }));
               }}
             >
-              确认删除
+              {t('common.confirmDelete')}
             </Button>
           </div>
         </DialogContent>
@@ -273,6 +274,7 @@ function CreateDialog({
 }: {
   onDone: (action: () => Promise<UserResult>) => void;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState(randomPassword());
@@ -293,15 +295,15 @@ function CreateDialog({
       <DialogTrigger asChild>
         <Button variant="primary" size="sm" className="ml-auto">
           <UserPlus />
-          新建账号
+          {t('users.create')}
         </Button>
       </DialogTrigger>
       <DialogContent
-        title="新建账号"
-        description="不发邀请信也不做邮箱验证: 在这里设好初始密码, 线下交给本人。"
+        title={t('users.create')}
+        description={t('users.createDesc')}
       >
         <div className="space-y-3">
-          <Field label="邮箱" required>
+          <Field label={t('common.email')} required>
             <Input
               type="email"
               value={email}
@@ -309,19 +311,19 @@ function CreateDialog({
               placeholder="name@example.com"
             />
           </Field>
-          <Field label="初始密码" required hint="已自动生成一个强密码">
+          <Field label={t('users.initialPassword')} required hint={t('users.generatedHintShort')}>
             <Input
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               className="font-mono"
             />
           </Field>
-          <Field label="角色">
+          <Field label={t('common.role')}>
             <RoleSelect value={role} onChange={setRole} />
           </Field>
           <div className="flex items-center gap-2 rounded-lg bg-fd-muted/60 px-3 py-2 text-xs text-fd-muted-foreground">
             <ShieldCheck className="size-3.5 shrink-0" />
-            对方首次登录会被强制改密, 这串初始密码之后不再有效。
+            {t('users.createNotice')}
           </div>
           <div className="flex justify-end gap-2">
             <Button
@@ -329,7 +331,7 @@ function CreateDialog({
               size="sm"
               onClick={() => setOpen(false)}
             >
-              取消
+              {t('common.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -339,7 +341,7 @@ function CreateDialog({
                 onDone(() => createAccountAction({ email, password, role }));
               }}
             >
-              创建
+              {t('users.submitCreate')}
             </Button>
           </div>
         </div>
@@ -355,6 +357,7 @@ function RoleSelect({
   value: 'admin' | 'editor';
   onChange: (role: 'admin' | 'editor') => void;
 }) {
+  const t = useT();
   const id = useFieldId();
   return (
     <Select
@@ -365,8 +368,8 @@ function RoleSelect({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="editor">editor — 只能改内容</SelectItem>
-        <SelectItem value="admin">admin — 额外可管账号</SelectItem>
+        <SelectItem value="editor">{t('users.roleEditorOption')}</SelectItem>
+        <SelectItem value="admin">{t('users.roleAdminOption')}</SelectItem>
       </SelectContent>
     </Select>
   );

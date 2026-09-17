@@ -6,10 +6,14 @@ import { PageHeader } from '@/components/admin/page-header';
 import { Card } from '@/components/admin/ui/primitives';
 import { requireUser } from '@/lib/auth/guard';
 import { listNav, listSlugs } from '@/lib/cms/content';
+import { getAdminI18n } from '@/lib/admin/i18n/server';
 import { formatRelative } from '@/lib/admin/text';
 import { i18n } from '@/lib/i18n';
 
-export const metadata: Metadata = { title: '内容' };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getAdminI18n();
+  return { title: t('content.title') };
+}
 
 export default async function ContentPage({
   searchParams,
@@ -18,6 +22,7 @@ export default async function ContentPage({
 }) {
   await requireUser();
   const nav = (await searchParams).nav;
+  const { locale, t } = await getAdminI18n();
 
   if (nav !== undefined) {
     const json = Object.fromEntries(
@@ -28,9 +33,12 @@ export default async function ContentPage({
     return (
       <>
         <PageHeader
-          breadcrumbs={[{ label: '内容', href: '/admin/content' }, { label: '分组设置' }]}
-          title={nav || '(根目录)'}
-          description="这一组在侧边栏里的排序、分段与分段说明"
+          breadcrumbs={[
+            { label: t('content.title'), href: '/admin/content' },
+            { label: t('content.navCrumb') },
+          ]}
+          title={nav || t('common.rootDir')}
+          description={t('content.navDesc')}
         />
         <div className="px-4 py-5 md:px-6">
           <NavPanelHost dir={nav} json={json} defaultLocale={i18n.defaultLanguage} />
@@ -46,24 +54,27 @@ export default async function ContentPage({
 
   return (
     <>
-      <PageHeader title="内容" description={`${docs.length} 篇文档 · 左侧就是站点侧边栏`} />
+      <PageHeader
+        title={t('content.title')}
+        description={t('content.desc', { count: docs.length })}
+      />
       <div className="space-y-5 px-4 py-6 md:px-6">
         <Card className="flex flex-col items-center gap-3 px-6 py-12 text-center">
           <div className="rounded-full bg-fd-muted p-3 text-fd-muted-foreground">
             <MousePointerSquareDashed className="size-5" />
           </div>
           <div className="space-y-1">
-            <p className="font-medium">在左边选一篇文档开始编辑</p>
+            <p className="font-medium">{t('content.emptyTitle')}</p>
             <p className="mx-auto max-w-md text-sm text-fd-muted-foreground">
-              左侧这棵树与站点侧边栏完全一致。点页面改正文, 点分组右侧的
+              {t('content.emptyDescBefore')}
               <ListTree className="mx-1 inline size-3.5" />
-              齿轮改这一组的排序与分段说明。
+              {t('content.emptyDescAfter')}
             </p>
           </div>
         </Card>
 
         <section className="space-y-2">
-          <h2 className="text-sm font-semibold">最近修改</h2>
+          <h2 className="text-sm font-semibold">{t('content.recent')}</h2>
           <Card className="divide-y divide-fd-border">
             {recent.map((doc) => (
               <Link
@@ -74,7 +85,7 @@ export default async function ContentPage({
                 <FileText className="size-3.5 shrink-0 text-fd-muted-foreground" />
                 <span className="min-w-0 flex-1 truncate">{doc.title}</span>
                 <span className="shrink-0 text-xs text-fd-muted-foreground">
-                  {formatRelative(doc.updatedAt)}
+                  {formatRelative(doc.updatedAt, locale)}
                 </span>
               </Link>
             ))}

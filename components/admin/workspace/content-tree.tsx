@@ -13,6 +13,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AdminTreeNode } from '@/lib/cms/tree';
 import { cn } from '@/lib/admin/cn';
+import { useT } from '../i18n';
 import { Button } from '../ui/button';
 import { Tooltip } from '../ui/primitives';
 
@@ -48,6 +49,7 @@ export function ContentTree({
   onSelect: (selection: TreeSelection) => void;
   headerAction?: React.ReactNode;
 }) {
+  const t = useT();
   const [query, setQuery] = useState('');
   const [onlyIncomplete, setOnlyIncomplete] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -101,11 +103,11 @@ export function ContentTree({
           </div>
           <div className="ml-auto flex items-center gap-0.5">
             {rootDir !== undefined && navDirs.includes(rootDir) ? (
-              <Tooltip content="编辑整体排序与分段说明">
+              <Tooltip content={t('tree.editRootOrder')}>
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="编辑整体排序"
+                  aria-label={t('tree.editRootOrder')}
                   className={
                     selection?.kind === 'nav' && selection.key === rootDir
                       ? 'bg-fd-primary/10 text-fd-primary'
@@ -126,13 +128,13 @@ export function ContentTree({
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="搜索页面…"
+            placeholder={t('tree.searchPlaceholder')}
             className="h-8 w-full rounded-lg border border-fd-border bg-fd-card pl-8 pr-7 text-xs outline-none transition-[box-shadow,border-color] placeholder:text-fd-muted-foreground focus-visible:border-fd-primary focus-visible:ring-2 focus-visible:ring-fd-primary/20"
           />
           {query ? (
             <button
               type="button"
-              aria-label="清空"
+              aria-label={t('common.clear')}
               onClick={() => setQuery('')}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-fd-muted-foreground hover:text-fd-foreground"
             >
@@ -157,14 +159,14 @@ export function ContentTree({
               incomplete > 0 ? 'bg-amber-500' : 'bg-emerald-500',
             )}
           />
-          只看缺语言的页面 ({incomplete})
+          {t('tree.onlyIncomplete', { count: incomplete })}
         </button>
       </div>
 
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto p-2">
         {filtered.length === 0 ? (
           <p className="px-2 py-8 text-center text-xs text-fd-muted-foreground">
-            没有匹配的页面
+            {t('tree.noMatch')}
           </p>
         ) : (
           <TreeNodes
@@ -210,6 +212,7 @@ function TreeNodes({
   onToggle: (id: string) => void;
   forceOpen: boolean;
 }) {
+  const t = useT();
   return (
     <ul className="space-y-0.5">
       {nodes.map((node) => {
@@ -247,7 +250,7 @@ function TreeNodes({
                 <button
                   type="button"
                   onClick={() => onToggle(node.id)}
-                  aria-label={open ? '收起' : '展开'}
+                  aria-label={t(open ? 'common.collapse' : 'common.expand')}
                   className="grid size-5 shrink-0 place-items-center text-fd-muted-foreground"
                 >
                   <ChevronRight
@@ -270,11 +273,11 @@ function TreeNodes({
                   <span className="truncate font-medium">{node.name}</span>
                 </button>
                 {node.dir !== undefined && navDirs.includes(node.dir) ? (
-                  <Tooltip content="编辑这一组的排序与分段说明">
+                  <Tooltip content={t('tree.editGroup')}>
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="编辑分组"
+                      aria-label={t('tree.editGroup')}
                       className={cn(
                         'size-6 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
                         navActive && 'opacity-100',
@@ -315,7 +318,7 @@ function TreeNodes({
         if (!editable) {
           return (
             <li key={node.id}>
-              <Tooltip content="由 openapi*.yaml 生成, 改动走发版; 点击在站点打开">
+              <Tooltip content={t('tree.buildtimeHint')}>
                 <a
                   href={node.url ?? '#'}
                   target="_blank"
@@ -356,10 +359,10 @@ function TreeNodes({
               <span className="truncate">{node.name}</span>
               {missing.length > 0 ? (
                 <Tooltip
-                  content={`缺 ${missing.join(' / ')}, 前台会回退到默认语言`}
+                  content={t('tree.missingTooltip', { langs: missing.join(' / ') })}
                 >
                   <span className="ml-auto shrink-0 rounded bg-amber-500/15 px-1 text-[10px] font-medium text-amber-700 dark:text-amber-400">
-                    缺 {missing.length}
+                    {t('tree.missingBadge', { count: missing.length })}
                   </span>
                 </Tooltip>
               ) : null}

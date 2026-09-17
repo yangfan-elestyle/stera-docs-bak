@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CornerDownLeft, Search } from 'lucide-react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { cn } from '@/lib/admin/cn';
+import { useT } from './i18n';
 
 export interface CommandItem {
   id: string;
@@ -58,6 +59,8 @@ export function CommandPalette({
       ?.scrollIntoView({ block: 'nearest' });
   }, [index]);
 
+  const t = useT();
+
   const go = (item?: CommandItem) => {
     if (!item) return;
     onOpenChange(false);
@@ -71,7 +74,7 @@ export function CommandPalette({
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] data-[state=open]:animate-in data-[state=open]:fade-in" />
         <DialogPrimitive.Content
-          aria-label="命令面板"
+          aria-label={t('palette.label')}
           className="fixed left-1/2 top-[15vh] z-50 w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-xl border border-fd-border bg-fd-popover shadow-2xl outline-none data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95"
           onKeyDown={(event) => {
             if (event.key === 'ArrowDown') {
@@ -87,7 +90,7 @@ export function CommandPalette({
           }}
         >
           <DialogPrimitive.Title className="sr-only">
-            命令面板
+            {t('palette.label')}
           </DialogPrimitive.Title>
           <div className="flex items-center gap-2 border-b border-fd-border px-3">
             <Search className="size-4 shrink-0 text-fd-muted-foreground" />
@@ -95,7 +98,7 @@ export function CommandPalette({
               autoFocus
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="搜索页面标题或 slug…"
+              placeholder={t('palette.placeholder')}
               className="h-12 w-full bg-transparent text-sm outline-none placeholder:text-fd-muted-foreground"
             />
           </div>
@@ -103,7 +106,7 @@ export function CommandPalette({
           <div ref={listRef} className="max-h-[50vh] overflow-y-auto p-1.5">
             {results.length === 0 ? (
               <p className="px-3 py-8 text-center text-sm text-fd-muted-foreground">
-                没有匹配的结果
+                {t('palette.empty')}
               </p>
             ) : (
               results.map((item, i) => {

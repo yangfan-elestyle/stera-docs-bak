@@ -10,9 +10,9 @@ import { requireUser } from '@/lib/auth/guard';
 import { getSlugDocs, slugExists } from '@/lib/cms/content';
 import { getDraft } from '@/lib/cms/drafts';
 import { i18n } from '@/lib/i18n';
+import { ADMIN_LOCALE_NAMES, type AdminLocale } from '@/lib/admin/i18n/shared';
+import { getAdminI18n } from '@/lib/admin/i18n/server';
 import { slugSegments } from '@/lib/admin/text';
-
-const LOCALE_LABEL: Record<string, string> = { ja: '日本語', en: 'English', zh: '简体中文' };
 
 export default async function EditDocPage({
   params,
@@ -21,6 +21,7 @@ export default async function EditDocPage({
 }) {
   const user = await requireUser();
   const slug = (await params).slug.map(decodeURIComponent).join('/');
+  const { t } = await getAdminI18n();
 
   if (!slugExists(slug)) {
     // 站点上有、库里没有 = 构建期产物 (openapi*.yaml 生成的那 153 页)。
@@ -36,7 +37,7 @@ export default async function EditDocPage({
     return (
       <>
         <PageHeader
-          breadcrumbs={[{ label: '内容', href: '/admin/content' }]}
+          breadcrumbs={[{ label: t('content.title'), href: '/admin/content' }]}
           title={sitePage.data.title ?? slug}
           description={<span className="font-mono text-xs">{slug}</span>}
         />
@@ -44,19 +45,19 @@ export default async function EditDocPage({
           <Card className="flex max-w-xl flex-col items-start gap-3 p-6">
             <span className="inline-flex items-center gap-2 text-sm font-medium">
               <Lock className="size-4 text-fd-muted-foreground" />
-              这是构建期内容, 不能在后台编辑
+              {t('buildtime.title')}
             </span>
             <p className="text-sm leading-relaxed text-fd-muted-foreground">
-              这一页由 <code className="rounded bg-fd-muted px-1 font-mono text-xs">openapi*.yaml</code>{' '}
-              生成, 手改会被下次生成覆盖, 因此改动走发版而非 CMS。
-              API Reference 的分组与排序同理。
+              {t('buildtime.descBefore')}
+              <code className="rounded bg-fd-muted px-1 font-mono text-xs">openapi*.yaml</code>
+              {t('buildtime.descAfter')}
             </p>
             <Link
               href={sitePage.url}
               target="_blank"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-fd-primary hover:underline"
             >
-              在站点查看这一页
+              {t('buildtime.viewOnSite')}
               <ExternalLink className="size-3.5" />
             </Link>
           </Card>
@@ -71,7 +72,7 @@ export default async function EditDocPage({
     const draft = getDraft(user.id, slug, locale);
     return {
       locale,
-      label: LOCALE_LABEL[locale] ?? locale,
+      label: ADMIN_LOCALE_NAMES[locale as AdminLocale] ?? locale,
       content: doc?.content ?? null,
       updatedAt: doc?.updatedAt.getTime() ?? null,
       draft: draft ? { content: draft.content, updatedAt: draft.updatedAt.getTime() } : null,
@@ -86,7 +87,7 @@ export default async function EditDocPage({
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader
         breadcrumbs={[
-          { label: '内容', href: '/admin/content' },
+          { label: t('content.title'), href: '/admin/content' },
           ...slugSegments(slug).slice(0, -1).map((part) => ({ label: part })),
         ]}
         title={title.replace(/^["']|["']$/g, '')}

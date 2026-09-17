@@ -12,6 +12,7 @@ import {
 } from '@/lib/cms/content';
 import { clearDraft, saveDraft } from '@/lib/cms/drafts';
 import { revalidateContent } from '@/lib/cms/revalidate';
+import { getAdminT } from '@/lib/admin/i18n/server';
 
 export type SaveResult =
   | { ok: true; updatedAt: number }
@@ -24,10 +25,13 @@ export async function saveDocAction(input: {
   expectedUpdatedAt?: number;
 }): Promise<SaveResult> {
   const user = await requireWriter();
+  const t = await getAdminT();
 
   // 唯一的拦截点: 读取侧只会跳过坏行, 靠它兜底等于坏内容先落库再整页消失
   const invalid = validateDocSource(input.content);
-  if (invalid) return { ok: false, error: `frontmatter 不合法 —— ${invalid}` };
+  if (invalid) {
+    return { ok: false, error: t('error.invalidFrontmatter', { detail: invalid }) };
+  }
 
   try {
     const updatedAt = saveDoc(
@@ -43,7 +47,7 @@ export async function saveDocAction(input: {
     if (error instanceof StaleWriteError) {
       return {
         ok: false,
-        error: '这一语言版本在你编辑期间被其他人改过, 直接保存会覆盖对方的修改',
+        error: t('error.conflict'),
         conflictAt: error.current.getTime(),
       };
     }
@@ -85,7 +89,10 @@ export async function stageDraftAction(input: {
   const user = await requireWriter();
 
   const invalid = validateDocSource(input.content);
-  if (invalid) return { ok: false, error: `frontmatter 不合法 —— ${invalid}` };
+  if (invalid) {
+    const t = await getAdminT();
+    return { ok: false, error: t('error.invalidFrontmatter', { detail: invalid }) };
+  }
 
   try {
     const { toc } = await compileDoc(input.content, `${input.slug}.mdx`);
@@ -112,8 +119,11 @@ export async function createPageAction(input: {
   locales: string[];
 }): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
   await requireWriter();
-  if (!input.title.trim()) return { ok: false, error: '标题不能为空' };
-  if (input.locales.length === 0) return { ok: false, error: '至少选一种语言' };
+  const t = await getAdminT();
+  if (!input.title.trim()) return { ok: false, error: t('error.titleRequired') };
+  if (input.locales.length === 0) {
+    return { ok: false, error: t('error.localeRequired') };
+  }
 
   try {
     createPage({ ...input, title: input.title.trim() });

@@ -25,6 +25,8 @@ import {
   TabsTrigger,
   Tooltip,
 } from '../ui/primitives';
+import { insertText } from '@/lib/admin/insert-text';
+import { useT } from '../i18n';
 
 export interface NavSeed {
   dir: string;
@@ -59,6 +61,7 @@ export function NavPanel({
     JSON.stringify(JSON.parse(json), null, 2),
   );
   const [mode, setMode] = useState('form');
+  const t = useT();
   const [saving, setSaving] = useState(false);
   const router = useRouter();
   const [rawError, setRawError] = useState<string>();
@@ -127,9 +130,9 @@ export function NavPanel({
       setRawError(undefined);
       if (mode === 'raw') setMeta(JSON.parse(payload));
       router.refresh();
-      toast.success('导航已保存', { description: '侧边栏与站点已同步更新' });
+      toast.success(t('navEditor.saved'), { description: t('navEditor.savedDesc') });
     } else {
-      toast.error('保存失败', { description: result.error });
+      toast.error(t('navEditor.saveFailed'), { description: result.error });
     }
   };
 
@@ -140,7 +143,7 @@ export function NavPanel({
           <TabsList>
             <TabsTrigger value="form">
               <ListTree className="size-3.5" />
-              结构
+              {t('navEditor.structure')}
             </TabsTrigger>
             <TabsTrigger value="raw">
               <Braces className="size-3.5" />
@@ -157,14 +160,14 @@ export function NavPanel({
           onClick={() => void save()}
         >
           {!saving ? <Save /> : null}
-          保存
+          {t('common.save')}
         </Button>
       </div>
 
       <Tabs value={mode} onValueChange={setMode}>
         <TabsContent value="form" className="space-y-5 outline-none">
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="分组标题" hint="显示在侧边栏顶部">
+            <Field label={t('navEditor.groupTitle')} hint={t('navEditor.groupTitleHint')}>
               <Input
                 value={meta.title ?? ''}
                 onChange={(event) =>
@@ -175,7 +178,7 @@ export function NavPanel({
                 }
               />
             </Field>
-            <Field label="分组描述" hint="可选">
+            <Field label={t('navEditor.groupDesc')} hint={t('navEditor.optional')}>
               <Input
                 value={meta.description ?? ''}
                 onChange={(event) =>
@@ -190,18 +193,21 @@ export function NavPanel({
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <p className="text-sm font-medium">条目顺序</p>
+              <p className="text-sm font-medium">{t('navEditor.order')}</p>
               <p className="text-xs text-fd-muted-foreground">
-                侧边栏就按这个顺序显示; 分隔符用来分段
+                {t('navEditor.orderHint')}
               </p>
               <div className="ml-auto flex gap-2">
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => setPages([...pages, '---新分段---'])}
+                  // 这串会写进 meta.json, 按正在编辑的那个语言取, 不按界面语言
+                  onClick={() =>
+                    setPages([...pages, insertText(locale).newSeparator])
+                  }
                 >
                   <Plus />
-                  分隔符
+                  {t('navEditor.addSeparator')}
                 </Button>
                 <Button
                   size="sm"
@@ -209,7 +215,7 @@ export function NavPanel({
                   onClick={() => setPages([...pages, ''])}
                 >
                   <Plus />
-                  条目
+                  {t('navEditor.addItem')}
                 </Button>
               </div>
             </div>
@@ -228,7 +234,7 @@ export function NavPanel({
                   >
                     <div className="flex items-center gap-2">
                       {separator ? (
-                        <Badge tone="info">分段</Badge>
+                        <Badge tone="info">{t('navEditor.separatorBadge')}</Badge>
                       ) : (
                         <FileText className="size-3.5 shrink-0 text-fd-muted-foreground" />
                       )}
@@ -248,7 +254,7 @@ export function NavPanel({
                             next[index] = event.target.value;
                             setPages(next);
                           }}
-                          placeholder="页面或文件夹路径, 如 get-started 或 ../openapi"
+                          placeholder={t('navEditor.pathPlaceholder')}
                           className={cn(
                             inputClass,
                             'h-8 flex-1 font-mono text-xs',
@@ -256,31 +262,31 @@ export function NavPanel({
                         />
                       )}
                       <div className="flex shrink-0 gap-0.5">
-                        <Tooltip content="上移">
+                        <Tooltip content={t('common.moveUp')}>
                           <Button
                             variant="ghost"
                             size="icon-sm"
                             onClick={() => move(index, -1)}
-                            aria-label="上移"
+                            aria-label={t('common.moveUp')}
                           >
                             <ArrowUp />
                           </Button>
                         </Tooltip>
-                        <Tooltip content="下移">
+                        <Tooltip content={t('common.moveDown')}>
                           <Button
                             variant="ghost"
                             size="icon-sm"
                             onClick={() => move(index, 1)}
-                            aria-label="下移"
+                            aria-label={t('common.moveDown')}
                           >
                             <ArrowDown />
                           </Button>
                         </Tooltip>
-                        <Tooltip content="删除">
+                        <Tooltip content={t('common.delete')}>
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            aria-label="删除"
+                            aria-label={t('common.delete')}
                             onClick={() =>
                               setPages(pages.filter((_, i) => i !== index))
                             }
@@ -296,7 +302,7 @@ export function NavPanel({
                         rows={2}
                         value={meta.sectionNotes?.[label] ?? ''}
                         onChange={(event) => setNote(label, event.target.value)}
-                        placeholder="这一分段的说明文字(显示在侧边栏分隔符下方), 可留空"
+                        placeholder={t('navEditor.notePlaceholder')}
                         className="mt-2 text-xs"
                       />
                     ) : null}
@@ -309,7 +315,7 @@ export function NavPanel({
 
         <TabsContent value="raw" className="space-y-2 outline-none">
           <p className="text-xs text-fd-muted-foreground">
-            结构编辑器覆盖不到的字段可以在这里直接改。保存时会做 schema 校验。
+            {t('navEditor.jsonHint')}
           </p>
           <textarea
             value={raw}

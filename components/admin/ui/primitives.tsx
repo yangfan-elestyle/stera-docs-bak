@@ -8,6 +8,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown, X } from 'lucide-react';
 import { forwardRef } from 'react';
 import { cn } from '@/lib/admin/cn';
+import { useT } from '../i18n';
 
 /* ---------------- surfaces ---------------- */
 
@@ -100,6 +101,7 @@ export function DialogContent({
   title: string;
   description?: string;
 }) {
+  const t = useT();
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in" />
@@ -120,7 +122,7 @@ export function DialogContent({
         ) : null}
         <div className="mt-4">{children}</div>
         <DialogPrimitive.Close
-          aria-label="关闭"
+          aria-label={t('common.close')}
           className="absolute right-3 top-3 rounded-md p-1 text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
         >
           <X className="size-4" />

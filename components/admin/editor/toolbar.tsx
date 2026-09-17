@@ -16,6 +16,8 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useRef } from 'react';
+import { insertText } from '@/lib/admin/insert-text';
+import { useT } from '../i18n';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -28,94 +30,106 @@ import {
 } from '../ui/primitives';
 import type { CodeMirrorHandle } from './codemirror';
 
-const COMPONENTS = [
-  {
-    label: '提示框 Callout',
-    body: '<Callout title="标题">\n  内容\n</Callout>',
-  },
-  {
-    label: '警告框 Callout(warn)',
-    body: '<Callout type="warn" title="注意">\n  内容\n</Callout>',
-  },
-  {
-    label: '流程图 EMermaid',
-    body: '<EMermaid chart={`graph TD;\n  A[开始] --> B[结束];\n`} />',
-  },
-  { label: '错误码表 ErrorCodeTable', body: '<ErrorCodeTable />' },
-];
-
 export function EditorToolbar({
   editor,
+  contentLocale,
   disabled,
   onPickImages,
 }: {
   editor: React.RefObject<CodeMirrorHandle | null>;
+  /** 正在编辑的那个语言文件。插入正文的占位词按它取, 不按界面语言 */
+  contentLocale: string;
   disabled?: boolean;
   onPickImages?: (files: File[]) => void;
 }) {
+  const t = useT();
+  const ins = insertText(contentLocale);
   const fileInput = useRef<HTMLInputElement>(null);
   const run = (fn: (handle: CodeMirrorHandle) => void) => () => {
     if (editor.current) fn(editor.current);
   };
 
+  // 按钮文案 (t) 跟界面语言, 插进正文的文字 (ins) 跟内容语言 —— 两者是不同的东西
+  const components = [
+    {
+      label: t('toolbar.calloutLabel'),
+      body: `<Callout title="${ins.calloutTitle}">\n  ${ins.calloutBody}\n</Callout>`,
+    },
+    {
+      label: t('toolbar.calloutWarnLabel'),
+      body: `<Callout type="warn" title="${ins.warnTitle}">\n  ${ins.calloutBody}\n</Callout>`,
+    },
+    {
+      label: t('toolbar.mermaidLabel'),
+      body: `<EMermaid chart={\`graph TD;\n  A[${ins.mermaidStart}] --> B[${ins.mermaidEnd}];\n\`} />`,
+    },
+    { label: t('toolbar.errorCodeLabel'), body: '<ErrorCodeTable />' },
+  ];
+
   const actions = [
     {
       icon: Bold,
-      label: '粗体 ⌘B',
-      run: run((e) => e.surround('**', '**', '粗体')),
+      label: t('toolbar.bold'),
+      run: run((e) => e.surround('**', '**', ins.bold)),
     },
     {
       icon: Italic,
-      label: '斜体 ⌘I',
-      run: run((e) => e.surround('_', '_', '斜体')),
+      label: t('toolbar.italic'),
+      run: run((e) => e.surround('_', '_', ins.italic)),
     },
     {
       icon: Link2,
-      label: '链接',
-      run: run((e) => e.surround('[', '](/get-started/set-up)', '链接文字')),
+      label: t('toolbar.link'),
+      run: run((e) => e.surround('[', '](/get-started/set-up)', ins.linkText)),
     },
     {
       icon: Code2,
-      label: '行内代码',
+      label: t('toolbar.code'),
       run: run((e) => e.surround('`', '`', 'code')),
     },
     null,
     {
       icon: Heading1,
-      label: '一级标题',
-      run: run((e) => e.insertBlock('# 标题')),
+      label: t('toolbar.h1'),
+      run: run((e) => e.insertBlock(`# ${ins.heading}`)),
     },
     {
       icon: Heading2,
-      label: '二级标题',
-      run: run((e) => e.insertBlock('## 标题')),
+      label: t('toolbar.h2'),
+      run: run((e) => e.insertBlock(`## ${ins.heading}`)),
     },
     {
       icon: Heading3,
-      label: '三级标题',
-      run: run((e) => e.insertBlock('### 标题')),
+      label: t('toolbar.h3'),
+      run: run((e) => e.insertBlock(`### ${ins.heading}`)),
     },
     null,
     {
       icon: List,
-      label: '无序列表',
-      run: run((e) => e.insertBlock('- 项目一\n- 项目二')),
+      label: t('toolbar.ul'),
+      run: run((e) =>
+        e.insertBlock(`- ${ins.listItem1}\n- ${ins.listItem2}`),
+      ),
     },
     {
       icon: ListOrdered,
-      label: '有序列表',
-      run: run((e) => e.insertBlock('1. 第一步\n2. 第二步')),
+      label: t('toolbar.ol'),
+      run: run((e) =>
+        e.insertBlock(`1. ${ins.step1}\n2. ${ins.step2}`),
+      ),
     },
     {
       icon: Quote,
-      label: '引用',
-      run: run((e) => e.insertBlock('> 引用内容')),
+      label: t('toolbar.quote'),
+      run: run((e) => e.insertBlock(`> ${ins.quote}`)),
     },
     {
       icon: Table,
-      label: '表格',
+      label: t('toolbar.table'),
       run: run((e) =>
-        e.insertBlock('| 列一 | 列二 |\n| --- | --- |\n| 内容 | 内容 |'),
+        e.insertBlock(
+          `| ${ins.tableCol1} | ${ins.tableCol2} |\n| --- | --- |\n| ${ins.tableCell} | ${ins.tableCell} |`,
+        ),
       ),
     },
   ] as const;
@@ -142,12 +156,12 @@ export function EditorToolbar({
 
       <span className="mx-1 h-5 w-px bg-fd-border" />
 
-      <Tooltip content="插入图片 · 也可直接粘贴截图或拖入文件">
+      <Tooltip content={t('toolbar.imageHint')}>
         <Button
           variant="ghost"
           size="icon-sm"
           disabled={disabled}
-          aria-label="插入图片"
+          aria-label={t('toolbar.image')}
           onClick={() => fileInput.current?.click()}
         >
           <ImageIcon />
@@ -170,13 +184,13 @@ export function EditorToolbar({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" disabled={disabled}>
             <Sparkles />
-            组件
+            {t('toolbar.components')}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="min-w-56">
-          <DropdownMenuLabel>插入站内组件</DropdownMenuLabel>
+          <DropdownMenuLabel>{t('toolbar.componentsLabel')}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {COMPONENTS.map((component) => (
+          {components.map((component) => (
             <DropdownMenuItem
               key={component.label}
               onSelect={() => editor.current?.insertBlock(component.body)}

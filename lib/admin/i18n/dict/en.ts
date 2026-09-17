@@ -152,7 +152,6 @@ export const en: AdminDict = {
   'tree.missingBadge': '{count} missing',
 
   // ---- 编辑器 ----
-  'editor.newPageTitle': 'New page',
   'editor.savedToast': '{locale} saved',
   'editor.savedToastDesc': 'The site page and search index are up to date',
   'editor.saveFailed': 'Save failed',
@@ -234,24 +233,6 @@ export const en: AdminDict = {
   'snippet.mermaidDetail': 'Flow chart',
   'snippet.errorCodeDetail': 'Error code table',
 
-  // ---- 插入文本 ----
-  'insert.calloutTitle': 'Title',
-  'insert.calloutBody': 'Content',
-  'insert.warnTitle': 'Note',
-  'insert.bold': 'bold text',
-  'insert.italic': 'italic text',
-  'insert.linkText': 'link text',
-  'insert.heading': 'Heading',
-  'insert.listItem1': 'Item 1',
-  'insert.listItem2': 'Item 2',
-  'insert.step1': 'Step 1',
-  'insert.step2': 'Step 2',
-  'insert.quote': 'Quoted text',
-  'insert.tableCol1': 'Column 1',
-  'insert.tableCol2': 'Column 2',
-  'insert.tableCell': 'Content',
-  'insert.mermaidStart': 'Start',
-  'insert.mermaidEnd': 'End',
 
   // ---- 导航编辑器 ----
   'navEditor.saved': 'Navigation saved',
@@ -267,7 +248,6 @@ export const en: AdminDict = {
   'navEditor.addSeparator': 'Separator',
   'navEditor.addItem': 'Item',
   'navEditor.separatorBadge': 'Section',
-  'navEditor.newSeparator': '---New section---',
   'navEditor.pathPlaceholder': 'Page or folder path, e.g. get-started or ../openapi',
   'navEditor.notePlaceholder': 'Note for this section (shown under the sidebar separator). Optional',
   'navEditor.jsonHint': 'Fields the structure editor does not cover can be edited directly here. Saving runs schema validation.',

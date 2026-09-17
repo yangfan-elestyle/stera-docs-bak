@@ -13,12 +13,17 @@ import { requireUser } from '@/lib/auth/guard';
 import { listSlugs } from '@/lib/cms/content';
 import { listDrafts } from '@/lib/cms/drafts';
 import { i18n } from '@/lib/i18n';
+import { getAdminI18n } from '@/lib/admin/i18n/server';
 import { formatRelative } from '@/lib/admin/text';
 
-export const metadata: Metadata = { title: '概要' };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getAdminI18n();
+  return { title: t('nav.dashboard') };
+}
 
 export default async function DashboardPage() {
   const user = await requireUser();
+  const { locale, t } = await getAdminI18n();
   const docs = listSlugs();
   const drafts = listDrafts(user.id);
 
@@ -26,30 +31,42 @@ export default async function DashboardPage() {
   const recent = [...docs].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()).slice(0, 8);
 
   const stats = [
-    { label: '文档', value: docs.length, unit: '篇', icon: FileText, href: '/admin/content' },
     {
-      label: '三语齐全',
+      label: t('dashboard.statDocs'),
+      value: docs.length,
+      unit: t('dashboard.unitDocs'),
+      icon: FileText,
+      href: '/admin/content',
+    },
+    {
+      label: t('dashboard.statComplete'),
       value: docs.length - incomplete.length,
       unit: `/ ${docs.length}`,
       icon: Globe2,
       href: '/admin/content',
     },
     {
-      label: '缺语言',
+      label: t('dashboard.statIncomplete'),
       value: incomplete.length,
-      unit: '篇',
+      unit: t('dashboard.unitDocs'),
       icon: FileWarning,
       href: '/admin/content',
       tone: incomplete.length > 0 ? ('warning' as const) : undefined,
     },
-    { label: '我的草稿', value: drafts.length, unit: '份', icon: PencilLine, href: '/admin/content' },
+    {
+      label: t('dashboard.statDrafts'),
+      value: drafts.length,
+      unit: t('dashboard.unitDrafts'),
+      icon: PencilLine,
+      href: '/admin/content',
+    },
   ];
 
   return (
     <>
       <PageHeader
-        title={`欢迎回来`}
-        description={`${user.email} · ${user.role === 'admin' ? '管理员' : '编辑者'}`}
+        title={t('dashboard.welcome')}
+        description={`${user.email} · ${t(user.role === 'admin' ? 'common.admin' : 'common.editor')}`}
       />
 
       <div className="space-y-6 px-4 py-5 md:px-6">
@@ -81,12 +98,12 @@ export default async function DashboardPage() {
         <div className="grid gap-5 lg:grid-cols-2">
           <section className="space-y-2">
             <h2 className="flex items-center gap-2 text-sm font-semibold">
-              最近修改
+              {t('dashboard.recent')}
               <Link
                 href="/admin/content"
                 className="ml-auto flex items-center gap-1 text-xs font-normal text-fd-muted-foreground transition-colors hover:text-fd-foreground"
               >
-                全部内容
+                {t('dashboard.allContent')}
                 <ArrowRight className="size-3" />
               </Link>
             </h2>
@@ -104,7 +121,7 @@ export default async function DashboardPage() {
                     </span>
                   </span>
                   <span className="shrink-0 text-xs text-fd-muted-foreground">
-                    {formatRelative(doc.updatedAt)}
+                    {formatRelative(doc.updatedAt, locale)}
                   </span>
                 </Link>
               ))}
@@ -112,12 +129,12 @@ export default async function DashboardPage() {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-sm font-semibold">待补语言</h2>
+            <h2 className="text-sm font-semibold">{t('dashboard.missingSection')}</h2>
             {incomplete.length === 0 ? (
               <EmptyState
                 icon={<Globe2 />}
-                title="三种语言都齐了"
-                description="每一篇都有 ja / en / zh 三个版本。"
+                title={t('dashboard.allCompleteTitle')}
+                description={t('dashboard.allCompleteDesc')}
               />
             ) : (
               <Card className="divide-y divide-fd-border">
@@ -133,7 +150,7 @@ export default async function DashboardPage() {
                         .filter((lang) => !doc.locales.includes(lang))
                         .map((lang) => (
                           <Badge key={lang} tone="danger">
-                            缺 {lang}
+                            {t('dashboard.missingBadge', { lang })}
                           </Badge>
                         ))}
                     </span>
