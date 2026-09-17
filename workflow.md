@@ -1,5 +1,5 @@
 ```When Editing
-本文档作用: 工程工作流程 (可用工具 / 调试 / 发布); MUST NOT 写工程说明 (→ README.md) / LLM 约束 (→ AGENTS.md)
+本文档作用: 工程工作流程 (可用工具 / 调试 / 内网预览部署 / 发布); MUST NOT 写工程说明 (→ README.md) / LLM 约束 (→ AGENTS.md)
 遵循 AGENTS.md 文档编写规范
 - 所有段落均为条件段, 存在即为明确流程, MUST NOT 附加强度标记
 - 发布内按顺序编号步骤; 顶部 TL;DR ≤ 5 行; 删除子段后重编号保持连续
@@ -46,6 +46,24 @@ curl -sI http://localhost:3000/admin/login             # 200, 未登录不 500
 > `DOCS_ENV` 是构建期参数, `docker run -e DOCS_ENV=` 改不动已构建产物。
 > 空卷首启会自动灌 `seed/docs`; 卷里已有数据则不再灌, 编辑结果不会被覆盖。
 > `ADMIN_EMAIL` / `ADMIN_PASSWORD` 只在账号表为空时生效, 之后改它们没有任何作用。
+
+# 内网预览部署
+
+给同事看效果用, 目标 `http://ele-qa-autopilot.local:3000`。与下面的发布流程各自独立, 不用发版、不碰 GHA。人类说「部署给同事看」时执行:
+
+```bash
+git push deploy develop                                                      # deploy = ele-qa-autopilot:/Users/ele/git/stera-docs.git
+ssh ele-qa-autopilot '/Users/ele/Documents/stera-docs-project/run.sh update' # git pull + docker build + 换容器
+ssh ele-qa-autopilot '/Users/ele/Documents/stera-docs-project/run.sh status' # 容器 running + HTTP 200 + 落后上游 0
+curl -sI http://ele-qa-autopilot.local:3000/                                 # 200; 从本机发, 只有它验到 mDNS + 端口映射
+```
+
+- `deploy` remote 不存在: `git remote add deploy ele-qa-autopilot:/Users/ele/git/stera-docs.git`。
+- 连发多条 ssh 复用连接: `-o ControlMaster=auto -o ControlPath=/tmp/cm-%r@%h:%p -o ControlPersist=600`。
+- `run.sh` 先构建再停旧容器, 构建失败时旧容器保持在服务。
+
+> 那台机的内容库是 docker volume `stera-docs-data`, 与本机 `data/cms.db` 各自独立; 同事在那边后台的编辑不回流, 本机内容也不会自动同步过去。
+> 重灌那边的内容库是破坏性操作 (丢掉同事的全部编辑), 步骤与排障见该机 `/Users/ele/Documents/stera-docs-project/README.md`, MUST NOT 凭记忆拼命令。
 
 # 发布
 
