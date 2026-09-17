@@ -2,8 +2,10 @@
 
 import {
   ChevronRight,
+  ExternalLink,
   FileText,
   Folder as FolderIcon,
+  Lock,
   Search,
   Settings2,
   X,
@@ -23,6 +25,8 @@ export interface TreeSelection {
 export function ContentTree({
   nodes,
   locales,
+  navDirs,
+  rootDir,
   languages,
   locale,
   onLocaleChange,
@@ -31,8 +35,12 @@ export function ContentTree({
   headerAction,
 }: {
   nodes: AdminTreeNode[];
-  /** slug -> 已存在语言 */
+  /** slug -> 已存在语言。只有在这里的 slug 才是 CMS 内容, 其余是构建期产物 */
   locales: Record<string, string[]>;
+  /** 可编辑的导航目录。openapi 的排序 meta 留在构建期, 不在其中 */
+  navDirs: string[];
+  /** 顶层被拆掉的那个分组, 它的排序入口挪到这里 */
+  rootDir?: string;
   languages: string[];
   locale: string;
   onLocaleChange: (locale: string) => void;
@@ -91,7 +99,26 @@ export function ContentTree({
               </button>
             ))}
           </div>
-          <div className="ml-auto">{headerAction}</div>
+          <div className="ml-auto flex items-center gap-0.5">
+            {rootDir !== undefined && navDirs.includes(rootDir) ? (
+              <Tooltip content="编辑整体排序与分段说明">
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label="编辑整体排序"
+                  className={
+                    selection?.kind === 'nav' && selection.key === rootDir
+                      ? 'bg-fd-primary/10 text-fd-primary'
+                      : undefined
+                  }
+                  onClick={() => onSelect({ kind: 'nav', key: rootDir })}
+                >
+                  <Settings2 className="size-3.5" />
+                </Button>
+              </Tooltip>
+            ) : null}
+            {headerAction}
+          </div>
         </div>
 
         <div className="relative">
@@ -144,6 +171,7 @@ export function ContentTree({
             nodes={filtered}
             depth={0}
             locales={locales}
+            navDirs={navDirs}
             languages={languages}
             selection={selection}
             onSelect={onSelect}
@@ -163,6 +191,7 @@ function TreeNodes({
   nodes,
   depth,
   locales,
+  navDirs,
   languages,
   selection,
   onSelect,
@@ -173,6 +202,7 @@ function TreeNodes({
   nodes: AdminTreeNode[];
   depth: number;
   locales: Record<string, string[]>;
+  navDirs: string[];
   languages: string[];
   selection?: TreeSelection;
   onSelect: (selection: TreeSelection) => void;
@@ -239,7 +269,7 @@ function TreeNodes({
                   <FolderIcon className="size-3.5 shrink-0 text-fd-muted-foreground" />
                   <span className="truncate font-medium">{node.name}</span>
                 </button>
-                {node.dir !== undefined ? (
+                {node.dir !== undefined && navDirs.includes(node.dir) ? (
                   <Tooltip content="编辑这一组的排序与分段说明">
                     <Button
                       variant="ghost"
@@ -261,6 +291,7 @@ function TreeNodes({
                   nodes={node.children}
                   depth={depth + 1}
                   locales={locales}
+                  navDirs={navDirs}
                   languages={languages}
                   selection={selection}
                   onSelect={onSelect}
@@ -273,9 +304,35 @@ function TreeNodes({
           );
         }
 
+        // 不在 locales 里 = 不在 docs 表里 = 构建期产物 (openapi*.yaml 生成的 153 页)。
+        // 这类节点 MUST NOT 链到编辑器 —— 编辑器按 slug 查库, 查不到就是 404。
+        const editable = node.slug !== undefined && node.slug in locales;
         const has = node.slug ? locales[node.slug] ?? [] : [];
         const missing = languages.filter((lang) => !has.includes(lang));
-        const active = selection?.kind === 'doc' && selection.key === node.slug;
+        const active =
+          editable && selection?.kind === 'doc' && selection.key === node.slug;
+
+        if (!editable) {
+          return (
+            <li key={node.id}>
+              <Tooltip content="由 openapi*.yaml 生成, 改动走发版; 点击在站点打开">
+                <a
+                  href={node.url ?? '#'}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={pad}
+                  className="group flex w-full items-center gap-1.5 rounded-md py-1 pr-2 text-left text-[13px] text-fd-muted-foreground/70 transition-colors hover:bg-fd-accent hover:text-fd-muted-foreground"
+                >
+                  <span className="grid size-5 shrink-0 place-items-center">
+                    <Lock className="size-3" />
+                  </span>
+                  <span className="truncate">{node.name}</span>
+                  <ExternalLink className="ml-auto size-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
+                </a>
+              </Tooltip>
+            </li>
+          );
+        }
 
         return (
           <li key={node.id}>
@@ -342,9 +399,12 @@ function filterTree(
 
     const hitQuery =
       !query || `${node.name} ${node.slug ?? ''}`.toLowerCase().includes(query);
+    // 构建期产物没有「缺语言」这回事, 筛选时排除
     const hitIncomplete =
       !onlyIncomplete ||
-      (node.slug ? (locales[node.slug] ?? []).length !== total : false);
+      (node.slug !== undefined && node.slug in locales
+        ? locales[node.slug].length !== total
+        : false);
     if (hitQuery && hitIncomplete) out.push(node);
   }
   return out;

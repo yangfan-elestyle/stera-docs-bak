@@ -14,12 +14,15 @@ const llmsOptions: LLMsOptions = {
 
 // 构建期集合只剩 openapi 一份: 手写内容已移到 seed/docs, 由 lib/cms 在运行期编译。
 //
-// 排序 meta 也留在这里 —— 它用 `../(generated)/charge/createCharge` 直接引用脚本产物,
-// 增删 API 时必须与 openapi*.yaml 同步改, 属发版动作而非编辑动作。
+// API Reference 这一整块都是构建期产物, 改动一律走发版, MUST NOT 进 CMS:
+//   - (generated)/ 153 页由 openapi*.yaml 生成, 手改会被下次 generate:data 覆盖
+//   - index*.mdx 3 页是它的概要页, 正文只有一个 <EHome />
+//   - 排序 meta 用 `../(generated)/charge/createCharge` 直接引用脚本产物,
+//     增删 API 时必须与 yaml 同步改
 // pattern 里的 `(` `)` MUST 写成 `[(]` `[)]`: picomatch 把裸括号当分组, 匹配不到字面量。
 export const openapiDocs = defineDocs({
   docs: {
-    files: ['openapi/[(]generated[)]/**/*.mdx'],
+    files: ['openapi/[(]generated[)]/**/*.mdx', 'openapi/index*.mdx'],
     schema: docFrontmatterSchema,
     postprocess: {
       includeProcessedMarkdown: llmsOptions,

@@ -23,6 +23,8 @@ export interface AdminTreeNode {
 export interface AdminTree {
   /** 每种语言一棵, 与站点侧边栏逐节点一致 */
   trees: Record<string, AdminTreeNode[]>;
+  /** 顶层被拆掉的那个唯一分组的 meta 目录, 它的排序与分段说明改由树头部入口编辑 */
+  rootDir?: string;
   /** slug -> 已存在的语言, 树上标缺失用 */
   locales: Record<string, string[]>;
   /** slug -> 默认语言标题, 搜索用 */
@@ -51,36 +53,65 @@ function dirOf(ref: string | undefined): string | undefined {
   return slash === -1 ? '' : ref.slice(0, slash);
 }
 
-function convert(nodes: Node[], prefix: string): AdminTreeNode[] {
-  return nodes.map((node, index) => {
+/**
+ * 站点页面树 -> 后台可编辑树。
+ *
+ * 构建期内容 MUST 在这里被剔掉: openapi*.yaml 生成的 153 页与它们的排序 meta 改动
+ * 走发版, 不该出现在编辑器里 —— 露出来点进去只会是一个查不到 slug 的死链。
+ * 判定依据是「在不在 docs 表里」, 不是路径前缀, 免得以后加别的构建期来源时漏判。
+ */
+function convert(
+  nodes: Node[],
+  prefix: string,
+  editable: Set<string>,
+): AdminTreeNode[] {
+  const out: AdminTreeNode[] = [];
+
+  for (const [index, node] of nodes.entries()) {
     const id = `${prefix}/${index}`;
+
     if (node.type === 'separator') {
-      return {
+      out.push({
         id,
         type: 'separator',
         name: text(node.name).replace(/^-+|-+$/g, ''),
         description:
           text((node as { description?: unknown }).description) || undefined,
-      };
+      });
+      continue;
     }
+
     if (node.type === 'folder') {
-      return {
+      const children = convert(node.children, id, editable);
+      const indexSlug = slugOf(node.index?.$ref);
+      const keepIndex = indexSlug !== undefined && editable.has(indexSlug);
+      // 整组都是构建期内容时, 文件夹本身也不再出现
+      if (children.length === 0 && !keepIndex) continue;
+      out.push({
         id,
         type: 'folder',
         name: text(node.name),
         description: text(node.description) || undefined,
         dir: dirOf(node.$ref),
-        indexSlug: slugOf(node.index?.$ref),
-        children: convert(node.children, id),
-      };
+        indexSlug: keepIndex ? indexSlug : undefined,
+        children,
+      });
+      continue;
     }
-    return {
-      id,
-      type: 'page',
-      name: text(node.name),
-      slug: slugOf(node.$ref),
-      url: node.url,
-    };
+
+    const slug = slugOf(node.$ref);
+    if (slug === undefined || !editable.has(slug)) continue;
+    out.push({ id, type: 'page', name: text(node.name), slug, url: node.url });
+  }
+
+  return dropEmptySeparators(out);
+}
+
+/** 过滤后可能留下「下面一条都没有」的分段标题, 去掉 */
+function dropEmptySeparators(nodes: AdminTreeNode[]): AdminTreeNode[] {
+  return nodes.filter((node, index) => {
+    if (node.type !== 'separator') return true;
+    return nodes.slice(index + 1).some((item) => item.type !== 'separator');
   });
 }
 
@@ -90,12 +121,6 @@ function convert(nodes: Node[], prefix: string): AdminTreeNode[] {
  */
 export async function buildAdminTree(): Promise<AdminTree> {
   const src = await getSource();
-  const trees: Record<string, AdminTreeNode[]> = {};
-
-  for (const locale of i18n.languages) {
-    const root = src.getPageTree(locale) as Root | undefined;
-    trees[locale] = root ? convert(root.children, locale) : [];
-  }
 
   const locales: Record<string, string[]> = {};
   const titles: Record<string, Record<string, string>> = {};
@@ -103,6 +128,23 @@ export async function buildAdminTree(): Promise<AdminTree> {
     locales[entry.slug] = entry.locales;
     titles[entry.slug] = entry.titles;
   }
+  // docs 表里有 = CMS 内容; 其余都是构建期产物, 不进这棵树
+  const editable = new Set(Object.keys(locales));
 
-  return { trees, locales, titles };
+  const trees: Record<string, AdminTreeNode[]> = {};
+  let rootDir: string | undefined;
+  for (const locale of i18n.languages) {
+    const root = src.getPageTree(locale) as Root | undefined;
+    const nodes = root ? convert(root.children, locale, editable) : [];
+    // 过滤完只剩一个顶层分组时把它拆开: 全站可编辑内容都在它下面, 多一层只是白占缩进。
+    // 它自身的排序与分段说明由树头部的入口编辑, 能力不丢。
+    if (nodes.length === 1 && nodes[0].type === 'folder') {
+      rootDir ??= nodes[0].dir;
+      trees[locale] = nodes[0].children ?? [];
+    } else {
+      trees[locale] = nodes;
+    }
+  }
+
+  return { trees, rootDir, locales, titles };
 }

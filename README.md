@@ -44,8 +44,8 @@ Next.js 16 (App Router) + Fumadocs + React 19 + Tailwind CSS 4 + TypeScript + Bu
 | `app/(admin)/admin` | 后台: 登录 / 内容编辑 / 导航编辑 / 账号管理 |
 | `lib/auth` | 账号 / 会话 / 权限 |
 | `components/admin` | 后台 UI: 组件层 / 内容工作区 (左树 + 编辑器 + 预览) |
-| `seed/docs` | 手写文档源 (`index.[lang].mdx` + `meta.[lang].json`), 运行期编译 |
-| `content/docs` | OpenAPI 脚本产物 + 其排序 `meta.json`, 构建期编译 |
+| `seed/docs` | 手写文档源 (`index.[lang].mdx` + `meta.[lang].json`), 运行期编译, 入 CMS |
+| `content/docs` | API Reference 整块 (生成页 + 概要页 + 排序 `meta.json`), 构建期编译 |
 | `lib/cms` | 运行时内容源: mdx 编译 / provider / dynamic source |
 | `lib` | `source.ts` (loader) / `i18n.ts` / `request.ts` / `site.ts` (站点身份常量) |
 | `components` / `assets` / `public` | 组件 / 资源 / 静态文件 |
@@ -75,6 +75,7 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 - **`/` 是文档门户首页, 不是产品介绍页**: 版式对齐 SMCC 现网 (`guides.sterasmartone.com`) —— 左对齐标题 + 两段引导语 + 两个按钮, 下面是分栏的文档索引。栏目与链接由真实导航树 (`buildNavSections`) 生成, 编辑在后台调分组或排序首页自动跟着变, MUST NOT 在 `lib/landing.ts` 里另抄一份链接清单。
 - **`/` 不是文档页**: 文档总览在 `/overview` (`seed/docs/(home)/overview.mdx`), 其余文档页 URL 不变。`(home)` 文件夹没有 `index`, Docs tab 的 url 取其首个页面即 `/overview` —— 调整 `(home)/meta*.json` 的 `pages` 顺序时 MUST 让 `overview` 保持第一条, 否则 tab 会指向别处。
 - **文档 MUST NOT 搬到 `/docs/*`**: 该前缀已被 `public/docs/**` 的图片与 SDK 包占用 (983 处引用), 页面挤进去会与静态资源同名空间。
+- **后台只出现 CMS 内容**: `lib/cms/tree.ts` 按「在不在 `docs` 表里」过滤, 构建期内容 (API Reference 整块) MUST NOT 出现在编辑树里 —— 露出来点进去就是一个查不到 slug 的死链。判定用表而非路径前缀, 免得以后加别的构建期来源时漏判。
 - **后台左树直接由站点 pageTree 转换而来** (`lib/cms/tree.ts`): 层级、排序、分段说明与线上侧边栏逐节点一致, MUST NOT 另拼一套。树建在 `content/layout.tsx` 里, 跨页面跳转不重挂, 展开状态与滚动位置都留着; 保存后 MUST `router.refresh()` 让它跟上。
 - **编辑器预览是独立路由 + iframe**: MUST NOT 改成 server action 返回 JSX —— 那要求预览用到的每个 client component 都在该 action 的 React Client Manifest 里, 而 fumadocs-ui 的 Heading / CodeBlock 只在站点路由图里注册过, 生产构建必定报 `Could not find the module ... in the React Client Manifest`。
 - **草稿存库不存内存**: 预览路由与保存动作分属不同入口 bundle, 模块级变量互不可见 (与 `getSource()` 同一个坑)。

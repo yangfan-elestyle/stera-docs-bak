@@ -1,4 +1,8 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { ExternalLink, Lock } from 'lucide-react';
+import { Card } from '@/components/admin/ui/primitives';
+import { getSource } from '@/lib/source';
 import { DocEditor, type LocaleSeed } from '@/components/admin/editor/doc-editor';
 import { PageActions } from '@/components/admin/editor/page-actions';
 import { PageHeader } from '@/components/admin/page-header';
@@ -17,7 +21,49 @@ export default async function EditDocPage({
 }) {
   const user = await requireUser();
   const slug = (await params).slug.map(decodeURIComponent).join('/');
-  if (!slugExists(slug)) notFound();
+
+  if (!slugExists(slug)) {
+    // 站点上有、库里没有 = 构建期产物 (openapi*.yaml 生成的那 153 页)。
+    // 直接 404 会让人以为坏了, 说清楚它为什么不能在这里改。
+    // 按虚拟路径找, 不按 URL 段找: (generated) 这类 route group 在 URL 里会被吃掉,
+    // index.mdx 也不对应自己的 URL 段, 用 getPage(slug 段) 一律查不到。
+    const src = await getSource();
+    const sitePage = src
+      .getPages(i18n.defaultLanguage)
+      .find((page) => page.path === `${slug}.mdx`);
+    if (!sitePage) notFound();
+
+    return (
+      <>
+        <PageHeader
+          breadcrumbs={[{ label: '内容', href: '/admin/content' }]}
+          title={sitePage.data.title ?? slug}
+          description={<span className="font-mono text-xs">{slug}</span>}
+        />
+        <div className="px-4 py-6 md:px-6">
+          <Card className="flex max-w-xl flex-col items-start gap-3 p-6">
+            <span className="inline-flex items-center gap-2 text-sm font-medium">
+              <Lock className="size-4 text-fd-muted-foreground" />
+              这是构建期内容, 不能在后台编辑
+            </span>
+            <p className="text-sm leading-relaxed text-fd-muted-foreground">
+              这一页由 <code className="rounded bg-fd-muted px-1 font-mono text-xs">openapi*.yaml</code>{' '}
+              生成, 手改会被下次生成覆盖, 因此改动走发版而非 CMS。
+              API Reference 的分组与排序同理。
+            </p>
+            <Link
+              href={sitePage.url}
+              target="_blank"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-fd-primary hover:underline"
+            >
+              在站点查看这一页
+              <ExternalLink className="size-3.5" />
+            </Link>
+          </Card>
+        </div>
+      </>
+    );
+  }
 
   const docs = getSlugDocs(slug);
   const locales: LocaleSeed[] = i18n.languages.map((locale) => {

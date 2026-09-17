@@ -106,6 +106,8 @@ export function ContentWorkspace({
           <ContentTree
             nodes={tree.trees[locale] ?? []}
             locales={tree.locales}
+            navDirs={navDirs}
+            rootDir={tree.rootDir}
             languages={languages}
             locale={locale}
             onLocaleChange={setLocale}

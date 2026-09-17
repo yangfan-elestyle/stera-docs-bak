@@ -7,12 +7,13 @@
 
 ## 入 CMS 的范围
 
-- 入库可编辑: 全部手写内容 = 210 个 mdx (70 slug × ja/en/zh) + 36 个手写 `meta*.json`
-- 留构建期: `content/docs/openapi/(generated)/` 153 页 -> 脚本从 `openapi*.yaml` 生成, 手改会被下次 `generate:data` 覆盖
-- 留构建期: `openapi/meta*.json` + `openapi/*/meta*.json` 共 15 份 -> 手写且入 git, 但 `pages` 直接写 `../(generated)/charge/createCharge` 引用脚本产物, 增删 API 必须与 yaml 同步改, 属发版动作
+- 入库可编辑: 手写正文 207 个 mdx (69 slug × ja/en/zh) + 36 个手写 `meta*.json`
+- **API Reference 整块留构建期**, 一律走发版, MUST NOT 出现在后台编辑器里:
+  - `content/docs/openapi/(generated)/` 153 页 -> 脚本从 `openapi*.yaml` 生成, 手改会被下次 `generate:data` 覆盖
+  - `content/docs/openapi/index*.mdx` 3 页 -> API Reference 的概要页, 正文只有一个 `<EHome />`
+  - `openapi/meta*.json` + `openapi/*/meta*.json` 共 15 份 -> `pages` 直接写 `../(generated)/charge/createCharge` 引用脚本产物, 增删 API 必须与 yaml 同步改
   - 代价: `openapi/meta.json` 里 5 条 `sectionNotes` 描述文案随之留在发版侧, SMCC 改不了
-- `error-codes.json` 留本地数据文件走发版; 但嵌 `<ErrorCodeTable />` 的 3 个 `error-code.*.mdx` 页本身入 CMS
-- `content/docs/openapi/index.*.mdx` 3 页是手写落地页, 入 CMS
+- `error-codes.json` 留本地数据文件走发版; 但嵌 `<ErrorCodeTable />` 的 3 个 `error-code.*.mdx` 页是手写散文, 入 CMS
 
 ## 已完成
 
