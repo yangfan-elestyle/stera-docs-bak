@@ -49,28 +49,25 @@ curl -sI http://localhost:3000/admin/login             # 200, 未登录不 500
 
 # 内网预览部署
 
-给同事看效果用, 目标 `http://ele-qa-autopilot.local:3000`。GHA 自动触发当前是暂停状态, 这台机是唯一在跑的部署目标; 预览站落后 `origin/develop` = 同事看不到已交付的东西。
-
-两个时机: 人类说「部署给同事看」(不发版、不碰 GHA, 只跑下面四条); [发布](#发布) 第 4 步。
+预览站 `http://ele-qa-autopilot.local:3000`, 给同事看效果。[发布](#发布) 第 4 步 / 人类说「部署给同事看」时执行:
 
 ```bash
-git push deploy develop                                                      # deploy = ele-qa-autopilot:/Users/ele/git/stera-docs.git
-ssh ele-qa-autopilot '/Users/ele/Documents/stera-docs-project/run.sh update' # git pull + docker build + 换容器
-ssh ele-qa-autopilot '/Users/ele/Documents/stera-docs-project/run.sh status' # 容器 running + HTTP 200 + 落后上游 0
-curl -sI http://ele-qa-autopilot.local:3000/                                 # 200; 从本机发, 只有它验到 mDNS + 端口映射
+git push deploy develop
+ssh ele-qa-autopilot '/Users/ele/Documents/stera-docs-project/run.sh update'
+ssh ele-qa-autopilot '/Users/ele/Documents/stera-docs-project/run.sh status'  # 容器 running + HTTP 200 + 落后上游 0
+curl -sI http://ele-qa-autopilot.local:3000/                                  # 200
 ```
 
 - `deploy` remote 不存在: `git remote add deploy ele-qa-autopilot:/Users/ele/git/stera-docs.git`。
 - 连发多条 ssh 复用连接: `-o ControlMaster=auto -o ControlPath=/tmp/cm-%r@%h:%p -o ControlPersist=600`。
 - `run.sh` 先构建再停旧容器, 构建失败时旧容器保持在服务。
 
-> 只推 origin 不推 deploy: 同事看到的还是旧版本, 没有任何其他环节会补上。
-> 那台机的内容库是 docker volume `stera-docs-data`, 与本机 `data/cms.db` 各自独立; 同事在那边后台的编辑不回流, 本机内容也不会自动同步过去。
+> 那台机的内容库是 docker volume `stera-docs-data`, 与本机 `data/cms.db` 各自独立, 双向都不同步。
 > 重灌那边的内容库是破坏性操作 (丢掉同事的全部编辑), 步骤与排障见该机 `/Users/ele/Documents/stera-docs-project/README.md`, MUST NOT 凭记忆拼命令。
 
 # 发布
 
-代码变更完成 + 本机验收后执行 (= 需求交付最后环节)。AI 本地 commit + 推预览站收尾, MUST NOT push origin。
+代码变更完成 + 本机验收后执行 (= 需求交付最后环节)。
 
 ## TL;DR
 
@@ -78,8 +75,8 @@ curl -sI http://ele-qa-autopilot.local:3000/                                 # 2
 
 1. 验证: `bun run types:check` + `docker build`
 2. 写版本: `package.json#version` + `CHANGELOG.md` + `CHANGELOG.dev.md` 同步编辑
-3. 提交: 本地 commit 收尾 (push origin / PR 由人类执行)
-4. 部署预览: `git push deploy develop` + 远端 `run.sh update` ([内网预览部署](#内网预览部署))
+3. 推 origin: 本地 commit + `git push origin develop`
+4. 推预览站: [内网预览部署](#内网预览部署) 四条命令
 
 ## 1. 验证
 
@@ -89,26 +86,21 @@ bun run types:check                # fumadocs-mdx + next typegen + tsc --noEmit
 docker build --build-arg DOCS_ENV=staging -t stera-docs:local .
 ```
 
-> MUST NOT 跑 `docker push` / 手动推 GHCR; 镜像只由 GHA 构建推送。
+> MUST NOT 跑 `docker push` / 手动推 GHCR。
 
 ## 2. 写版本
 
 - 版本号: 默认递增 PATCH (第三位); 新功能 → MINOR; 不兼容改动 → MAJOR。
 - `package.json#version` + `CHANGELOG.md` (用户向) + `CHANGELOG.dev.md` (镜像 + 技术子项) 三者同步编辑, 版本号一致。
 
-## 3. 提交
-
-本地 commit, origin 的 push / PR 由人类执行。
+## 3. 推 origin
 
 ```bash
 git add <...>
 git commit -m "release: vX.Y.Z"
+git push origin develop
 ```
 
-> GHA 自动触发已暂停 (暂停原因 / 原触发规则 / 恢复方式见 `.github/workflows/docker-build.yml` 头部注释), push origin 当前不产生任何构建与部署。AI MUST NOT 等待 / 轮询 CI 结果。
+## 4. 推预览站
 
-## 4. 部署预览
-
-commit 之后立刻跑 [内网预览部署](#内网预览部署) 那四条命令。先推 `deploy` 不必等人类 push origin, 预览站因此只会领先、不会落后 `origin/develop`。
-
-`run.sh status` 报 `落后上游 0` + `HTTP 200` = 这一步完成。
+跑 [内网预览部署](#内网预览部署) 的四条命令。`run.sh status` 报 `落后上游 0` + `HTTP 200` = 发布完成。
