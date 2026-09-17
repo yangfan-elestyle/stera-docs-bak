@@ -19,6 +19,9 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/admin/cn';
+import type { AdminDictKey } from '@/lib/admin/i18n';
+import { useT } from './i18n';
+import { LocaleSwitcher } from './locale-switcher';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -40,16 +43,16 @@ export interface ShellUser {
 
 interface NavItem {
   href: string;
-  label: string;
+  labelKey: AdminDictKey;
   icon: React.ComponentType<{ className?: string }>;
   exact?: boolean;
   adminOnly?: boolean;
 }
 
 const NAV: NavItem[] = [
-  { href: '/admin', label: '概要', icon: LayoutDashboard, exact: true },
-  { href: '/admin/content', label: '内容', icon: BookText },
-  { href: '/admin/users', label: '账号', icon: Users, adminOnly: true },
+  { href: '/admin', labelKey: 'nav.dashboard', icon: LayoutDashboard, exact: true },
+  { href: '/admin/content', labelKey: 'nav.content', icon: BookText },
+  { href: '/admin/users', labelKey: 'nav.users', icon: Users, adminOnly: true },
 ];
 
 export function AppShell({
@@ -63,6 +66,7 @@ export function AppShell({
   logoutAction: () => Promise<void>;
   children: React.ReactNode;
 }) {
+  const t = useT();
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
@@ -117,7 +121,7 @@ export function AppShell({
                 stera smart one
               </p>
               <p className="truncate text-[11px] leading-tight text-fd-muted-foreground">
-                文档管理
+                {t('shell.brandSubtitle')}
               </p>
             </div>
           ) : null}
@@ -141,11 +145,11 @@ export function AppShell({
                 )}
               >
                 <item.icon className="size-4 shrink-0" />
-                {!collapsed ? item.label : null}
+                {!collapsed ? t(item.labelKey) : null}
               </Link>
             );
             return collapsed ? (
-              <Tooltip key={item.href} content={item.label} side="right">
+              <Tooltip key={item.href} content={t(item.labelKey)} side="right">
                 {link}
               </Tooltip>
             ) : (
@@ -160,10 +164,10 @@ export function AppShell({
             size={collapsed ? 'icon-sm' : 'sm'}
             onClick={toggleSidebar}
             className={cn('w-full', collapsed && 'mx-auto w-8')}
-            aria-label={collapsed ? '展开侧栏' : '收起侧栏'}
+            aria-label={t(collapsed ? 'shell.expandSidebar' : 'shell.collapseSidebar')}
           >
             {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-            {!collapsed ? <span className="ml-1">收起</span> : null}
+            {!collapsed ? <span className="ml-1">{t('common.collapse')}</span> : null}
           </Button>
         </div>
       </aside>
@@ -182,7 +186,7 @@ export function AppShell({
                     : 'text-fd-muted-foreground',
                 )}
               >
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </nav>
@@ -193,13 +197,14 @@ export function AppShell({
             className="ml-auto flex h-8 items-center gap-2 rounded-lg border border-fd-border bg-fd-card px-2.5 text-xs text-fd-muted-foreground shadow-sm transition-colors hover:bg-fd-accent md:ml-0 md:w-72"
           >
             <Search className="size-3.5" />
-            <span className="hidden md:inline">搜索页面、跳转…</span>
+            <span className="hidden md:inline">{t('shell.search')}</span>
             <kbd className="ml-auto hidden rounded border border-fd-border px-1 font-mono text-[10px] md:inline">
               ⌘K
             </kbd>
           </button>
 
           <div className="ml-auto flex items-center gap-1.5">
+            <LocaleSwitcher />
             <ThemeToggle />
             <UserMenu user={user} logoutAction={logoutAction} />
           </div>
@@ -209,9 +214,9 @@ export function AppShell({
           {locked ? (
             <div className="grid h-[60vh] place-items-center px-6 text-center">
               <div className="space-y-2">
-                <p className="font-medium">请先修改初始密码</p>
+                <p className="font-medium">{t('shell.mustChangeTitle')}</p>
                 <p className="text-sm text-fd-muted-foreground">
-                  正在跳转到账号页…
+                  {t('shell.mustChangeHint')}
                 </p>
               </div>
             </div>
@@ -231,14 +236,15 @@ export function AppShell({
 }
 
 function ThemeToggle() {
+  const t = useT();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const options = [
-    { value: 'light', label: '浅色', icon: Sun },
-    { value: 'dark', label: '深色', icon: Moon },
-    { value: 'system', label: '跟随系统', icon: Monitor },
+    { value: 'light', label: t('theme.light'), icon: Sun },
+    { value: 'dark', label: t('theme.dark'), icon: Moon },
+    { value: 'system', label: t('theme.system'), icon: Monitor },
   ] as const;
   const active = options.find((option) => option.value === theme) ?? options[2];
   const Icon = mounted ? active.icon : Monitor;
@@ -246,7 +252,7 @@ function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label="主题">
+        <Button variant="ghost" size="icon-sm" aria-label={t('theme.label')}>
           <Icon />
         </Button>
       </DropdownMenuTrigger>
@@ -277,6 +283,7 @@ function UserMenu({
   user: ShellUser;
   logoutAction: () => Promise<void>;
 }) {
+  const t = useT();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -295,19 +302,19 @@ function UserMenu({
           <span className="block truncate font-medium text-fd-foreground">
             {user.email}
           </span>
-          {user.role === 'admin' ? '管理员' : '编辑者'}
+          {t(user.role === 'admin' ? 'common.admin' : 'common.editor')}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/admin/account">
             <UserCog />
-            我的账号
+            {t('shell.myAccount')}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem destructive onSelect={() => void logoutAction()}>
           <LogOut />
-          退出登录
+          {t('shell.logout')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
