@@ -3,6 +3,7 @@ import { mkdirSync, existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import { DB_PATH } from './db';
+import { CmsError } from './errors';
 
 // 上传件与 db 放同一块持久卷: public/ 是构建期产物, 运行期写进去会在下次发版时丢光。
 export const UPLOAD_DIR = path.join(path.dirname(DB_PATH), 'uploads');
@@ -37,8 +38,10 @@ export interface UploadResult {
  */
 export async function storeUpload(file: File): Promise<UploadResult> {
   const type = contentTypeOf(file.name);
-  if (!type) throw new Error('只支持 png / jpg / webp / gif / svg');
-  if (file.size > MAX_UPLOAD_BYTES) throw new Error('单张图片不能超过 8 MB');
+  if (!type) throw new CmsError('uploadType');
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new CmsError('uploadTooLarge', { max: MAX_UPLOAD_BYTES / 1024 / 1024 });
+  }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const hash = createHash('sha256').update(buffer).digest('hex').slice(0, 16);

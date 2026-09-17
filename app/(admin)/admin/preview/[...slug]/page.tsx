@@ -40,7 +40,7 @@ export default async function PreviewPage({
 
   if (!source) {
     return (
-      <Shell>
+      <Shell lang={locale}>
         <p className="text-sm text-fd-muted-foreground">{t('preview.noContent')}</p>
       </Shell>
     );
@@ -54,7 +54,7 @@ export default async function PreviewPage({
     const page = src.getPage(slug.split('/').filter(Boolean), locale);
 
     return (
-      <Shell>
+      <Shell lang={locale}>
         <h1 className="mb-6 text-3xl font-bold tracking-tight">
           {typeof data.title === 'string' ? data.title : slug}
         </h1>
@@ -72,7 +72,7 @@ export default async function PreviewPage({
     );
   } catch (error) {
     return (
-      <Shell>
+      <Shell lang={locale}>
         <div className="flex gap-3 rounded-lg border border-red-500/30 bg-red-500/8 p-4 text-sm">
           <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400" />
           <div className="min-w-0 space-y-1">
@@ -92,6 +92,12 @@ export default async function PreviewPage({
   }
 }
 
-function Shell({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto w-full max-w-3xl px-6 py-8">{children}</div>;
+// lang 跟正在预览的内容语言, 不跟后台界面语言 —— 汉字的字体回退在 ja / zh 之间不一样,
+// 这个预览的卖点正是「与站点同一套渲染」。子树上的 lang 会覆盖 root layout 那个。
+function Shell({ lang, children }: { lang: string; children: React.ReactNode }) {
+  return (
+    <div lang={lang} className="mx-auto w-full max-w-3xl px-6 py-8">
+      {children}
+    </div>
+  );
 }

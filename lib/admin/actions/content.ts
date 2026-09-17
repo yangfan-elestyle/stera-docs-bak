@@ -13,6 +13,7 @@ import {
 import { clearDraft, saveDraft } from '@/lib/cms/drafts';
 import { revalidateContent } from '@/lib/cms/revalidate';
 import { getAdminT } from '@/lib/admin/i18n/server';
+import { cmsMessage } from '@/lib/admin/cms-error';
 
 export type SaveResult =
   | { ok: true; updatedAt: number }
@@ -51,7 +52,7 @@ export async function saveDocAction(input: {
         conflictAt: error.current.getTime(),
       };
     }
-    return { ok: false, error: (error as Error).message };
+    return { ok: false, error: cmsMessage(error, t) };
   }
 }
 
@@ -130,7 +131,7 @@ export async function createPageAction(input: {
     revalidateContent();
     return { ok: true, slug: input.slug };
   } catch (error) {
-    return { ok: false, error: (error as Error).message };
+    return { ok: false, error: cmsMessage(error, t) };
   }
 }
 

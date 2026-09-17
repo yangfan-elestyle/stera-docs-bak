@@ -20,7 +20,7 @@ export default async function LoginPage() {
   const { t } = await getAdminI18n();
 
   return (
-    <div className="grid min-h-screen place-items-center px-4 py-12">
+    <div className="relative grid min-h-screen place-items-center px-4 py-12">
       {/* 这一页在 (shell) 之外, 语言开关只能挂在这里; 少了它非日语母语者没有自救入口 */}
       <div className="absolute right-4 top-4">
         <LocaleSwitcher />

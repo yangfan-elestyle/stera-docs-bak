@@ -2,11 +2,12 @@ import { parseFrontmatter } from '@fumadocs/mdx-remote';
 import { i18n } from '@/lib/i18n';
 import { docFrontmatterSchema, docMetaSchema } from '@/lib/content-schema';
 import { getDb } from './db';
+import { CmsError, type NavIssue } from './errors';
 
 // locale 来自表单, 未经校验就写库会造出前台永远读不到的语言分支
 function assertLocale(locale: string): void {
   if (!(i18n.languages as readonly string[]).includes(locale)) {
-    throw new Error(`未知语言: ${locale}`);
+    throw new CmsError('unknownLocale', { locale });
   }
 }
 
@@ -143,7 +144,8 @@ export function validateDocSource(source: string): string | undefined {
 
 export class StaleWriteError extends Error {
   constructor(readonly current: Date) {
-    super('内容已被其他人改动');
+    // message 落错误码: 调用方一律按 instanceof 分支处理, 这串只进日志
+    super('staleWrite');
   }
 }
 
@@ -218,18 +220,21 @@ export function getNav(dir: string, locale: string): NavEntry | undefined {
 }
 
 /** meta 的 sectionNotes 是非标准字段, schema 里显式带着, 漏掉侧边栏分段描述会静默消失。 */
-export function validateNavSource(json: string): string | undefined {
+export function validateNavSource(json: string): NavIssue | undefined {
   let parsedJson: unknown;
   try {
     parsedJson = JSON.parse(json);
   } catch (error) {
-    return `JSON 语法错误: ${(error as Error).message}`;
+    return { kind: 'json', detail: (error as Error).message };
   }
   const parsed = docMetaSchema.safeParse(parsedJson);
   if (parsed.success) return undefined;
-  return parsed.error.issues
-    .map((issue) => `${issue.path.join('.') || 'meta'}: ${issue.message}`)
-    .join('; ');
+  return {
+    kind: 'schema',
+    detail: parsed.error.issues
+      .map((issue) => `${issue.path.join('.') || 'meta'}: ${issue.message}`)
+      .join('; '),
+  };
 }
 
 export function saveNav(dir: string, locale: string, json: string): void {
@@ -269,10 +274,8 @@ export interface CreatePageInput {
 }
 
 export function createPage(input: CreatePageInput): void {
-  if (slugExists(input.slug)) throw new Error('这个路径已经有页面了');
-  if (!/^[\w()\-./]+$/.test(input.slug)) {
-    throw new Error('路径只能用英文字母、数字、-、_、/ 与括号');
-  }
+  if (slugExists(input.slug)) throw new CmsError('slugExists');
+  if (!/^[\w()\-./]+$/.test(input.slug)) throw new CmsError('slugInvalid');
 
   const db = getDb();
   db.exec('BEGIN');
