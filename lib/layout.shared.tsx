@@ -37,7 +37,6 @@ export function baseOptions(locale: string): BaseLayoutProps {
         </>
       ),
     },
-    githubUrl: 'https://github.com/elestyle',
     links: [
       { type: 'main', text: labels.home, url: '/' },
       { type: 'main', text: labels.docs, url: '/overview' },

@@ -22,7 +22,6 @@ const { provider } = defineI18nUI(i18n, {
       nextPage: '次のページ',
       previousPage: '前のページ',
       chooseTheme: 'テーマ',
-      editOnGithub: 'GitHub で編集',
     },
     zh: {
       displayName: '简体中文',
@@ -35,7 +34,6 @@ const { provider } = defineI18nUI(i18n, {
       nextPage: '下一页',
       previousPage: '上一页',
       chooseTheme: '主题',
-      editOnGithub: '在 GitHub 上编辑',
     },
     en: {
       displayName: 'English',
