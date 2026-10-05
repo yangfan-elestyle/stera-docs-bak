@@ -102,5 +102,6 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 
 ## Fumadocs 约定
 
+- 注释: `.mdx` 正文 MUST 用 `{/* ... */}`; HTML 注释 `<!-- ... -->` 只允许出现在 fenced code block 内 (MDX v3 按 JSX 解析, 顶层 `<!` 直接 parse error)。全局 md 规范的 `<!-- prettier-ignore -->` 在 `.mdx` 中写作 `{/* prettier-ignore */}`。
 - 页面约定: `meta*.json` 的 `pages` 中, 页 / 文件夹 = `path`; 链接 = `[Icon][Text](url)`, 如 `"[x][x](../openapi)"`; 外链 = `external:[Icon][Text](url)`。
 - Fumadocs 文档: <https://www.fumadocs.dev/docs>

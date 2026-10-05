@@ -11,6 +11,28 @@
 
 > 0.1.0 - 0.1.5 历史版本不回填技术子项, 详见 [CHANGELOG.md](./CHANGELOG.md); 自 0.1.6 起开始正式镜像。
 
+## [0.2.1] - 2026-10-05
+
+### Added
+
+- 新增最佳实践页: WeChat 小程序支付 V3 (单次支付 / 继续扣款), 覆盖接入流程与关键参数。
+  - 同步自 elepay-docs v0.1.11 (`87a7b7a5`): 新增 `seed/docs/(home)/cases/(practices)/wechatpay-mini-v3-{onetime,recurring}.{mdx,en.mdx,zh.mdx}`, `<EText name="elepay" />` -> `stera smart one`。
+- Webhook 事件表补齐 `charge.waiting` / `charge.notified` / `charge.mismatched` 与 `subscription.renewed` / `subscription.paused`。
+  - 对外事件清单以上游 `merchant-v2/packages/app-merchant/shared/types/webhook.ts` 为准 (11 个); `subscription.started/.ended/.canceled/.resumed` MUST NOT 写进公开文档。
+
+### Changed
+
+- 侧边栏「最佳实践」由单页改为分组 (默认折叠); 原页改名为「EasyCheckout 接入要点」, 地址不变。
+  - `best-practices.*` 移入路由组 `(practices)`, 分组来自 `(practices)/meta*.json` (`defaultOpen: false`); `seed/updated-at.json` 键同步迁移。
+  - 已有数据的内容库 (含预览站卷) 不会自动收到本次 seed 变更, 需后台手工编辑或重灌。
+
+### Fixed
+
+- Webhook 重试策略更正为 5 秒 / 15 秒 / 1 分 / 10 分 / 10 分 共 5 次, 约 21 分钟截止 (原文档记载有误)。
+  - 依据上游 `WebhookCallerService.java:64` (`webhook.max.retry.intervals:5, 15, 60, 600, 600`); `faq-server.*` 同步更正。
+- Webhook 签名说明更正: 头名 `elepay-Signature` 大小写不敏感; 补充 300 秒时间容差与「不要只解析一个 `sign=`」的实现要求。
+  - 依据 `elepay-java-sdk` 的 `Webhook.java`: `DEFAULT_TOLERANCE_SECONDS = 300L`, `extractSignatures` 逐个比对。
+
 ## [0.2.0] - 2026-09-17
 
 ### Added

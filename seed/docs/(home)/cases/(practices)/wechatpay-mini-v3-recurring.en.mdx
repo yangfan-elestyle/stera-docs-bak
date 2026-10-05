@@ -1,0 +1,485 @@
+---
+title: WeChat Mini Program Payment V3 (Auto-Debit)
+description: After the customer signs a contract once, your server can charge them directly without per-transaction confirmation
+---
+
+**Auto-Debit**: the customer signs a contract once inside your WeChat Mini Program, and from then on your server can charge them directly without any per-transaction confirmation. It suits recurring delivery, subscriptions, usage-based billing, and any business that needs repeated charges.
+
+<Callout type="warn">
+Before using this guide, contact stera smart one to enable WeChat Mini Program Auto-debit and confirm that your application is ready for integration testing. The agreement template (`plan_id`) must be requested separately.
+</Callout>
+
+## 1. Before you start
+
+{/* prettier-ignore */}
+| Item | What you need to prepare |
+|---|---|
+| WeChat Mini Program | The AppID of the Mini Program that will run the payment, with WeChat-side payment enabled and linked to your merchant account |
+| stera smart one application | stera smart one confirms that WeChat Pay V3, the Mini Program channel, and the matching AppID are configured |
+| Auto-debit enablement | The agreement template (`plan_id`) configured by stera smart one |
+| API key | Your application's Secret Key, stored only on your backend |
+| Mini Program login | Your backend can obtain the current user's openid from the WeChat login credential |
+| Business backend | Manages the mapping between users and Customer / Source, triggers charges, and records Charge IDs |
+| Payment result delivery | An HTTPS endpoint that can receive webhooks, plus a configured webhook signing secret |
+
+The WeChat Mini Program AppID and the stera smart one application ID are different identifiers. You never pass a WeChat AppID in the request body when creating a Source or a charge; stera smart one uses the AppID preconfigured on the channel. `extra.openid` must belong to that Mini Program. An openid obtained from a different Mini Program or from an Official Account will not work, and a unionid cannot be used in its place.
+
+You do not need to call WeChat Pay's contract or deduction APIs yourself, and you do not need to generate any signatures. stera smart one handles contract signing, deduction, and callbacks on the WeChat side.
+
+## 2. Overall flow
+
+Auto-debit has two phases: **signing** (once per customer) and **charging** (repeatable).
+
+<EMermaid chart={`
+sequenceDiagram
+    participant M as WeChat Mini Program
+    participant B as Merchant server
+    participant E as elepay
+    participant S as WeChat signing Mini Program
+    participant W as WeChat Pay
+    Note over M,W: Phase 1 Signing (once per customer)
+    M->>M: wx.login to get code
+    M->>B: Send code, establish session
+    B->>B: code2Session to get openid
+    B->>E: POST /customers
+    E-->>B: Customer ID
+    B->>E: POST /customers/{id}/sources (extra.openid)
+    E->>W: Pre-entrust sign
+    W-->>E: Signing session identifier
+    E-->>B: Source object (status=pending, includes credential)
+    B-->>M: sessionId parsed from credential
+    M->>S: wx.navigateToMiniProgram (with sessionId)
+    S-->>M: Customer completes signing and returns
+    W->>E: Signing result notification
+    E->>B: source.activated webhook
+    Note over M,W: Phase 2 Charging (repeatable)
+    B->>E: POST /charges (customerId + sourceId)
+    E->>W: Auto-debit
+    W-->>E: Deduction succeeded
+    E-->>B: Charge (status=captured, returned synchronously)
+`} />
+
+You cannot charge before signing completes. Once signing is done, charges are triggered entirely from your server and the Mini Program is not involved.
+
+For general information about Customer and Source, see [Create a Customer and Invite Card Registration](/cases/customer).
+
+## 3. Obtain the user's openid
+
+1. Call `wx.login()` in the Mini Program to get a temporary `code`.
+2. Send that `code` to your own login endpoint.
+3. Your backend calls WeChat's `code2Session` with the Mini Program's AppID, AppSecret, and the `code`.
+4. Bind the returned openid to your session and read it from there when creating the Source.
+
+Backend call format:
+
+```http
+GET https://api.weixin.qq.com/sns/jscode2session?appid=MINI_APP_ID&secret=MINI_APP_SECRET&js_code=LOGIN_CODE&grant_type=authorization_code
+```
+
+Check the errors WeChat returns. Do not proceed to create a Source when the openid is missing.
+
+<Callout type="warn">
+Do not ship the AppSecret or `session_key` to the Mini Program. The stera smart one API accepts an `openid`, not a WeChat login `code`.
+</Callout>
+
+For the WeChat API definition, see the [code2Session official documentation](https://developers.weixin.qq.com/miniprogram/dev/server/API/user-login/api_code2session.html).
+
+## 4. Signing
+
+### 4.1 Endpoint and authentication
+
+```http
+POST https://api.elepay.io/customers
+Authorization: Bearer <ELEPAY_SECRET_KEY>
+Content-Type: application/json
+```
+
+The API must be called from your backend. Never put the Secret Key in the Mini Program. Basic authentication also works: use the Secret Key as the username and leave **the password empty** (Base64 of `sk_xxx:`). A non-empty password segment returns 401. See the [API guide](/guides/api-guide) for details.
+
+### 4.2 Create a Customer
+
+A Source lives under a Customer, so create the Customer first.
+
+```bash
+curl 'https://api.elepay.io/customers' \
+  -H "Authorization: Bearer ${ELEPAY_SECRET_KEY}" \
+  -H 'Content-Type: application/json' \
+  --data '{ "metadata": { "userId": "YOUR_USER_ID" } }'
+```
+
+All request fields are optional; pass `name` / `email` / `phone` / `description` / `remark` / `metadata` as needed. For the full definition, see [Create customer](/openapi/customer/createCustomer).
+
+A successful call returns `201`. **Use one Customer per user, and persist and reuse the Customer ID** rather than creating a new one for every signing. A single Customer can hold multiple Sources.
+
+### 4.3 Create a Source (start signing)
+
+```bash
+curl "https://api.elepay.io/customers/${CUSTOMER_ID}/sources" \
+  -H "Authorization: Bearer ${ELEPAY_SECRET_KEY}" \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "paymentMethod": "wechatpay",
+    "resource": "mini",
+    "description": "Recurring delivery service",
+    "extra": { "openid": "OPENID_FROM_MERCHANT_SESSION" }
+  }'
+```
+
+{/* prettier-ignore */}
+| Field | Required | Description |
+|---|---|---|
+| `paymentMethod` | Required | Always `wechatpay` |
+| `resource` | Required | Always `mini` |
+| `extra.openid` | Required | The current user's openid for that Mini Program. A missing value returns a parameter error |
+| `description` | Optional | Shown on the customer's WeChat signing screen. Use a service name the customer will recognize. Max 255 characters |
+| `metadata` | Optional | Your own metadata |
+
+For the full definition, see [Create source](/openapi/customer/createSource). A successful call returns `201`, and the Source `status` is `pending` (not yet authenticated), so it **cannot be charged yet**.
+
+### 4.4 Parse the credential and extract sessionId
+
+The `credential` in the response is a **two-layer JSON string that must be parsed twice**: the outer layer yields `payload`, and `payload` is itself a string that must be parsed again to reach the signing parameters.
+
+```json
+{
+  "object": "source",
+  "id": "src_xxxxxxxxxxxxxxxxxxxxxxx",
+  "customerId": "cus_xxxxxxxxxxxxxxxxxxxxxxx",
+  "liveMode": true,
+  "paymentMethod": "wechatpay",
+  "resource": "mini",
+  "status": "pending",
+  "credential": "{\"provider\":\"wechatpay\",\"payload\":\"{\\\"session_id\\\":\\\"SESSION_ID\\\"}\"}"
+}
+```
+
+Your backend extracts the parameters and returns them to your own Mini Program:
+
+```javascript
+function buildSigningResponse(source) {
+  const credential = JSON.parse(source.credential);
+  const payload = JSON.parse(credential.payload);
+  if (typeof payload.session_id !== 'string' || !payload.session_id) {
+    throw new Error('Signing session identifier is missing');
+  }
+  return { sourceId: source.id, sessionId: payload.session_id };
+}
+```
+
+Take only `session_id`; do not rely on any other field inside `payload`. **Store the mapping between the Source ID and your business user.** Every later charge, lookup, and cancellation is keyed on it.
+
+## 5. Start signing from the Mini Program
+
+<Callout>
+This flow **does not use `wx.requestPayment`**, and it does not require the stera smart one frontend SDK. WeChat signing is hosted by a separate Mini Program, which you open with `wx.navigateToMiniProgram`.
+</Callout>
+
+```javascript
+function startSigning(sessionId, refreshSigningStatus, showMessage) {
+  wx.navigateToMiniProgram({
+    appId: 'wxbd687630cd02ce1d',
+    path: `pages/Oversea/walletSelect?sessionId=${sessionId}`,
+    extraData: {},
+    fail() {
+      showMessage('Could not open the signing page. Please try again later.');
+    },
+    complete() {
+      refreshSigningStatus();
+    }
+  });
+}
+```
+
+`appId` is the fixed identifier of the WeChat signing Mini Program; do not change it.
+
+<Callout type="warn">
+**The navigation target does not need to be declared in `app.json`.** WeChat's current app.json configuration reference no longer lists a `navigateToMiniProgramAppIdList` field. The `embeddedAppIdList` field that remains belongs to `wx.openEmbeddedMiniProgram` (half-screen), a different API. Do not add that setting for this flow, but do implement the `fail` callback to handle navigation failures.
+</Callout>
+
+After the customer finishes signing, they return to your Mini Program, where you can read `res.referrerInfo`:
+
+```javascript
+App({
+  onShow(options) {
+    const extraData = options.referrerInfo && options.referrerInfo.extraData;
+    // extraData.contractId may be absent; it only hints that the user went through the flow
+    this.refreshSigningStatus();
+  }
+});
+```
+
+<Callout type="warn">
+`extraData.contractId` **cannot be used to determine that signing succeeded**. The field may be missing, and WeChat itself requires you to treat the server-side result as authoritative. Confirm via the webhook or the status lookup in the next section.
+</Callout>
+
+Use the signing parameters as-is and do not modify `sessionId`. See the [WeChat official Mini Program signing documentation](https://pay.weixin.qq.com/doc/global/v3/en/4012356572).
+
+## 6. Confirm the signing result
+
+### 6.1 Receive the source.activated webhook
+
+In stera smart one, configure your backend's webhook URL and signing secret, and subscribe to the `source.activated` and `source.inactivated` events.
+
+```json
+{
+  "id": "EVENT_ID",
+  "object": "event",
+  "liveMode": true,
+  "type": "source.activated",
+  "createTime": 1700000000000,
+  "data": {
+    "object": {
+      "id": "src_xxxxxxxxxxxxxxxxxxxxxxx",
+      "customerId": "cus_xxxxxxxxxxxxxxxxxxxxxxx",
+      "paymentMethod": "wechatpay",
+      "resource": "mini",
+      "status": "active"
+    }
+  }
+}
+```
+
+Only after receiving this event and confirming that `status` is `active` should you start charging that Source.
+
+<Callout type="warn">
+**Webhook V2 delivers no events in test mode**, neither `source.*` nor `charge.*`. To verify the notification path in test mode, use webhook V1. Otherwise, confirm status via the lookup API while in test mode.
+</Callout>
+
+Signature verification and retry requirements are covered in section 8.
+
+### 6.2 Look up the signing status
+
+```bash
+curl "https://api.elepay.io/sources/${SOURCE_ID}/status" \
+  -H "Authorization: Bearer ${ELEPAY_SECRET_KEY}"
+```
+
+```json
+{ "id": "src_xxxxxxxxxxxxxxxxxxxxxxx", "appId": "app_xxxxxxxxxxxxxxxxxxxxxxx", "liveMode": true, "status": "active" }
+```
+
+**Choosing between the two lookup endpoints**:
+
+- [Retrieve source's status](/openapi/customer/retrieveSourceStatus) returns only `id` / `appId` / `liveMode` / `status`, and **works with both the Secret Key and the Publishable Key**. Use it to poll the signing status.
+- [Retrieve source](/openapi/customer/retrieveSource) returns the full Source object and **works only with the Secret Key**. Use it when you need the complete data, including `extra` and `metadata`.
+
+{/* prettier-ignore */}
+| `status` | Meaning and handling |
+|---|---|
+| `pending` | Not authenticated. The customer has not finished signing, or is still in progress. Show "signing in progress" and check again later |
+| `active` | Authenticated. You can start charging |
+| `failed` | Authentication failed. Ask the customer to sign again |
+| `inactive` | Authenticated but currently unusable (normally cancelled). Cannot be charged; a new signing is required |
+| `deleted` | Deleted or expired. Cannot be charged |
+
+The Mini Program should only call your own business endpoints, and your backend must verify that the signed-in user is allowed to see that Source.
+
+## 7. Charging
+
+### 7.1 Create the charge
+
+```bash
+curl 'https://api.elepay.io/charges' \
+  -H "Authorization: Bearer ${ELEPAY_SECRET_KEY}" \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "amount": 460,
+    "currency": "JPY",
+    "paymentMethod": "wechatpay",
+    "resource": "mini",
+    "orderNo": "MINI-20260915-0001",
+    "description": "September delivery fee",
+    "customerId": "cus_xxxxxxxxxxxxxxxxxxxxxxx",
+    "sourceId": "src_xxxxxxxxxxxxxxxxxxxxxxx"
+  }'
+```
+
+{/* prettier-ignore */}
+| Field | Required | Description |
+|---|---|---|
+| `amount` | Required | Integer. For JPY the unit is yen, so `460` means 460 yen |
+| `currency` | Recommended | Defaults to `JPY` when omitted |
+| `paymentMethod` | Required | Always `wechatpay` |
+| `resource` | Required | Always `mini` |
+| `orderNo` | Required | Your own order number. Max 50 characters |
+| `customerId` | Required | The Customer ID created during signing |
+| `sourceId` | **Required** | An `active` Source ID. Always pass it; omitting it switches to the one-time flow, whose client-side step is completely different |
+| `description` | Optional | Order description. Max 1024 characters |
+| `metadata` | Optional | Your own metadata |
+
+There is no character-set restriction on `orderNo`, but the payment channel may still reject special characters, so letters, digits, and hyphens are recommended. For the full definition, see [Create charge](/openapi/charge/createCharge).
+
+### 7.2 Handle the response
+
+**Charging is synchronous.** A successful call returns `201`, with `status` already `captured` and `paid` already `true`:
+
+```json
+{
+  "id": "ch_xxxxxxxxxxxxxxxxxxxxxxx",
+  "object": "charge",
+  "liveMode": true,
+  "orderNo": "MINI-20260915-0001",
+  "amount": 460,
+  "currency": "JPY",
+  "paid": true,
+  "status": "captured",
+  "voucherNo": "4200000000000000000000000000"
+}
+```
+
+`voucherNo` is the WeChat-side transaction number and can be used for reconciliation.
+
+**This flow has no client-side invocation step.** Once `POST /charges` returns, the charge is complete; do not call any `wx.*` payment API.
+
+<Callout type="warn">
+**About the `credential` field in the response**: in this flow the field **is present and non-empty**, but its content is meaningless. Do not parse it, and do not use it to determine the charge result. Judge success solely by `status` and `paid` in the response.
+</Callout>
+
+When a charge fails, an error response is returned; handle it per section 9.
+
+### 7.3 Charge success notification
+
+stera smart one also sends a `charge.succeeded` webhook, with the same structure as for other payment methods:
+
+```json
+{
+  "id": "EVENT_ID",
+  "object": "event",
+  "liveMode": true,
+  "type": "charge.succeeded",
+  "createTime": 1700000000000,
+  "data": {
+    "object": {
+      "id": "ch_xxxxxxxxxxxxxxxxxxxxxxx",
+      "orderNo": "MINI-20260915-0001",
+      "amount": 460,
+      "currency": "JPY",
+      "status": "captured"
+    }
+  }
+}
+```
+
+Because the result is already settled in the synchronous response, this event is mainly for reconciliation and as an idempotency safety net. **Still deduplicate by event ID so each order is processed exactly once.**
+
+## 8. Webhook handling requirements
+
+1. Verify `elepay-Signature` against the raw HTTP request body. Do not parse and re-serialize before verifying. **HTTP header names are case-insensitive**, so use your framework's case-insensitive accessor rather than matching the literal string.
+2. The signature header has the form `t=<unix seconds>,sign=<hex signature>`. Compute HMAC-SHA256 over `timestamp + "." + raw body` using the webhook signing secret, and compare in **constant time**. The signing secret is shown (and can be regenerated) on the webhook detail page in the dashboard; it is **not the API Secret Key**.
+3. **The timestamp tolerance defaults to 300 seconds** (the default of the official Java SDK's `Webhook.verifyHeader`). Reject requests outside that window to prevent replay.
+4. **A single header may carry multiple `sign=` values** during secret rotation. Treat a match on any one of them as valid. Parsing only the first one causes false rejections during rotation.
+5. Return HTTP `2xx` after successful processing. **On failure you must return 4xx or 5xx**, otherwise no retry is triggered.
+6. Retry policy: after a failed delivery, retries follow intervals of **5s / 15s / 1min / 10min / 10min**, for **5 retries beyond the initial delivery (6 deliveries in total), giving up after about 21 minutes** (platform-wide values; they cannot be configured per merchant). **The second delivery can arrive just 5 seconds later**, so do not design your idempotency window around minute-level gaps. Beyond that, rely on the lookup API and reconciliation.
+7. Deduplicate by event ID and make sure each event is processed once at the business layer. Your handler must tolerate duplicate and late-arriving notifications.
+8. When you receive an unrecognized `type`, return `2xx` and ignore it; do not treat it as success.
+
+For webhook configuration and verification, see the [webhook documentation](/guides/webhook).
+
+## 9. Contract expiry and error handling
+
+### 9.1 A contract can expire without you knowing
+
+Customers can cancel on the WeChat side themselves. Subscribe to `source.inactivated` and stop charging that Source as soon as you receive it:
+
+```json
+{
+  "type": "source.inactivated",
+  "data": { "object": { "id": "src_xxxxxxxxxxxxxxxxxxxxxxx", "status": "inactive" } }
+}
+```
+
+In addition, stera smart one validates the contract status on every charge. If the contract has been terminated, the charge request returns **HTTP `400`** with `errorCode` **`M002003`**.
+
+`M002003` is the generic "resource not found" error code (it is also returned when a Customer or Source does not exist), and the message text never mentions the contract. **How to tell them apart**: when a charge returns `400` with `errorCode` `M002003`, call `GET /sources/{sourceId}/status` to confirm. If `status` is not `active`, the contract has expired.
+
+<Callout type="warn">
+This is a terminal business state. **Do not retry it as a transient error.** Stop charging, mark the Source unusable, and guide the customer through signing again.
+</Callout>
+
+### 9.2 Common situations
+
+{/* prettier-ignore */}
+| Situation | How to handle it |
+|---|---|
+| `extra.openid` is missing | Complete WeChat login first and bind a valid openid on the backend before creating the Source |
+| AppID or openid mismatch | Check that the running Mini Program, the AppID used to obtain the openid, and the AppID configured on the channel all match |
+| `wx.navigateToMiniProgram` fails | Check that `appId` and `sessionId` are complete and unmodified, and verify the base library version. This API does not require the navigation target to be declared in `app.json` |
+| Source stays `pending` for a long time | The customer did not finish signing. Invite them to sign again; creating a new Source is fine |
+| No `extraData.contractId` on return | This is normal and does not indicate failure. Treat the webhook or the status lookup as authoritative |
+| Charge returns 400 + `M002003` | The contract may have been cancelled. Confirm the Source status per 9.1 and do not retry |
+| The charge request times out | Look it up with the Charge ID you saved. If you never got an ID, reconcile by `orderNo` through the charge list rather than charging again |
+| Duplicate order number | `orderNo` is not a safe idempotency key for replay. Look up the existing charge and confirm its status first |
+| The API returns an error | Branch only on `errorCode` in the response, never on the `message` text. See the appendix |
+
+### 9.3 Cancelling from your side
+
+```bash
+curl -X DELETE "https://api.elepay.io/customers/${CUSTOMER_ID}/sources/${SOURCE_ID}" \
+  -H "Authorization: Bearer ${ELEPAY_SECRET_KEY}"
+```
+
+A `204` means the request was accepted. After cancellation the Source can no longer be charged, and the customer must sign again. For the full definition, see [Delete source](/openapi/customer/deleteSource).
+
+## 10. Integration testing
+
+Test mode **lets you walk through the whole business flow, from signing to charging**: signing completes on a test confirmation page returned by stera smart one without touching real WeChat signing, and once the Source is `active` you can charge, which synchronously returns `captured`.
+
+However, test mode differs from live mode in three ways and **cannot replace live-mode verification**:
+
+- The Source `credential` has a different shape: it is an encrypted test redirect credential and **contains no session identifier usable with `wx.navigateToMiniProgram`**, so the real signing redirect on the Mini Program side cannot be verified in test mode.
+- No real charge occurs, and there is no matching transaction on the WeChat side.
+- **Webhook V2 delivers no events in test mode** (see 6.1).
+
+**Real WeChat signing and charging still need a small-amount verification in live mode.** Before real integration testing, have stera smart one confirm that the live channel and the agreement template are available. Your testing should cover at least:
+
+- One complete signing, with `source.activated` received
+- A customer abandoning signing midway (the Source stays `pending`)
+- A successful charge after signing, verifying `status=captured` and `voucherNo`
+- Charging after the customer cancels on the WeChat side, confirming 400 + `M002003` and that your system stops charging
+- Cancelling from your side and receiving `source.inactivated`
+- Duplicate notifications and notifications with an invalid signature
+- Lookup and reconciliation after a charge request times out
+
+## 11. Integration checklist
+
+- The Mini Program AppID, the user's openid, and the channel configuration all match.
+- Your backend can create a Customer and a Source, and correctly parses the two-layer JSON credential to extract the session identifier.
+- The Mini Program can navigate to the signing Mini Program and back, and the signing result is confirmed from the server side.
+- After receiving `source.activated`, a charge succeeds and returns `captured` synchronously.
+- Both `source.inactivated` and the contract-expiry error on charging are handled, so expired contracts are never charged repeatedly.
+- The cancellation path works, and duplicate webhook deliveries do not cause double fulfillment.
+
+## Appendix: error responses
+
+Every API returns the same structure on failure (fields whose value is `null` are omitted):
+
+```json
+{
+  "requestId": "req_xxxxxxxxxxxxxxxxxxxxxxx",
+  "errorCode": "M002003",
+  "message": "要求されたリソースは存在しません。",
+  "parameterName": "sourceId",
+  "providerError": {
+    "providerKey": "wechatpay",
+    "code": "PROVIDER_ERROR_CODE",
+    "message": "provider message"
+  }
+}
+```
+
+{/* prettier-ignore */}
+| Field | Description |
+|---|---|
+| `requestId` | Request identifier. Include it when contacting technical support |
+| `errorCode` | **The only thing you should branch on** |
+| `message` | Human-readable text. **Do not use it for programmatic decisions** |
+| `parameterName` | Names the offending field on parameter errors |
+| `providerError` | The raw error from the payment channel, useful when troubleshooting |
+
+Three requirements:
+
+1. **Branch only on `errorCode`.** The response also carries a `code` field (shaped like `9_xx_xx_10113`) that is **deprecated**; do not rely on it.
+2. **`message` is returned in Japanese by default.** For another language, send the `Accept-Language` request header; `ja` / `en` / `zh-CN` / `zh-TW` are supported.
+3. **`message` comes from a server-side text dictionary and its content may change**, so do not string-match on it.
+
+For the full list of error codes, see the [error code documentation](/get-started/error-code).

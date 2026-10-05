@@ -1,0 +1,5 @@
+{
+  "title": "ベストプラクティス",
+  "defaultOpen": false,
+  "pages": ["best-practices", "wechatpay-mini-v3-onetime", "wechatpay-mini-v3-recurring"]
+}

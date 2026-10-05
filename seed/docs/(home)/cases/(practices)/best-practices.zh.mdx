@@ -1,5 +1,5 @@
 ---
-title: 最佳实践
+title: EasyCheckout 接入要点
 ---
 
 为稳定接入 EasyCheckout 的推荐事项。各决済方式的差异与内部处理均由 stera smart one 屏蔽，加盟店只需确认 **charge 的最终结果** 即可。
@@ -18,7 +18,7 @@ title: 最佳实践
     C->>E: 读取 QR 并支付
     E-)S: Webhook: charge.succeeded / charge.revoked
     S-->>E: 2xx
-    Note over E,S: 非 2xx 触发重试: 1分×3 → 10分×2，最终未达则用同步 API 补偿`}
+    Note over E,S: 非 2xx 触发重试: 5秒/15秒/1分/10分/10分 (共5次)，最终未达则用同步 API 补偿`}
 />
 
 加盟店服务器创建 EasyQR 码 → 展示给顾客 → 顾客支付 → stera smart one 通过 Webhook 通知结果。接收后的处理见下方最佳实践。
@@ -40,13 +40,13 @@ title: 最佳实践
 
 ### 1. 以 Webhook 为决済结果的唯一可信源
 
-- 收到 [Webhook](/guides/webhook) 后，务必先校验 `elepay-signature`（HMAC-SHA256）再处理。
+- 收到 [Webhook](/guides/webhook) 后，务必先校验 `elepay-Signature`（HMAC-SHA256）再处理。HTTP 头名大小写不敏感，请使用框架提供的不区分大小写的取值方式。
 - 重定向上的 `status` 参数仅用于页面跳转，不要用它判定结果；以确定事件 `charge.succeeded`（成功）/ `charge.revoked`（取消）判定。
 
 ### 2. Webhook 幂等处理并立即返回 2xx
 
 - 同一事件可能被重发，请以 `orderNo` 等为键做幂等，避免重复处理。
-- 重活异步处理，接收时立即返回 2xx。返回 4xx / 5xx 会触发自动重试（每 1 分钟 × 3 → 每 10 分钟 × 2）。
+- 重活异步处理，接收时立即返回 2xx。返回 4xx / 5xx 会触发自动重试（5 秒 / 15 秒 / 1 分钟 / 10 分钟 / 10 分钟，重试 5 次、累计投递 6 次、约 21 分钟后放弃）。**第二次投递最快在 5 秒后到达**，幂等窗口不要按分钟级设计。
 
 ### 3. 为漏收准备对账兜底
 

@@ -10,6 +10,22 @@
 
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [SemVer](https://semver.org/)。面向使用者, 中文行文, 命令 / 术语保留原文。
 
+## [0.2.1] - 2026-10-05
+
+### Added
+
+- 新增最佳实践页: WeChat 小程序支付 V3 (单次支付 / 继续扣款), 覆盖接入流程与关键参数。
+- Webhook 事件表补齐 `charge.waiting` / `charge.notified` / `charge.mismatched` 与 `subscription.renewed` / `subscription.paused`。
+
+### Changed
+
+- 侧边栏「最佳实践」由单页改为分组 (默认折叠); 原页改名为「EasyCheckout 接入要点」, 地址不变。
+
+### Fixed
+
+- Webhook 重试策略更正为 5 秒 / 15 秒 / 1 分 / 10 分 / 10 分 共 5 次, 约 21 分钟截止 (原文档记载有误)。
+- Webhook 签名说明更正: 头名 `elepay-Signature` 大小写不敏感; 补充 300 秒时间容差与「不要只解析一个 `sign=`」的实现要求。
+
 ## [0.2.0] - 2026-09-17
 
 ### Added

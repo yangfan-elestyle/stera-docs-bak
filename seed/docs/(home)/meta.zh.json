@@ -42,7 +42,7 @@
     "cases/customer",
     "cases/(ec-platform)",
     "---开发指南---",
-    "cases/best-practices",
+    "cases/(practices)",
     "guides/api-guide",
     "[ExternalLink][API Reference](../openapi)",
     "guides/webhook",

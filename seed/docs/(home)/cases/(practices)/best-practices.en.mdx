@@ -1,5 +1,5 @@
 ---
-title: Best Practices
+title: EasyCheckout Integration Essentials
 ---
 
 Recommendations for a stable EasyCheckout integration. Differences between payment methods and internal processing are absorbed by stera smart one, so you only need to check the **final charge result**.
@@ -18,7 +18,7 @@ Recommendations for a stable EasyCheckout integration. Differences between payme
     C->>E: Scan QR and pay
     E-)S: Webhook: charge.succeeded / charge.revoked
     S-->>E: 2xx
-    Note over E,S: Non-2xx → auto-retry:<br/>1min ×3, then 10min ×2.<br/>Fallback: reconcile via sync API`}
+    Note over E,S: Non-2xx → auto-retry:<br/>5s/15s/1min/10min/10min (5 retries).<br/>Fallback: reconcile via sync API`}
 />
 
 The merchant server creates an EasyQR code, shows it to the customer, the customer pays, and stera smart one notifies the result via Webhook. See the best practices below for how to handle it.
@@ -40,13 +40,13 @@ The merchant server creates an EasyQR code, shows it to the customer, the custom
 
 ### 1. Treat the Webhook as the single source of truth
 
-- Always verify the `elepay-signature` (HMAC-SHA256) of the received [Webhook](/guides/webhook) before processing.
+- Always verify the `elepay-Signature` (HMAC-SHA256) of the received [Webhook](/guides/webhook) before processing. HTTP header names are case-insensitive, so use your framework's case-insensitive accessor.
 - The redirect `status` parameter is for page transition only. Do not use it for result determination; determine the result from the final events `charge.succeeded` (success) / `charge.revoked` (revoked).
 
 ### 2. Process the Webhook idempotently and return 2xx quickly
 
 - The same event may be re-delivered, so make processing idempotent (keyed by `orderNo`, etc.) to avoid double processing.
-- Offload heavy work to async; return 2xx immediately on receipt. A 4xx / 5xx triggers automatic retries (every 1 min x3 -> every 10 min x2).
+- Offload heavy work to async; return 2xx immediately on receipt. A 4xx / 5xx triggers automatic retries (5s / 15s / 1 min / 10 min / 10 min: 5 retries beyond the initial delivery, 6 deliveries in total, giving up after about 21 minutes). **The second delivery arrives as soon as 5 seconds after the first**, so do not size your idempotency window in minutes.
 
 ### 3. Prepare a reconciliation fallback for missed events
 
