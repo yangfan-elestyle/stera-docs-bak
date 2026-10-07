@@ -281,7 +281,7 @@ export const zh: AdminDict = {
   'error.localeRequired': '至少选一种语言',
   'cms.unknownLocale': '未知语言: {locale}',
   'cms.slugExists': '这个路径已经有页面了',
-  'cms.slugInvalid': '路径只能用英文字母、数字、-、_、/ 与括号',
+  'cms.slugInvalid': '请使用有效的文档路径；保留路径不可使用',
   'cms.uploadType': '只支持 png / jpg / webp / gif / svg',
   'cms.uploadTooLarge': '单张图片不能超过 {max} MB',
   'error.invalidNavJson': 'JSON 语法错误 —— {detail}',

@@ -27,6 +27,7 @@ import {
 } from '../ui/primitives';
 import { insertText } from '@/lib/admin/insert-text';
 import { useT } from '../i18n';
+import { docMetaSchema } from '@/lib/content-schema';
 
 export interface NavSeed {
   dir: string;
@@ -63,8 +64,23 @@ export function NavPanel({
   const [mode, setMode] = useState('form');
   const t = useT();
   const [saving, setSaving] = useState(false);
+  const [savedJson, setSavedJson] = useState(json);
   const router = useRouter();
   const [rawError, setRawError] = useState<string>();
+  const changeMode = (next: string) => {
+    if (next === 'form' && mode === 'raw') {
+      try {
+        const data: unknown = JSON.parse(raw);
+        docMetaSchema.parse(data);
+        setMeta(data as MetaShape);
+        setRawError(undefined);
+      } catch (error) {
+        setRawError(error instanceof Error ? error.message : String(error));
+        return;
+      }
+    }
+    setMode(next);
+  };
 
   // 表单改了就同步进 raw, 切到 JSON 页签看到的永远是当前状态
   useEffect(() => {
@@ -124,22 +140,38 @@ export function NavPanel({
         return;
       }
     }
-    const result = await saveNavAction({ dir, locale, json: payload });
-    setSaving(false);
-    if (result.ok) {
-      setRawError(undefined);
-      if (mode === 'raw') setMeta(JSON.parse(payload));
-      router.refresh();
-      toast.success(t('navEditor.saved'), { description: t('navEditor.savedDesc') });
-    } else {
-      toast.error(t('navEditor.saveFailed'), { description: result.error });
+    try {
+      const result = await saveNavAction({
+        dir,
+        locale,
+        json: payload,
+        expectedJson: savedJson,
+      });
+      setSaving(false);
+      if (result.ok) {
+        setSavedJson(payload);
+        setRawError(undefined);
+        if (mode === 'raw') setMeta(JSON.parse(payload));
+        router.refresh();
+        toast.success(t('navEditor.saved'), {
+          description: t('navEditor.savedDesc'),
+        });
+      } else {
+        toast.error(t('navEditor.saveFailed'), { description: result.error });
+      }
+    } catch (error) {
+      toast.error(t('navEditor.saveFailed'), {
+        description: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <Tabs value={mode} onValueChange={setMode}>
+        <Tabs value={mode} onValueChange={changeMode}>
           <TabsList>
             <TabsTrigger value="form">
               <ListTree className="size-3.5" />
@@ -164,10 +196,13 @@ export function NavPanel({
         </Button>
       </div>
 
-      <Tabs value={mode} onValueChange={setMode}>
+      <Tabs value={mode} onValueChange={changeMode}>
         <TabsContent value="form" className="space-y-5 outline-none">
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label={t('navEditor.groupTitle')} hint={t('navEditor.groupTitleHint')}>
+            <Field
+              label={t('navEditor.groupTitle')}
+              hint={t('navEditor.groupTitleHint')}
+            >
               <Input
                 value={meta.title ?? ''}
                 onChange={(event) =>
@@ -178,7 +213,10 @@ export function NavPanel({
                 }
               />
             </Field>
-            <Field label={t('navEditor.groupDesc')} hint={t('navEditor.optional')}>
+            <Field
+              label={t('navEditor.groupDesc')}
+              hint={t('navEditor.optional')}
+            >
               <Input
                 value={meta.description ?? ''}
                 onChange={(event) =>
@@ -226,7 +264,7 @@ export function NavPanel({
                 const label = separator?.[1] ?? '';
                 return (
                   <li
-                    key={`${index}-${item}`}
+                    key={index}
                     className={cn(
                       'px-3 py-2',
                       separator ? 'bg-fd-card/50' : '',
@@ -234,7 +272,9 @@ export function NavPanel({
                   >
                     <div className="flex items-center gap-2">
                       {separator ? (
-                        <Badge tone="info">{t('navEditor.separatorBadge')}</Badge>
+                        <Badge tone="info">
+                          {t('navEditor.separatorBadge')}
+                        </Badge>
                       ) : (
                         <FileText className="size-3.5 shrink-0 text-fd-muted-foreground" />
                       )}

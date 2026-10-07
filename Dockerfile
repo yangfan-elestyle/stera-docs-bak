@@ -23,7 +23,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # data/ 与 content/docs/openapi/(generated)/ 未入库, 不生成则 next build 直接失败。
-RUN bun run generate:data && bun run build
+RUN bun run generate:data && bun run build && test ! -e data/cms.db
 
 # runner: Next standalone 面向 Node 运行时。
 FROM node:24.18.0-slim AS runner

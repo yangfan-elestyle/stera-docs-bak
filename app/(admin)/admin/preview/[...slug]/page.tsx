@@ -2,7 +2,7 @@ import { DocsBody } from 'fumadocs-ui/page';
 import { AlertTriangle } from 'lucide-react';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { getMDXComponents } from '@/mdx-components';
-import { requireUser } from '@/lib/auth/guard';
+import { requireWriter } from '@/lib/auth/guard';
 import { getDoc } from '@/lib/cms/content';
 import { getDraft } from '@/lib/cms/drafts';
 import { compileDoc } from '@/lib/cms/mdx';
@@ -28,7 +28,7 @@ export default async function PreviewPage({
   params: Promise<{ slug: string[] }>;
   searchParams: Promise<{ locale?: string }>;
 }) {
-  const user = await requireUser();
+  const user = await requireWriter();
   const slug = (await params).slug.map(decodeURIComponent).join('/');
   const locale = (await searchParams).locale ?? 'ja';
   // 提示文案跟界面语言走; 正文渲染跟 locale (正在编辑的内容语言) 走, 两者是不同的东西
@@ -41,7 +41,9 @@ export default async function PreviewPage({
   if (!source) {
     return (
       <Shell lang={locale}>
-        <p className="text-sm text-fd-muted-foreground">{t('preview.noContent')}</p>
+        <p className="text-sm text-fd-muted-foreground">
+          {t('preview.noContent')}
+        </p>
       </Shell>
     );
   }
@@ -51,7 +53,9 @@ export default async function PreviewPage({
   try {
     const src = await getSource();
     const { body: MDX } = await compileDoc(source, `${slug}.mdx`);
-    const page = src.getPage(slug.split('/').filter(Boolean), locale);
+    const page = src
+      .getPages(locale)
+      .find((item) => item.path.replace(/(?:\.(?:en|zh))?\.mdx$/, '') === slug);
 
     return (
       <Shell lang={locale}>
@@ -59,7 +63,9 @@ export default async function PreviewPage({
           {typeof data.title === 'string' ? data.title : slug}
         </h1>
         {typeof data.description === 'string' && data.description ? (
-          <p className="-mt-4 mb-6 text-fd-muted-foreground">{data.description}</p>
+          <p className="-mt-4 mb-6 text-fd-muted-foreground">
+            {data.description}
+          </p>
         ) : null}
         <DocsBody>
           <MDX
@@ -94,7 +100,13 @@ export default async function PreviewPage({
 
 // lang 跟正在预览的内容语言, 不跟后台界面语言 —— 汉字的字体回退在 ja / zh 之间不一样,
 // 这个预览的卖点正是「与站点同一套渲染」。子树上的 lang 会覆盖 root layout 那个。
-function Shell({ lang, children }: { lang: string; children: React.ReactNode }) {
+function Shell({
+  lang,
+  children,
+}: {
+  lang: string;
+  children: React.ReactNode;
+}) {
   return (
     <div lang={lang} className="mx-auto w-full max-w-3xl px-6 py-8">
       {children}

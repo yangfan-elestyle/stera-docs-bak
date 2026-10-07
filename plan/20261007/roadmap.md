@@ -62,6 +62,7 @@ ele-argocd-app 跨团队 PR, 须维护方 review (ele-dispatcher 为全公司共
   - `config.libsonnet` stg `dnsHostnames` 加 `stera-docs.stg.elepay.dev`; `guides` 不加 (external-dns 不管该 zone)。
 - [ ] 备份: 先查 stg 账号有无 EBS 快照策略 (DLM); 无则补 (ele-iac stg stack, 人工 `pulumi up`) 按 PVC 卷打快照, 保留 >= 7 天; 做一次恢复演练 (快照 -> 新 PV -> 起 Pod -> 正文 / 上传图片在)。
 - 验收: 空卷首启自动灌 seed; 删 Pod 重建后正文与上传图片保留; 经 `stera-docs.stg.elepay.dev` `/admin` 可登录编辑上传。
+- MUST: 空卷首启会建固定初始管理员 (`lib/auth/guard.ts`), 首个登录者即可改密接管; dispatcher 白名单 `dryRun` 不拦截 -> 每次空卷首启 (含删 PVC 重建) 后先经 `kubectl port-forward` 完成首次登录改密, 再开放 dispatcher 路由; 路由已开放时重建 PVC 须先撤路由。
 - 首启早于 2 完成时库内是旧内容: SMCC 开始编辑前可删 PVC 重新首启, 之后只能定向 upsert。
 - 发版即短暂中断 (`Recreate`): 前台与 `/admin` 均不可用至新 Pod ready; 避开 SMCC 编辑时段。
 

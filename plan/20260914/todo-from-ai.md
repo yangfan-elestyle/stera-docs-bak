@@ -1,11 +1,11 @@
 # TODO
 
-> 子项 = 注意事项与解法; 结论来自 `fumadocs-core` 16.15.10 / `fumadocs-mdx` 安装包源码, 非文档推测。
+> 历史调研记录; 当前约束以 [feature.md](./feature.md) / [actions.md](./actions.md) 为准, 质量证据见 [review.md](./review.md)。当前安装版本见 `bun.lock`。
 
 1. 拆分内容集合: openapi 页留构建期, 手写文档交给运行时数据源
    - 现为单 collection 覆盖 `(home)` + `openapi/(generated)`, 不拆则 openapi 页被一起拖进运行时源
    - 只有 `openapi/(generated)/` 153 页 MUST 留构建期 -> 脚本产物, 手改会被 `generate:data` 覆盖
-   - `error-codes.json` 留本地数据文件; 但嵌 `<ErrorCodeTable />` 的 3 个 `error-code.*.mdx` 页与 `openapi/index.*.mdx` 3 页都是手写页, 入 CMS
+   - `error-codes.json` 留本地数据文件; 嵌 `<ErrorCodeTable />` 的 3 个 `error-code.*.mdx` 页入 CMS; API Reference 概要页与排序留构建期
 
 2. 设计 SQLite 内容表结构 (正文 + 导航)
    - MUST 带 locale 维度, 唯一键 = (slug, locale); ja / en / zh 各存一行, 互不派生
@@ -40,7 +40,7 @@
    - 两种角色: admin 可建账号与授权, editor 可编辑内容; 账号名即邮箱
    - MUST NOT 接邮件服务 -> 无邀请信 / 无邮箱验证 / 无找回密码, 账号由 admin 在后台直接创建
    - MUST NOT 开放自助注册: mdx-remote 默认允许代码执行, 拿到编辑权即等于可在站内执行代码
-   - 待定: admin 如何把初始密码交给 editor, 以及首次登录是否强制改密
+   - 已定: admin 线下交付初始密码, 首次登录强制改密
 
 10. 多语言维持 ja / en / zh
    - `lib/i18n.ts` 不动, 存量 zh 内容全部保留入库

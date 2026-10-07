@@ -1,0 +1,619 @@
+Conclusion: PASS. Local review only; no release.
+Date: 2026-10-07
+Worktree image: sha256:976f92886f6580e4f4fda0943da18b1a0fb5b2e370eab7b7324220ee7a79823f
+Exported no-.git context image: sha256:976f92886f6580e4f4fda0943da18b1a0fb5b2e370eab7b7324220ee7a79823f
+Builder probe after request-time guard fix: {"git":false,"cmsDatabase":false}
+Final Dockerfile also asserts: test ! -e data/cms.db
+
+UNIT (bun run test)
+$ bun test tests
+bun test v1.4.2 (744846f84)
+
+tests/cms.test.ts:
+(pass) all seed MDX compiles with the runtime compiler and schema [3652.44ms]
+(pass) invalid syntax and unknown JSX components fail compilation [3.02ms]
+(pass) corrupt YAML and navigation JSON cannot poison the loader [29.87ms]
+(pass) seed scope, migrations and initialized marker persist [4.67ms]
+(pass) migration failure rolls back DDL and user_version [0.73ms]
+(pass) reserved, traversal, route aliases and OpenAPI writes are rejected [11.10ms]
+(pass) language creation, stale edits, deletion conflicts and monotonic timestamps [1.60ms]
+(pass) revision catches equal timestamps and mutations below the maximum [2.57ms]
+(pass) navigation conflicts and page cleanup preserve unrelated entries [4.65ms]
+(pass) empty initialized database does not resurrect deleted content on restart [1.47ms]
+(pass) malformed YAML is a validation error, multiline frontmatter edits stay valid [0.60ms]
+
+ 11 pass
+ 0 fail
+ 252 expect() calls
+Ran 11 tests across 1 file. [3.91s]
+
+TYPES (bun run types:check)
+$ next typegen && fumadocs-mdx && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+[MDX] generated files in 15.04325ms
+
+HTTP (bun run scripts/verify-cms-http.ts stera-docs:review)
+PASS bootstrap, login, password, anonymous and initial-password guards
+PASS page CRUD guards, conflicts, locales, draft and live HTML/Markdown/LLMs/search
+PASS navigation, 2 MB upload, 8 MB limit and SVG headers
+PASS editor/admin authorization, self protection, password reset and deletion
+PASS restart persistence, deletion and logout
+PASS 369 pages HTML + Markdown, 3 language search and OG
+PASS corrupt YAML/JSON isolated from healthy pages and search
+PASS 849 HTTP assertions; image stera-docs:review
+
+BUILD (docker build -t stera-docs:review .)
+#0 building with "orbstack" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.31kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.3s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:24.18.0-slim
+#4 DONE 0.0s
+
+#5 [internal] load metadata for docker.io/oven/bun:1.4.2-slim
+#5 DONE 0.0s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 355B done
+#6 DONE 0.0s
+
+#7 [deps 1/6] FROM docker.io/oven/bun:1.4.2-slim
+#7 DONE 0.0s
+
+#8 [runner 1/8] FROM docker.io/library/node:24.18.0-slim
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 transferring context: 79.72kB 0.0s done
+#9 DONE 0.1s
+
+#10 [deps 2/6] WORKDIR /app
+#10 CACHED
+
+#11 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#11 CACHED
+
+#12 [builder 4/5] COPY . .
+#12 DONE 0.2s
+
+#13 [builder 5/5] RUN bun run generate:data && bun run build && test ! -e data/cms.db
+#13 0.143 $ bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/resumeSubscription.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/cancelSubscription.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/listSubscriptionPeriods.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/location/listChargeLocations.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/location/createChargeLocation.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/location/retrieveChargeLocation.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/location/updateChargeLocation.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/location/deleteChargeLocation.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/listCharges.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/createCharge.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/retrieveCharge.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/revokeCharge.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/captureCharge.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/retrieveChargeStatus.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/refund/listChargesRefunds.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/refund/createRefund.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/listCharges.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/startSubscription.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/invoice/submitInvoice.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/invoice/retrieveInvoice.en.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/listSubscriptions.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/createSubscription.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/terminal/listLocations.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/retrieveSubscription.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/terminal/listReaders.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/updateSubscription.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/terminal/createReader.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/startSubscription.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/terminal/getReader.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/resumeSubscription.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/terminal/deleteReader.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/cancelSubscription.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/location/deleteChargeLocation.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/dispute/retrieveDispute.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/subscription/listSubscriptionPeriods.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/dispute/listDisputes.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/listCharges.en.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/charge/createCharge.en.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/customer/listCustomers.zh.mdx
+#13 0.209 Generated: content/docs/openapi/(generated)/location/listChargeLocations.zh.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/customer/createCustomer.zh.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/invoice/createInvoice.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/customer/listCustomers.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/customer/createCustomer.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/customer/retrieveCustomer.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/customer/updateCustomer.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/invoice/createInvoice.zh.mdx
+#13 0.210 Generated: content/docs/openapi/(generated)/paymentmethod/listPaymentMethods.zh.mdx
+#13 0.211 Generated: content/docs/openapi/(generated)/customer/deleteCustomer.mdx
+#13 0.211 Generated: content/docs/openapi/(generated)/charge/retrieveCharge.en.mdx
+#13 0.211 Generated: content/docs/openapi/(generated)/customer/listSources.mdx
+#13 0.211 Generated: content/docs/openapi/(generated)/charge/revokeCharge.en.mdx
+#13 0.211 Generated: content/docs/openapi/(generated)/invoice/sendInvoice.zh.mdx
+#13 0.211 Generated: content/docs/openapi/(generated)/charge/captureCharge.en.mdx
+#13 0.212 Generated: content/docs/openapi/(generated)/subscription/startSubscription.en.mdx
+#13 0.212 Generated: content/docs/openapi/(generated)/customer/createSource.mdx
+#13 0.212 Generated: content/docs/openapi/(generated)/refund/retrieveChargeRefund.mdx
+#13 0.212 Generated: content/docs/openapi/(generated)/subscription/resumeSubscription.en.mdx
+#13 0.212 Generated: content/docs/openapi/(generated)/charge/retrieveChargeStatus.en.mdx
+#13 0.212 Generated: content/docs/openapi/(generated)/refund/listChargesRefunds.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/refund/createRefund.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/refund/retrieveChargeRefund.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/listCustomers.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/createCustomer.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveCustomer.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/updateCustomer.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/deleteCustomer.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/listSources.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/createSource.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveSource.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/deleteSource.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveSourceStatus.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/paymentmethod/listPaymentMethods.en.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/invoice/retrieveInvoice.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/location/createChargeLocation.zh.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveCustomer.zh.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/updateCustomer.zh.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/deleteCustomer.zh.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/code/createCode.zh.mdx
+#13 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveSource.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/createCode.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/subscription/cancelSubscription.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/retrieveCode.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/updateInvoice.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/closeCode.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/retrieveCode.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/codesetting/listCodePaymentMethods.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/updateInvoice.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/listInvoices.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/createInvoice.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/closeCode.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/customer/deleteSource.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/cancelInvoice.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/cancelInvoice.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/subscription/listSubscriptionPeriods.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/retrieveCode.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/codesetting/listCodePaymentMethods.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/retrieveInvoice.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/location/listChargeLocations.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/cancelInvoice.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/closeCode.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/customer/retrieveSourceStatus.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/location/createChargeLocation.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/customer/listSources.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/customer/createSource.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/customer/retrieveSource.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/customer/deleteSource.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/location/retrieveChargeLocation.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/location/updateChargeLocation.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/location/deleteChargeLocation.en.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/refund/retrieveChargeRefund.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/codesetting/listCodePaymentMethods.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/paymentmethod/listPaymentMethods.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/code/createCode.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/charge/captureCharge.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/customer/retrieveSourceStatus.zh.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/charge/createCharge.mdx
+#13 0.214 Generated: content/docs/openapi/(generated)/invoice/listInvoices.zh.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/charge/retrieveCharge.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/invoice/submitInvoice.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/dispute/listDisputes.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/dispute/retrieveDispute.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/listSubscriptions.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/createSubscription.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/retrieveSubscription.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/updateSubscription.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/invoice/submitInvoice.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/charge/revokeCharge.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/invoice/updateInvoice.zh.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/invoice/sendInvoice.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/charge/retrieveChargeStatus.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/refund/listChargesRefunds.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/dispute/retrieveDispute.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/refund/createRefund.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/terminal/createReader.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/listSubscriptions.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/createSubscription.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/retrieveSubscription.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/subscription/updateSubscription.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/terminal/deleteReader.en.mdx
+#13 0.215 Generated: content/docs/openapi/(generated)/invoice/listInvoices.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/listLocations.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/location/updateChargeLocation.zh.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/invoice/sendInvoice.en.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/deleteReader.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/listLocations.en.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/listReaders.en.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/location/retrieveChargeLocation.zh.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/dispute/listDisputes.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/createReader.en.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/listReaders.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/getReader.en.mdx
+#13 0.216 Generated: content/docs/openapi/(generated)/terminal/getReader.mdx
+#13 0.220 $ next build
+#13 0.536 ▲ Next.js 16.2.6 (Turbopack)
+#13 0.536 - Experiments (use with caution):
+#13 0.536   · serverActions
+#13 0.536
+#13 0.538 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+#13 0.538 [MDX] generated files in 8.244496000000026ms
+#13 0.557   Creating an optimized production build ...
+#13 10.02 ✓ Compiled successfully in 9.3s
+#13 10.02   Running TypeScript ...
+#13 12.60   Finished TypeScript in 2.6s ...
+#13 12.60   Collecting page data using 7 workers ...
+#13 13.10   Generating static pages using 7 workers (0/9) ...
+#13 13.20   Generating static pages using 7 workers (2/9)
+#13 13.21   Generating static pages using 7 workers (4/9)
+#13 13.21   Generating static pages using 7 workers (6/9)
+#13 13.23 ✓ Generating static pages using 7 workers (9/9) in 124ms
+#13 13.23   Finalizing page optimization ...
+#13 13.38
+#13 13.39 Route (app)
+#13 13.39 ┌ ○ /_not-found
+#13 13.39 ├ ƒ /[lang]
+#13 13.39 ├ ƒ /[lang]/[...slug]
+#13 13.39 ├ ƒ /[lang]/llms-full.txt
+#13 13.39 ├ ƒ /[lang]/llms.mdx/[[...slug]]
+#13 13.39 ├ ƒ /[lang]/llms.txt
+#13 13.39 ├ ƒ /[lang]/og/[...slug]
+#13 13.39 ├ ƒ /[lang]/opengraph-image-ysa6o0
+#13 13.39 ├ ƒ /admin
+#13 13.39 ├ ƒ /admin/account
+#13 13.39 ├ ƒ /admin/content
+#13 13.39 ├ ƒ /admin/content/[...slug]
+#13 13.39 ├ ƒ /admin/login
+#13 13.39 ├ ƒ /admin/navigation
+#13 13.39 ├ ƒ /admin/preview/[...slug]
+#13 13.39 ├ ƒ /admin/users
+#13 13.39 ├ ƒ /api/health
+#13 13.39 ├ ƒ /api/search
+#13 13.39 └ ƒ /uploads/[name]
+#13 13.39
+#13 13.39
+#13 13.39 ƒ Proxy (Middleware)
+#13 13.39
+#13 13.39 ○  (Static)   prerendered as static content
+#13 13.39 ƒ  (Dynamic)  server-rendered on demand
+#13 13.39
+#13 DONE 13.7s
+
+#14 [runner 2/8] WORKDIR /app
+#14 CACHED
+
+#15 [runner 3/8] RUN groupadd --system --gid 1001 nodejs  && useradd --system --uid 1001 --gid nodejs nextjs
+#15 CACHED
+
+#16 [runner 4/8] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#16 DONE 0.4s
+
+#17 [runner 5/8] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#17 DONE 0.1s
+
+#18 [runner 6/8] COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+#18 DONE 0.1s
+
+#19 [runner 7/8] COPY --from=builder --chown=nextjs:nodejs /app/seed ./seed
+#19 DONE 0.1s
+
+#20 [runner 8/8] RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
+#20 DONE 0.1s
+
+#21 exporting to image
+#21 exporting layers
+#21 exporting layers 0.3s done
+#21 writing image sha256:976f92886f6580e4f4fda0943da18b1a0fb5b2e370eab7b7324220ee7a79823f done
+#21 naming to docker.io/library/stera-docs:review done
+#21 DONE 0.3s
+
+View build details: docker-desktop://dashboard/build/orbstack/orbstack/jfpx49i5dhn027oa5l9aka0e7
+
+EXPORTED CONTEXT BUILD
+#0 building with "orbstack" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.31kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.8s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/oven/bun:1.4.2-slim
+#4 DONE 0.0s
+
+#5 [internal] load metadata for docker.io/library/node:24.18.0-slim
+#5 DONE 0.0s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 355B done
+#6 DONE 0.0s
+
+#7 [deps 1/6] FROM docker.io/oven/bun:1.4.2-slim
+#7 DONE 0.0s
+
+#8 [runner 1/8] FROM docker.io/library/node:24.18.0-slim
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 transferring context: 79.72kB 0.0s done
+#9 DONE 0.0s
+
+#10 [deps 4/6] COPY lib/content-schema.ts ./lib/content-schema.ts
+#10 CACHED
+
+#11 [deps 2/6] WORKDIR /app
+#11 CACHED
+
+#12 [deps 5/6] COPY patches ./patches
+#12 CACHED
+
+#13 [deps 6/6] RUN bun install --frozen-lockfile
+#13 CACHED
+
+#14 [deps 3/6] COPY package.json bun.lock source.config.ts ./
+#14 CACHED
+
+#15 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#15 CACHED
+
+#16 [builder 4/5] COPY . .
+#16 DONE 0.2s
+
+#17 [builder 5/5] RUN bun run generate:data && bun run build && test ! -e data/cms.db
+#17 0.143 $ bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/resumeSubscription.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/cancelSubscription.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/listSubscriptionPeriods.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/location/listChargeLocations.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/location/createChargeLocation.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/location/retrieveChargeLocation.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/location/updateChargeLocation.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/location/deleteChargeLocation.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/listCharges.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/createCharge.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/retrieveCharge.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/revokeCharge.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/captureCharge.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/retrieveChargeStatus.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/refund/listChargesRefunds.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/refund/createRefund.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/listCharges.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/startSubscription.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/invoice/submitInvoice.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/invoice/retrieveInvoice.en.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/listSubscriptions.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/createSubscription.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/terminal/listLocations.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/retrieveSubscription.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/terminal/listReaders.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/updateSubscription.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/terminal/createReader.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/startSubscription.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/terminal/getReader.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/resumeSubscription.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/terminal/deleteReader.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/cancelSubscription.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/location/deleteChargeLocation.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/dispute/retrieveDispute.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/subscription/listSubscriptionPeriods.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/dispute/listDisputes.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/listCharges.en.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/charge/createCharge.en.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/customer/listCustomers.zh.mdx
+#17 0.209 Generated: content/docs/openapi/(generated)/location/listChargeLocations.zh.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/customer/createCustomer.zh.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/invoice/createInvoice.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/customer/listCustomers.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/customer/createCustomer.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/customer/retrieveCustomer.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/customer/updateCustomer.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/invoice/createInvoice.zh.mdx
+#17 0.210 Generated: content/docs/openapi/(generated)/paymentmethod/listPaymentMethods.zh.mdx
+#17 0.211 Generated: content/docs/openapi/(generated)/customer/deleteCustomer.mdx
+#17 0.211 Generated: content/docs/openapi/(generated)/charge/retrieveCharge.en.mdx
+#17 0.211 Generated: content/docs/openapi/(generated)/customer/listSources.mdx
+#17 0.211 Generated: content/docs/openapi/(generated)/charge/revokeCharge.en.mdx
+#17 0.211 Generated: content/docs/openapi/(generated)/invoice/sendInvoice.zh.mdx
+#17 0.211 Generated: content/docs/openapi/(generated)/charge/captureCharge.en.mdx
+#17 0.212 Generated: content/docs/openapi/(generated)/subscription/startSubscription.en.mdx
+#17 0.212 Generated: content/docs/openapi/(generated)/customer/createSource.mdx
+#17 0.212 Generated: content/docs/openapi/(generated)/refund/retrieveChargeRefund.mdx
+#17 0.212 Generated: content/docs/openapi/(generated)/subscription/resumeSubscription.en.mdx
+#17 0.212 Generated: content/docs/openapi/(generated)/charge/retrieveChargeStatus.en.mdx
+#17 0.212 Generated: content/docs/openapi/(generated)/refund/listChargesRefunds.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/refund/createRefund.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/refund/retrieveChargeRefund.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/listCustomers.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/createCustomer.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveCustomer.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/updateCustomer.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/deleteCustomer.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/listSources.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/createSource.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveSource.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/deleteSource.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveSourceStatus.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/paymentmethod/listPaymentMethods.en.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/invoice/retrieveInvoice.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/location/createChargeLocation.zh.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveCustomer.zh.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/updateCustomer.zh.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/deleteCustomer.zh.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/code/createCode.zh.mdx
+#17 0.213 Generated: content/docs/openapi/(generated)/customer/retrieveSource.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/createCode.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/subscription/cancelSubscription.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/retrieveCode.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/updateInvoice.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/closeCode.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/retrieveCode.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/codesetting/listCodePaymentMethods.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/updateInvoice.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/listInvoices.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/createInvoice.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/closeCode.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/customer/deleteSource.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/cancelInvoice.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/cancelInvoice.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/subscription/listSubscriptionPeriods.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/retrieveCode.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/codesetting/listCodePaymentMethods.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/retrieveInvoice.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/location/listChargeLocations.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/cancelInvoice.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/closeCode.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/customer/retrieveSourceStatus.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/location/createChargeLocation.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/customer/listSources.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/customer/createSource.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/customer/retrieveSource.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/customer/deleteSource.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/location/retrieveChargeLocation.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/location/updateChargeLocation.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/location/deleteChargeLocation.en.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/refund/retrieveChargeRefund.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/codesetting/listCodePaymentMethods.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/paymentmethod/listPaymentMethods.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/code/createCode.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/charge/captureCharge.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/customer/retrieveSourceStatus.zh.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/charge/createCharge.mdx
+#17 0.214 Generated: content/docs/openapi/(generated)/invoice/listInvoices.zh.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/charge/retrieveCharge.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/invoice/submitInvoice.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/dispute/listDisputes.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/dispute/retrieveDispute.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/listSubscriptions.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/createSubscription.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/retrieveSubscription.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/updateSubscription.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/invoice/submitInvoice.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/charge/revokeCharge.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/invoice/updateInvoice.zh.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/invoice/sendInvoice.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/charge/retrieveChargeStatus.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/refund/listChargesRefunds.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/dispute/retrieveDispute.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/refund/createRefund.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/terminal/createReader.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/listSubscriptions.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/createSubscription.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/retrieveSubscription.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/subscription/updateSubscription.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/terminal/deleteReader.en.mdx
+#17 0.215 Generated: content/docs/openapi/(generated)/invoice/listInvoices.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/listLocations.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/location/updateChargeLocation.zh.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/invoice/sendInvoice.en.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/deleteReader.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/listLocations.en.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/listReaders.en.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/location/retrieveChargeLocation.zh.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/dispute/listDisputes.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/createReader.en.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/listReaders.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/getReader.en.mdx
+#17 0.216 Generated: content/docs/openapi/(generated)/terminal/getReader.mdx
+#17 0.220 $ next build
+#17 0.536 ▲ Next.js 16.2.6 (Turbopack)
+#17 0.536 - Experiments (use with caution):
+#17 0.536   · serverActions
+#17 0.536
+#17 0.538 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+#17 0.538 [MDX] generated files in 8.244496000000026ms
+#17 0.557   Creating an optimized production build ...
+#17 10.02 ✓ Compiled successfully in 9.3s
+#17 10.02   Running TypeScript ...
+#17 12.60   Finished TypeScript in 2.6s ...
+#17 12.60   Collecting page data using 7 workers ...
+#17 13.10   Generating static pages using 7 workers (0/9) ...
+#17 13.20   Generating static pages using 7 workers (2/9)
+#17 13.21   Generating static pages using 7 workers (4/9)
+#17 13.21   Generating static pages using 7 workers (6/9)
+#17 13.23 ✓ Generating static pages using 7 workers (9/9) in 124ms
+#17 13.23   Finalizing page optimization ...
+#17 13.38
+#17 13.39 Route (app)
+#17 13.39 ┌ ○ /_not-found
+#17 13.39 ├ ƒ /[lang]
+#17 13.39 ├ ƒ /[lang]/[...slug]
+#17 13.39 ├ ƒ /[lang]/llms-full.txt
+#17 13.39 ├ ƒ /[lang]/llms.mdx/[[...slug]]
+#17 13.39 ├ ƒ /[lang]/llms.txt
+#17 13.39 ├ ƒ /[lang]/og/[...slug]
+#17 13.39 ├ ƒ /[lang]/opengraph-image-ysa6o0
+#17 13.39 ├ ƒ /admin
+#17 13.39 ├ ƒ /admin/account
+#17 13.39 ├ ƒ /admin/content
+#17 13.39 ├ ƒ /admin/content/[...slug]
+#17 13.39 ├ ƒ /admin/login
+#17 13.39 ├ ƒ /admin/navigation
+#17 13.39 ├ ƒ /admin/preview/[...slug]
+#17 13.39 ├ ƒ /admin/users
+#17 13.39 ├ ƒ /api/health
+#17 13.39 ├ ƒ /api/search
+#17 13.39 └ ƒ /uploads/[name]
+#17 13.39
+#17 13.39
+#17 13.39 ƒ Proxy (Middleware)
+#17 13.39
+#17 13.39 ○  (Static)   prerendered as static content
+#17 13.39 ƒ  (Dynamic)  server-rendered on demand
+#17 13.39
+#17 DONE 13.7s
+
+#18 [runner 2/8] WORKDIR /app
+#18 CACHED
+
+#19 [runner 3/8] RUN groupadd --system --gid 1001 nodejs  && useradd --system --uid 1001 --gid nodejs nextjs
+#19 CACHED
+
+#20 [runner 4/8] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#20 DONE 0.4s
+
+#21 [runner 5/8] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#21 DONE 0.1s
+
+#22 [runner 6/8] COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+#22 DONE 0.1s
+
+#23 [runner 7/8] COPY --from=builder --chown=nextjs:nodejs /app/seed ./seed
+#23 DONE 0.1s
+
+#24 [runner 8/8] RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
+#24 DONE 0.1s
+
+#25 exporting to image
+#25 exporting layers
+#25 exporting layers 0.3s done
+#25 writing image sha256:976f92886f6580e4f4fda0943da18b1a0fb5b2e370eab7b7324220ee7a79823f done
+#25 naming to docker.io/library/stera-docs:review-export done
+#25 DONE 0.3s
+
+View build details: docker-desktop://dashboard/build/orbstack/orbstack/xi1a5aok1juhpw9yeisnb9kpb
+
+BROWSER (ego-browser TaskSpace 2)
+PASS UI create page, CodeMirror edit, real iframe preview, reload draft preservation, restore and Command+S publication.
+PASS English independent edit and public popup document lang=en.
+PASS Copy Markdown retrieves updated content without reloading; clipboard mock confined to test page.
+PASS raw navigation JSON to structure preserves edits; invalid JSON keeps raw mode.
+PASS 390px mobile content tree search/select opens editor; no horizontal overflow.
+PASS desktop and mobile landing visual inspection, desktop editor visual inspection.
+PASS latest image editor and public page rendering.
+
+ADDITIONAL CHECKS
+PASS 213 existing seed document paths remain editable.
+PASS git diff --check; staging area remains unchanged.

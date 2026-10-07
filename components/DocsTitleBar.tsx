@@ -14,8 +14,8 @@ export type DocsTitleAction = {
 };
 
 export const DOCS_TITLE_ACTIONS: Record<string, DocsTitleAction[]> = {
-  '/': [{ text: 'API Reference', href: '/openapi' }],
-  '/openapi': [{ text: SITE.docsTitle, href: '/' }],
+  '/overview': [{ text: 'API Reference', href: '/openapi' }],
+  '/openapi': [{ text: SITE.docsTitle, href: '/overview' }],
 };
 
 const ACTION_BUTTON_CLASS =

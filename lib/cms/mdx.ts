@@ -9,6 +9,7 @@ import type { Plugin } from 'unified';
 import type { MDXComponents } from 'mdx/types';
 import type { ReactNode } from 'react';
 import * as path from 'node:path';
+import defaultMdxComponents from 'fumadocs-ui/mdx';
 
 // llms 输出把这些组件降级成占位符, 由 lib/llm-postprocess.ts 在运行期还原成 markdown。
 // 名字与 source.config.ts 里给 openapi 集合的那份 MUST 一致。
@@ -43,10 +44,42 @@ const compiler = createCompiler({
     },
   },
   remarkPlugins: [
+    validateComponents,
     [remarkStructure, { exportAs: 'structuredData' }],
     processedMarkdown(),
   ],
 });
+
+/** 编译器不会解析组件引用; 未登记的 JSX 名称要在保存时拒绝。 */
+const componentNames = new Set([
+  ...Object.keys(defaultMdxComponents),
+  'EHome',
+  'EMermaid',
+  'ErrorCodeTable',
+]);
+
+function validateComponents(): ReturnType<Plugin> {
+  return (tree) => {
+    const visit = (node: {
+      type?: string;
+      name?: string;
+      children?: unknown[];
+    }) => {
+      if (
+        (node.type === 'mdxJsxFlowElement' ||
+          node.type === 'mdxJsxTextElement') &&
+        node.name &&
+        !/^[a-z][a-z0-9-]*$/.test(node.name) &&
+        !componentNames.has(node.name)
+      ) {
+        throw new Error(`Unknown MDX component: ${node.name}`);
+      }
+      for (const child of node.children ?? [])
+        visit(child as Parameters<typeof visit>[0]);
+    };
+    visit(tree as Parameters<typeof visit>[0]);
+  };
+}
 
 // remarkLLMs MUST 满足两个条件, 与构建期 remarkPostprocess 的调法一致:
 //   1. 在 transform 阶段调用, 不是 attach 阶段

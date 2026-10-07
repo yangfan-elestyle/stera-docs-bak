@@ -9,6 +9,6 @@ export const config = {
   // /admin 与 /uploads 同样排除:后台不做多语言,后台上传的图片也不该被 rewrite。
   // (.md / llms.txt 是真实路由,依赖该 rewrite,MUST NOT 一并排除。)
   matcher: [
-    '/((?!api|admin|uploads|_next/static|_next/image|favicon.ico|docs/.*\\.(?:png|jpe?g|webp|zip)).*)',
+    '/((?!api|admin|uploads|_next/static|_next/image|favicon.ico|docs/.*\\.(?:png|jpe?g|webp|gif|svg|avif|zip)).*)',
   ],
 };

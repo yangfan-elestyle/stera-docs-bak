@@ -54,18 +54,27 @@ export function setFrontmatterValue(
   const end = lines.findIndex((line, i) => i > 0 && line.trim() === '---');
   if (end === -1) return matter;
 
-  const keyRe = new RegExp(`^\\s*${escapeRegExp(key)}\\s*:`);
+  const keyRe = new RegExp(`^${escapeRegExp(key)}\\s*:`);
   const at = lines.findIndex((line, i) => i > 0 && i < end && keyRe.test(line));
+  // 多行 scalar / collection 的续行属于该字段; 只替换首行会留下非法 YAML。
+  let until = at + 1;
+  if (at !== -1) {
+    while (
+      until < end &&
+      (/^\s+\S/.test(lines[until]) || lines[until].trim() === '')
+    )
+      until++;
+  }
 
   if (value === undefined || value === '') {
     if (at === -1) return matter;
-    lines.splice(at, 1);
+    lines.splice(at, until - at);
     return lines.join('\n');
   }
 
   const serialized = `${key}: ${encodeYamlValue(value)}`;
   if (at === -1) lines.splice(end, 0, serialized);
-  else lines[at] = serialized;
+  else lines.splice(at, until - at, serialized);
   return lines.join('\n');
 }
 

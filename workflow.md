@@ -43,7 +43,17 @@ curl -s  http://localhost:3000/api/health              # {"ok":true}; docker ps 
 
 > 改代码后必须重跑 `docker build` (镜像无 HMR); 仅重跑 `docker run` 跑的是旧镜像。
 > 空卷首启会自动灌 `seed/docs`; 卷里已有数据则不再灌, 编辑结果不会被覆盖。
-> 账号表为空时自动建 `admin@sterasmartone.com` / `123456`, 首次登录强制改密。
+> 账号表为空时自动建默认管理员, 首次登录强制改密。
+
+CMS / auth 变更后追加:
+
+```bash
+bun run test
+bun run types:check
+bun run scripts/verify-cms-http.ts stera-docs:local
+```
+
+HTTP 验收脚本自动创建与清理自己的容器/卷, 不操作 `data/cms.db` 或 `stera-data`。
 
 # 发布
 

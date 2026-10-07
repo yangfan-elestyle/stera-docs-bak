@@ -286,7 +286,7 @@ export const ja = {
   'error.localeRequired': '言語を 1 つ以上選んでください',
   'cms.unknownLocale': '未知の言語です: {locale}',
   'cms.slugExists': 'このパスには既にページがあります',
-  'cms.slugInvalid': 'パスに使えるのは半角英数字と - _ / ( ) だけです',
+  'cms.slugInvalid': '有効なドキュメントパスを指定してください。予約済みパスは使用できません',
   'cms.uploadType': '対応形式は png / jpg / webp / gif / svg のみです',
   'cms.uploadTooLarge': '画像 1 枚あたり {max} MB までです',
   'error.invalidNavJson': 'JSON の構文エラー —— {detail}',

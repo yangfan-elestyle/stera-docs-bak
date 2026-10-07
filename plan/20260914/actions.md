@@ -1,13 +1,14 @@
 # Actions
 
 > 一步一动, 验收不过 MUST NOT 进下一步。本仓库尚无任何用户与存量数据, 不做灰度 / 兼容 / 回滚设计。
+> 10/07 质量复盘与验收证据见 [review.md](./review.md)。
 > 注意事项与源码结论见 [todo-from-ai.md](./todo-from-ai.md); 约束与已定事项见 [feature.md](./feature.md)。
 > A 到 E 全在本机完成, 构建验证用本机 `docker build`; 部署链路 (F) 留到本机全绿之后。
 > 及时 commit。没完成一个 sub task 就需要进行 commit 收工，然后进行下一项。
 
 ## 入 CMS 的范围
 
-- 入库可编辑: 手写正文 207 个 mdx (69 slug × ja/en/zh) + 36 个手写 `meta*.json`
+- 入库可编辑: 当前 `seed/docs` 213 个 mdx (71 slug × ja/en/zh) + 39 个手写 `meta*.json`
 - **API Reference 整块留构建期**, 一律走发版, MUST NOT 出现在后台编辑器里:
   - `content/docs/openapi/(generated)/` 153 页 -> 脚本从 `openapi*.yaml` 生成, 手改会被下次 `generate:data` 覆盖
   - `content/docs/openapi/index*.mdx` 3 页 -> API Reference 的概要页, 正文只有一个 `<EHome />`
@@ -17,7 +18,7 @@
 
 ## 已完成
 
-- [ok] 迁移 Docker 部署 (GHCR 镜像 + ArgoCD)
+- [ok] Docker 镜像 (本机构建验收); GHCR workflow `docker-build.yml` 已写、未成功跑过 -> 见 F
 - [ok] 去多租户, 收敛为 stera smart one 单站点
 - [ok] OpenAPI + 错误码改本地源文件
 - [ok] 独立为 stera-docs repo
@@ -30,7 +31,7 @@ A1. [ok] 接 SQLite driver, db 文件路径写死常量 (`data/cms.db`)
     - 句柄懒加载单例: 模块加载即连库会让 `next build` 在构建机上凭空造出 db 文件
 
 A2. [ok] 拆内容集合: `openapi/(generated)` 留构建期, 手写文档独立集合 (todo 1)
-    - 两组 glob MUST 互斥且并集 = `content/docs` 全量 (实测 246 / 168, 零遗漏零重复)
+    - 当前运行期 `seed/docs` 213 篇 / 构建期 `content/docs/openapi` 156 篇; 来源互斥、合计 369 篇
     - picomatch 把裸 `(` `)` 当分组, route group 目录要写成 `[(]home[)]`; 数组里的 `!pattern` 不做减法
 
 A3. [ok] 建表 + migration 脚本 (todo 2)
@@ -75,11 +76,11 @@ E1. [ok] 用户表 + 会话: admin / editor 两角色, 账号名 = 邮箱 (todo 
 E2. [ok] `/admin` 路由骨架 + `middleware.ts` matcher 排除 `/admin` (todo 8)
 E3. [ok] 登录 + 鉴权, admin 建账号与授权
     - 已定: 初始密码由 admin 当场设定、线下交付, 首次登录强制改密
-    - 首个管理员只来自部署侧 `ADMIN_EMAIL` / `ADMIN_PASSWORD`, 仅在账号表为空时生效
+    - 账号表为空时建代码内固定初始管理员; 首次登录强制改密, 改密前服务端禁止写入 (10/07 确认)
 E4. [ok] 后台整体 UI (todo 10)
     - 侧栏 + 顶栏骨架 / 深浅色 / ⌘K 命令面板 / toast
     - 编辑器: CodeMirror 6 + 格式工具栏 + 实时预览 (走站点真实渲染) + 三语言分页签
-    - frontmatter 表单化, 写回只改被动的那一行 (210 篇零字节漂移)
+    - frontmatter 表单化, 保留未修改字段; 多行值随对应字段整体替换
     - 草稿落库 + 并发保护 + ⌘S / ⌘⇧S
     - 新建 / 删除页面 (自动挂到所在分组导航), 图片上传 (粘贴截图 / 拖入 / 选文件)
     - 导航编辑器结构化, 分隔符改名自动搬 sectionNotes 的 key

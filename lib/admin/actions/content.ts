@@ -9,6 +9,9 @@ import {
   deletePage,
   saveDoc,
   validateDocSource,
+  assertEditableSlug,
+  slugExists,
+  assertLocale,
 } from '@/lib/cms/content';
 import { clearDraft, saveDraft } from '@/lib/cms/drafts';
 import { revalidateContent } from '@/lib/cms/revalidate';
@@ -23,7 +26,7 @@ export async function saveDocAction(input: {
   slug: string;
   locale: string;
   content: string;
-  expectedUpdatedAt?: number;
+  expectedUpdatedAt?: number | null;
 }): Promise<SaveResult> {
   const user = await requireWriter();
   const t = await getAdminT();
@@ -31,10 +34,17 @@ export async function saveDocAction(input: {
   // 唯一的拦截点: 读取侧只会跳过坏行, 靠它兜底等于坏内容先落库再整页消失
   const invalid = validateDocSource(input.content);
   if (invalid) {
-    return { ok: false, error: t('error.invalidFrontmatter', { detail: invalid }) };
+    return {
+      ok: false,
+      error: t('error.invalidFrontmatter', { detail: invalid }),
+    };
   }
 
   try {
+    assertEditableSlug(input.slug);
+    assertLocale(input.locale);
+    // 预览状态与保存独立; 禁止仅通过 frontmatter 校验的非法 MDX 落入已发布内容。
+    await compileDoc(input.content, `${input.slug}.mdx`);
     const updatedAt = saveDoc(
       input.slug,
       input.locale,
@@ -89,15 +99,29 @@ export async function stageDraftAction(input: {
 }): Promise<StageResult> {
   const user = await requireWriter();
 
+  try {
+    assertEditableSlug(input.slug);
+    assertLocale(input.locale);
+    if (!slugExists(input.slug)) throw new Error('Page no longer exists');
+    // 未完成的 MDX 同样需要恢复; 编译失败仅阻止预览与发布。
+    saveDraft(user.id, input.slug, input.locale, input.content);
+  } catch (error) {
+    return { ok: false, error: cmsMessage(error, await getAdminT()) };
+  }
+
   const invalid = validateDocSource(input.content);
   if (invalid) {
     const t = await getAdminT();
-    return { ok: false, error: t('error.invalidFrontmatter', { detail: invalid }) };
+    return {
+      ok: false,
+      error: t('error.invalidFrontmatter', { detail: invalid }),
+    };
   }
 
   try {
+    assertEditableSlug(input.slug);
+    if (!slugExists(input.slug)) throw new Error('Page no longer exists');
     const { toc } = await compileDoc(input.content, `${input.slug}.mdx`);
-    saveDraft(user.id, input.slug, input.locale, input.content);
     return { ok: true, version: Date.now(), headings: toc.length };
   } catch (error) {
     // MDX 报错带一长串栈, 编辑者看不懂; 只留前几行
@@ -121,7 +145,8 @@ export async function createPageAction(input: {
 }): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
   await requireWriter();
   const t = await getAdminT();
-  if (!input.title.trim()) return { ok: false, error: t('error.titleRequired') };
+  if (!input.title.trim())
+    return { ok: false, error: t('error.titleRequired') };
   if (input.locales.length === 0) {
     return { ok: false, error: t('error.localeRequired') };
   }

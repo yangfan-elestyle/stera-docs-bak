@@ -36,7 +36,13 @@ export function createContentSource(
 
       const pages: VirtualFile<CmsSourceConfig>[] = [];
       for (const record of docs) {
-        const { frontmatter } = parseFrontmatter(record.source);
+        let frontmatter: unknown;
+        try {
+          frontmatter = parseFrontmatter(record.source).frontmatter;
+        } catch (error) {
+          console.error(`[cms] 跳过 YAML 不合法的页面 ${record.path}:`, error);
+          continue;
+        }
         const parsed = docFrontmatterSchema.safeParse(frontmatter);
         if (!parsed.success) {
           // 跳过而非抛错: dynamicLoader 会把 files() 的 rejected promise 一直缓存到

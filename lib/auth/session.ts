@@ -15,6 +15,7 @@ function digest(token: string): string {
 export async function createSession(userId: string): Promise<void> {
   const token = randomBytes(32).toString('base64url');
   const now = Date.now();
+  getDb().prepare('DELETE FROM sessions WHERE expires_at <= ?').run(now);
 
   getDb()
     .prepare(
@@ -25,7 +26,8 @@ export async function createSession(userId: string): Promise<void> {
   // Secure 跟请求协议走, 不跟 NODE_ENV: 镜像里 NODE_ENV 恒为 production, 而 http 部署
   // (如 http://<host>:3000) 下, 浏览器会把带 Secure 的 cookie 直接丢掉 ->
   // 登录看着成功, 下一个请求就没有会话, 每次操作都退回登录页。
-  const secure = getRequestProtocol(getRequestHost(await headers())) === 'https';
+  const secure =
+    getRequestProtocol(getRequestHost(await headers())) === 'https';
 
   (await cookies()).set(COOKIE, token, {
     httpOnly: true,

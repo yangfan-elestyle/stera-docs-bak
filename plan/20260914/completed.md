@@ -2,18 +2,19 @@
 
 > stera-docs 已从 elepay-docs 独立，完成 CMS 化改造与后台在线编辑；本机 + Docker 验收通过；正式部署与域名切换未开始，目标 10/26 上线。
 > 版本：v0.2.0（9/17）、v0.2.1（10/5）
+> 10/07 质量复盘与逐项证据见 [review.md](./review.md); v0.2.1 之后的 commit (含 `2de589c` 健康检查、`c61a6b0` 本轮修复) 未 push / 未发布。
 
 ## 架构与独立
 
 - 独立为 stera-docs 仓库，与 elepay-docs 解耦，各自演进
 - 去除多租户，收敛为 stera smart one 单站点
-- 部署从 Cloudflare 改为 Docker 容器（GHCR 镜像），构建不再依赖 git
+- 部署形态从 Cloudflare 改为 Docker 镜像，构建不再依赖 git；GHCR 构建 workflow 已写、未成功跑过
 - OpenAPI 与错误码改为仓库内本地源文件
 - 健康检查 `/api/health`（只验 db 可读，不可读返回 503），镜像内置 `HEALTHCHECK`
 
 ## 内容 CMS
 
-- 手写文档（69 页 × ja/en/zh = 207 篇）+ 侧边栏导航入库（SQLite），支持在线编辑
+- 手写文档（当前 seed 71 页 × ja/en/zh = 213 篇）+ 39 份侧边栏导航入库（SQLite），支持在线编辑
 - API Reference（OpenAPI 生成的 153 页 + 概要页）与错误码数据随发版更新，不进后台
 - 三语言各自独立维护，不做联动翻译；某语言缺失时回退 ja
 - 保存后前台即时生效：页面 / 侧边栏 / 全文搜索 / `.md` / `llms.txt` / 最終更新日
@@ -47,6 +48,6 @@
 ## 未完成（10/26 前完成）
 
 - 现网 ReadMe 内容盘点与迁移（当前正文仍派生自 elepay-docs）
-- 内网部署（ele-iac）+ 数据备份
+- ele-argocd-app 部署到 stg EKS（公网经 stg ele-dispatcher）+ 数据备份
 - QA 页面内容测试
 - `guides.sterasmartone.com` 域名切换

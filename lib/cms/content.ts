@@ -5,7 +5,7 @@ import { getDb } from './db';
 import { CmsError, type NavIssue } from './errors';
 
 // locale 来自表单, 未经校验就写库会造出前台永远读不到的语言分支
-function assertLocale(locale: string): void {
+export function assertLocale(locale: string): void {
   if (!(i18n.languages as readonly string[]).includes(locale)) {
     throw new CmsError('unknownLocale', { locale });
   }
@@ -132,14 +132,18 @@ export function getDoc(slug: string, locale: string): DocEntry | undefined {
  * 读取侧 (lib/cms/source.ts) 只会跳过坏行并打日志, 靠它兜底等于让坏内容先落库再消失。
  */
 export function validateDocSource(source: string): string | undefined {
-  const { frontmatter } = parseFrontmatter(source);
-  const parsed = docFrontmatterSchema.safeParse(frontmatter);
-  if (parsed.success) return undefined;
-  return parsed.error.issues
-    .map(
-      (issue) => `${issue.path.join('.') || 'frontmatter'}: ${issue.message}`,
-    )
-    .join('; ');
+  try {
+    const { frontmatter } = parseFrontmatter(source);
+    const parsed = docFrontmatterSchema.safeParse(frontmatter);
+    if (parsed.success) return undefined;
+    return parsed.error.issues
+      .map(
+        (issue) => `${issue.path.join('.') || 'frontmatter'}: ${issue.message}`,
+      )
+      .join('; ');
+  } catch (error) {
+    return error instanceof Error ? error.message : String(error);
+  }
 }
 
 export class StaleWriteError extends Error {
@@ -157,30 +161,43 @@ export function saveDoc(
   slug: string,
   locale: string,
   content: string,
-  expectedUpdatedAt?: number,
+  expectedUpdatedAt?: number | null,
 ): Date {
   assertLocale(locale);
-
-  const existing = getDoc(slug, locale);
-  if (
-    existing &&
-    expectedUpdatedAt !== undefined &&
-    existing.updatedAt.getTime() !== expectedUpdatedAt
-  ) {
-    throw new StaleWriteError(existing.updatedAt);
-  }
-
+  assertEditableSlug(slug);
+  if (!slugExists(slug)) throw new StaleWriteError(new Date(0));
   const now = Date.now();
-  getDb()
-    .prepare(
-      `INSERT INTO docs (slug, locale, content, updated_at) VALUES (?, ?, ?, ?)
-       ON CONFLICT(slug, locale) DO UPDATE SET content = excluded.content, updated_at = excluded.updated_at`,
-    )
-    .run(slug, locale, content, now);
-  return new Date(now);
+  const db = getDb();
+  const row =
+    expectedUpdatedAt === undefined
+      ? db
+          .prepare(
+            `INSERT INTO docs (slug, locale, content, updated_at) VALUES (?, ?, ?, ?)
+       ON CONFLICT(slug, locale) DO UPDATE SET content = excluded.content,
+       updated_at = max(docs.updated_at + 1, excluded.updated_at) RETURNING updated_at`,
+          )
+          .get(slug, locale, content, now)
+      : expectedUpdatedAt === null
+      ? db
+          .prepare(
+            `INSERT INTO docs (slug, locale, content, updated_at) VALUES (?, ?, ?, ?)
+          ON CONFLICT(slug, locale) DO NOTHING RETURNING updated_at`,
+          )
+          .get(slug, locale, content, now)
+      : db
+          .prepare(
+            `UPDATE docs SET content = ?, updated_at = max(updated_at + 1, ?)
+          WHERE slug = ? AND locale = ? AND updated_at = ? RETURNING updated_at`,
+          )
+          .get(content, now, slug, locale, expectedUpdatedAt);
+  if (!row)
+    throw new StaleWriteError(getDoc(slug, locale)?.updatedAt ?? new Date(0));
+  return new Date((row as { updated_at: number }).updated_at);
 }
 
 export function deleteDoc(slug: string, locale: string): void {
+  assertEditableSlug(slug);
+  assertLocale(locale);
   getDb()
     .prepare('DELETE FROM docs WHERE slug = ? AND locale = ?')
     .run(slug, locale);
@@ -237,13 +254,31 @@ export function validateNavSource(json: string): NavIssue | undefined {
   };
 }
 
-export function saveNav(dir: string, locale: string, json: string): void {
+export function saveNav(
+  dir: string,
+  locale: string,
+  json: string,
+  expectedJson?: string,
+): void {
   assertLocale(locale);
+  if (!listNavDirs().includes(dir)) throw new CmsError('slugInvalid');
+  const now = Date.now();
+  if (expectedJson !== undefined) {
+    const result = getDb()
+      .prepare(
+        `UPDATE navigation SET data = ?, updated_at = max(updated_at + 1, ?)
+      WHERE dir = ? AND locale = ? AND data = ?`,
+      )
+      .run(json, now, dir, locale, expectedJson);
+    if (!result.changes)
+      throw new StaleWriteError(getNav(dir, locale)?.updatedAt ?? new Date(0));
+    return;
+  }
 
   getDb()
     .prepare(
       `INSERT INTO navigation (dir, locale, data, updated_at) VALUES (?, ?, ?, ?)
-       ON CONFLICT(dir, locale) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`,
+       ON CONFLICT(dir, locale) DO UPDATE SET data = excluded.data, updated_at = max(navigation.updated_at + 1, excluded.updated_at)`,
     )
     .run(dir, locale, json, Date.now());
 }
@@ -273,16 +308,65 @@ export interface CreatePageInput {
   locales: string[];
 }
 
+/** CMS 仅管理 (home) 文档; 拒绝 route group / index 同 URL 别名及系统路由。 */
+export function assertEditableSlug(slug: string): void {
+  if (
+    !/^\(home\)\/(?:[a-zA-Z0-9_-]+|\([a-zA-Z0-9_-]+\))(?:\/(?:[a-zA-Z0-9_-]+|\([a-zA-Z0-9_-]+\)))*$/.test(
+      slug,
+    ) ||
+    /^\(.*\)$/.test(slug.split('/').at(-1)!)
+  ) {
+    throw new CmsError('slugInvalid');
+  }
+  const route = publicPath(slug).split('/');
+  if (
+    [
+      'api',
+      'admin',
+      'uploads',
+      'docs',
+      'openapi',
+      'og',
+      'ja',
+      'en',
+      'zh',
+      'llms',
+      'llms-full',
+      'llms.mdx',
+    ].includes(route[0])
+  ) {
+    throw new CmsError('slugInvalid');
+  }
+}
+
+function publicPath(slug: string): string {
+  return slug
+    .split('/')
+    .filter((part) => !/^\(.*\)$/.test(part))
+    .join('/')
+    .replace(/(^|\/)index$/, '');
+}
+
 export function createPage(input: CreatePageInput): void {
+  assertEditableSlug(input.slug);
   if (slugExists(input.slug)) throw new CmsError('slugExists');
-  if (!/^[\w()\-./]+$/.test(input.slug)) throw new CmsError('slugInvalid');
+  if (
+    publicPath(input.slug) === '' ||
+    listSlugs().some((item) => publicPath(item.slug) === publicPath(input.slug))
+  ) {
+    throw new CmsError('slugExists');
+  }
+  if (!input.locales.length || !input.title.trim())
+    throw new CmsError('slugInvalid');
 
   const db = getDb();
-  db.exec('BEGIN');
+  db.exec('BEGIN IMMEDIATE');
   try {
     for (const locale of input.locales) {
       assertLocale(locale);
-      saveDoc(input.slug, locale, TEMPLATE(input.title));
+      db.prepare(
+        'INSERT INTO docs (slug, locale, content, updated_at) VALUES (?, ?, ?, ?)',
+      ).run(input.slug, locale, TEMPLATE(input.title), Date.now());
     }
     // 不挂进导航的话页面存在但侧边栏看不到 —— meta 里写了 pages 就只显示列出的条目
     const dir = navDirFor(input.slug);
@@ -304,6 +388,7 @@ export function createPage(input: CreatePageInput): void {
 }
 
 export function deletePage(slug: string): void {
+  assertEditableSlug(slug);
   const db = getDb();
   db.exec('BEGIN');
   try {

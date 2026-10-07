@@ -11,8 +11,6 @@ import {
 import { usePathname } from 'fumadocs-core/framework';
 import { useParams } from 'next/navigation';
 
-const cache = new Map<string, Promise<string>>();
-
 const PROMPT_TEMPLATES: Record<string, (url: string) => string> = {
   ja: (url) =>
     `${url} を読んでください。このドキュメントを唯一の正しい情報源として扱ってください。今後、リクエストパラメータ、レスポンス項目、バリデーションルール、およびエッジケースについて質問します。`,
@@ -28,18 +26,27 @@ const TRIGGER =
 export function MarkdownCopyButton({ markdownUrl }: { markdownUrl: string }) {
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
+  const resetTimer = useRef<ReturnType<typeof setTimeout>>(null);
+  useEffect(
+    () => () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+    },
+    [],
+  );
 
   async function onClick() {
-    let promise = cache.get(markdownUrl);
-    if (!promise) {
-      promise = fetch(markdownUrl).then((res) => res.text());
-      cache.set(markdownUrl, promise);
-    }
     setLoading(true);
+    setError(undefined);
     try {
-      await navigator.clipboard.writeText(await promise);
+      const response = await fetch(markdownUrl, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      await navigator.clipboard.writeText(await response.text());
       setChecked(true);
-      setTimeout(() => setChecked(false), 1500);
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+      resetTimer.current = setTimeout(() => setChecked(false), 1500);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : String(error));
     } finally {
       setLoading(false);
     }
@@ -50,10 +57,11 @@ export function MarkdownCopyButton({ markdownUrl }: { markdownUrl: string }) {
       type="button"
       onClick={onClick}
       disabled={loading}
+      title={error}
       className={`${TRIGGER} gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground`}
     >
       {checked ? <Check /> : <Copy />}
-      Copy Markdown
+      {error ? 'Copy failed — retry' : 'Copy Markdown'}
     </button>
   );
 }
@@ -99,7 +107,10 @@ export function ViewOptionsPopover({ markdownUrl }: { markdownUrl?: string }) {
       : []),
     {
       title: 'Open in ChatGPT',
-      href: `https://chatgpt.com/?${new URLSearchParams({ hints: 'search', q })}`,
+      href: `https://chatgpt.com/?${new URLSearchParams({
+        hints: 'search',
+        q,
+      })}`,
       icon: (
         <svg role="img" viewBox="0 0 24 24" fill="currentColor">
           <title>OpenAI</title>
@@ -126,7 +137,9 @@ export function ViewOptionsPopover({ markdownUrl }: { markdownUrl?: string }) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`${TRIGGER} ${open ? 'bg-fd-accent text-fd-accent-foreground' : ''}`}
+        className={`${TRIGGER} ${
+          open ? 'bg-fd-accent text-fd-accent-foreground' : ''
+        }`}
       >
         Open
         <ChevronDown className="size-3.5 text-fd-muted-foreground" />

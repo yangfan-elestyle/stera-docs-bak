@@ -65,9 +65,29 @@ const MIGRATIONS: string[] = [
     PRIMARY KEY (user_id, slug, locale)
   ) WITHOUT ROWID;
   `,
+  `
+  CREATE TABLE content_state (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    revision INTEGER NOT NULL DEFAULT 0,
+    initialized INTEGER NOT NULL DEFAULT 0
+  );
+  INSERT INTO content_state (id, initialized)
+    SELECT 1, CASE WHEN EXISTS (SELECT 1 FROM docs) THEN 1 ELSE 0 END;
+  ${['docs', 'navigation']
+    .flatMap((table) =>
+      ['INSERT', 'UPDATE', 'DELETE'].map(
+        (operation) => `
+    CREATE TRIGGER revision_${table}_${operation.toLowerCase()}
+    AFTER ${operation} ON ${table}
+    BEGIN UPDATE content_state SET revision = revision + 1 WHERE id = 1; END;
+  `,
+      ),
+    )
+    .join('\n')}
+  `,
 ];
 
-let instance: DatabaseSync | undefined;
+const shared = globalThis as typeof globalThis & { steraCmsDb?: DatabaseSync };
 
 /**
  * MUST 懒加载: 模块加载即连库会让 next build 在构建机上凭空造出 data/cms.db,
@@ -78,29 +98,43 @@ let instance: DatabaseSync | undefined;
  * 不需要额外的并发守卫。
  */
 export function getDb(): DatabaseSync {
-  if (instance) return instance;
+  if (shared.steraCmsDb) return shared.steraCmsDb;
 
   mkdirSync(path.dirname(DB_PATH), { recursive: true });
   const db = new DatabaseSync(DB_PATH);
-  // WAL: 读写不互相阻塞。前提是块存储本地卷, 网络文件系统 (NFS / EFS) 上文件锁会坏库。
-  db.exec('PRAGMA journal_mode = WAL');
-  db.exec('PRAGMA busy_timeout = 5000');
-  db.exec('PRAGMA foreign_keys = ON');
+  try {
+    // PRAGMA 也可能因坏库失败; 必须在关闭失败句柄的保护范围内。
+    db.exec('PRAGMA busy_timeout = 5000');
+    db.exec('PRAGMA journal_mode = WAL');
+    db.exec('PRAGMA foreign_keys = ON');
+    migrate(db);
+    const state = db
+      .prepare('SELECT initialized FROM content_state WHERE id = 1')
+      .get() as { initialized: number };
+    if (!state.initialized) importSeed(db);
+  } catch (error) {
+    db.close();
+    throw error;
+  }
 
-  migrate(db);
-  if (countDocs(db) === 0) importSeed(db);
-
-  instance = db;
-  return instance;
+  shared.steraCmsDb = db;
+  return db;
 }
 
 export function migrate(db: DatabaseSync): void {
-  const row = db.prepare('PRAGMA user_version').get() as {
-    user_version: number;
-  };
-  for (let v = row.user_version; v < MIGRATIONS.length; v++)
-    db.exec(MIGRATIONS[v]);
-  db.exec(`PRAGMA user_version = ${MIGRATIONS.length}`);
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    const row = db.prepare('PRAGMA user_version').get() as {
+      user_version: number;
+    };
+    for (let v = row.user_version; v < MIGRATIONS.length; v++)
+      db.exec(MIGRATIONS[v]);
+    db.exec(`PRAGMA user_version = ${MIGRATIONS.length}`);
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
 }
 
 export function countDocs(db: DatabaseSync): number {
@@ -147,6 +181,10 @@ export function importSeed(db: DatabaseSync): void {
       );
     }
 
+    if (countDocs(db) === 0) {
+      throw new Error(`[cms] seed 导入后 docs 表仍为空, 检查 ${SEED_DOCS}`);
+    }
+    db.exec('UPDATE content_state SET initialized = 1 WHERE id = 1');
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');

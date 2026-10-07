@@ -16,6 +16,7 @@ import { getRequestOrigin } from '@/lib/request';
 import { sectionNotesPlugin } from '@/lib/plugins/section-notes';
 import { resolveLLMTags } from './llm-postprocess';
 import { getPageUrl } from './url';
+import { connection } from 'next/server';
 
 // docs 是动态源 (运行期编译), openapi 是静态源 (构建期编译), dynamicLoader 原生支持混用。
 // 两者合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...` 与
@@ -48,6 +49,8 @@ let seenVersion: string | undefined;
  * 代价是一条 max+count 查询, 相对一次编译可以忽略。
  */
 export async function getSource(): Promise<DocsSource> {
+  // 数据源完全依赖运行期持久卷, 禁止 Next 构建期静态探测连库。
+  await connection();
   const version = contentVersion();
   if (seenVersion !== version) {
     source.revalidate('docs');

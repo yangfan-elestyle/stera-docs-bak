@@ -1,7 +1,7 @@
 'use server';
 
 import { requireWriter } from '@/lib/auth/guard';
-import { saveNav, validateNavSource } from '@/lib/cms/content';
+import { saveNav, StaleWriteError, validateNavSource } from '@/lib/cms/content';
 import { revalidateContent } from '@/lib/cms/revalidate';
 import { getAdminT } from '@/lib/admin/i18n/server';
 
@@ -9,8 +9,11 @@ export async function saveNavAction(input: {
   dir: string;
   locale: string;
   json: string;
+  expectedJson: string;
 }): Promise<{ ok: boolean; error?: string }> {
   await requireWriter();
+  if (typeof input.expectedJson !== 'string')
+    return { ok: false, error: (await getAdminT())('error.conflict') };
 
   const invalid = validateNavSource(input.json);
   if (invalid) {
@@ -24,7 +27,17 @@ export async function saveNavAction(input: {
     };
   }
 
-  saveNav(input.dir, input.locale, input.json);
-  revalidateContent();
-  return { ok: true };
+  try {
+    saveNav(input.dir, input.locale, input.json, input.expectedJson);
+    revalidateContent();
+    return { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof StaleWriteError
+          ? (await getAdminT())('error.conflict')
+          : (error as Error).message,
+    };
+  }
 }

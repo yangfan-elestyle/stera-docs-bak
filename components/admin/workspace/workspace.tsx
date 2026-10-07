@@ -13,6 +13,9 @@ import type { AdminTree } from '@/lib/cms/tree';
 import { cn } from '@/lib/admin/cn';
 import { NewPageDialog } from '../new-page-dialog';
 import { ContentTree, type TreeSelection } from './content-tree';
+import { ListTree } from 'lucide-react';
+import { Button } from '../ui/button';
+import { useT } from '../i18n';
 
 interface LocaleContextValue {
   locale: string;
@@ -42,6 +45,8 @@ export function ContentWorkspace({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const t = useT();
+  const [mobileTree, setMobileTree] = useState(false);
   const pathname = usePathname();
   const params = useSearchParams();
   const [locale, setLocaleState] = useState(defaultLocale);
@@ -81,6 +86,7 @@ export function ContentWorkspace({
 
   const go = useCallback(
     (next: TreeSelection) => {
+      setMobileTree(false);
       const suffix = locale === defaultLocale ? '' : `lang=${locale}`;
       if (next.kind === 'doc') {
         router.push(`/admin/content/${next.key}${suffix ? `?${suffix}` : ''}`);
@@ -97,34 +103,59 @@ export function ContentWorkspace({
 
   return (
     <LocaleContext.Provider value={value}>
-      <div className="flex h-[calc(100vh-3.5rem)] min-h-0">
-        <aside
-          className={cn(
-            'hidden w-72 shrink-0 border-r border-fd-border bg-fd-card/30 lg:flex lg:flex-col',
-          )}
-        >
-          <ContentTree
-            nodes={tree.trees[locale] ?? []}
-            locales={tree.locales}
-            navDirs={navDirs}
-            rootDir={tree.rootDir}
-            languages={languages}
-            locale={locale}
-            onLocaleChange={setLocale}
-            selection={selection}
-            onSelect={go}
-            headerAction={
-              <NewPageDialog
-                dirs={navDirs}
-                locales={languages}
-                defaultLocale={defaultLocale}
-                compact
-              />
-            }
+      <div className="flex h-[calc(100dvh-3.5rem)] min-h-0 flex-col">
+        <div className="flex items-center justify-between border-b border-fd-border px-4 py-2 lg:hidden">
+          <Button
+            variant="secondary"
+            size="sm"
+            aria-expanded={mobileTree}
+            onClick={() => setMobileTree((open) => !open)}
+          >
+            <ListTree />
+            {t('content.title')}
+          </Button>
+          <NewPageDialog
+            dirs={navDirs}
+            locales={languages}
+            defaultLocale={defaultLocale}
+            compact
           />
-        </aside>
-        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-          {children}
+        </div>
+        <div className="flex min-h-0 flex-1">
+          <aside
+            className={cn(
+              'hidden w-72 shrink-0 border-r border-fd-border bg-fd-card/30 lg:flex lg:flex-col',
+              mobileTree && 'max-lg:flex max-lg:w-full max-lg:flex-col',
+            )}
+          >
+            <ContentTree
+              nodes={tree.trees[locale] ?? []}
+              locales={tree.locales}
+              navDirs={navDirs}
+              rootDir={tree.rootDir}
+              languages={languages}
+              locale={locale}
+              onLocaleChange={setLocale}
+              selection={selection}
+              onSelect={go}
+              headerAction={
+                <NewPageDialog
+                  dirs={navDirs}
+                  locales={languages}
+                  defaultLocale={defaultLocale}
+                  compact
+                />
+              }
+            />
+          </aside>
+          <div
+            className={cn(
+              'flex min-w-0 flex-1 flex-col overflow-y-auto',
+              mobileTree && 'max-lg:hidden',
+            )}
+          >
+            {children}
+          </div>
         </div>
       </div>
     </LocaleContext.Provider>

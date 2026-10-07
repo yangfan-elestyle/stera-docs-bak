@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { deletePageAction } from '@/lib/admin/actions/content';
 import { publicUrl } from '@/lib/admin/text';
 import { useT } from '../i18n';
+import { useWorkspaceLocale } from '../workspace/workspace';
 import { Button } from '../ui/button';
 import {
   Dialog,
@@ -20,6 +21,7 @@ import {
 
 export function PageActions({ slug }: { slug: string }) {
   const t = useT();
+  const { locale } = useWorkspaceLocale('ja');
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -27,7 +29,13 @@ export function PageActions({ slug }: { slug: string }) {
   return (
     <>
       <Button variant="secondary" size="sm" asChild>
-        <Link href={publicUrl(slug)} target="_blank">
+        <Link
+          href={publicUrl(slug)}
+          target="_blank"
+          onClick={() => {
+            document.cookie = `FD_LOCALE=${locale}; Path=/; SameSite=Lax`;
+          }}
+        >
           {t('pageActions.viewOnSite')}
           <ExternalLink />
         </Link>
@@ -72,7 +80,9 @@ export function PageActions({ slug }: { slug: string }) {
                     router.push('/admin/content');
                     router.refresh();
                   } else {
-                    toast.error(t('pageActions.deleteFailed'), { description: result.error });
+                    toast.error(t('pageActions.deleteFailed'), {
+                      description: result.error,
+                    });
                   }
                 })
               }

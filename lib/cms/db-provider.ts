@@ -41,11 +41,25 @@ export function createDbProvider(): ContentProvider {
         db
           .prepare('SELECT dir, locale, data, updated_at FROM navigation')
           .all() as unknown as NavRow[]
-      ).map<MetaRecord>((row) => ({
-        path: toMetaPath(row.dir, row.locale),
-        data: JSON.parse(row.data),
-        updatedAt: new Date(row.updated_at),
-      }));
+      ).flatMap<MetaRecord>((row) => {
+        let data: unknown;
+        try {
+          data = JSON.parse(row.data);
+        } catch (error) {
+          console.error(
+            `[cms] 跳过 JSON 不合法的导航 ${toMetaPath(row.dir, row.locale)}:`,
+            error,
+          );
+          return [];
+        }
+        return [
+          {
+            path: toMetaPath(row.dir, row.locale),
+            data,
+            updatedAt: new Date(row.updated_at),
+          },
+        ];
+      });
 
       docs.sort((a, b) => a.path.localeCompare(b.path));
       metas.sort((a, b) => a.path.localeCompare(b.path));

@@ -16,6 +16,10 @@ export async function GET(
     headers: {
       'Content-Type': file.type,
       'Cache-Control': 'public, max-age=31536000, immutable',
+      'X-Content-Type-Options': 'nosniff',
+      // SVG 独立打开时禁止执行脚本; 作为文档图片显示不受影响。
+      'Content-Security-Policy':
+        "default-src 'none'; style-src 'unsafe-inline'; sandbox",
     },
   });
 }

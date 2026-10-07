@@ -16,8 +16,10 @@ function bootstrapAdmin(): void {
 }
 
 export async function currentUser(): Promise<User | undefined> {
+  // 先读取请求 cookie, 让构建期静态探测退出; 初始化账号只能发生在真实请求中。
+  const user = await getSessionUser();
   bootstrapAdmin();
-  return getSessionUser();
+  return user;
 }
 
 export async function requireUser(): Promise<User> {

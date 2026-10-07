@@ -9,6 +9,9 @@ const PUBLIC_ASSET_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'zip'];
 const config = {
   reactStrictMode: true,
   output: 'standalone',
+  experimental: {
+    serverActions: { bodySizeLimit: '9mb' },
+  },
   images: {
     // Disable Next.js image optimizer to avoid `_next/image` route issues
     unoptimized: true,

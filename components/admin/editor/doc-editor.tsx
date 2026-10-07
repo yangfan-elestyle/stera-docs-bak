@@ -166,24 +166,41 @@ export function DocEditor({
   /* ---------- 预览: 防抖把草稿落库, 再让 iframe 重载 ---------- */
   const stageTimer = useRef<ReturnType<typeof setTimeout>>(null);
   useEffect(() => {
-    if (view === 'edit') return;
+    // 初始加载不能覆盖待恢复草稿; 纯编辑模式也持久化草稿。
+    if (!dirty || state.draftAt !== null) return;
+    let cancelled = false;
     if (stageTimer.current) clearTimeout(stageTimer.current);
     setPreviewState('staging');
     stageTimer.current = setTimeout(async () => {
-      const result = await stageDraftAction({ slug, locale: active, content });
-      if (result.ok) {
-        setPreviewError(undefined);
-        setPreviewState('idle');
-        setPreviewVersion((v) => v + 1);
-      } else {
-        setPreviewError(result.error);
-        setPreviewState('error');
+      try {
+        const result = await stageDraftAction({
+          slug,
+          locale: active,
+          content,
+        });
+        if (cancelled) return;
+        if (result.ok) {
+          setPreviewError(undefined);
+          setPreviewState('idle');
+          setPreviewVersion((v) => v + 1);
+        } else {
+          setPreviewError(result.error);
+          setPreviewState('error');
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setPreviewError(
+            error instanceof Error ? error.message : String(error),
+          );
+          setPreviewState('error');
+        }
       }
     }, 600);
     return () => {
+      cancelled = true;
       if (stageTimer.current) clearTimeout(stageTimer.current);
     };
-  }, [slug, active, content, view]);
+  }, [slug, active, content, dirty, state.draftAt]);
 
   /* ---------- 保存 ---------- */
   const save = useCallback(
@@ -193,29 +210,38 @@ export function DocEditor({
       if (item.saving) return;
       patch(locale, { saving: true });
 
-      const result = await saveDocAction({
-        slug,
-        locale,
-        content: text,
-        expectedUpdatedAt: force ? undefined : item.updatedAt ?? undefined,
-      });
+      try {
+        const result = await saveDocAction({
+          slug,
+          locale,
+          content: text,
+          expectedUpdatedAt: force ? undefined : item.updatedAt,
+        });
 
-      if (result.ok) {
-        patch(locale, {
-          saving: false,
-          saved: text,
-          updatedAt: result.updatedAt,
-          draftAt: null,
-        });
-        // 左树建在 layout 的 server 组件里, 不 refresh 的话标题改了树上还是旧的
-        router.refresh();
-        toast.success(t('editor.savedToast', { locale }), {
-          description: t('editor.savedToastDesc'),
-        });
-      } else {
+        if (result.ok) {
+          patch(locale, {
+            saving: false,
+            saved: text,
+            updatedAt: result.updatedAt,
+            draftAt: null,
+          });
+          // 左树建在 layout 的 server 组件里, 不 refresh 的话标题改了树上还是旧的
+          router.refresh();
+          toast.success(t('editor.savedToast', { locale }), {
+            description: t('editor.savedToastDesc'),
+          });
+        } else {
+          patch(locale, { saving: false });
+          if (result.conflictAt !== undefined)
+            setConflict({ locale, at: result.conflictAt });
+          else
+            toast.error(t('editor.saveFailed'), { description: result.error });
+        }
+      } catch (error) {
         patch(locale, { saving: false });
-        if (result.conflictAt) setConflict({ locale, at: result.conflictAt });
-        else toast.error(t('editor.saveFailed'), { description: result.error });
+        toast.error(t('editor.saveFailed'), {
+          description: error instanceof Error ? error.message : String(error),
+        });
       }
     },
     [patch, slug, states],
@@ -274,27 +300,30 @@ export function DocEditor({
   };
 
   /* ---------- 图片: 工具栏选择 / 粘贴截图 / 拖入文件 ---------- */
-  const uploadFiles = useCallback(async (files: File[]) => {
-    const id = toast.loading(t('editor.uploading', { count: files.length }));
-    const inserted: string[] = [];
-    for (const file of files) {
-      const form = new FormData();
-      form.set('file', file);
-      const result = await uploadImageAction(form);
-      if (result.ok) {
-        const alt = file.name.replace(/\.[^.]+$/, '');
-        inserted.push(`![${alt}](${result.url})`);
-      } else {
-        toast.error(t('editor.uploadFailed', { name: file.name }), {
-          description: result.error,
-          id,
-        });
-        return;
+  const uploadFiles = useCallback(
+    async (files: File[]) => {
+      const id = toast.loading(t('editor.uploading', { count: files.length }));
+      const inserted: string[] = [];
+      for (const file of files) {
+        const form = new FormData();
+        form.set('file', file);
+        const result = await uploadImageAction(form);
+        if (result.ok) {
+          const alt = file.name.replace(/\.[^.]+$/, '');
+          inserted.push(`![${alt}](${result.url})`);
+        } else {
+          toast.error(t('editor.uploadFailed', { name: file.name }), {
+            description: result.error,
+            id,
+          });
+          return;
+        }
       }
-    }
-    editorRef.current?.insertBlock(inserted.join('\n\n'));
-    toast.success(t('editor.uploaded', { count: inserted.length }), { id });
-  }, [t]);
+      editorRef.current?.insertBlock(inserted.join('\n\n'));
+      toast.success(t('editor.uploaded', { count: inserted.length }), { id });
+    },
+    [t],
+  );
 
   const words = countWords(state.body);
 
@@ -345,7 +374,9 @@ export function DocEditor({
         <div className="ml-auto flex items-center gap-2">
           <span className="hidden text-xs text-fd-muted-foreground sm:inline">
             {state.updatedAt
-              ? t('editor.savedAt', { time: formatRelative(state.updatedAt, uiLocale) })
+              ? t('editor.savedAt', {
+                  time: formatRelative(state.updatedAt, uiLocale),
+                })
               : t('editor.neverSaved')}
           </span>
           {dirtyLocales.length > 1 ? (
@@ -389,9 +420,17 @@ export function DocEditor({
             });
             toast.info(t('editor.draftRestored'));
           }}
-          onDiscard={() => {
-            void discardDraftAction({ slug, locale: active });
-            patch(active, { draftAt: null });
+          onDiscard={async () => {
+            try {
+              await discardDraftAction({ slug, locale: active });
+              patch(active, { draftAt: null });
+              setPreviewVersion((version) => version + 1);
+            } catch (error) {
+              toast.error(t('editor.saveFailed'), {
+                description:
+                  error instanceof Error ? error.message : String(error),
+              });
+            }
           }}
         />
       ) : null}
@@ -413,7 +452,9 @@ export function DocEditor({
                 aria-label={t('editor.titleLabel')}
                 className="min-w-0 flex-1 bg-transparent text-lg font-semibold outline-none placeholder:font-normal placeholder:text-fd-muted-foreground"
               />
-              {!fm.title ? <Badge tone="danger">{t('editor.titleMissing')}</Badge> : null}
+              {!fm.title ? (
+                <Badge tone="danger">{t('editor.titleMissing')}</Badge>
+              ) : null}
               <Button
                 variant="ghost"
                 size="sm"
@@ -458,7 +499,9 @@ export function DocEditor({
 
             <div className="flex items-center gap-3 border-t border-fd-border px-4 py-1.5 text-[11px] text-fd-muted-foreground md:px-6">
               <span>{t('editor.words', { count: words })}</span>
-              <span>{t('editor.lines', { count: state.body.split('\n').length })}</span>
+              <span>
+                {t('editor.lines', { count: state.body.split('\n').length })}
+              </span>
               {dirty ? (
                 <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
                   <span className="size-1.5 rounded-full bg-current" />
@@ -472,6 +515,9 @@ export function DocEditor({
               )}
               <Link
                 href={publicUrl(slug)}
+                onClick={() => {
+                  document.cookie = `FD_LOCALE=${active}; Path=/; SameSite=Lax`;
+                }}
                 target="_blank"
                 className="ml-auto flex items-center gap-1 transition-colors hover:text-fd-foreground"
               >
@@ -613,7 +659,9 @@ function DraftBanner({
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-amber-500/30 bg-amber-500/8 px-4 py-2 text-sm md:px-6">
       <FileWarning className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
-      <span>{t('editor.draftBanner', { time: formatRelative(at, locale) })}</span>
+      <span>
+        {t('editor.draftBanner', { time: formatRelative(at, locale) })}
+      </span>
       <div className="ml-auto flex gap-2">
         <Button size="sm" variant="secondary" onClick={onRestore}>
           {t('editor.restoreDraft')}

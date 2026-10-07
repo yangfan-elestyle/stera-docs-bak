@@ -281,7 +281,7 @@ export const en: AdminDict = {
   'error.localeRequired': 'Pick at least one language',
   'cms.unknownLocale': 'Unknown language: {locale}',
   'cms.slugExists': 'A page already exists at that path',
-  'cms.slugInvalid': 'Paths may only use ASCII letters, digits, - _ / and ( )',
+  'cms.slugInvalid': 'Use a valid documentation path; reserved paths are unavailable',
   'cms.uploadType': 'Only png / jpg / webp / gif / svg are supported',
   'cms.uploadTooLarge': 'Each image must be {max} MB or smaller',
   'error.invalidNavJson': 'JSON syntax error —— {detail}',
