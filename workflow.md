@@ -25,7 +25,7 @@ bun run dev           # http://localhost:3000
 验收用本机 docker 运行 (= AI 唯一交付判定, 与生产同一镜像):
 
 ```bash
-docker build --build-arg DOCS_ENV=staging -t stera-docs:local .
+docker build -t stera-docs:local .
 docker run --rm -p 3000:3000 -v stera-data:/app/data \
   -e ADMIN_EMAIL=ops@example.com -e ADMIN_PASSWORD='<12 位以上, 含大小写与数字>' \
   stera-docs:local
@@ -43,7 +43,6 @@ curl -sI http://localhost:3000/admin/login             # 200, 未登录不 500
 ```
 
 > 改代码后必须重跑 `docker build` (镜像无 HMR); 仅重跑 `docker run` 跑的是旧镜像。
-> `DOCS_ENV` 是构建期参数, `docker run -e DOCS_ENV=` 改不动已构建产物。
 > 空卷首启会自动灌 `seed/docs`; 卷里已有数据则不再灌, 编辑结果不会被覆盖。
 > `ADMIN_EMAIL` / `ADMIN_PASSWORD` 只在账号表为空时生效, 之后改它们没有任何作用。
 
@@ -64,7 +63,7 @@ curl -sI http://localhost:3000/admin/login             # 200, 未登录不 500
 ```bash
 bun run generate:data              # 仅 clone 后 / openapi*.yaml 变更时
 bun run types:check                # fumadocs-mdx + next typegen + tsc --noEmit
-docker build --build-arg DOCS_ENV=staging -t stera-docs:local .
+docker build -t stera-docs:local .
 ```
 
 > MUST NOT 跑 `docker push` / 手动推 GHCR。

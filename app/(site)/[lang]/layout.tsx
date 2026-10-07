@@ -61,8 +61,5 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: '/favicon.ico',
       shortcut: '/favicon.ico',
     },
-    ...(process.env.DOCS_ENV !== 'product' && {
-      other: { 'docs-env': process.env.DOCS_ENV || 'dev' },
-    }),
   };
 }

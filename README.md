@@ -18,7 +18,6 @@ stera smart one (SMCC) 对外文档站: 多语言 (日 / 英 / 简), 以 Docker 
 | 本机 | <http://localhost:3000> |
 | prod | <https://guides.sterasmartone.com> |
 
-> staging 与 prod 是同一份镜像的不同构建 (差异仅 `DOCS_ENV`); 环境域名与 ingress 配置在 `elepay-io/ele-argocd-app`。
 > prod 域名目前由另一套平台提供内容, 本仓库是它的替代者; 切换前本仓库无任何用户。
 
 ## 特性
@@ -66,7 +65,6 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 ## 架构注意点
 
 - **Host 信源**: 以请求 `Host` 头为唯一信源 (`lib/request.ts`), 勿依赖 `X-Forwarded-*`。入口层 (ALB / ingress) MUST 终止 TLS 并透传原始 Host, 否则 OG / canonical / llms 的绝对 URL 全错。
-- **`DOCS_ENV` 是构建期变量**: `next.config.mjs` 的 `env` 把它内联进产物 (非 product 时输出 `<meta name="docs-env">`); 运行期 `-e DOCS_ENV=` 无效, 每环境一份镜像。
 - **Middleware 先于 `public/`**: i18n middleware 把裸路径 rewrite 成 `/{locale}/...`, 命中后不再回落文件系统路由。`public/` 下的静态文件 MUST 在 `middleware.ts` 的 matcher 中排除 (现排除 `favicon.ico` 与 `docs/**.{png,jpg,jpeg,webp,zip}`), 新增静态资源类型时同步更新。
 - **`public/` 缓存头**: Node 运行时对 `public/` 默认发 `max-age=0`, 长缓存在 `next.config.mjs` 的 `headers()` 中声明。
 - **后台是独立 root layout**: `app/(site)` 与 `app/(admin)` 各一个 `<html>`; `/admin` MUST 在 `middleware.ts` 的 matcher 里排除, 否则被 i18n rewrite 成 `/{locale}/admin` 而 404。
