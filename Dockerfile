@@ -52,4 +52,8 @@ RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
 USER nextjs
 EXPOSE 3000
 
+# runner 镜像无 curl, 用 node 自带 fetch 探 /api/health (只验 db 可读)。
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+
 CMD ["node", "server.js"]

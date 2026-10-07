@@ -29,7 +29,7 @@ docker build -t stera-docs:local .
 docker run --rm -p 3000:3000 -v stera-data:/app/data stera-docs:local
 ```
 
-单租户, 任意 Host 内容一致; 冒烟六条:
+单租户, 任意 Host 内容一致; 冒烟七条:
 
 ```bash
 curl -sI http://localhost:3000/                        # 200
@@ -38,6 +38,7 @@ curl -s  http://localhost:3000/llms.txt | head         # 绝对 URL 正常
 curl -sI http://localhost:3000/get-started/set-up.md   # 200
 curl -s  'http://localhost:3000/api/search?query=stera&locale=ja' | head -c 80   # 有结果
 curl -sI http://localhost:3000/admin/login             # 200, 未登录不 500
+curl -s  http://localhost:3000/api/health              # {"ok":true}; docker ps 显示 healthy
 ```
 
 > 改代码后必须重跑 `docker build` (镜像无 HMR); 仅重跑 `docker run` 跑的是旧镜像。
