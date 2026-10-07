@@ -54,11 +54,7 @@ export const ja = {
   // ---- 登录 ----
   'login.heading': 'stera smart one ドキュメント管理',
   'login.subtitle': '配布されたアカウントでログインしてください',
-  'login.subtitleUninitialized': 'システムは未初期化です',
   'login.submit': 'ログイン',
-  'login.uninitBefore': 'アカウントがまだ 1 件もありません。最初の管理者はデプロイ側が環境変数 ',
-  'login.uninitMiddle': ' と ',
-  'login.uninitAfter': ' で登録します。アカウントテーブルが空のときのみ有効です。',
 
   // ---- 我的账号 ----
   'account.title': 'アカウント設定',

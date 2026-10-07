@@ -49,11 +49,7 @@ export const en: AdminDict = {
   // ---- 登录 ----
   'login.heading': 'stera smart one docs admin',
   'login.subtitle': 'Sign in with the account you were given',
-  'login.subtitleUninitialized': 'Not initialized yet',
   'login.submit': 'Sign in',
-  'login.uninitBefore': 'No accounts exist yet. The first administrator is provisioned by the deployment through the environment variables ',
-  'login.uninitMiddle': ' and ',
-  'login.uninitAfter': ', which only take effect while the account table is empty.',
 
   // ---- 我的账号 ----
   'account.title': 'My account',

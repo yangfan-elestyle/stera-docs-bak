@@ -5,17 +5,14 @@ import { getSessionUser } from './session';
 import type { User } from './users';
 
 /**
- * 首个 admin 只能来自部署侧注入的 ADMIN_EMAIL / ADMIN_PASSWORD, 且只在账号表为空时生效。
+ * 账号表为空时建默认 admin; createUser 标记 mustChangePassword, 首次登录强制改密。
  *
  * MUST NOT 开放自助注册或「首次访问即成为管理员」的 setup 页: mdx 默认允许代码执行,
- * 拿到编辑权 = 能在服务端跑代码, 两者都会留出一个任何人都能抢注的窗口。
+ * 拿到编辑权 = 能在服务端跑代码。
  */
 function bootstrapAdmin(): void {
   if (countUsers() > 0) return;
-  const email = process.env.ADMIN_EMAIL?.trim();
-  const password = process.env.ADMIN_PASSWORD;
-  if (!email || !password) return;
-  createUser({ email, password, role: 'admin' });
+  createUser({ email: 'admin@sterasmartone.com', password: '123456', role: 'admin' });
 }
 
 export async function currentUser(): Promise<User | undefined> {

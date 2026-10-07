@@ -26,9 +26,7 @@ bun run dev           # http://localhost:3000
 
 ```bash
 docker build -t stera-docs:local .
-docker run --rm -p 3000:3000 -v stera-data:/app/data \
-  -e ADMIN_EMAIL=ops@example.com -e ADMIN_PASSWORD='<12 位以上, 含大小写与数字>' \
-  stera-docs:local
+docker run --rm -p 3000:3000 -v stera-data:/app/data stera-docs:local
 ```
 
 单租户, 任意 Host 内容一致; 冒烟六条:
@@ -44,7 +42,7 @@ curl -sI http://localhost:3000/admin/login             # 200, 未登录不 500
 
 > 改代码后必须重跑 `docker build` (镜像无 HMR); 仅重跑 `docker run` 跑的是旧镜像。
 > 空卷首启会自动灌 `seed/docs`; 卷里已有数据则不再灌, 编辑结果不会被覆盖。
-> `ADMIN_EMAIL` / `ADMIN_PASSWORD` 只在账号表为空时生效, 之后改它们没有任何作用。
+> 账号表为空时自动建 `admin@sterasmartone.com` / `123456`, 首次登录强制改密。
 
 # 发布
 

@@ -49,11 +49,7 @@ export const zh: AdminDict = {
   // ---- 登录 ----
   'login.heading': 'stera smart one 文档管理',
   'login.subtitle': '用分配给你的账号登录',
-  'login.subtitleUninitialized': '系统尚未初始化',
   'login.submit': '登录',
-  'login.uninitBefore': '还没有任何账号。首个管理员由部署侧通过环境变量 ',
-  'login.uninitMiddle': ' 与 ',
-  'login.uninitAfter': ' 注入, 仅在账号表为空时生效。',
 
   // ---- 我的账号 ----
   'account.title': '我的账号',

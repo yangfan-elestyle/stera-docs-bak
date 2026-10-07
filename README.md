@@ -78,7 +78,7 @@ bun run import:seed      # seed/docs -> data/cms.db, 清空重灌; 只在新建�
 - **编辑器预览是独立路由 + iframe**: MUST NOT 改成 server action 返回 JSX —— 那要求预览用到的每个 client component 都在该 action 的 React Client Manifest 里, 而 fumadocs-ui 的 Heading / CodeBlock 只在站点路由图里注册过, 生产构建必定报 `Could not find the module ... in the React Client Manifest`。
 - **草稿存库不存内存**: 预览路由与保存动作分属不同入口 bundle, 模块级变量互不可见 (与 `getSource()` 同一个坑)。
 - **强制改初始密码 MUST NOT 放在 `requireUser()` 里重定向**: 改密页与其他后台页共用同一层受守卫的布局, 那样会重定向到自己。服务端硬拦截在 `requireWriter()`, 引导在 `AppShell` 客户端做。
-- **首个管理员只来自部署侧**: `ADMIN_EMAIL` + `ADMIN_PASSWORD` 且仅在账号表为空时生效。MUST NOT 加自助注册或「首次访问即成为管理员」的 setup 页 —— mdx 默认允许代码执行, 拿到编辑权等于能在服务端跑代码。
+- **默认管理员**: 账号表为空时自动建 `admin@sterasmartone.com` / `123456`, 首次登录强制改密。MUST NOT 加自助注册或「首次访问即成为管理员」的 setup 页 —— mdx 默认允许代码执行, 拿到编辑权等于能在服务端跑代码。
 - **构建不读内容**: 手写文档在运行期由 `lib/cms` 编译, 构建期只处理 `content/docs/openapi/(generated)/`。`next build` MUST NOT 依赖内容源 (含 db / git 历史) -> MUST NOT 给页面路由加 `generateStaticParams`。
 - **运行期编译链 MUST 与构建期对齐**: `lib/cms/mdx.ts` 手工补齐 `remarkStructure` 与 `remarkLLMs`, 且 `remarkLLMs` MUST 在 transform 阶段、`this` 绑 processor 调用; 漏一项会让页面描述 / 搜索索引 / `.md` 输出静默降级或直接抛错。
 
