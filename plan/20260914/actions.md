@@ -84,28 +84,12 @@ E4. [ok] 后台整体 UI (todo 10)
     - 新建 / 删除页面 (自动挂到所在分组导航), 图片上传 (粘贴截图 / 拖入 / 选文件)
     - 导航编辑器结构化, 分隔符改名自动搬 sectionNotes 的 key
     - 内容与导航合并为一个工作区: 左侧就是站点侧边栏本身, 点页面改正文, 点分组齿轮改排序与分段说明
-    - SMCC 的 UI 排版回复到了再按其意见调, 不阻塞交付
+    - SMCC 10/07 确认 UI 排版无意见, 沿用现有设计
 E5. [ok] 保存后刷新前台
     - `getSource()` 比对库里的版本指纹 + `revalidatePath`
     - Next 给 page 与 route handler 打不同入口 bundle, 只靠 `revalidate()` 到不了另一份模块实例
 
-## F. 部署链路 (待人工发起)
-
-F1. 申请持久卷并挂进 pod
-    - 跨 repo: 卷与部署策略在 `elepay-io/ele-argocd-app` 侧
-    - MUST 是块存储, MUST NOT 落在 NFS / EFS -> SQLite 的文件锁在网络文件系统上会损坏库, 且不报错
-    - MUST replicas=1 + 部署策略 `Recreate` -> 滚动更新时两个 pod 抢同一块 RWO 卷
-    - MUST 挂在 `/app/data`; 卷里同时放 `cms.db` 与后台上传的图片 `uploads/`, 容量按图片量估
-    - `uploads/` 没有 seed 也没有恢复路径, 卷是唯一副本 -> 按有状态数据对待, MUST NOT 当缓存卷
-    - 同时注入 `ADMIN_EMAIL` / `ADMIN_PASSWORD` secret
-
-F2. repo 正式落位 `elepay-io` 组织
-    - 现状: origin = `yangfan-elestyle/stera-docs-bak`, 个人 org 下无 self-hosted runner
-
-F3. CI/CD 逐项核对并跑通
-    - self-hosted runner / `DEPLOY_PAT_TOKEN` / `elepay-io/ele-argocd-app` 侧 image 引用 (`image_name: ${{ github.repository }}` 随 repo 名变)
-    - `.github/workflows/docker-build.yml` 现只留 `workflow_dispatch`, 恢复方式写在文件头部
-    - `PACKAGE_READ_TOKEN` 已不需要: 私有依赖连同 Chatbot 一起删了
+## F. 部署链路 -> 已并入 [roadmap.md](../20261007/roadmap.md)
 
 ## H. 落地页 [ok]
 
@@ -123,8 +107,10 @@ G1. [ok] 删 `lib/legacy-redirects.mjs` + `next.config.mjs` 的 `redirects()`
 G2. [ok] 删 `docs/多租户编写指南.md`
 G3. [ok] 删 `@elepay-io/chatbot` 与 ChatbotLauncher -> 连的是 elepay 的知识库, 挂在 SMCC 站上会用错知识源; 私有 registry 链路一并拆掉
 G4. [ok] README / workflow.md 同步改造后事实
+G5. [ok] 健康检查 `app/api/health/route.ts` + Dockerfile `HEALTHCHECK`
+    - 只跑 `SELECT 1 FROM docs`, 不碰编译 / 搜索索引; 不可读 -> 503
+    - MUST `force-dynamic`, 否则构建期预渲染会连库
+    - runner 无 curl, 探针用 `node -e fetch`
+    - 验收: 空卷首启 healthy; 坏库文件 -> 503 `file is not a database`
 
-## 需回复 SMCC
-
-- Chatbot 可对应时期
-- UI 排版 -> 后台已可交付, 收到意见后按其调整
+## 需回复 SMCC -> 已并入 [roadmap.md](../20261007/roadmap.md)

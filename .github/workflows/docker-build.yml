@@ -1,43 +1,33 @@
-# 必需 Secrets (Settings → Secrets and variables → Actions):
-#   DEPLOY_PAT_TOKEN     向 elepay-io/ele-argocd-app 派发部署事件
+# 发布模型 (GHCR 镜像 + ele-iac Ansible):
+#   本 workflow 只构建并推送 ghcr.io/<owner>/<repo>, 标签含 master / sha-<sha>; 不负责部署。
+#   发版 = ele-iac PR 把 `ansible/roles/business/stera-docs` 的镜像 digest 改成本次构建的 digest
+#   (digest 见 job summary), 合并后 ansible-deploy 落到 office-server-02。
 #
-# 部署模型 (GHCR 镜像 + ArgoCD):
-#   docker-build  → 构建并推送 ghcr.io/<owner>/<repo>, 标签含 sha-<sha>
-#   deploy-docker → repository_dispatch 到 elepay-io/ele-argocd-app,
-#                   environment = github.ref_name (master / develop), imageTag = sha-<sha>
-#
-# 自动触发已暂停: repo 尚未落位 elepay-io, 个人 org 下无 self-hosted runner,
-# push 只会让 job 无限 queued。当前仅保留手动 workflow_dispatch。
-# 恢复时把下方 `on:` 的 push 块取消注释, 并去掉 workflow_dispatch。
-#
-# 原触发规则 (master 与 develop 均禁止直接 push, 仅靠 PR merge 流入 → 产生 push 事件):
-#   push develop → DOCS_ENV=staging
-#   push master  → DOCS_ENV=product
-# DOCS_ENV 于 next build 期被内联进产物,
-# 每环境一份镜像, 运行期不可切换。
+# 触发: push master (仅靠 PR merge 流入) + 手动 workflow_dispatch。
+# runs-on self-hosted = elepay-io 组织 runner。
+# 无需额外 Secrets: GHCR 推送用 github.token (packages: write)。
 #
 # 单租户站点 (stera smart one / SMCC); 入口层须透传原始 Host,
 # OG / canonical / llms 的绝对 URL 由请求 Host 生成。
 
-name: Build and Deploy Docker Image
+name: Build Docker Image
 
 on:
+  push:
+    branches: [master]
   workflow_dispatch:
-  # push:
-  #   branches: [master, develop]
 
-# 同分支串行, 避免并发推送同一 tag 与并发 ArgoCD 派发。
+# 同分支串行, 避免并发推送同一 tag。
 concurrency:
-  group: docker-deploy-${{ github.ref_name }}
+  group: docker-build-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
-    name: Build & Deploy
+  build:
+    name: Build & Push
     runs-on: self-hosted
     timeout-minutes: 30
     permissions:
-      actions: read
       contents: read
       packages: write
 
@@ -49,10 +39,12 @@ jobs:
         with:
           enable_cross_platform: 'false'
           image_name: ${{ github.repository }}
-          build_args: |
-            DOCS_ENV=${{ github.ref_name == 'master' && 'product' || 'staging' }}
 
-      - name: Deploy to server
-        uses: elepay-io/.github/.github/actions/deploy-docker@master
-        with:
-          pat_token: ${{ secrets.DEPLOY_PAT_TOKEN }}
+      # ele-iac role 按 digest 钉镜像; 写进 summary 供发版 PR 直接复制。
+      - name: Record image digest
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+        run: |
+          digest=$(docker buildx imagetools inspect "$IMAGE" --format '{{.Manifest.Digest}}')
+          echo "### Image" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`ghcr.io/${{ github.repository }}@${digest}\`" >> "$GITHUB_STEP_SUMMARY"
