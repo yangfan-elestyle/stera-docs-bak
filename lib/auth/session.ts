@@ -22,8 +22,8 @@ export async function createSession(userId: string): Promise<void> {
     )
     .run(digest(token), userId, now + TTL_MS, now);
 
-  // Secure 跟请求协议走, 不跟 NODE_ENV: 镜像里 NODE_ENV 恒为 production, 而内网预览站
-  // (http://<host>.local:3000) 是 http 源, 浏览器会把带 Secure 的 cookie 直接丢掉 ->
+  // Secure 跟请求协议走, 不跟 NODE_ENV: 镜像里 NODE_ENV 恒为 production, 而 http 部署
+  // (如 http://<host>:3000) 下, 浏览器会把带 Secure 的 cookie 直接丢掉 ->
   // 登录看着成功, 下一个请求就没有会话, 每次操作都退回登录页。
   const secure = getRequestProtocol(getRequestHost(await headers())) === 'https';
 
