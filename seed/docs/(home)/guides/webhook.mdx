@@ -98,8 +98,7 @@ Webhook 通知の受け取りに異常がある場合、必ず 4xx や 5xx の H
 
 ### 正当性
 
-stera smart one のサーバーからのすべての Webhook には elepay-signature がヘッダーに含まれています。\
-具体的には下記のような内容となっています。
+stera smart one のサーバーからのすべての Webhook には elepay-signature がヘッダーに含まれています。具体的には下記のような内容となっています。
 
 ```text
 形式：
@@ -111,13 +110,11 @@ elepay-signature: t=1581064080,sign=100dcc3d839c89cd91ecdd23d7305b2fdb8ae73b498c
 
 > 📘
 >
-> ご利用のFrameworkによります、HTTPのヘッダーが全部小文字の `elepay-signature` に処理してくれない場合があります。\
-> 該当場合は `Elepay-Signature` でお試しください。
+> ご利用のFrameworkによります、HTTPのヘッダーが全部小文字の `elepay-signature` に処理してくれない場合があります。該当場合は `Elepay-Signature` でお試しください。
 
 **正当性チェックロジック**
 
-この値にタイムスタンプと署名 チェック用秘密鍵を使って、HMAC-SHA256 署名アルゴリズムで暗号化されています。\
-チェック用秘密鍵は管理画面の Webhook 詳細画面で確認できます。再作成もできます。
+この値にタイムスタンプと署名 チェック用秘密鍵を使って、HMAC-SHA256 署名アルゴリズムで暗号化されています。チェック用秘密鍵は管理画面の Webhook 詳細画面で確認できます。再作成もできます。
 
 ![](/docs/192cf1e-SCR-20240430-jyox.png)
 

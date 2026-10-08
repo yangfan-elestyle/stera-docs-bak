@@ -13,13 +13,13 @@ EasyQRはelepayが提供しているMPM型の動的QRコード機能です。主
 
 ## 1. EasyQR Codeオブジェクトの新規生成
 
-elepay サーバーがコードリクエストに対して Code オブジェクトを新規生成し、サーバー側に返します。\
-APIについて、APIリファレンスの[EasyQR](/openapi/code/closeCode)をご参照してください。
+elepay サーバーがコードリクエストに対して Code オブジェクトを新規生成し、サーバー側に返します。APIについて、APIリファレンスの[EasyQR](/openapi/code/closeCode)をご参照してください。
 
 ## 2. QRコードを表示
 
-表示方法は二つあります\
-・Javascript SDKのEasyQR Code Widgetを利用して、QRコードを表示します。
+表示方法は二つあります。
+
+1. Javascript SDKのEasyQR Code Widgetを利用して、QRコードを表示します。
 
 ```javascript
 var elepay = new Elepay('公開鍵')
@@ -37,12 +37,12 @@ widget.show('サーバー側生成したCodeオブジェクトのID')
 
 > EasyQR Code Widgetのレイアウトはオプションで設定することが可能です。詳細は [Javascript SDKリファレンス](/guides/javascript/api-reference) を参考してください。
 
-・Code オブジェクトのcodeUrlをQRコードに変換して表示します。
+2. Code オブジェクトのcodeUrlをQRコードに変換して表示します。
 
 ## 3. お客様の支払い
 
-・お客様がQRコードをスキャンして、支払処理を行います\
-・お支払い画面のブランド名、ロゴ、決済方法などはelepay管理画面の「EasyQR設定」で設定できます。
+- お客様がQRコードをスキャンして、支払処理を行います
+- お支払い画面のブランド名、ロゴ、決済方法などはelepay管理画面の「EasyQR設定」で設定できます。
 
 ## 4. Webhook イベントの受信
 

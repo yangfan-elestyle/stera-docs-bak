@@ -35,7 +35,8 @@ SDKを初期化
 
 Charge オブジェクトを渡して、支払い処理を行います。
 
-**Kind**: instance method of [<code>Elepay</code>](#Elepay)\
+**Kind**: instance method of [<code>Elepay</code>](#Elepay)
+
 **Returns**: <code>Promise</code> - 支払い処理結果のPromise。frontUrl設定必要の決済方法はfrontUrlで決済結果を戻ります。
 
 | Param | Type | Description |
@@ -63,7 +64,8 @@ elepay.handleCharge(chargeObject).then(function(result) {
 
 Source オブジェクトを渡して、承認処理を行います。
 
-**Kind**: instance method of [<code>Elepay</code>](#Elepay)\
+**Kind**: instance method of [<code>Elepay</code>](#Elepay)
+
 **Returns**: <code>Promise</code> - 承認処理結果のPromise。frontUrl設定必要の決済方法はfrontUrlで承認結果を戻ります。
 
 | Param | Type | Description |
@@ -91,7 +93,8 @@ elepay.handleSource(source).then(function(result) {
 
 EasyQRウィジェットを生成します
 
-**Kind**: instance method of [<code>Elepay</code>](#Elepay)\
+**Kind**: instance method of [<code>Elepay</code>](#Elepay)
+
 **Returns**: <code>CodesWidget</code> - EasyQRウィジェットインスタンス
 
 | Param | Type | Description |
@@ -128,7 +131,8 @@ widget.show('cod_028123beb9f8c853fa845f4')
 
 EasyCheckout 処理を行います。
 
-**Kind**: instance method of [<code>Elepay</code>](#Elepay)\
+**Kind**: instance method of [<code>Elepay</code>](#Elepay)
+
 **Returns**: <code>Promise</code> - Checkout処理のPromise。エラーの場合だけ、処理する必要があります。
 
 | Param | Type | Description |

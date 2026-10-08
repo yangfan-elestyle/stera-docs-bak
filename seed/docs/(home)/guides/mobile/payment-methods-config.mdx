@@ -306,15 +306,13 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 
 [Apple Payの設定方法](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay_requirements)を参照してください。
 
-1. Apple Merchant ID を登録します\
+1. Apple Merchant ID を登録します
+
    Apple Pay をご利用するには、Apple Merchant IDを登録する必要があります。
 
-2. Apply Pay 証明書の作成\
-   Apple Payで利用する証明書を取得します。\
-   取得の過程で、秘密鍵／公開鍵ペアの生成 を要求されます。\
-   秘密鍵を紛失しないよう十分ご注意ください。\
-   鍵ペアは PKCS12形式 にまとめ、エクスポートパスワード を設定してください。\
-   PKCS12をstera smart one チームまで提出してください。
+2. Apply Pay 証明書の作成
+
+   Apple Payで利用する証明書を取得します。取得の過程で、秘密鍵／公開鍵ペアの生成 を要求されます。秘密鍵を紛失しないよう十分ご注意ください。鍵ペアは PKCS12形式 にまとめ、エクスポートパスワード を設定してください。PKCS12をstera smart one チームまで提出してください。
 
 ### Google Pay [#google-pay]
 
@@ -341,8 +339,7 @@ val configuration = ElepayConfiguration(
 Elepay.setup(configuration)
 ```
 
-Google Pay は Google Play Service に依存するので、ご利用の際 Google Play Service の使用可否を検証する必要があります。\
-SDK には、下記の Google Pay の使用可否に関するメソッドを提供しております。
+Google Pay は Google Play Service に依存するので、ご利用の際 Google Play Service の使用可否を検証する必要があります。SDK には、下記の Google Pay の使用可否に関するメソッドを提供しております。
 
 ```kotlin
 // Googgle Payの利用は可能かどうかをチェックするメソッド。
@@ -403,7 +400,8 @@ Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play の�
 
 stera smart one デフォルト *URL Scheme* については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
 
-それ以外にも、あなたのアプリの *Bundle ID* から始まる PayPal 専用 *URL Scheme* を追加してください。\
+それ以外にも、あなたのアプリの *Bundle ID* から始まる PayPal 専用 *URL Scheme* を追加してください。
+
 [「stera smart one 管理画面」](https://dashboard.sterasmartone.com) > **開発設定** > **アプリ設定**にある **URL Scheme** > **PayPal** 項目を確認してください。
 
 ##### iOS 9 及び以降のシステムについて
@@ -437,8 +435,7 @@ stera smart one デフォルト *URL Scheme* については、[こちら](/guid
 
 > 📘
 >
-> アリペイのsdk名はこのような形になります。\
-> alipaySdk-15.6.8-20191021122455-noUtdid.aar
+> アリペイのsdk名はこのような形になります。alipaySdk-15.6.8-20191021122455-noUtdid.aar
 
 そして、アプリの`build.gradle`に、アリペイsdkの依存関係を追加します。
 
