@@ -41,7 +41,46 @@
 ## 3. stera-docs 改造 (P1)
 
 - [ ] sitemap / 可索引 robots 只对 `guides.sterasmartone.com` 输出, 其他 host noindex。
-- [ ] 旧 ReadMe URL 按 1 的映射逐页 301; MUST NOT 全量重写 `/docs/*` (已被 `public/docs` 图片占用)。
+- [ ] 旧 ReadMe URL 301 (书签 / 外链 / 搜索结果直达新页; 下一步优先)。
+
+### 3.1 旧 URL 301
+
+现状 (2026-10-08 核实): 旧 URL 一律 404 -> `not-found.tsx` 回首页; frontmatter `redirect` 只管 CMS 内已有页, 接不住旧路径。
+
+现网 (`guides.sterasmartone.com`, ego + curl, 2026-10-08):
+
+- 页面清单 = 现网 `/llms.txt`: `/docs/*` 79 + `/page/*` 1 + `/reference/*` 51; 侧边栏 / 首页链接全在其中。
+- 另有 7 个 hidden 页直链 200 (`error-code` / `testing` / `cpm` / `easycheckout` / `easyqr` / `elepay-sdk-for-ios` / `開業前の…`); `/recipes/*` 现网已 404。
+- [smcc-migration.md](./smcc-migration.md) 映射已覆盖以上全部; 目标页均在 seed; 51 个 operationId 均唯一对应生成页; `payment-methods-config` 锚点均为显式 id。
+- ReadMe 行为: 路径大小写不敏感 (`/docs/Introduction` / `/reference/createCharge` 200); 尾 `/` 301 去掉; `/v1.0/*` 302 去前缀; `/docs/<slug>.md` / `/reference/<id>.md` 200; query 不影响。
+
+方案:
+
+- [ ] 实现点 `middleware.ts`: `createI18nMiddleware` 之前查表, 命中 -> `NextResponse.redirect(…, 301)`; 未命中交给 i18n 原逻辑。
+- [ ] 映射表落 `lib/legacy-redirects.ts` = 单一信源; `smcc-migration.md` 映射表改为 link 指向它。
+- [ ] 查表 key 归一化: percent-decode (非法编码 -> 不命中) -> 小写 -> 去尾 `/` -> 去 `/v1.0` 前缀 -> 去 `.md` 后缀并记标记。
+- [ ] 目标: 无语言前缀 (旧站只有 ja, `hideLocale: 'always'` -> ja); 保留 query; `.md` 请求 -> 目标 `.md` 且去 fragment; 目标带 `#anchor` 时写入 `Location`, 否则浏览器沿用原 fragment。
+- [ ] `/reference/<operationid>`: 51 条静态列出 -> `/openapi/<tag>/<operationId>` (大小写按生成页); 测试断言与 `openapi.yaml` operationId 全集一致, 防 API 变更后漂移。
+
+边界 (逐条入表 + 测试):
+
+- [ ] `/` / `/llms.txt`: 不跳 (新站同路径即对应页)。
+- [ ] `/docs` / `/docs/` / `/v1.0/docs` -> `/smcc/guide/stera-smart-one-app-manual` (现网 `/docs` 301 到侧边栏首页 `加盟店申請マニュアル`)。
+- [ ] `/reference` / `/reference/` / `/v1.0/reference` -> `/openapi`。
+- [ ] `/reference/<tag>` 分类页 -> 现网同款首个 operation: `charge` -> `/openapi/charge/listCharges` / `refund` -> `/openapi/refund/listChargesRefunds` / `customer` -> `/openapi/customer/listCustomers` / `code` -> `/openapi/code/createCode` / `codesetting` -> `/openapi/codesetting/listCodePaymentMethods` / `paymentmethod` -> `/openapi/paymentmethod/listPaymentMethods` / `location` -> `/openapi/location/listChargeLocations` / `terminal` -> `/openapi/terminal/listLocations` / `invoice` -> `/openapi/invoice/listInvoices` / `dispute` -> `/openapi/dispute/listDisputes` / `subscription` -> `/openapi/subscription/listSubscriptions`。
+- [ ] `/reference/*` 其余 -> `/openapi`; `/docs/*` 其余 -> 不跳, 走现有 404 -> 首页。
+- [ ] `/v1.0` -> `/`; `/page` -> `/`; `/page/クイックスタートガイド` 按表。
+- [ ] `/recipes/*` 3 条按表保留 (旧正文 / 外链可能引用), `/recipes` 本身不跳。
+- [ ] MUST NOT 通配 `/docs/*`: `public/docs/*.png` 等图片同前缀; 只做精确查表, matcher 现有图片排除保持不变。
+- [ ] MUST NOT 跳 `/ja` `/en` `/zh` 前缀路径 (新站自身 URL)。
+
+验证:
+
+- [ ] `tests/`: 现网 `llms.txt` 131 条 + hidden 7 条 + recipes 3 条 + 上述边界 -> 期望 `Location`; 每个目标存在于 seed / 生成页; 大小写 / 尾 `/` / `/v1.0` / `.md` / percent-encoded / query 变体。
+- [ ] `scripts/verify-cms-http.ts`: 同一清单经 Docker 实测 301 + `Location`, 跟随后 200; 跳转 <= 2 跳 (Next 先 308 去尾 `/` 时为 2 跳)。
+- [ ] stg 验收: 切域名前在 `stera-docs.stg.elepay.dev` 跑同一清单 (6 外部验收复用)。
+- 风险: 301 被浏览器长期缓存, 错映射上线后难撤回 -> 切域名前 MUST 全量验证通过。
+- 风险: `/admin` 改目标页 slug -> 跳转落 404 -> 首页; 改 slug 须同步 `lib/legacy-redirects.ts`。
 
 ## 4. EKS 部署 (P1, 先例 `oneqr-ai-svc-pro` + `elepay-docs`)
 
@@ -93,4 +132,4 @@ ele-argocd-app 跨团队 PR, 须维护方 review (ele-dispatcher 为全公司共
 - elepay-docs / `elepay-charge-api` 的 API / Webhook / SDK 事实修正按 v0.2.1 方式同步 (见 `CHANGELOG.dev.md`)。
 - Chatbot (将来若做): 先建 stera smart one 独立知识源再接入, MUST NOT 复用 elepay 知识库。
 
-下一步: 1 现网盘点; 3 / 4 / 5 可并行。
+下一步: 3.1 旧 URL 301; 4 / 5 可并行。
