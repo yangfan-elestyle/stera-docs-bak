@@ -1,6 +1,6 @@
 # SMCC ReadMe -> seed 迁移 (2026-10-08)
 
-来源: `docs/raw-smcc-documents/sterasmartone-v1.0-2026-10-07T10-15-41_bb38409` (ReadMe 导出 2026-10-07, 图片已本地化至 `public/docs`)。对应 [roadmap](./roadmap.md) §1 / §2。
+来源: `docs/raw-smcc-documents/sterasmartone-v1.0-2026-10-07T10-15-41_bb38409` (ReadMe 导出 2026-10-07, 图片已本地化至 `public/docs`; 全部处理后已删除, 原文见 `d6b98da`)。对应 [roadmap](./roadmap.md) §1 / §2。
 
 ## 规则
 
@@ -11,6 +11,7 @@
 - Recipes -> `cases/checkout/{create-easyqr,return-url,widget-ui}` 普通页; 交互式代码行高亮 -> 「参照コード行」列表。
 - 链接: ReadMe / `developer.elepay.io` 文档链接 -> 下表新 URL; `/reference/*` -> `/openapi/*`。
 - 错误码表: 全部语言数据与 `https://api.elepay.io/error-codes` 的 `items` 一致，改用 `<ErrorCodeTable>` (`error-codes.json`); 删除 API 未列出的 `M002008`，新增 `M008000`，同步 `U002001-3` 的全部语言文案。
+- API: `openapi.yaml` = SMCC `reference/elepay-client-sdk.yaml` (现网 API Reference); 保留 2 处: `createInvoice` / `createReader` / `createSubscription` 成功响应 `200` (elepay-docs DEV-10733), 顶层 `Location` tag (`generate-openapi-json.ts` 要求 tag 已声明; 置末尾 = 现网顺序)。`openapi.{en,zh}.yaml` 同步结构, 新增文案译为 en / zh。
 - `seed/updated-at.json` = 现网 ReadMe `updatedAt`; 无现网时间 (Recipes) -> 导出时间 2026-10-07。
 - 相对 SMCC 原文的修正:
   - 口座名義 FAQ「数字（全角）」示例 -> `０１２３４５６７８９` (原文半角, 与字段要求矛盾)。
@@ -133,12 +134,6 @@
 ## 待讨论
 
 - SDK 页 (iOS / Android / `payment-methods-config` ×4) 的「エラーコード」链接按现网指向 hidden `/get-started/error-code-legacy` (含 SDK 错误码 `10110` 等); 可见页 `/get-started/error-code` 仅 API 错误码, 是否补 SDK 错误码待定。
-- `reference/elepay-client-sdk.yaml` (raw 保留) = 现网 API Reference (51 个 operation + 71 个 schema 逐项一致)。`openapi.yaml` 与其差异:
-  - `createInvoice` / `createReader` / `createSubscription`: 本仓 `200`, 现网 `201` (elepay-docs DEV-10733 修正)。
-  - `ChargeReq`: 现网 `locationId` 必填。
-  - `CodeReq`: 现网有 `shouldCreateSource` 条件说明, 无 `required: [amount, orderNo]` / `sourceId` (elepay-docs `eb64a89` 以 prod 未上线为由回退)。
-  - `SourceDto`: 本仓多 `customerId`。
-  - 本仓多顶层 `Location` tag。
 
 ## 验收
 
@@ -146,5 +141,5 @@
 - 规模: 81 个 ja 页 (80 + `overview`, 其中 7 个 hidden) + 162 个 en/zh 页; 每页有 `updated-at` 记录。
 - 图片: 369 处 `/docs/*` 引用, 多重集合与来源一致。
 - 代码块: 来源 93 个; 删 3 个 Recipes 占位 Response Example, 补 3 个 (错误码响应 JSON / GoAllpay `build.gradle` ×2, 原文为纯文本), `elepay-sdk-for-ios` 1 个拆 2 个。
-- API: ReadMe 的 51 个 operationId 均存在于 `openapi.yaml`; 与现网逐项比对的差异见待讨论。
+- API: `openapi.yaml` 与现网 51 个 operation + 71 个 schema 逐项一致 (除 3 个 `200`); 三语 yaml 去文案后结构一致。
 - 验证: `bun test` 14/14; 243 页全部 200, 473 处站内链接 / 资源 / 锚点无错误; hidden 页不进侧边栏 / 搜索 / `llms.txt` 且带 `noindex`; Docker build + `verify-cms-http` 867 条 assertions 通过。

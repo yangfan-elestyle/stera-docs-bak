@@ -1578,6 +1578,7 @@ components:
         - amount
         - paymentMethod
         - orderNo
+        - locationId
       properties:
         amount:
           description: Amount
@@ -2174,10 +2175,6 @@ components:
           description: Object type
           type: string
           default: source
-        customerId:
-          description: Customer ID
-          type: string
-          maxLength: 32
         liveMode:
           description: |
             Whether this is live mode
@@ -2346,12 +2343,14 @@ components:
     CodeReq:
       type: object
       description: EasyQR code request
-      required:
-        - amount
-        - orderNo
       properties:
         amount:
-          description: Amount
+          description: >
+            Amount
+
+            Required when shouldCreateSource=false (default); specify a value greater than 0.
+
+            When shouldCreateSource=true, 0 or omitted means registering a payment method only (no payment occurs). Values greater than 0 are not currently supported.
           type: integer
         currency:
           description: Currency code (ISO 4217)
@@ -2363,6 +2362,8 @@ components:
           description: |
             Merchant system order number (e.g., order number, payment ID, etc.).
             Maximum length is 50 characters.
+            Required when shouldCreateSource=false (default).
+            Cannot be specified when shouldCreateSource=true to register a payment method only.
           type: string
           maxLength: 50
         description:
@@ -2404,20 +2405,22 @@ components:
           items:
             $ref: '#/components/schemas/CodeItem'
         locationId:
-          description: Location ID
+          description: |
+            Location ID
+            Required when shouldCreateSource=false.
           type: string
           maxLength: 32
         customerId:
-          description: Customer ID
-          type: string
-          maxLength: 32
-        sourceId:
-          description: Customer source ID
+          description: |
+            Customer ID
+            Required when shouldCreateSource=true.
           type: string
           maxLength: 32
         shouldCreateSource:
-          description: |
+          description: >
             Whether a new customer source needs to be created with this code.
+
+            If true, customerId is required; amount must be 0 or omitted (payment method registration only), and orderNo cannot be specified.
           type: boolean
           default: false
     CodeDto:

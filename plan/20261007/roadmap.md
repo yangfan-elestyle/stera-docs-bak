@@ -36,7 +36,7 @@
 - [x] 顺序: SaaS 手册 / FAQ -> 支付指南 -> SDK / 插件 -> API Reference。
 - [x] 只写 `seed/docs`; 同步导航 / 首页索引 / 截图 (外链图下载入 `public/docs`) / `seed/updated-at.json`。
 - [ ] ja 优先, en / zh 按来源核实或翻译; 清除不适用的 elepay 内容。
-- [ ] 技术标识按实际服务保留 (`api.elepay.io` 等), MUST NOT 机械替换; 三语 OpenAPI 同步 -> `bun run generate:data`。
+- [x] 技术标识按实际服务保留 (`api.elepay.io` 等), MUST NOT 机械替换; 三语 OpenAPI 同步 -> `bun run generate:data`。
 
 ## 3. stera-docs 改造 (P1)
 

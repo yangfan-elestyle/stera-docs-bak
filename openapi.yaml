@@ -1578,6 +1578,7 @@ components:
         - amount
         - paymentMethod
         - orderNo
+        - locationId
       properties:
         amount:
           description: 金額
@@ -2174,10 +2175,6 @@ components:
           description: 対象種類の表記
           type: string
           default: source
-        customerId:
-          description: カスタマID
-          type: string
-          maxLength: 32
         liveMode:
           description: |
             本番モードかどうか
@@ -2346,12 +2343,15 @@ components:
     CodeReq:
       type: object
       description: EasyQRコードリクエスト
-      required:
-        - amount
-        - orderNo
       properties:
         amount:
-          description: 金額
+          description: >
+            金額
+
+            shouldCreateSource=false（既定）の場合は必須で、0より大きい値を指定してください。
+
+            shouldCreateSource=true
+            の場合、0または未指定は支払方法の登録のみを意味します（決済は発生しません）。0より大きい値は現時点では未サポートです。
           type: integer
         currency:
           description: 通貨コード (ISO_4217)
@@ -2363,6 +2363,8 @@ components:
           description: |
             お客様側のシステムオーダーNo（例：注文番号、決済IDなど）
             最大桁数は50桁です。
+            shouldCreateSource=false（既定）の場合は必須です。
+            shouldCreateSource=true で支払方法の登録のみを行う場合は指定できません。
           type: string
           maxLength: 50
         description:
@@ -2404,20 +2406,23 @@ components:
           items:
             $ref: '#/components/schemas/CodeItem'
         locationId:
-          description: ロケーションID
+          description: |
+            ロケーションID
+            shouldCreateSource=false の場合は必須です。
           type: string
           maxLength: 32
         customerId:
-          description: カスタマID
-          type: string
-          maxLength: 32
-        sourceId:
-          description: カスタマソースID
+          description: |
+            カスタマID
+            shouldCreateSource=true の場合は必須です。
           type: string
           maxLength: 32
         shouldCreateSource:
-          description: |
+          description: >
             このコードで新しいカスタマソースを作成する必要があるかどうか。
+
+            true の場合、customerId は必須です。amount は0または未指定（支払方法の登録のみ）とし、orderNo
+            は指定できません。
           type: boolean
           default: false
     CodeDto:
