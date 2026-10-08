@@ -37,6 +37,7 @@ content/docs/openapi/(generated)/
 /data/
 /CLAUDE.local.md
 /AGENTS.override.md
+/.worktree/
 
 .mcp.json
 .codegraph/
