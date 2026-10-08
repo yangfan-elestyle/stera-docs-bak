@@ -1,4 +1,0 @@
----
-title: Terminal
-hidden: false
----

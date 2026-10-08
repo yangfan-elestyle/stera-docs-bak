@@ -1,4 +1,0 @@
----
-title: Subscription
-hidden: false
----

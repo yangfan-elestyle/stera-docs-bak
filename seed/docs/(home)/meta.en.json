@@ -14,6 +14,8 @@
     "overview",
     "---SaaS Guides---",
     "smcc/guide/stera-smart-one-app-manual",
+    "smcc/guide/add-store-saas",
+    "smcc/guide/add-store-payment-module",
     "smcc/guide/quick-start-guide",
     "smcc/guide/account-management-manual",
     "smcc/guide/base-settings",
@@ -31,10 +33,14 @@
     "smcc/faq/apply-in-store-pay",
     "smcc/faq/apply-online-pay",
     "smcc/faq/invoice-address-change",
+    "smcc/faq/payout-and-fees",
     "---Getting Started---",
-    "get-started/set-up",
+    "get-started/introduction",
+    "get-started/installation",
     "get-started/quickstart",
+    "get-started/set-up",
     "get-started/process",
+    "get-started/test-card",
     "get-started/refunds",
     "get-started/error-code",
     "---Use Cases---",
@@ -42,7 +48,6 @@
     "cases/customer",
     "cases/(ec-platform)",
     "---Developer Guides---",
-    "cases/(practices)",
     "guides/api-guide",
     "[ExternalLink][API Reference](../openapi)",
     "guides/webhook",
@@ -51,8 +56,6 @@
     "guides/mobile",
     "guides/(other-sdks)",
     "---FAQ---",
-    "faq/faq-server",
-    "faq/faq-ios",
-    "faq/faq-android"
+    "faq/faq-ios"
   ]
 }

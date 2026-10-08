@@ -1,90 +1,89 @@
 ---
-title: 支払い方法の設定
-tocMaxDepth: 3
+title: 決済方法
 ---
 
 # 概要 [#summary]
 
-モバイル SDK（iOS、Android）をご利用する際に、各支払い方法の設定に関しては、本ページで記載します。
+モバイルSDK（iOS、Android™）をご利用する際に、各支払い方法の設定に関しては、本ページで記載します。
 
-> ◯：個別設定が必要、△：elepay 共通の設定をすれば結構です、X：特別の設定がありません
+> ◯：個別設定が必要、△：共通の設定をすれば結構です、X：特別の設定がありません
 
 ## iOS 開発設置
 
-| Payment                              | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
-| ------------------------------------ | ---------- | --------------------------- | --------------------- |
-| [PayPay](#paypay)                    | △          | ◯ \*1                       | ー                    |
-| [メルペイ](#merpay)                  | △          | X                           | ー                    |
-| d 払い                               | X          | X                           | ー                    |
-| [au PAY](#au-pay)                    | △          | ◯ \*1                       | ー                    |
-| [楽天ペイ](#rpay)                    | △          | ◯                           | ー                    |
-| Paidy                                | X          | X                           | ー                    |
-| atone                                | X          | X                           | ー                    |
-| [WeChat Pay](#wechat-pay)            | ◯          | ◯                           | ー                    |
-| [Alipay](#alipay)                    | △          | ◯                           | ー                    |
-| [Union Pay（銀聯雲閃付）](#unionpay) | △          | ◯                           | ◯                     |
-| [PayPal](#paypal)                    | X          | ◯                           | ー                    |
-| [Apple Pay](#apple-pay)              | X          | X                           | ◯                     |
-| Credit Card                          | X          | X                           | ー                    |
+| Payment                                                               | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
+| :-------------------------------------------------------------------- | :--------- | :-------------------------- | :-------------------- |
+| [PayPay](/guides/mobile/payment-methods-config#paypay)                                                  | △          | ◯ \*1                       | ー                     |
+| [LinePay](/guides/mobile/payment-methods-config#line-pay)                                               | △          | ◯ \*1                       | ー                     |
+| [メルペイ](/guides/mobile/payment-methods-config#merpay)                                                    | △          | X                           | ー                     |
+| [d払い](/guides/mobile/payment-methods-config#docomo-payd払い) | X          | X                           | ー                     |
+| [au PAY](/guides/mobile/payment-methods-config#au-pay)                                                  | △          | ◯ \*1                       | ー                     |
+| [楽天ペイ](/guides/mobile/payment-methods-config#rakuten-pay)                                               | △          | ◯                           | ー                     |
+| [Paidy](/guides/mobile/payment-methods-config#paidy)                                                    | X          | X                           | ー                     |
+| [atone](/guides/mobile/payment-methods-config#atone)                                                    | X          | X                           | ー                     |
+| [WeChat Pay](/guides/mobile/payment-methods-config#wechatpay)                                           | ◯          | ◯                           | ー                     |
+| [Alipay](/guides/mobile/payment-methods-config#alipay)                                                  | △          | ◯                           | ー                     |
+| [Union Pay（銀聯雲閃付）](/guides/mobile/payment-methods-config#unionpay)                                      | △          | ◯                           | ◯                     |
+| [PayPal](/guides/mobile/payment-methods-config#paypal)                                                  | X          | ◯                           | ー                     |
+| [Apple Pay](/guides/mobile/payment-methods-config#apple-pay)                                            | X          | X                           | ◯                     |
+| [Credit Card](/guides/mobile/payment-methods-config#credit-card)                                        | X          | X                           | ー                     |
 
----
+\*1：SDK for iOS v3.2.1 から、各決済方法アプリの Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
 
-1：从 ElepaySDK for iOS v3.2.1 开始，无需将各支付方式应用的 Scheme 添加到 LSApplicationQueriesSchemes 即可使用。如果实际未安装支付应用，SDK 将返回错误代码"10110"。
-
-## Android 開発設置
+## Android 開発設定
 
 ### 決済方法のプロバイダーについて
 
 #### GoAllpay
 
-GoAllpay をご利用する場合、プロジェクトの設定に GoAllpay SDK の情報追加が必要となります。
-詳細の設定方法は GoAllpaySDK のドキュメント[（中国語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_CH.md)、[（英語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_EN.md)にご参考ください。
+GoAllpayをご利用する場合、プロジェクトの設定にGoAllpay SDKの情報追加が必要となります。<br />詳細の設定方法はGoAllpaySDKのドキュメント[（中国語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_CH.md)、[（英語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_EN.md)にご参考ください。
 
-配置方法:
-
-> プロジェクトのルートの build.gradle に以下の情報を追加してください。
-
-```groovy
-repositories {
-	// ... 他のmaven repo
-	// GoAllpay SDK のmaven repo
-	maven {
-    	url 'https://s01.oss.sonatype.org/content/repositories/releases/'
-	}
-}
-```
-
-> アプリモジュールの build.gradle に以下の情報を追加してください。
-
-```groovy
-dependencies {
-	// ... other dependencies
-	api("io.github.goallpay:allpaysdk:5.2.5")
-}
-
-```
+> 📘 配置方法
+>
+> プロジェクトのルートのbuild.gradleに以下の情報を追加してください。
+>
+> ```groovy
+> repositories {
+>   // ... 他のmaven repo
+>   // GoAllpay SDK のmaven repo
+>   maven {
+>     url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+>   }
+> }
+> ```
+>
+> アプリモジュールのbuild.gradleに以下の情報を追加してください。
+>
+> ```groovy
+> dependencies {
+>   // ... other dependencies
+>   api("io.github.goallpay:allpaysdk:5.2.5")
+> }
+> ```
 
 ### 各決済方法の開発設定
 
-| Payment                              | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
-| ------------------------------------ | -------------------------------------- | --------------------------------- |
-| [PayPay](#paypay)                    | ◯                                      | X                                 |
-| [メルペイ](#merpay)                  | ◯                                      | X                                 |
-| d 払い                               | X                                      | X                                 |
-| [au PAY](#au-pay)                    | ◯                                      | X                                 |
-| [楽天ペイ](#rpay)                    | X                                      | ◯                                 |
-| Paidy                                | X                                      | X                                 |
-| atone                                | X                                      | X                                 |
-| [WeChat Pay](#wechat-pay)            | ◯                                      | ◯                                 |
-| [Alipay](#alipay)                    | X                                      | ◯                                 |
-| [Union Pay（銀聯雲閃付）](#unionpay) | X                                      | X                                 |
-| [PayPal](#paypal)                    | X                                      | X                                 |
-| [Apple Pay](#apple-pay)              | X                                      | X                                 |
-| Credit Card                          | X                                      | X                                 |
+| Payment                                                               | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
+| :-------------------------------------------------------------------- | :------------------------------------- | :-------------------------------- |
+| [PayPay](/guides/mobile/payment-methods-config#paypay)                                                  | ◯                                      | X                                 |
+| [LinePay](/guides/mobile/payment-methods-config#line-pay)                                               | ◯                                      | X                                 |
+| [メルペイ](/guides/mobile/payment-methods-config#merpay)                                                    | ◯                                      | X                                 |
+| [d払い](/guides/mobile/payment-methods-config#docomo-payd払い) | X                                      | X                                 |
+| [au PAY](/guides/mobile/payment-methods-config#au-pay)                                                  | ◯                                      | X                                 |
+| [楽天ペイ](/guides/mobile/payment-methods-config#rakuten-pay)                                               | X                                      | ◯                                 |
+| [Paidy](/guides/mobile/payment-methods-config#paidy)                                                    | X                                      | X                                 |
+| [atone](/guides/mobile/payment-methods-config#atone)                                                    | X                                      | X                                 |
+| [WeChat Pay](/guides/mobile/payment-methods-config#wechatpay)                                           | ◯                                      | ◯                                 |
+| [Alipay](/guides/mobile/payment-methods-config#alipay)                                                  | X                                      | ◯                                 |
+| [Union Pay（銀聯雲閃付）](/guides/mobile/payment-methods-config#unionpay)                                      | X                                      | X                                 |
+| [PayPal](/guides/mobile/payment-methods-config#paypal)                                                  | X                                      | X                                 |
+| [Apple Pay](/guides/mobile/payment-methods-config#apple-pay)                                            | X                                      | X                                 |
+| [Credit Card](/guides/mobile/payment-methods-config#credit-card)                                        | X                                      | X                                 |
 
-elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、下記のようにひとつにまとめることが可能になります。また、1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。
+Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、下記のようにひとつにまとめることができます。また、1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。
 
-> 📘 elepay 専用の URL Scheme の取得方法は「[iOS / Android SDK 用 URL Scheme の取得](/guides/mobile/url-scheme)」へご参照ください。
+> 📘
+>
+> 専用の URL Scheme の取得方法は「[iOS / Android SDK用URL Schemeの取得](/guides/mobile/url-scheme)」へご参照ください。
 
 ```xml
 <activity
@@ -104,30 +103,75 @@ elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定す�
 
 ## 決済方法
 
-### PayPay
+### LINE Pay [#line-pay]
 
 #### iOS
 
 ##### iOS 9 及び以降のシステムについて
 
-ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から  [エラーコード](/get-started/error-code) 「10110」が返信します。
+ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
 
-ElepaySDK for iOS v3.2.1 以前の場合、PayPay アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+ElepaySDK for iOS v3.2.1 以前の場合、LINE アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
 ```xml
+<string>line</string>
+```
+
+##### iOS App の Callback URL Scheme について
+
+stera smart one デフォルト *URL Scheme* については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
+
+#### Android
+
+> 🚧
+>
+> elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
+
+Line Pay を使うために、stera smart one アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
+
+```xml
+<activity
+    android:name="jp.elestyle.androidapp.elepay.activity.linepay.LinePayActivity"
+    android:exported="true">
+    <intent-filter>
+        <data android:scheme="ep8bd64f25c5545b99c43e295"
+              android:host="linepay"/> ←このschemeは「アプリ設定」ページより取得してください。
+
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+    </intent-filter>
+</activity>
+```
+
+scheme より起動される Activity をカスタマイズする場合は、`jp.elestyle.androidapp.elepay.activity.linepay.LinePayActivity`から継承する必要があります。
+
+### PayPay [#paypay]
+
+#### iOS
+
+##### iOS 9 及び以降のシステムについて
+
+ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
+
+ElepaySDK for iOS v3.2.1 以前の場合、PayPay アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+
+```text
 <string>paypay</string>
 ```
 
 ##### iOS App の Callback URL Scheme について
 
-stera smart one デフォルト  *URL Scheme* 
-については、[こちら](/guides/mobile/ios)をご参照ください。
+stera smart one デフォルト *URL Scheme* については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
 
 #### Android
 
-> 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
+> 🚧
+>
+> elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることができます。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
 
-PayPay を使うために、stera smart one アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
+PayPay を使うために、elstera smart onepay アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
 ```xml
 <activity
@@ -151,7 +195,9 @@ scheme より起動される Activity をカスタマイズする場合は、`jp
 
 #### Android
 
-> 🚧 elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバック Activity は、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1 までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0 以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](#summary)へご参照ください。
+> 🚧
+>
+> Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
 
 Merpay を使うために、stera smart one アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
@@ -172,15 +218,21 @@ Merpay を使うために、stera smart one アカウントの「アプリ設定
 </activity>
 ```
 
-### au PAY
+### d払い [#docomo-payd払い]
+
+#### 概要
+
+個別の対応は必要ありません。
+
+### au PAY [#au-pay]
 
 #### iOS
 
 ##### iOS 9 及び以降のシステムについて
 
-ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から  [エラーコード](/get-started/error-code) 「10110」が返信します。
+SDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
 
-ElepaySDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+SDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
 ```xml
 <string>auwallet</string>
@@ -188,77 +240,93 @@ ElepaySDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するため
 
 ##### iOS App の Callback URL Scheme について
 
-stera smart one デフォルト  *URL Scheme* 
-については、[こちら](/guides/mobile/ios)をご参照ください。
+stera smart one デフォルト _URL Scheme_ については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
 
-### 楽天ペイ [#rpay]
+#### Android
+
+特別な処理が必要ありません
+
+### 楽天ペイ [#rakuten-pay]
 
 #### iOS
 
-RPay を使うには、elepay SDK の他に RPay 独自の Framework（非公開）をプロジェクトのビルド依存関係に追加する必要があります。RPayKit.framework の入手方法やビルド依存関係の追加方法については、stera smart one サポートまでお問い合わせください。
+RPay を使うには、SDK の他に RPay 独自の Framework（非公開）をプロジェクトのビルド依存関係に追加する必要があります。RPayKit.framework の入手方法やビルド依存関係の追加方法については、stera smart one サポートまでお問い合わせください。
 
 ##### iOS 9 及び以降のシステムについて
 
-楽天ペイアプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+楽天ペイアプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
-```xml
+```text
 <string>rakutenpaysdk</string>
 ```
 
 ##### iOS App の Callback URL Scheme について
 
-stera smart one デフォルト  *URL Scheme* 
-については、[こちら](/guides/mobile/ios)をご参照ください。
+stera smart one デフォルト _URL Scheme_ については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
 
 #### Android
 
-RPay を使うには、elepay SDK の他に Rakuten Pay 独自の aar ファイル（非公開）をプロジェクトのビルド依存関係に追加する必要があります。ビルド依存関係の追加方法については、Android Developer の[公式サイト](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)にご参考ください。
+RPayを使うには、SDKの他にRakuten Pay独自のaarファイル（非公開）をプロジェクトのビルド依存関係に追加する必要があります。ビルド依存関係の追加方法については、Android Developerの[公式サイト](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)にご参考ください。
 
-> 📘 Rakuten Pay aar ファイルのダウンロード先は、stera smart one サポートまでお問い合わせしてください。
+> 📘
+>
+> Rakuten Pay aarファイルのダウンロード先は、stera smart one サポートまでお問い合わせしてください。
 
-### Apple Pay
+### Paidy [#paidy]
 
-#### iOS
+#### 概要
+
+個別の対応は必要ありません。
+
+### atone [#atone]
+
+#### 概要
+
+個別の対応は必要ありません。
+
+### Credit Card [#credit-card]
+
+#### 概要
+
+個別の対応は必要ありません。
+
+### Apple Pay [#apple-pay]
+
+#### 概要
 
 Apple Pay の実装方法を紹介します。
 
-##### 仕組み
+#### 仕組み
 
 Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済方法です。
 
+#### iOS での利用
+
 ##### Apple Pay の設定について
 
-[Apple Pay の設定方法](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay_requirements)を参照してください。
+[Apple Payの設定方法](https://developer.apple.com/documentation/passkit/apple_pay/setting_up_apple_pay_requirements)を参照してください。
 
-1.  Apple Merchant ID を登録します
-    Apple Pay をご利用するには、Apple Merchant ID を登録する必要があります。
-2.  Apply Pay 証明書の作成
-    支払い情報を暗号化するために、証明書が必要です。
-    以下の手順で証明書の作成します。
-    (1) stera smart one の「開発設定」→「Apple Pay」→「Apple Pay Certificate」から、CSR（Certificate Signing Request）ファイルを入手します。
-    (2) 入手した CSR ファイルで Apple Developer Site にアップロードし、ステップ１で登録した Apple Merchant ID を利用し、証明書を作成します。
-    (3) 以降の証明書の利用方法は決済プロバイダーによって異なるため、下記の各プロバイダー説明をご参照ください。
-3.  Xcode に統合する
-    Xcode よりプロジェクトを開き、Capabilities のタブに Apple Pay のスイッチをオンにします。この際に、デベロッパーアカウントのログインを要求されることがあります。オンにした後、ステップ１で作られた Merchant ID のチェックボックスを有効することで、Apple Pay の設定は完了します。
+1. Apple Merchant ID を登録します\
+   Apple Pay をご利用するには、Apple Merchant IDを登録する必要があります。
 
-詳細は[Adding capabilities to your app](https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app)  を参照してください。
+2. Apply Pay 証明書の作成\
+   Apple Payで利用する証明書を取得します。\
+   取得の過程で、秘密鍵／公開鍵ペアの生成 を要求されます。\
+   秘密鍵を紛失しないよう十分ご注意ください。\
+   鍵ペアは PKCS12形式 にまとめ、エクスポートパスワード を設定してください。\
+   PKCS12をstera smart one チームまで提出してください。
 
-##### Apple Pay（GMO）
-
-1. Apple Merchant ID を stera smart one サポートチームへ提供してください。
-2. Apple Developer サイトで作成した証明書を、ご自身で GMO 管理画面へアップロードしてください。
-
-### Google Pay
+### Google Pay [#google-pay]
 
 #### Android
 
-elepay SDK のセットアップ時に、`googlePayEnvironment`を指定します。
+SDK のセットアップ時に、`googlePayEnvironment`を指定します。
 
 > Google Pay をご利用の際、Google 社への申請が必要となります。申請するには、TEST/PRODUCTION それぞれの環境でビルドしたアプリを提出する可能性があります。
 >
-> [Google Pay & Wallet Console](https://pay.google.com/business/console) で申請する際、対応する PSP を選択する必要があります。例：Stripe（stripe）、GMO-PG（gmopg）、Paygent（paygent）。
+> [Google Pay & Wallet Console](https://pay.google.com/business/console) で申請する際、Integration typeはGatewayを選択してください。
 
-elepay SDK を設定する際、`googlePayExistingPaymentRequired`（デフォルト値：true）を指定できます。これはユーザーの Google Pay に有効な支払いカードが存在するかどうかを検証するための設定です。
+SDK を設定する際、`googlePayExistingPaymentRequired`（デフォルト値：true）を指定できます。これはユーザーの Google Pay に有効な支払いカードが存在するかどうかを検証するための設定です。
 
 > true：Google Pay に少なくとも 1 枚の支払い可能なカードが必要です。
 >
@@ -273,7 +341,7 @@ val configuration = ElepayConfiguration(
 Elepay.setup(configuration)
 ```
 
-Google Pay は Google Play Service に依存するので、ご利用の際 Google Play Service の使用可否を検証する必要があります。
+Google Pay は Google Play Service に依存するので、ご利用の際 Google Play Service の使用可否を検証する必要があります。\
 SDK には、下記の Google Pay の使用可否に関するメソッドを提供しております。
 
 ```kotlin
@@ -286,7 +354,7 @@ fun checkIfGooglePayIsReadyToUse(
 
 ##### Google Pay 開発
 
-1. `minSdkVersion` が公式要件を満たしていること：https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+1. `minSdkVersion` が公式要件を満たしていること：[https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites](https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites)
 2. `AndroidManifest.xml` の設定：
 
 ```
@@ -303,9 +371,9 @@ fun checkIfGooglePayIsReadyToUse(
 Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play のリリース署名が必須です。次の手順に従ってください。
 
 1. Google Pay API の利用申請。
-   a. https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration
+   a. [https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration](https://developers.google.com/pay/api/android/guides/test-and-deploy/publish-your-integration)
 2. 必ず Google Play ストアからアプリをダウンロードしてテストします（リリース署名済み APK のローカルインストールは不可）。
-   a. https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites
+   a. [https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites](https://developers.google.com/pay/api/android/guides/setup#app%20prerequisites)
    b. リリース鍵で署名し Google Play ストアにアップロード後、テスターアカウントでダウンロードして Google Pay 機能を検証します。
 3. `GooglePayEnvironment.TEST` ではなく `GooglePayEnvironment.PRODUCTION` を使用します。
 
@@ -321,60 +389,58 @@ Google の要件に従い、PRODUCTION 環境の Google Pay は Google Play の�
 1. **Test 環境**：Google Pay の支払いダイアログにはテストカード情報が自動的に入力されます。
 2. **Production 環境**：実際のユーザーが Google Pay に支払いカードを登録していない場合、支払いダイアログでカード追加を促す案内が表示されます。
 
-##### Google Pay × GMO Test Mode（3DS2 結合テスト）
+### Amazon Pay [#amazon-pay]
 
-GMO チャネルでは、Test Mode（charge `liveMode=false`）で Google Pay を起動すると、SDK は Google Wallet が返却する実トークンを elepay が配信する `googlePayTestToken` に置き換え、GMO `ExecutePaymentFlow` に引き渡して 3DS2 認証を発火させます。
+#### 概要
 
-開発段階で異なる 3DS2 シナリオ（チャレンジあり / チャレンジ免除、各種失敗コードなど）を再現したい場合は、stera smart one サポートチームへ test token の調整をご依頼ください。App 側のコード変更は不要です。
+個別の対応は必要ありません。
 
-### PayPal
+### PayPal [#paypal]
 
-#### iOS
+#### 概要
 
 ##### iOS App の Callback URL Scheme について
 
-stera smart one デフォルト  *URL Scheme* 
-については、[こちら](/guides/mobile/ios)をご参照ください。
+stera smart one デフォルト *URL Scheme* については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
 
-それ以外にも、あなたのアプリの  *Bundle ID*  から始まる PayPal 専用  *URL Scheme*  を追加してください。
-[「stera smart one 管理画面」](https://dashboard.sterasmartone.com/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **PayPal**  項目を確認してください。
+それ以外にも、あなたのアプリの *Bundle ID* から始まる PayPal 専用 *URL Scheme* を追加してください。\
+[「stera smart one 管理画面」](https://dashboard.sterasmartone.com) > **開発設定** > **アプリ設定**にある **URL Scheme** > **PayPal** 項目を確認してください。
 
 ##### iOS 9 及び以降のシステムについて
 
-PayPal アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+PayPal アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
-```xml
+```text
 <string>com.paypal.ppclient.touch.v1</string>
 <string>com.paypal.ppclient.touch.v2</string>
 ```
 
-### Alipay
+### Alipay [#alipay]
 
 #### iOS
 
-Alipay は、アント・フィナンシャル社の iOS, Android や Web ブラウザで、簡単かつ安全に支払いができる決済サービスです。
-
 ##### iOS 9 及び以降のシステムについて
 
-Alipay アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+Alipay アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
-```xml
+```text
 <string>alipay</string>
 ```
 
 ##### iOS App の Callback URL Scheme について
 
-stera smart one デフォルト  *URL Scheme* 
-については、[こちら](/guides/mobile/ios)をご参照ください。
+stera smart one デフォルト *URL Scheme* については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
 
 #### Android
 
-アリペイを使うために、[アリペイの sdk](https://doc.open.alipay.com/doc2/detail.htm?treeId=54&articleId=104509&docType=1)をダウンロードし、プロジェクトの libs フォルダーに配置します。
+アリペイを使うために、[アリペイのsdk](https://doc.open.alipay.com/doc2/detail.htm?treeId=54\&articleId=104509\&docType=1)をダウンロードし、プロジェクトのlibsフォルダーに配置します。
 
-> 📘 アリペイの sdk 名はこのような形になります。
+> 📘
+>
+> アリペイのsdk名はこのような形になります。\
 > alipaySdk-15.6.8-20191021122455-noUtdid.aar
 
-そして、アプリの`build.gradle`に、アリペイ sdk の依存関係を追加します。
+そして、アプリの`build.gradle`に、アリペイsdkの依存関係を追加します。
 
 ```groovy
 dependencies {
@@ -383,31 +449,37 @@ dependencies {
 }
 ```
 
-### WeChat Pay
+### WeChat Pay [#wechatpay]
+
+#### 事前準備
+
+NativeアプリからWeChat Payを呼び出す場合の事前準備として、WeChat Open Platformのアカウント作成およびApp IDの発行が必要となります。
+
+以下のWeChat Payドキュメントをご確認ください。
+[https://pay.weixin.qq.com/doc/global/v3/en/4012356387](https://pay.weixin.qq.com/doc/global/v3/en/4012356387)
+
+また、stera smart oneのアクセスモード「1. Select Access Mode」については、「1.2 Institutional Mode」としてご認識ください。
 
 #### iOS
 
 ##### iOS App の Callback URL Scheme について
 
-stera smart one デフォルト  *URL Scheme* 
-については、[こちら](/guides/mobile/ios)をご参照ください。
+決済モジュールデフォルト _URL Scheme_ については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
 
-それ以外にも、WeChat 専用の  *URL Scheme* （`wx`から始まるもの）が必要です。
-[「stera smart one 管理画面」](https://dashboard.sterasmartone.com/) \> **開発設定** \> **アプリ設定**にある  **URL Scheme** \> **WeChat Pay**  項目を確認してください。なお、WeChat Pay が未開通の場合、該当項目は表示しません。
+それ以外にも、WeChat 専用の _URL Scheme_ （`wx`から始まるもの）が必要です。<br />[「stera smart one 管理画面」](https://dashboard.sterasmartone.com) > **開発設定** > **アプリ設定**にある **URL Scheme** > **WeChat Pay** 項目を確認してください。なお、WeChat Pay が未開通の場合、該当項目は表示しません。
 
 ##### iOS 9 及び以降のシステムについて
 
-WeChat Pay アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+WeChat Pay アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
-```xml
+```text
 <string>weixin</string>
 <string>weixinULAPI</string>
 ```
 
 #### Android
 
-WeChat Pay は、wechat ライブラリに依存するので、wechat sdk の denpendency を`build.gradle`に追加します。
-最新の wechat のバージョンはお勧めしますが、最新版のバージョンは[wechat sdk maven](https://bintray.com/wechat-sdk-team/maven)にご参照ください。
+WeChat Pay は、WeChatライブラリに依存するので、WeChat SDKのdenpendencyを`build.gradle`に追加します。<br />最新のwechatのバージョンはお勧めしますが、最新版のバージョンは[wechat sdk maven](https://bintray.com/wechat-sdk-team/maven)にご参照ください。
 
 ```groovy
 dependencies {
@@ -416,8 +488,7 @@ dependencies {
 }
 ```
 
-そして、プロジェクト`AndroidManifest.xml`の中に、下記のような`activity-alias`を追加する必要があります。
-WeChat Pay は、`パッケージ名.wxapi.WXPayEntryActivity`を探すため、elepay SDK に既存のコードにリンクします。
+そして、プロジェクト`AndroidManifest.xml`の中に、下記のような`activity-alias`を追加する必要があります。<br />WeChat Payは、`パッケージ名.wxapi.WXPayEntryActivity`を探すため、SDKに既存のコードにリンクします。
 
 ```xml
 <!-- ほかのactivity記述 -->
@@ -431,23 +502,54 @@ WeChat Pay は、`パッケージ名.wxapi.WXPayEntryActivity`を探すため、
     android:targetActivity="jp.elestyle.androidapp.elepay.activity.wxapi.WXPayEntryActivity" />
 ```
 
-### Union Pay（銀聯雲閃付）[#unionpay]
+### Union Pay（銀聯雲閃付） [#unionpay]
 
-#### iOS
+#### 概要
 
 ##### iOS 9 及び以降のシステムについて
 
-Union Pay 関連アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+Union Pay 関連アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
-```xml
+```text
 <string>uppaysdk</string>
-<string>uppaywallet</string>
-<string>uppayx1</string>
-<string>uppayx2</string>
-<string>uppayx3</string>
+ <string>uppaywallet</string>
+ <string>uppayx1</string>
+ <string>uppayx2</string>
+ <string>uppayx3</string>
 ```
 
 ##### iOS App の Callback URL Scheme について
 
-stera smart one デフォルト  *URL Scheme* 
-については、[こちら](/guides/mobile/ios)をご参照ください。
+stera smart one デフォルト *URL Scheme* については、[こちら](/guides/mobile/ios#1-url-scheme-の追加)をご参照ください。
+
+### 決済ステーション（コンビニ支払い・銀行振込） [#決済ステーションコンビニ支払い銀行振込]
+
+##### 支払い方法（paymentMethod）
+
+* コンビニ支払い：paymentMethod = konbini
+* 銀行振込：paymentMethod = banktransfer
+
+ユーザーはシステムによって指定の画面にリダイレクトされ、以降の支払い手続きを完了します。
+
+##### 支払いフローおよびステータス
+
+コンビニ支払い・銀行振込はいずれも処理サイクルが長く、通常のオンライン決済と比較して以下のステータスが追加されます：
+
+| Status |  |
+| --- | --- |
+| waiting | ユーザーが支払いに必要な情報を入力すると、支払い情報が生成され、この状態になります。 |
+| notified | ユーザーがコンビニ店舗で支払いを試みた段階でこの状態に遷移します。 通常は1週間以内に店舗側の集計処理が行われ、成功すれば captured に遷移します。 |
+| amount\_mismatch | 銀行側で受領した金額が想定と異なる場合、この状態になります。 |
+
+##### 支払い期限と制限事項
+
+* コンビニ支払いの支払い待機期間：最大 60日間
+* 銀行振込の支払い待機期間：最大 365日間
+
+この間はユーザーの支払いをシステム側で待機し続け、revoke操作は非対応（Easy Checkoutは無効化できず、請求書はキャンセル不可）となります。
+
+##### 想定外の支払いへの対応方法
+
+万一ユーザーが重複して支払った場合や、誤った金額を支払った場合、複数の口座から分割して振り込んだ場合など、想定外の支払いが発生することがあります。
+
+これらのケースは決済サービス側で制御できないため、加盟店は決済ステーションにログインして支払い状況を確認し、ユーザーと直接連絡を取り合って補填や返金などを調整してください。

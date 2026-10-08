@@ -1,8 +1,7 @@
 ---
-title: 端末内への QR 決済組み込み
+title: デバイスにCheckout用QRコードを導入
+description: 固定デバイスで柔軟な決済が可能になるように設定する。
 ---
-
-固定デバイスで柔軟な決済が可能になるように設定する。
 
 > - 導入工数：ローコード、約40分
 > - 実装スタイル：QRコードの埋め込み
@@ -12,61 +11,44 @@ title: 端末内への QR 決済組み込み
 
 ### ステップ1：商品・サービスの支払い用のEasyQRコードを作成します
 
-```
-curl --request POST \
-     --url https://api.elepay.io/codes \
-     --header 'accept: application/json;charset=utf-8' \
-     --header 'content-type: application/json;charset=utf-8' \
-     --header 'authorization: Bearer [秘密鍵]'
-     --data '
-{
-  "currency": "JPY",
-  "items": [
-    {
-      "name": "商品1",
-      "price": 100,
-      "count": 1
-    }
-  ],
-  "amount": 500,
-  "orderNo": "0419"
-}'
-```
+[EasyQRコードを作成](/cases/checkout/create-easyqr)
 
 ### ステップ2：埋め込みUIのスタイルを設定し、端末に適用
 
-{/* prettier-ignore */}
-stera smart one では，一定範囲のUIカスタマイズ機能を提供し、一般的な用途に適しています。
+stera smart oneでは，一定範囲のUIカスタマイズ機能を提供し、一般的な用途に適しています。
 
-| Param                         | Type      | Description                                                   |
-| ----------------------------- | --------- | ------------------------------------------------------------- |
-| options                       | `object`  | ウィジェットオプション                                        |
-| options.container             | `string`  | 配置先のDOM要素のCSSセレクターを表す文字列                    |
-| options.direction             | `string`  | ウィジェットレイアウト 縦:vertical(デフォルト) 横:horizontal  |
-| options.icon                  | `boolean` | trueならブランドアイコン入りQRコードを表示。デフォルトはfalse |
-| options.parts.amount          | `boolean` | trueなら金額を表示。デフォルトはtrue                          |
-| options.parts.paymentLogo     | `boolean` | trueなら決済方法アイコンを表示。デフォルトはtrue              |
-| options.parts.tip             | `boolean` | trueならヘルプメッセージを表示。デフォルトはtrue              |
-| options.theme.primaryColor    | `boolean` | メイン色                                                      |
-| options.theme.borderColor     | `boolean` | ウィジェット罫線色。null:罫線なし                             |
-| options.theme.backgroundColor | `boolean` | ウィジェット背景色。デフォルトは白                            |
+
+[Widget UI 設定方法](/cases/checkout/widget-ui)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | `object` | ウィジェットオプション |
+| options.container | `string` | 配置先のDOM要素のCSSセレクターを表す文字列 |
+| options.direction | `string` | ウィジェットレイアウト 縦:vertical(デフォルト) 横:horizontal |
+| options.icon | `boolean` | trueならブランドアイコン入りQRコードを表示。デフォルトはfalse |
+| options.parts.amount | `boolean` | trueなら金額を表示。デフォルトはtrue |
+| options.parts.paymentLogo | `boolean` | trueなら決済方法アイコンを表示。デフォルトはtrue |
+| options.parts.tip | `boolean` | trueならヘルプメッセージを表示。デフォルトはtrue |
+| options.theme.primaryColor | `boolean` | メイン色 |
+| options.theme.borderColor | `boolean` | ウィジェット罫線色。null:罫線なし |
+| options.theme.backgroundColor | `boolean` | ウィジェット背景色。デフォルトは白 |
 
 **例えば**
 
-| 縦向き                                                                                      | 横向き                                                                                      | 決済方法を表示しない                                                                        | QRコードのみ                                                                                |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| ![](/docs/98b430a38db9c5c25fb8ba2637bb8c3bf10caf40e8c174101735f3cc02228ca8-CleanShot_1.png) | ![](/docs/98b430a38db9c5c25fb8ba2637bb8c3bf10caf40e8c174101735f3cc02228ca8-CleanShot_2.png) | ![](/docs/98b430a38db9c5c25fb8ba2637bb8c3bf10caf40e8c174101735f3cc02228ca8-CleanShot_3.png) | ![](/docs/98b430a38db9c5c25fb8ba2637bb8c3bf10caf40e8c174101735f3cc02228ca8-CleanShot_4.png) |
+| 縦向き | 横向き | 決済方法を表示しない | QRコードのみ |
+| :--- | :--- | :--- | --- |
+| ![](/docs/98b430a38db9c5c25fb8ba2637bb8c3bf10caf40e8c174101735f3cc02228ca8-CleanShot_2025-01-31_at_17.22.532x.png) | ![](/docs/15bfcfb72d1557761c07eb9db21b08fffe2b7c07f72b3db9d131a587073fab2d-CleanShot_2025-01-31_at_17.23.152x.png) | ![](/docs/50903d3f7bc013db627a75ab494db46fba157cef96d70ebb1c0368d3448cbbac-CleanShot_2025-01-31_at_17.24.272x.png) | ![](/docs/e0378caa12e4675e18e78ea1c804e796cf39cfbd48771e461ef8163d4121a8a6-CleanShot_2025-01-31_at_17.25.242x.png) |
 
 ### ステップ3：お客様が支払いを完了し、支払い状況を処理
 
-Widget は、支払いの進行状況を検知するための[イベント](/guides/javascript/api-reference)を提供しています。
+Widget は、支払いの進行状況を検知するための[イベント](/guides/javascript/api-reference#codeswidget)を提供しています。
 
-| 進行状況           |                                                                                              |
-| ------------------ | -------------------------------------------------------------------------------------------- |
-| 支払い成功         | `widget.on('success', function (event, codeObject) {// 決済完了後処理  });`                  |
-| 支払い期限切れ     | `widget.on('expired', function (event, codeObject) {// 新しいEasyQRコードを生成するなど });` |
-| 支払いエラー       | `widget.on('error', function (event, error) { // エラー処理  });`                            |
-| ウィジェットを破棄 | `widget.destroy();`                                                                          |
+| 進行状況 | |
+| :--- | :--- |
+| 支払い成功 | `widget.on('success', function (event, codeObject) {// 決済完了後処理  });` |
+| 支払い期限切れ | `widget.on('expired', function (event, codeObject) {// 新しいEasyQRコードを生成するなど });` |
+| 支払いエラー | `widget.on('error', function (event, error) { // エラー処理  });` |
+| ウィジェットを破棄 | `widget.destroy();` |
 
 ### 他の設定
 
@@ -76,8 +58,7 @@ Widget は、支払いの進行状況を検知するための[イベント](/gui
 
 #### 決済方法の設定
 
-{/* prettier-ignore */}
-stera smart one の[簡単決済>設定>決済方法管理] で利用可能な決済方法の管理（確認・有効化・無効化）が可能です。今後追加される支払い手段も、すぐに利用できます。
+stera smart oneの[簡単決済>設定>決済方法管理] で利用可能な決済方法の管理（確認・有効化・無効化）が可能です。今後追加される支払い手段も、すぐに利用できます。
 
 #### ロケーション情報を追加
 

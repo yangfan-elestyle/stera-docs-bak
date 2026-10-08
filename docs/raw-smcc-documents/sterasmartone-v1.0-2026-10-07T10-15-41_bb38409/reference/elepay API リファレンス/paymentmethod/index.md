@@ -1,4 +1,0 @@
----
-title: PaymentMethod
-hidden: false
----

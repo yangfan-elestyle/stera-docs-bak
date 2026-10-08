@@ -2,23 +2,23 @@
 title: iOS SDK
 ---
 
-**elepay iOS SDK**  は stera smart one を iOS アプリに導入するための SDK です。<br />
-このガイドでは、elepay の SDK を iOS アプリと連携する方法について詳しく説明します。
+**iOS SDK** は stera smart one を iOS アプリに導入するための SDK です。<br />このガイドでは、SDK を iOS アプリと連携する方法について詳しく説明します。
 
 # 対応バージョン
 
-- **elepay iOS SDK 5.0**  からは、SDK が `ElepaySDK` と `Stripe` / `RPay` / `ChinesePayments` / `Checkout` などの独立した Plugin に分割され、必要に応じて導入する形となりました。5.0.5 からは、GMO（Apple Pay / Credit Pay 3DS）の処理が追加されました。
-- **elepay iOS SDK 4.0**  からは、iOS 11.0 のサポートが対象外となりました。また、Bitcode のサポートも終了しました。
-- **elepay iOS SDK 3.0**  からは、iOS 10.0 のサポート対象外になりました。
-- **elepay iOS SDK 2.x**  は、iOS 10.0 以上と互換性があります。
+- **iOS SDK 5.0**  からは、SDK が `ElepaySDK` と `RPay` / `Checkout` などの独立した Plugin に分割され、必要に応じて導入する形となりました。5.0.5 からは、SGP（ApplePay / CreditCard）の処理が追加されました。
+- **iOS SDK 4.0** からは、iOS 11.0 のサポートが対象外となりました。また、Bitcodeのサポートも終了しました。
+- **iOS SDK 3.0** からは、iOS 10.0 のサポート対象外になりました。
+- **iOS SDK 2.x** は、iOS 10.0 以上と互換性があります。
 - 開発環境：Xcode 11.0 以上をご使用ください。
 
 # インストール方法
 
 ## 1. Cocoapod によるインストール
 
--  Podfile に  `ElepaySDK`  を追加します。  
-    **ご注意：Cocoapods 1.10.0 以上をご利用ください。**
+> 📘 iOS SDK 5.0 からは、SPM（Swift Package Manager）を利用してください。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
+
+1. Podfile に `ElepaySDK` を追加します。<br />**ご注意：Cocoapods 1.10.0 以上をご利用ください。**
 
 ```ruby
 # バージョンが2.2未満のElepaySDKはdynamic frameworks形式のみ対応しています
@@ -30,7 +30,7 @@ title: iOS SDK
 pod 'ElepaySDK', '~> 3.0'
 ```
 
--  中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin`  も追加します。
+2. 中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin` も追加します。
 
 ```ruby
 # From 2.0.0, the SDK renamed from ElePay-ChinesePayments-Plugin to Elepay_ChinesePayments_Plugin
@@ -38,75 +38,84 @@ pod 'ElepaySDK', '~> 3.0'
 pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
 ```
 
--  PayPal を利用する、かつ elepay SDK が 1.7.0 以降の場合のみ、`Braintree`を追加してください。
-    **ご注意：** elepay SDK 4.0.0 からは Braintree のサポートが終了しました。PayPal を利用する場合は、elepay SDK 3.x をご利用ください。
+3. Stripe を利用する、かつ SDK が 2.2.0 以上の場合のみ、`Stripe` を追加してください。<br />ご注意：SDK 2.x を利用する場合は、`pod 'Stripe', '~> 19.4.1'` で Stripe を追加してください。
+
+```ruby
+# Only ElepaySDK 3.0 and above supports Stripe 21.x
+# Use "pod 'Stripe', '~> 19.4.1'" if you are using ElepaySDK 2.x
+
+pod 'Stripe', '~> 22.0'
+```
+
+> 🚧 Stripe v23がiOS 12のサポートを停止したため、SDKではStripe v22までを設定してください。
+
+4. PayPal を利用する、かつ SDK が 1.7.0 以降の場合のみ、`Braintree`を追加してください。<br />**ご注意：**&#x53;DK 4.0.0からはBraintreeのサポートが終了しました。PayPalを利用する場合は、SDK 3.xをご利用ください。
 
 ```ruby
 pod 'Braintree'
 ```
 
--  `pod install`  を実行します。
+5. `pod install` を実行します。
 
 ## 2. Swift Package Manager (SPM)によるインストール
 
-> 📘 elepay iOS SDK 5.0 からは、SPM（Swift Package Manager）を標準の配布方式として提供しております。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
+> 📘 iOS SDK 5.0 からは、SPM（Swift Package Manager）を標準の配布方式として提供しております。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
 
-**elepay iOS SDK**  は 3.1.1 から SPM に対応しました。<br />
-**elepay iOS SDK Chinese Payments Plugin**  は 2.0.2 から SPM に対応しました。
+**iOS SDK** は 3.1.1 から SPM に対応しました。<br />**iOS SDK Chinese Payments Plugin** は 2.0.2 から SPM に対応しました。
 
--  SPM に ElepaySDK を追加します。
-    こちらの URL をご利用ください：`https://github.com/elestyle/elepay-ios-sdk.git`
-    バージョンを指定する場合は、3.1.1 以降をご指定ください。
--  中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin`  も追加します。
-    こちらの URL をご利用ください： `https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`
-    バージョンを指定する場合は、2.0.2 以降をご指定ください。
--  PayPal を利用する場合は、`Braintree`  を追加してください。
-    ご注意：`Braintree`  の最新版 5.x.x は iOS 11 の対応が終了したため、4.x.x をご利用ください。また、4.x.x は SPM に対応していないため、Cocoapods で導入するか、手動でインストールしてください。
+1. SPM に SDK を追加します。<br />こちらの URL をご利用ください：`https://github.com/elestyle/elepay-ios-sdk.git`<br />バージョンを指定する場合は、3.1.1 以降をご指定ください。
+
+2. 中国のペイメント（Alipay, WeChat Pay, Union Pay）を利用する場合のみ、`Elepay_ChinesePayments_Plugin` も追加します。<br />こちらの URL をご利用ください：` https://github.com/elestyle/elepay-ios-sdk-chinesepayments-plugin.git`<br />バージョンを指定する場合は、2.0.2 以降をご指定ください。
+
+3. Stripe を利用する場合は、`Stripe` を追加してください。<br />こちらの URL をご利用ください：`https://github.com/stripe/stripe-ios.git`<br />バージョンを指定する場合は、21.8.1 以降をご指定ください。
+
+4. PayPal を利用する場合は、`Braintree` を追加してください。<br />ご注意：`Braintree` の最新版 5.x.x は iOS 11 の対応が終了したため、4.x.x をご利用ください。また、4.x.x は SPM に対応していないため、Cocoapods で導入するか、手動でインストールしてください。
 
 ## 3. 手動インストール
 
-7 ステップで、 elepay SDK for iOS をアプリに導入できます。
+7ステップで、SDK for iOS をアプリに導入できます。
 
--  [Github.com](https://github.com/elestyle/elepay-ios-sdk)  で  [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip)  をダウンロードして解凍します。
--  `ElePay.framework`  を Xcode のプロジェクトに追加します。必要に応じて「Copy items if needed」をチェックしてください。
--  ターゲット設定に、`ElePay.framework`  を「Embedded Binaries」に追加します。
--  Objective-C のプロジェクトで Apple Pay を利用する場合、ターゲット設定に  `PassKit.framework`  を「Embedded Binaries」に追加する必要があります。
+1. [Github.com](https://github.com/elestyle/elepay-ios-sdk) で [`ElePaySDK.zip`](https://github.com/elestyle/elepay-ios-sdk/archive/master.zip) をダウンロードして解凍します。
+
+2. `ElePay.framework` を Xcode のプロジェクトに追加します。必要に応じて「Copy items if needed」をチェックしてください。
+
+3. ターゲット設定に、`ElePay.framework` を「Embedded Binaries」に追加します。
+
+4. Objective-C のプロジェクトで Apple Pay を利用する場合、ターゲット設定に `PassKit.framework` を「Embedded Binaries」に追加する必要があります。
 
 ## 4. Objective-C プロジェクトで利用する場合
 
-> 📘 Objective-C で開発する場合
+> 📘 Objective-Cで開発する場合
 >
-> Objective-C のプロジェクトに elepay を実装する場合、こちらの
-> [ElePayObjCBridge.swift](https://github.com/elestyle/elepay-ios-demo-swift/blob/master/ELEPayObjectiveC/ElePayObjCBridge.swift)  ファイルをご利用ください。
+> Objective-C のプロジェクトに SDK を実装する場合、こちらの<br />[ElePayObjCBridge.swift](https://github.com/elestyle/elepay-ios-demo-swift/blob/master/ELEPayObjectiveC/ElePayObjCBridge.swift) ファイルをご利用ください。
 
-# 実装
+## 実装
 
 ## 1. URL Scheme の追加
 
-Xcode で、**PROJECT**  ＞  **TARGETS**  項目＞  **Info**  タグにある  **URL Types**  を開いて、elepay 専用  *URL Scheme*  を追加してください。
+Xcode で、**PROJECT** ＞ **TARGETS** 項目＞ **Info** タグにある **URL Types** を開いて、専用 _URL Scheme_ を追加してください。
 
-### 共通の設定
+### stera smart one共通の設定
 
-stera smart one 専用の URL Scheme の取得方法は「[iOS / Android SDK 用
-URL Scheme の取得](/guides/mobile/url-scheme)」へご参照ください。
+stera smart one 専用の URL Scheme の取得方法は「[iOS / Android SDK用URL Schemeの取得](/guides/mobile/url-scheme)」へご参照ください。
 
-![](/docs/URL_Scheme.png)
+![](/docs/96b54e2-ELEPayExample_xcodeproj.jpg "ELEPayExample_xcodeproj.jpg")
 
 ### URL Scheme のテスト
 
-モバイル Safari や Chrome のアドレスバーに上記の  *URL Scheme*（例：`ep1a2b3c4d5e://`）が正しく App を呼び出されるかどうかをテストできます。
+モバイル Safari や Chrome のアドレスバーに上記の _URL Scheme_（例：`ep1a2b3c4d5e://`）が正しく App を呼び出されるかどうかをテストできます。
 
 > 📘 重要
 >
-> 複数の  **TARGETS**  が存在する場合、全てのターゲットの  *URL Type*  に、上記の  *URL Scheme*  を追加してください。
+> 複数の **TARGETS** が存在する場合、全てのターゲットの _URL Type_ に、上記の _URL Scheme_ を追加してください。
 
 ## 2. 各支払方法の設定に関して
 
 [決済方法](/guides/mobile/payment-methods-config)ページをご参考ください。
 
-## 3. 初期化
+## 3. stera smart one の初期化
 
-プロジェクトの  `application(_:didFinishLaunchingWithOptions:)`  関数に、以下の初期化コードを追加します。
+プロジェクトの `application(_:didFinishLaunchingWithOptions:)` 関数に、以下の初期化コードを追加します。
 
 ```swift
 Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
@@ -114,11 +123,11 @@ Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
 
 > 📘 Public Key について
 >
-> `ELEPAY_APP_PUBLIC_KEY`  を[「stera smart one 管理画面」](https://dashboard.sterasmartone.com/)で発行したものに変更してください
+> `ELEPAY_APP_PUBLIC_KEY` を[「stera smart one 管理画面」](https://dashboard.sterasmartone.com)で発行したものに変更してください
 
 ## 4. callback の設定
 
-`application(_:open:options:) -> Bool`  関数に, 以下のコードを追加します。
+`application(_:open:options:) -> Bool` 関数に, 以下のコードを追加します。
 
 ```swift
 func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -137,16 +146,15 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 
 ### お客様サーバー側処理
 
-**elepay API**  のチャージ API `/api/charges`  で都度決済を開始します。<br />
-当 API は認証が必要なため、認証用のセキュリティーキーを契約者が管理しているサーバーに保存して、そのサーバーから請求してください。
+**API** のチャージ API  `/api/charges` で都度決済を開始します。<br />当 API は認証が必要なため、認証用のセキュリティーキーを契約者が管理しているサーバーに保存して、そのサーバーから請求してください。
 
 > ❗️ セキュリティー：
 >
 > 安全のために、セキュリティーキーは**絶対に**アプリに保存したり、転送したりしないでください。
 
-### ネーティブ App 側処理
+### ネーティブApp側処理
 
-**elepay API**  のチャージ API から取得したペイロードを、以下のコードのように  **elepay SDK**  に送信して、**elepay SDK**  からのコールバックに支払い完了（失敗）後の処理コードを追加します。
+**API** のチャージ API から取得したペイロードを、以下のコードのように **SDK** に送信して、**SDK** からのコールバックに支払い完了（失敗）後の処理コードを追加します。
 
 以下３つの中で使いやすいメソッドをご利用ください。
 
@@ -154,7 +162,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 
 ```swift
 _ = Elepay.handlePayment(
-  chargeJSON: jsonString,
+  chargeJSON: jsonString, 
   cardParams: elepayCardParams, /* <- Optinal parameter, can be removed */
   viewController: viewController) { result in
     switch (result) {
@@ -168,18 +176,18 @@ _ = Elepay.handlePayment(
 }
 ```
 
-| パラメータ名   | 説明                                                                                                                                                       |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| chargeJSON     | ペイメントデータが含まれた  `String`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。   |
-| cardParams     | クレジットカードの UI をコントロールするオプショナルパラメータです。デフォルトは  `nil`  です。`nil`  の場合、SDK 内部のクレジットカード UI が使われます。 |
-| viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
-| completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
+| パラメータ名         | 説明                                                                                   |
+| :------------- | :----------------------------------------------------------------------------------- |
+| chargeJSON     | ペイメントデータが含まれた `String` 型のJSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| cardParams     | クレジットカードのUIをコントロールするオプショナルパラメータです。デフォルトは `nil` です。`nil` の場合、SDK内部のクレジットカードUIが使われます。  |
+| viewController | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                   |
+| completion     | 決済の結果を通知するコールバックです。                                                                  |
 
 #### 2. JSON Data でチャージする場合：
 
 ```swift
 _ = Elepay.handlePayment(
-  chargeData: jsonData,
+  chargeData: jsonData, 
   cardParams: elepayCardParams, /* <- Optinal parameter, can be removed */
   viewController: viewController) { result in
     switch (result) {
@@ -193,18 +201,18 @@ _ = Elepay.handlePayment(
 }
 ```
 
-| パラメータ名   | 説明                                                                                                                                                       |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| chargeData     | ペイメントデータが含まれた  `Data`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。     |
-| cardParams     | クレジットカードの UI をコントロールするオプショナルパラメータです。デフォルトは  `nil`  です。`nil`  の場合、SDK 内部のクレジットカード UI が使われます。 |
-| viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
-| completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
+| パラメータ名         | 説明                                                                                  |
+| :------------- | :---------------------------------------------------------------------------------- |
+| chargeData     | ペイメントデータが含まれた `Data` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| cardParams     | クレジットカードのUIをコントロールするオプショナルパラメータです。デフォルトは `nil` です。`nil` の場合、SDK内部のクレジットカードUIが使われます。 |
+| viewController | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                  |
+| completion     | 決済の結果を通知するコールバックです。                                                                 |
 
 #### 3. JSON Dictionary でチャージする場合：
 
 ```swift
 _ = Elepay.handlePayment(
-  charge: jsonDictionary,
+  charge: jsonDictionary, 
   cardParams: elepayCardParams, /* <- Optinal parameter, can be removed */
   viewController: viewController) { result in
     switch (result) {
@@ -218,23 +226,22 @@ _ = Elepay.handlePayment(
 }
 ```
 
-| パラメータ名   | 説明                                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| charge         | ペイメントデータが含まれた  `Dictionary`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。 |
-| cardParams     | クレジットカードの UI をコントロールするオプショナルパラメータです。デフォルトは  `nil`  です。`nil`  の場合、SDK 内部のクレジットカード UI が使われます。   |
-| viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                           |
-| completion     | 決済の結果を通知するコールバックです。                                                                                                                       |
+| パラメータ名         | 説明                                                                                        |
+| :------------- | :---------------------------------------------------------------------------------------- |
+| charge         | ペイメントデータが含まれた `Dictionary` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| cardParams     | クレジットカードのUIをコントロールするオプショナルパラメータです。デフォルトは `nil` です。`nil` の場合、SDK内部のクレジットカードUIが使われます。       |
+| viewController | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                        |
+| completion     | 決済の結果を通知するコールバックです。                                                                       |
 
 ## 6. 支払い処理（定期払い・ウォレット決済）
 
 ### お客様サーバー側処理
 
-**elepay API**  のソース API `customers/<_customerId_>/sources`  でソース登録を開始します。
-当 API は認証が必要なため、認証用のセキュリティーキーを契約者が管理しているサーバーに保存して、そのサーバーから請求してください。
+**API** のソース API  `customers/<_customerId_>/sources` でソース登録を開始します。<br />当 API は認証が必要なため、認証用のセキュリティーキーを契約者が管理しているサーバーに保存して、そのサーバーから請求してください。
 
-### ネーティブ App 側処理
+### ネーティブApp側処理
 
-**elepay API**  のソース API から取得したペイロードを、以下のコードのように  **elepay SDK**  に送信して、**elepay SDK**  からのコールバックに支払い完了（失敗）後の処理コードを追加します。
+**API** のソース API から取得したペイロードを、以下のコードのように **SDK** に送信して、**SDK** からのコールバックに支払い完了（失敗）後の処理コードを追加します。
 
 以下３つの中で使いやすいメソッドをご利用ください。
 
@@ -242,7 +249,7 @@ _ = Elepay.handlePayment(
 
 ```swift
 _ = Elepay.handleSource(
-  sourceJSON: jsonString,
+  sourceJSON: jsonString, 
   cardParams: elepayCardParams, /* <- Optinal parameter, can be removed */
   viewController: viewController) { (result) in
     switch (result) {
@@ -256,18 +263,18 @@ _ = Elepay.handleSource(
  }
 ```
 
-| パラメータ名   | 説明                                                                                                                                                       |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| sourceJSON     | ソースデータが含まれた  `String`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。       |
-| cardParams     | クレジットカードの UI をコントロールするオプショナルパラメータです。デフォルトは  `nil`  です。`nil`  の場合、SDK 内部のクレジットカード UI が使われます。 |
-| viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
-| completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
+| パラメータ名         | 説明                                                                                  |
+| :------------- | :---------------------------------------------------------------------------------- |
+| sourceJSON     | ソースデータが含まれた `String` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| cardParams     | クレジットカードのUIをコントロールするオプショナルパラメータです。デフォルトは `nil` です。`nil` の場合、SDK内部のクレジットカードUIが使われます。 |
+| viewController | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                  |
+| completion     | 決済の結果を通知するコールバックです。                                                                 |
 
 #### 2. JSON Data でソースを取得した場合：
 
 ```swift
 _ = Elepay.handleSource(
-  chargeData: jsonData,
+  chargeData: jsonData, 
   cardParams: elepayCardParams, /* <- Optinal parameter, can be removed */
   viewController: viewController) { (result) in
     switch (result) {
@@ -281,18 +288,18 @@ _ = Elepay.handleSource(
  }
 ```
 
-| パラメータ名   | 説明                                                                                                                                                       |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| sourceData     | ソースデータが含まれた  `Data`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。         |
-| cardParams     | クレジットカードの UI をコントロールするオプショナルパラメータです。デフォルトは  `nil`  です。`nil`  の場合、SDK 内部のクレジットカード UI が使われます。 |
-| viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
-| completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
+| パラメータ名         | 説明                                                                                  |
+| :------------- | :---------------------------------------------------------------------------------- |
+| sourceData     | ソースデータが含まれた `Data` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。   |
+| cardParams     | クレジットカードのUIをコントロールするオプショナルパラメータです。デフォルトは `nil` です。`nil` の場合、SDK内部のクレジットカードUIが使われます。 |
+| viewController | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                  |
+| completion     | 決済の結果を通知するコールバックです。                                                                 |
 
-#### 3. JSON Dictionary でソースを取得した場合：
+#### 2. JSON Dictionary でソースを取得した場合：
 
 ```swift
 _ = Elepay.handleSource(
-  source: jsonDictionary,
+  source: jsonDictionary, 
   cardParams: elepayCardParams, /* <- Optinal parameter, can be removed */
   viewController: viewController) { (result) in
     switch (result) {
@@ -306,37 +313,36 @@ _ = Elepay.handleSource(
  }
 ```
 
-| パラメータ名   | 説明                                                                                                                                                       |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| source         | ソースデータが含まれた  `Dictionary`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。   |
-| cardParams     | クレジットカードの UI をコントロールするオプショナルパラメータです。デフォルトは  `nil`  です。`nil`  の場合、SDK 内部のクレジットカード UI が使われます。 |
-| viewController | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                         |
-| completion     | 決済の結果を通知するコールバックです。                                                                                                                     |
+| パラメータ名         | 説明                                                                                      |
+| :------------- | :-------------------------------------------------------------------------------------- |
+| source         | ソースデータが含まれた `Dictionary` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| cardParams     | クレジットカードのUIをコントロールするオプショナルパラメータです。デフォルトは `nil` です。`nil` の場合、SDK内部のクレジットカードUIが使われます。     |
+| viewController | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                      |
+| completion     | 決済の結果を通知するコールバックです。                                                                     |
 
 ## Checkout 機能
 
-Checkout 機能を利用すると、決済方法選択画面の開発を省くことができ、elepay SDK に提供している支払い方法選択画面などを利用可能になります。
+Checkout 機能を利用すると、決済方法選択画面の開発を省くことができ、SDK に提供している支払い方法選択画面などを利用可能になります。
 
 決済方法のイメージは下のスクリーンショットにて確認できます。ダークモードにも対応しています。
 
-![](/docs/checkout.png)
+![](/docs/5fb78ae-Untitled__November_10__2_36_57_PM.jpg "Untitled_—_November_10__2_36_57_PM.jpg")
 
-### サーバー側処理
+## サーバー側処理
 
-**elepay API**  のコード API からチェックアウト用のペイロードを作成します。
+**API** のコード API からチェックアウト用のペイロードを作成します。<br />詳細は [API リファレンス](/openapi/charge/listCharges)をご参照ください。
 
-### ネーティブ App 側処理
+### ネーティブApp側処理
 
-**elepay API**  のコード API から取得したペイロードを、**elepay SDK**  に送信し、**elepay SDK**より checkout 処理を完成させます。
+**API** のコード API から取得したペイロードを、**SDK** に送信し、**SDK**よりcheckout 処理を完成させます。
 
-ペイロードのタイプに合わせて３つのメソッドを提供します。
-サンプルコードとメソッドの説明は下記です。
+ペイロードのタイプに合わせて３つのメソッドを提供します。<br />サンプルコードとメソッドの説明は下記です。
 
 #### 1. JSON String でチェックアウトする場合：
 
 ```swift
 Elepay.checkout(
-  checkoutJSONString: checkoutJSONString,
+  checkoutJSONString: checkoutJSONString, 
   from: viewController
 ) { result in
    switch (result) {
@@ -350,17 +356,17 @@ Elepay.checkout(
 }
 ```
 
-| パラメータ名       | 説明                                                                                                                                                    |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| checkoutJSONString | checkout データが含まれた  `String`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。 |
-| from               | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                      |
-| resultHandler      | 決済の結果を通知するコールバックです。                                                                                                                  |
+| パラメータ名             | 説明                                                                                       |
+| :----------------- | :--------------------------------------------------------------------------------------- |
+| checkoutJSONString | checkoutデータが含まれた `String` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| from               | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                       |
+| resultHandler      | 決済の結果を通知するコールバックです。                                                                      |
 
 #### 2. JSON Data でチェックアウトする場合：
 
 ```swift
 Elepay.checkout(
-  checkoutJSONData: checkoutJSONData,
+  checkoutJSONData: checkoutJSONData, 
   from: viewController
 ) { result in
    switch (result) {
@@ -374,17 +380,17 @@ Elepay.checkout(
 }
 ```
 
-| パラメータ名     | 説明                                                                                                                                                  |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| checkoutJSONData | checkout データが含まれた  `Data`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。 |
-| from             | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                    |
-| resultHandler    | 決済の結果を通知するコールバックです。                                                                                                                |
+| パラメータ名           | 説明                                                                                     |
+| :--------------- | :------------------------------------------------------------------------------------- |
+| checkoutJSONData | checkoutデータが含まれた `Data` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| from             | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                     |
+| resultHandler    | 決済の結果を通知するコールバックです。                                                                    |
 
 #### 3. JSON Dictionary でチェックアウトする場合：
 
 ```swift
 Elepay.checkout(
-  checkoutJSON: checkoutJSON,
+  checkoutJSON: checkoutJSON, 
   from: viewController
 ) { result in
    switch (result) {
@@ -398,15 +404,15 @@ Elepay.checkout(
 }
 ```
 
-| パラメータ名  | 説明                                                                                                                                                        |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| checkoutJSON  | checkout データが含まれた  `Dictionary`  型の JSON オブジェクトとなります。サーバー側により作成され、**elepay iOS SDK**  はこのデータで決済処理を行います。 |
-| from          | 決済を行う際に UI を表示するために使われた  `UIViewController`  の実例となります。                                                                          |
-| resultHandler | 決済の結果を通知するコールバックです。                                                                                                                      |
+| パラメータ名        | 説明                                                                                           |
+| :------------ | :------------------------------------------------------------------------------------------- |
+| checkoutJSON  | checkoutデータが含まれた `Dictionary` 型の JSON オブジェクトとなります。サーバー側により作成され、**iOS SDK** はこのデータで決済処理を行います。 |
+| from          | 決済を行う際にUIを表示するために使われた `UIViewController` の実例となります。                                           |
+| resultHandler | 決済の結果を通知するコールバックです。                                                                          |
 
 ## エラー処理
 
-SDK が各種類のエラー（ElepayError）がコールバックします。
+SDKが各種類のエラー（Error）がコールバックします。
 
 ユーザー体験がよくなるため、`case unsupportedPaymentMethod(errorCode: String, paymentMethod: String)`のエラー情報をユーザーに表示する事をお薦めします。
 
@@ -434,41 +440,40 @@ case let .failed(let codeId, let error):
 }
 ```
 
-[エラーコード](/get-started/error-code)  にエラーコードリストをご参照ください。
+[エラーコード](/get-started/error-code) にエラーコードリストをご参照ください。
 
 ## 注意事項
 
 > 🚧 支払い結果の処理について
 >
-> アプリ内の支払い結果は、ユーザーへの結果照会のみでご使用ください。実際の課金結果は必ずサーバー上の callback API を経由し、stera smart one サーバーから送信されたデータでご確認ください。 *詳しくは elepay API ガイドをご確認ください。*
+> アプリ内の支払い結果は、ユーザーへの結果照会のみでご使用ください。実際の課金結果は必ずサーバー上の callback API を経由し、stera smart one サーバーから送信されたデータでご確認ください。 _詳しくは API ガイドをご確認ください。_
 
-### 1. Apple Pay について
+## 1. Apple Pay について
 
-1.  Apple Pay を実装するときは、Xcode の  **PROJECT** → **TARGETS**  にある  **Capabilities**  タグをクリックして、Apple Pay を「ON」に設定してください。
+1. Apple Pay を実装するときは、Xcode の **PROJECT** → **TARGETS** にある **Capabilities** タグをクリックして、Apple Pay を「ON」に設定してください。
 
-![](/docs/xcodee_applepay.png)
+![](/docs/159aef2-3d0b638-ELEPayExample_xcodeproj.jpg "3d0b638-ELEPayExample_xcodeproj.jpg")
 
-2.  Apple Pay の証明書を[「stera smart one 管理画面」-「開発設定」-「Apple Pay」](https://dashboard.sterasmartone.com/)にアップロードしてください。
-    証明書の作成方法は[こちらのドキュメント](/guides/mobile/payment-methods-config#apple-pay)でご参照ください。
+2. Apple Pay の証明書を[「stera smart one 管理画面」-「開発設定」-「Apple Pay」](https://dashboard.sterasmartone.com)にアップロードしてください。<br />証明書の作成方法は[こちらのドキュメント](/guides/mobile/payment-methods-config#apple-pay)でご参照ください。
 
-### 2. LSApplicationQueriesSchemes（iOS 9 及び以降のシステム）について
+## 2. LSApplicationQueriesSchemes（iOS 9 及び以降のシステム）について
 
-各決済アプリに遷移するために、Xcode の  **PROJECT** → **TARGETS**  にある  **Info**タグ（或いは  `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
+各決済アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
 ```xml
 <key>LSApplicationQueriesSchemes</key>
-<array>
-    <string>**各アプリのSchemeを追加してください**</string>
-</array>
+	<array>
+	    <string>**各アプリのSchemeを追加してください**</string>
+	</array>
 ```
 
-#### 各支払方法の設定に関して
+### 各支払方法の設定に関して
 
 [決済方法](/guides/mobile/payment-methods-config)ページをご参考ください。
 
 # 多言語
 
-**elepay iOS SDK**  は多言語に対応しています（現状は English, Japanese, Simplified Chinese, Traditional Chinese に対応しています）。
+**iOS SDK** は多言語に対応しています（現状は English, Japanese, Simplified Chinese, Traditional Chinese に対応しています）。
 
 SDK のデフォルトは iOS のシステム設定と一致した言語を表示します。
 
@@ -478,13 +483,16 @@ SDK のデフォルトは iOS のシステム設定と一致した言語を表�
 
 ```swift
 ElepayLocalization.shared.switchLanguage(code: .ja)	// Use Japanese
+
 ElepayLocalization.shared.switchLanguage(code: .en)	// Use English
+
 ElepayLocalization.shared.switchLanguage(code: .cn)	// Use Simplified Chinese
+
 ElepayLocalization.shared.switchLanguage(code: .tw)	// Use Traditional Chinese
 ```
 
-この  `switchLanguage`  関数は何回でも使えます。関数を呼び出した後に表示される画面が指定した言語で表示します。
+この `switchLanguage` 関数は何回でも使えます。関数を呼び出した後に表示される画面が指定した言語で表示します。
 
 > 📘 一部の画面の表示言語がご指定出来かねます
 >
-> 一部の決済方法は第三者画面に遷移する事があります。その画面は elepay SDK の制御範囲外のため、ご指定の言語と異なる言語で表示する可能性があります。
+> 一部の決済方法は第三者画面に遷移する事があります。その画面は SDK の制御範囲外のため、ご指定の言語と異なる言語で表示する可能性があります。

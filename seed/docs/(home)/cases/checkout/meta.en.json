@@ -1,5 +1,11 @@
 {
   "title": "Checkout",
   "defaultOpen": false,
-  "pages": ["elepay-hosted", "qrwidget"]
+  "pages": [
+    "elepay-hosted",
+    "qrwidget",
+    "create-easyqr",
+    "return-url",
+    "widget-ui"
+  ]
 }

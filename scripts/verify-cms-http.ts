@@ -141,12 +141,12 @@ try {
     ),
   );
   check(
-    rows('SELECT count(*) AS n FROM docs')[0].n === 213,
-    'empty volume seeds 213 documents',
+    rows('SELECT count(*) AS n FROM docs')[0].n === 222,
+    'empty volume seeds 222 documents',
   );
   check(
-    rows('SELECT count(*) AS n FROM navigation')[0].n === 39,
-    'empty volume seeds 39 navigation rows',
+    rows('SELECT count(*) AS n FROM navigation')[0].n === 36,
+    'empty volume seeds 36 navigation rows',
   );
   check(
     docker(
@@ -598,7 +598,7 @@ try {
     const paths = [...index.matchAll(/\]\((https?:\/\/[^)]+)\)/g)].map(
       (match) => new URL(match[1]).pathname,
     );
-    check(paths.length === 123, `${locale} exposes 71 CMS and 52 API pages`);
+    check(paths.length === 126, `${locale} exposes 74 CMS and 52 API pages`);
     for (const markdown of paths) {
       check(
         (await request(`/${locale}${markdown}`)).status === 200,

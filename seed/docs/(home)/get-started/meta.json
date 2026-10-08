@@ -1,8 +1,11 @@
 {
   "pages": [
-    "set-up",
+    "introduction",
+    "installation",
     "quickstart",
+    "set-up",
     "process",
+    "test-card",
     "refunds",
     "error-code"
   ]

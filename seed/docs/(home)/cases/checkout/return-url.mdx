@@ -1,0 +1,25 @@
+---
+title: 戻り先ページのURLを設定
+description: 決済結果を表示するページのURLを設定してください
+---
+
+```shell title="Shell"
+curl --request POST \
+     --url https://api.elepay.io/codes \
+     --header 'accept: application/json;charset=utf-8' \
+     --header 'authorization: Bearer [秘密鍵]' \
+     --header 'content-type: application/json;charset=utf-8' \
+     --data '
+{
+  "currency": "JPY",
+  "frontUrl": "https://戻り先ページのURL",
+  "amount": 200,
+  "orderNo": "ORDER_NO_00001"
+}
+'
+```
+
+
+# 戻り先ページのURLを設定
+
+- 参照コード行: `shell@9`
