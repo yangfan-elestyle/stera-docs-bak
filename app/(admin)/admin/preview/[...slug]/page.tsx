@@ -6,7 +6,7 @@ import { requireWriter } from '@/lib/auth/guard';
 import { getDoc } from '@/lib/cms/content';
 import { getDraft } from '@/lib/cms/drafts';
 import { compileDoc } from '@/lib/cms/mdx';
-import { getSource } from '@/lib/source';
+import { getSiteTree, getSource } from '@/lib/source';
 import { getAdminI18n } from '@/lib/admin/i18n/server';
 import { splitDoc } from '@/lib/admin/frontmatter';
 
@@ -69,7 +69,7 @@ export default async function PreviewPage({
         ) : null}
         <DocsBody>
           <MDX
-            components={getMDXComponents(src.getPageTree(locale), {
+            components={getMDXComponents(getSiteTree(src, locale), {
               ...(page ? { a: createRelativeLink(src, page) } : {}),
             })}
           />

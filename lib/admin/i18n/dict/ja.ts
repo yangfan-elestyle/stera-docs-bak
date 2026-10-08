@@ -151,6 +151,7 @@ export const ja = {
   'tree.buildtimeHint': 'openapi*.yaml から生成されます。変更はリリース経由です。クリックでサイトを開きます',
   'tree.missingTooltip': '{langs} がありません。フロントではデフォルト言語にフォールバックします',
   'tree.missingBadge': '不足 {count}',
+  'tree.hiddenTooltip': '非公開: サイドバー・検索・llms.txt に表示されません。URL を知っていれば閲覧できます',
 
   // ---- 编辑器 ----
   'editor.savedToast': '{locale} を保存しました',
@@ -201,6 +202,8 @@ export const ja = {
   'fm.tocH1': '# 見出し 1 まで',
   'fm.tocH2': '## 見出し 2 まで',
   'fm.tocH3': '### 見出し 3 まで',
+  'fm.hidden': '一覧に表示しない',
+  'fm.hiddenHint': 'サイドバー・検索・llms.txt から外し、検索エンジンにも noindex を返します。URL 直接アクセスとサイト内リンクは有効です。言語ごとに設定',
 
   // ---- 页面操作 ----
   'pageActions.viewOnSite': 'サイトで見る',

@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen, Code2 } from 'lucide-react';
 import { buildNavSections, type NavSection } from '@/lib/nav-sections';
 import { landingCopy } from '@/lib/landing';
 import { SITE } from '@/lib/site';
-import { getSource } from '@/lib/source';
+import { getSiteTree, getSource } from '@/lib/source';
 
 export const revalidate = false;
 
@@ -21,7 +21,7 @@ export default async function LandingPage(props: PageProps<'/[lang]'>) {
   const copy = landingCopy(lang);
 
   // 栏目直接取真实导航树: 编辑在后台调分组或排序, 首页跟着变, 不需要再维护一份副本
-  const tree = (await getSource()).getPageTree(lang);
+  const tree = getSiteTree(await getSource(), lang);
   const docsSections = buildNavSections(tree, '/overview').filter(
     (section) => section.title,
   );

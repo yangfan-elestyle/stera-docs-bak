@@ -3,6 +3,7 @@
 import {
   ChevronRight,
   ExternalLink,
+  EyeOff,
   FileText,
   Folder as FolderIcon,
   Lock,
@@ -271,6 +272,7 @@ function TreeNodes({
                 >
                   <FolderIcon className="size-3.5 shrink-0 text-fd-muted-foreground" />
                   <span className="truncate font-medium">{node.name}</span>
+                  {node.hidden ? <HiddenMark /> : null}
                 </button>
                 {node.dir !== undefined && navDirs.includes(node.dir) ? (
                   <Tooltip content={t('tree.editGroup')}>
@@ -357,6 +359,7 @@ function TreeNodes({
                 <FileText className="size-3.5" />
               </span>
               <span className="truncate">{node.name}</span>
+              {node.hidden ? <HiddenMark /> : null}
               {missing.length > 0 ? (
                 <Tooltip
                   content={t('tree.missingTooltip', { langs: missing.join(' / ') })}
@@ -371,6 +374,20 @@ function TreeNodes({
         );
       })}
     </ul>
+  );
+}
+
+function HiddenMark() {
+  const t = useT();
+  return (
+    <Tooltip content={t('tree.hiddenTooltip')}>
+      <span
+        aria-label={t('tree.hiddenTooltip')}
+        className="grid shrink-0 place-items-center text-fd-muted-foreground"
+      >
+        <EyeOff className="size-3" />
+      </span>
+    </Tooltip>
   );
 }
 

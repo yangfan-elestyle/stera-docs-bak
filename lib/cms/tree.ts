@@ -1,5 +1,5 @@
-import type { Node, Root } from 'fumadocs-core/page-tree';
-import { getSource } from '@/lib/source';
+import type { Item, Node, Root } from 'fumadocs-core/page-tree';
+import { getSource, isHiddenPage } from '@/lib/source';
 import { i18n } from '@/lib/i18n';
 import { listSlugs } from './content';
 
@@ -13,6 +13,8 @@ export interface AdminTreeNode {
   slug?: string;
   /** page: 站点公开 URL */
   url?: string;
+  /** page / folder index: frontmatter hidden, 站点侧边栏与搜索不出现 */
+  hidden?: boolean;
   /** folder: 对应的 meta 目录, 没有自己的 meta 时为 undefined */
   dir?: string;
   /** folder 自身的 index 页 */
@@ -64,6 +66,7 @@ function convert(
   nodes: Node[],
   prefix: string,
   editable: Set<string>,
+  isHidden: (node: Item) => boolean,
 ): AdminTreeNode[] {
   const out: AdminTreeNode[] = [];
 
@@ -82,7 +85,7 @@ function convert(
     }
 
     if (node.type === 'folder') {
-      const children = convert(node.children, id, editable);
+      const children = convert(node.children, id, editable, isHidden);
       const indexSlug = slugOf(node.index?.$ref);
       const keepIndex = indexSlug !== undefined && editable.has(indexSlug);
       // 整组都是构建期内容时, 文件夹本身也不再出现
@@ -94,6 +97,7 @@ function convert(
         description: text(node.description) || undefined,
         dir: dirOf(node.$ref),
         indexSlug: keepIndex ? indexSlug : undefined,
+        hidden: keepIndex && isHidden(node.index!) ? true : undefined,
         children,
       });
       continue;
@@ -101,7 +105,14 @@ function convert(
 
     const slug = slugOf(node.$ref);
     if (slug === undefined || !editable.has(slug)) continue;
-    out.push({ id, type: 'page', name: text(node.name), slug, url: node.url });
+    out.push({
+      id,
+      type: 'page',
+      name: text(node.name),
+      slug,
+      url: node.url,
+      hidden: isHidden(node) || undefined,
+    });
   }
 
   return dropEmptySeparators(out);
@@ -135,7 +146,13 @@ export async function buildAdminTree(): Promise<AdminTree> {
   let rootDir: string | undefined;
   for (const locale of i18n.languages) {
     const root = src.getPageTree(locale) as Root | undefined;
-    const nodes = root ? convert(root.children, locale, editable) : [];
+    const isHidden = (node: Item) => {
+      const page = src.getNodePage(node, locale);
+      return page !== undefined && isHiddenPage(page);
+    };
+    const nodes = root
+      ? convert(root.children, locale, editable, isHidden)
+      : [];
     // 过滤完只剩一个顶层分组时把它拆开: 全站可编辑内容都在它下面, 多一层只是白占缩进。
     // 它自身的排序与分段说明由树头部的入口编辑, 能力不丢。
     if (nodes.length === 1 && nodes[0].type === 'folder') {

@@ -6,6 +6,8 @@ import { z } from 'zod';
 export const docFrontmatterSchema = pageSchema.extend({
   title: z.string().trim().min(1),
   tocMaxDepth: z.number().int().positive().optional(),
+  // 不进侧边栏 / 搜索 / llms.txt, 直链仍可访问 (lib/source.ts 的 getSiteTree / getSitePages)
+  hidden: z.boolean().optional(),
   redirect: z
     .string()
     .regex(

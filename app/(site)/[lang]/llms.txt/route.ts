@@ -1,4 +1,4 @@
-import { getSource } from '@/lib/source';
+import { getSitePages, getSource } from '@/lib/source';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { getRequestHost, getRequestOrigin } from '@/lib/request';
@@ -13,9 +13,7 @@ export async function GET(
   const { lang } = await context.params;
   const host = getRequestHost(await headers());
   const origin = getRequestOrigin(host);
-  const lines = (await getSource())
-    .getPages(lang)
-    .map((p) => `- [${p.data.title}](${getPageMarkdownUrl(p.url, origin)})`);
+  const lines = getSitePages(await getSource(), lang).map((p) => `- [${p.data.title}](${getPageMarkdownUrl(p.url, origin)})`);
   return new NextResponse(
     `# stera smart one Documentation\n\n${lines.join('\n')}\n`,
     {

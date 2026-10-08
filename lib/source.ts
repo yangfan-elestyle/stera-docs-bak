@@ -16,7 +16,10 @@ import { getRequestOrigin } from '@/lib/request';
 import { sectionNotesPlugin } from '@/lib/plugins/section-notes';
 import { resolveLLMTags } from './llm-postprocess';
 import { getPageUrl } from './url';
+import { getSiteTree } from './site-visibility';
 import { connection } from 'next/server';
+
+export { getSitePages, getSiteTree, isHiddenPage } from './site-visibility';
 
 // docs 是动态源 (运行期编译), openapi 是静态源 (构建期编译), dynamicLoader 原生支持混用。
 // 两者合并进同一份 storage: openapi 排序 meta 里的 `../(generated)/...` 与
@@ -78,7 +81,7 @@ export async function loadDoc(page: DocsPage): Promise<CompiledDoc> {
 
 // 页脚 previous/next: 邻居范围限定在当前页所在的 root tab，避免跨 tab 串页
 export function getFooterItems(src: DocsSource, page: DocsPage, lang: string) {
-  const tree = src.getPageTree(lang);
+  const tree = getSiteTree(src, lang);
   if (!tree) return {};
 
   // 如 (home) 末页 → openapi 首页

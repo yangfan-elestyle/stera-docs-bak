@@ -3,7 +3,9 @@ import {
   getLastModified,
   getPageDescription,
   getPageImage,
+  getSiteTree,
   getSource,
+  isHiddenPage,
   loadDoc,
 } from '@/lib/source';
 import { DocsBody, DocsDescription, DocsPage } from 'fumadocs-ui/page';
@@ -74,7 +76,7 @@ export default async function Page(props: PageProps<'/[lang]/[...slug]'>) {
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <MDX
-          components={getMDXComponents(src.getPageTree(lang), {
+          components={getMDXComponents(getSiteTree(src, lang), {
             a: createRelativeLink(src, page),
           })}
         />
@@ -97,6 +99,8 @@ export async function generateMetadata(
   return {
     title: page.data.title,
     description: await getPageDescription(page),
+    // hidden 页只给持直链的人看; 本站无 sitemap, 外链一旦泄露仍可能被收录
+    ...(isHiddenPage(page) ? { robots: { index: false } } : {}),
     ...(requestBaseUrl
       ? {
           openGraph: {

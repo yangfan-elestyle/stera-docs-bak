@@ -1,4 +1,9 @@
-import { getLLMText, getSource } from '@/lib/source';
+import {
+  getLLMText,
+  getSitePages,
+  getSiteTree,
+  getSource,
+} from '@/lib/source';
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { getRequestHost } from '@/lib/request';
@@ -12,8 +17,8 @@ export async function GET(
   const { lang } = await context.params;
   const host = getRequestHost(await headers());
   const src = await getSource();
-  const tree = src.getPageTree(lang);
-  const scan = src.getPages(lang).map((p) => getLLMText(p, host, tree));
+  const tree = getSiteTree(src, lang);
+  const scan = getSitePages(src, lang).map((p) => getLLMText(p, host, tree));
   const scanned = await Promise.all(scan);
 
   return new NextResponse(scanned.join('\n\n'), {

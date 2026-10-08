@@ -277,6 +277,7 @@ export function DocEditor({
         typeof data.tocMaxDepth === 'number' ? String(data.tocMaxDepth) : '',
       redirect: typeof data.redirect === 'string' ? data.redirect : '',
       full: data.full === true,
+      hidden: data.hidden === true,
     };
   }, [content]);
 

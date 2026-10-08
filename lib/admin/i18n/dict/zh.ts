@@ -146,6 +146,7 @@ export const zh: AdminDict = {
   'tree.buildtimeHint': '由 openapi*.yaml 生成, 改动走发版; 点击在站点打开',
   'tree.missingTooltip': '缺 {langs}, 前台会回退到默认语言',
   'tree.missingBadge': '缺 {count}',
+  'tree.hiddenTooltip': '已隐藏: 不出现在侧边栏 / 搜索 / llms.txt, 知道 URL 仍可访问',
 
   // ---- 编辑器 ----
   'editor.savedToast': '{locale} 已保存',
@@ -196,6 +197,8 @@ export const zh: AdminDict = {
   'fm.tocH1': '只到 # 一级',
   'fm.tocH2': '到 ## 二级',
   'fm.tocH3': '到 ### 三级',
+  'fm.hidden': '从列表隐藏',
+  'fm.hiddenHint': '不进侧边栏 / 搜索 / llms.txt, 并对搜索引擎 noindex; 直链与站内链接照常可用。每种语言单独设置',
 
   // ---- 页面操作 ----
   'pageActions.viewOnSite': '在站点查看',

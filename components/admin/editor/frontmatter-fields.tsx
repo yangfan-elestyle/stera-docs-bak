@@ -16,6 +16,7 @@ export interface FrontmatterValues {
   tocMaxDepth: string;
   redirect: string;
   full: boolean;
+  hidden: boolean;
 }
 
 export function FrontmatterFields({
@@ -59,7 +60,41 @@ export function FrontmatterFields({
           placeholder="/get-started/set-up"
         />
       </Field>
+
+      <Field
+        label={t('fm.hidden')}
+        hint={t('fm.hiddenHint')}
+        className="md:col-span-2"
+      >
+        <HiddenCheckbox
+          checked={values.hidden}
+          disabled={disabled}
+          onChange={(checked) => onChange('hidden', checked)}
+        />
+      </Field>
     </div>
+  );
+}
+
+function HiddenCheckbox({
+  checked,
+  disabled,
+  onChange,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  const id = useFieldId();
+  return (
+    <input
+      id={id}
+      type="checkbox"
+      checked={checked}
+      disabled={disabled}
+      onChange={(event) => onChange(event.target.checked)}
+      className="size-4 accent-fd-primary disabled:cursor-not-allowed"
+    />
   );
 }
 

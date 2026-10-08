@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { getLLMText, getSource } from '@/lib/source';
+import { getLLMText, getSiteTree, getSource } from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import { getRequestHost } from '@/lib/request';
@@ -17,7 +17,7 @@ export async function GET(
 
   const host = getRequestHost(await headers());
 
-  return new NextResponse(await getLLMText(page, host, src.getPageTree(lang)), {
+  return new NextResponse(await getLLMText(page, host, getSiteTree(src, lang)), {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
       // 正文内嵌按请求 Host 生成的绝对 URL,跨 Host 不可共享;明确 no-store。

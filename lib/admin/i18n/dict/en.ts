@@ -146,6 +146,7 @@ export const en: AdminDict = {
   'tree.buildtimeHint': 'Generated from openapi*.yaml; changes ship with a release. Click to open on the site',
   'tree.missingTooltip': 'Missing {langs}; the site falls back to the default language',
   'tree.missingBadge': '{count} missing',
+  'tree.hiddenTooltip': 'Hidden: not in the sidebar, search, or llms.txt. Still reachable by URL',
 
   // ---- 编辑器 ----
   'editor.savedToast': '{locale} saved',
@@ -196,6 +197,8 @@ export const en: AdminDict = {
   'fm.tocH1': 'Up to # level 1',
   'fm.tocH2': 'Up to ## level 2',
   'fm.tocH3': 'Up to ### level 3',
+  'fm.hidden': 'Hide from listings',
+  'fm.hiddenHint': 'Removed from the sidebar, search and llms.txt, and marked noindex. Direct URLs and in-site links keep working. Set per language',
 
   // ---- 页面操作 ----
   'pageActions.viewOnSite': 'View on site',

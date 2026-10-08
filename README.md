@@ -33,6 +33,7 @@ bun run scripts/verify-cms-http.ts stera-docs:local  # 自动创建/清理隔离
 ## 硬约束
 
 - 取内容 MUST 走 `getSource()`, MUST NOT 直接 `source.get()`, 否则 `.md` / `llms.txt` 不随保存更新。
+- 站点出口 (侧边栏 / 首页 / 页脚 / 搜索 / `llms*.txt` / EHome) MUST 走 `getSiteTree()` / `getSitePages()`, 否则 frontmatter `hidden: true` 页泄露; `/admin` 树与链接解析用原始树。
 - `next build` MUST NOT 读 db -> 页面路由 MUST NOT 加 `generateStaticParams`。
 - 新增静态资源路径 MUST 加进 `middleware.ts` matcher 排除, 否则 404。
 - 文档页 MUST NOT 放 `/docs/*` (属 `public/docs` 静态资源); 站内链接 MUST NOT 带 `/ja` `/en` `/zh`。

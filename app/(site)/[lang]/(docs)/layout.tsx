@@ -1,5 +1,5 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
-import { getSource } from '@/lib/source';
+import { getSiteTree, getSource } from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
 import { notFound } from 'next/navigation';
 import { SITE } from '@/lib/site';
@@ -9,7 +9,7 @@ export default async function Layout({
   children,
 }: LayoutProps<'/[lang]'>) {
   const { lang } = await params;
-  const tree = (await getSource()).getPageTree(lang);
+  const tree = getSiteTree(await getSource(), lang);
 
   if (!tree) {
     return notFound();
