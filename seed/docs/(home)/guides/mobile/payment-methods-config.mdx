@@ -6,7 +6,11 @@ title: 決済方法
 
 モバイルSDK（iOS、Android™）をご利用する際に、各支払い方法の設定に関しては、本ページで記載します。
 
-> ◯：個別設定が必要、△：共通の設定をすれば結構です、X：特別の設定がありません
+<Callout type="info">
+
+◯：個別設定が必要、△：共通の設定をすれば結構です、X：特別の設定がありません
+
+</Callout>
 
 ## iOS 開発設置
 
@@ -37,28 +41,30 @@ title: 決済方法
 
 GoAllpayをご利用する場合、プロジェクトの設定にGoAllpay SDKの情報追加が必要となります。<br />詳細の設定方法はGoAllpaySDKのドキュメント[（中国語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_CH.md)、[（英語）](https://git.allpayx.com/OpenAPI/common/src/master/v5/android/Android_Integration_Specification_EN.md)にご参考ください。
 
-> 📘 配置方法
->
-> プロジェクトのルートのbuild.gradleに以下の情報を追加してください。
->
-> ```groovy
-> repositories {
->   // ... 他のmaven repo
->   // GoAllpay SDK のmaven repo
->   maven {
->     url 'https://s01.oss.sonatype.org/content/repositories/releases/'
->   }
-> }
-> ```
->
-> アプリモジュールのbuild.gradleに以下の情報を追加してください。
->
-> ```groovy
-> dependencies {
->   // ... other dependencies
->   api("io.github.goallpay:allpaysdk:5.2.5")
-> }
-> ```
+<Callout type="info" title="配置方法">
+
+プロジェクトのルートのbuild.gradleに以下の情報を追加してください。
+
+```groovy
+repositories {
+  // ... 他のmaven repo
+  // GoAllpay SDK のmaven repo
+  maven {
+    url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+  }
+}
+```
+
+アプリモジュールのbuild.gradleに以下の情報を追加してください。
+
+```groovy
+dependencies {
+  // ... other dependencies
+  api("io.github.goallpay:allpaysdk:5.2.5")
+}
+```
+
+</Callout>
 
 ### 各決済方法の開発設定
 
@@ -81,9 +87,11 @@ GoAllpayをご利用する場合、プロジェクトの設定にGoAllpay SDKの
 
 Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、下記のようにひとつにまとめることができます。また、1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。
 
-> 📘
->
-> 専用の URL Scheme の取得方法は「[iOS / Android SDK用URL Schemeの取得](/guides/mobile/url-scheme)」へご参照ください。
+<Callout type="info">
+
+専用の URL Scheme の取得方法は「[iOS / Android SDK用URL Schemeの取得](/guides/mobile/url-scheme)」へご参照ください。
+
+</Callout>
 
 ```xml
 <activity
@@ -123,9 +131,11 @@ stera smart one デフォルト *URL Scheme* については、[こちら](/guid
 
 #### Android
 
-> 🚧
->
-> elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
+<Callout type="warn">
+
+elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
+
+</Callout>
 
 Line Pay を使うために、stera smart one アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
@@ -167,9 +177,11 @@ stera smart one デフォルト *URL Scheme* については、[こちら](/guid
 
 #### Android
 
-> 🚧
->
-> elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることができます。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
+<Callout type="warn">
+
+elepay Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることができます。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
+
+</Callout>
 
 PayPay を使うために、elstera smart onepay アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
@@ -195,9 +207,11 @@ scheme より起動される Activity をカスタマイズする場合は、`jp
 
 #### Android
 
-> 🚧
->
-> Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
+<Callout type="warn">
+
+Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、`ElepayCallbackActivity`にまとめることが可能になります。1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。詳細は[概要ページ](/guides/mobile/payment-methods-config)へご参照ください。
+
+</Callout>
 
 Merpay を使うために、stera smart one アカウントの「アプリ設定」ページから「URL Scheme」をプロジェクトの`AndroidManifest.xml`に追加する必要があります。
 
@@ -268,9 +282,11 @@ stera smart one デフォルト _URL Scheme_ については、[こちら](/guid
 
 RPayを使うには、SDKの他にRakuten Pay独自のaarファイル（非公開）をプロジェクトのビルド依存関係に追加する必要があります。ビルド依存関係の追加方法については、Android Developerの[公式サイト](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)にご参考ください。
 
-> 📘
->
-> Rakuten Pay aarファイルのダウンロード先は、stera smart one サポートまでお問い合わせしてください。
+<Callout type="info">
+
+Rakuten Pay aarファイルのダウンロード先は、stera smart one サポートまでお問い合わせしてください。
+
+</Callout>
 
 ### Paidy [#paidy]
 
@@ -320,15 +336,18 @@ Apple Pay は Apple 製デバイスがお財布代わりになる簡単な決済
 
 SDK のセットアップ時に、`googlePayEnvironment`を指定します。
 
-> Google Pay をご利用の際、Google 社への申請が必要となります。申請するには、TEST/PRODUCTION それぞれの環境でビルドしたアプリを提出する可能性があります。
->
-> [Google Pay & Wallet Console](https://pay.google.com/business/console) で申請する際、Integration typeはGatewayを選択してください。
+<Callout type="info">
+
+Google Pay をご利用の際、Google 社への申請が必要となります。申請するには、TEST/PRODUCTION それぞれの環境でビルドしたアプリを提出する可能性があります。
+
+[Google Pay & Wallet Console](https://pay.google.com/business/console) で申請する際、Integration typeはGatewayを選択してください。
+
+</Callout>
 
 SDK を設定する際、`googlePayExistingPaymentRequired`（デフォルト値：true）を指定できます。これはユーザーの Google Pay に有効な支払いカードが存在するかどうかを検証するための設定です。
 
-> true：Google Pay に少なくとも 1 枚の支払い可能なカードが必要です。
->
-> false：Google Pay の支払いカードを検証しません。カードがない場合は、支払いダイアログ内で追加できます。
+- `true`：Google Pay に少なくとも 1 枚の支払い可能なカードが必要です。
+- `false`：Google Pay の支払いカードを検証しません。カードがない場合は、支払いダイアログ内で追加できます。
 
 ```kotlin
 val configuration = ElepayConfiguration(
@@ -433,9 +452,11 @@ stera smart one デフォルト *URL Scheme* については、[こちら](/guid
 
 アリペイを使うために、[アリペイのsdk](https://doc.open.alipay.com/doc2/detail.htm?treeId=54\&articleId=104509\&docType=1)をダウンロードし、プロジェクトのlibsフォルダーに配置します。
 
-> 📘
->
-> アリペイのsdk名はこのような形になります。alipaySdk-15.6.8-20191021122455-noUtdid.aar
+<Callout type="info">
+
+アリペイのsdk名はこのような形になります。alipaySdk-15.6.8-20191021122455-noUtdid.aar
+
+</Callout>
 
 そして、アプリの`build.gradle`に、アリペイsdkの依存関係を追加します。
 

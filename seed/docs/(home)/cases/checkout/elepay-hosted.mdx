@@ -3,9 +3,13 @@ title: ホスティングのCheckoutページを導入
 description: お客様がウェブサイトのボタンをクリックすると、stera smart oneホスティングのCheckoutページに移動します。
 ---
 
-> - 導入工数：ローコード、約20分
-> - 実装スタイル：ホスティングページ
-> - UIの自由度：制限あり
+<Callout type="info">
+
+- 導入工数：ローコード、約20分
+- 実装スタイル：ホスティングページ
+- UIの自由度：制限あり
+
+</Callout>
 
 サイト内で商品を選択済みのお客様が、購入準備が整ったら、以下の手順で導入してください。
 
@@ -67,13 +71,15 @@ Javascript SDKを利用して、Checkoutページへ移動します。Javascript
 - cancelled: 支払キャンセル
 - failure: 支払失敗
 
-> 例：[https://example.com/thank-you?status=captured]
+例：`https://example.com/thank-you?status=captured`
 
-> 👍 決済状況を正確に把握するためには、Webhookでイベント通知を受信する方法が最適です。
->
-> stera smart oneの[開発設定>Webhook] で受信URLを設定できます。
->
-> 支払いが成功の場合、stera smart one は Webhook に設定された URL に `charge.captured` イベントの通知を送信します。
+<Callout type="success" title="決済状況を正確に把握するためには、Webhookでイベント通知を受信する方法が最適です。">
+
+stera smart oneの[開発設定>Webhook] で受信URLを設定できます。
+
+支払いが成功の場合、stera smart one は Webhook に設定された URL に `charge.captured` イベントの通知を送信します。
+
+</Callout>
 
 ### 他の設定
 

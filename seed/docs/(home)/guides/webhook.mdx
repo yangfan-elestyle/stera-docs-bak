@@ -108,9 +108,11 @@ elepay-signature: t=[タイムスタンプ],sign=[署名値]
 elepay-signature: t=1581064080,sign=100dcc3d839c89cd91ecdd23d7305b2fdb8ae73b498c27efd812b25fc86ec702
 ```
 
-> 📘
->
-> ご利用のFrameworkによります、HTTPのヘッダーが全部小文字の `elepay-signature` に処理してくれない場合があります。該当場合は `Elepay-Signature` でお試しください。
+<Callout type="info">
+
+ご利用のFrameworkによります、HTTPのヘッダーが全部小文字の `elepay-signature` に処理してくれない場合があります。該当場合は `Elepay-Signature` でお試しください。
+
+</Callout>
 
 **正当性チェックロジック**
 

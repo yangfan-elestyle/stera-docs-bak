@@ -16,7 +16,11 @@ title: iOS SDK
 
 ## 1. Cocoapod によるインストール
 
-> 📘 iOS SDK 5.0 からは、SPM（Swift Package Manager）を利用してください。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
+<Callout type="info">
+
+iOS SDK 5.0 からは、SPM（Swift Package Manager）を利用してください。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
+
+</Callout>
 
 1. Podfile に `ElepaySDK` を追加します。<br />**ご注意：Cocoapods 1.10.0 以上をご利用ください。**
 
@@ -47,7 +51,11 @@ pod 'Elepay_ChinesePayments_Plugin', '~> 2.0'
 pod 'Stripe', '~> 22.0'
 ```
 
-> 🚧 Stripe v23がiOS 12のサポートを停止したため、SDKではStripe v22までを設定してください。
+<Callout type="warn">
+
+Stripe v23がiOS 12のサポートを停止したため、SDKではStripe v22までを設定してください。
+
+</Callout>
 
 4. PayPal を利用する、かつ SDK が 1.7.0 以降の場合のみ、`Braintree`を追加してください。<br />**ご注意：**&#x53;DK 4.0.0からはBraintreeのサポートが終了しました。PayPalを利用する場合は、SDK 3.xをご利用ください。
 
@@ -59,7 +67,11 @@ pod 'Braintree'
 
 ## 2. Swift Package Manager (SPM)によるインストール
 
-> 📘 iOS SDK 5.0 からは、SPM（Swift Package Manager）を標準の配布方式として提供しております。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
+<Callout type="info">
+
+iOS SDK 5.0 からは、SPM（Swift Package Manager）を標準の配布方式として提供しております。他のインテグレーション方式に関するご要望がございましたら、stera smart one チームまでお問い合わせください。
+
+</Callout>
 
 **iOS SDK** は 3.1.1 から SPM に対応しました。<br />**iOS SDK Chinese Payments Plugin** は 2.0.2 から SPM に対応しました。
 
@@ -85,9 +97,11 @@ pod 'Braintree'
 
 ## 4. Objective-C プロジェクトで利用する場合
 
-> 📘 Objective-Cで開発する場合
->
-> Objective-C のプロジェクトに SDK を実装する場合、こちらの<br />[ElePayObjCBridge.swift](https://github.com/elestyle/elepay-ios-demo-swift/blob/master/ELEPayObjectiveC/ElePayObjCBridge.swift) ファイルをご利用ください。
+<Callout type="info" title="Objective-Cで開発する場合">
+
+Objective-C のプロジェクトに SDK を実装する場合、こちらの<br />[ElePayObjCBridge.swift](https://github.com/elestyle/elepay-ios-demo-swift/blob/master/ELEPayObjectiveC/ElePayObjCBridge.swift) ファイルをご利用ください。
+
+</Callout>
 
 ## 実装
 
@@ -105,9 +119,11 @@ stera smart one 専用の URL Scheme の取得方法は「[iOS / Android SDK用U
 
 モバイル Safari や Chrome のアドレスバーに上記の _URL Scheme_（例：`ep1a2b3c4d5e://`）が正しく App を呼び出されるかどうかをテストできます。
 
-> 📘 重要
->
-> 複数の **TARGETS** が存在する場合、全てのターゲットの _URL Type_ に、上記の _URL Scheme_ を追加してください。
+<Callout type="info" title="重要">
+
+複数の **TARGETS** が存在する場合、全てのターゲットの _URL Type_ に、上記の _URL Scheme_ を追加してください。
+
+</Callout>
 
 ## 2. 各支払方法の設定に関して
 
@@ -121,9 +137,11 @@ stera smart one 専用の URL Scheme の取得方法は「[iOS / Android SDK用U
 Elepay.initApp(key: "ELEPAY_APP_PUBLIC_KEY")
 ```
 
-> 📘 Public Key について
->
-> `ELEPAY_APP_PUBLIC_KEY` を[「stera smart one 管理画面」](https://dashboard.sterasmartone.com)で発行したものに変更してください
+<Callout type="info" title="Public Key について">
+
+`ELEPAY_APP_PUBLIC_KEY` を[「stera smart one 管理画面」](https://dashboard.sterasmartone.com)で発行したものに変更してください
+
+</Callout>
 
 ## 4. callback の設定
 
@@ -148,9 +166,11 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 
 **API** のチャージ API  `/api/charges` で都度決済を開始します。<br />当 API は認証が必要なため、認証用のセキュリティーキーを契約者が管理しているサーバーに保存して、そのサーバーから請求してください。
 
-> ❗️ セキュリティー：
->
-> 安全のために、セキュリティーキーは**絶対に**アプリに保存したり、転送したりしないでください。
+<Callout type="error" title="セキュリティー">
+
+安全のために、セキュリティーキーは**絶対に**アプリに保存したり、転送したりしないでください。
+
+</Callout>
 
 ### ネーティブApp側処理
 
@@ -444,9 +464,11 @@ case let .failed(let codeId, let error):
 
 ## 注意事項
 
-> 🚧 支払い結果の処理について
->
-> アプリ内の支払い結果は、ユーザーへの結果照会のみでご使用ください。実際の課金結果は必ずサーバー上の callback API を経由し、stera smart one サーバーから送信されたデータでご確認ください。 _詳しくは API ガイドをご確認ください。_
+<Callout type="warn" title="支払い結果の処理について">
+
+アプリ内の支払い結果は、ユーザーへの結果照会のみでご使用ください。実際の課金結果は必ずサーバー上の callback API を経由し、stera smart one サーバーから送信されたデータでご確認ください。 _詳しくは API ガイドをご確認ください。_
+
+</Callout>
 
 ## 1. Apple Pay について
 
@@ -493,6 +515,8 @@ ElepayLocalization.shared.switchLanguage(code: .tw)	// Use Traditional Chinese
 
 この `switchLanguage` 関数は何回でも使えます。関数を呼び出した後に表示される画面が指定した言語で表示します。
 
-> 📘 一部の画面の表示言語がご指定出来かねます
->
-> 一部の決済方法は第三者画面に遷移する事があります。その画面は SDK の制御範囲外のため、ご指定の言語と異なる言語で表示する可能性があります。
+<Callout type="info" title="一部の画面の表示言語がご指定出来かねます">
+
+一部の決済方法は第三者画面に遷移する事があります。その画面は SDK の制御範囲外のため、ご指定の言語と異なる言語で表示する可能性があります。
+
+</Callout>

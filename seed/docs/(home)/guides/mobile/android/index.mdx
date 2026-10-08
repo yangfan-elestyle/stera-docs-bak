@@ -32,15 +32,19 @@ implementation 'io.elepay.android:elepay:(latest-version)'
 implementation 'io.elepay.android:elepay-checkout:(latest-version)'
 ```
 
-> 🚧
->
-> 常に新しいバージョンを使用することを推奨します。<br />4.0.0 から、Maven 座標が `jp.elestyle.androidapp` から `io.elepay.android` へ移行し、SDK は `elepay` / `elepay-core` / `elepay-checkout` に分割されました。`elepay-core` は `elepay` から推移的に解決されるため、単独で宣言する必要はありません。Checkout を利用する場合は、別途 `elepay-checkout` の追加が必要です。4.0.0 より前のバージョンは引き続き旧座標 `jp.elestyle.androidapp:elepay` を使用します。<br />gradle build tool 3.6.0 (Android Studio 3.6に対応)以降を利用する場合、Android SDK 1.7.0以降が必要となります。
+<Callout type="warn">
 
-> 🚧 Android Support Library ご利用の方へ
->
-> **Android SDK** は [Android X](https://developer.android.com/jetpack/androidx/) のみ対応しています。<br />Google 社は2018年以降 [Android support library](https://developer.android.com/topic/libraries/support-library/) の[開発を停止](https://android-developers.googleblog.com/2018/05/hello-world-androidx.html)しますので、<br />[Android support library](https://developer.android.com/topic/libraries/support-library/) をご利用する場合は、[Android X](https://developer.android.com/jetpack/androidx/) に変更するのはお勧めです。
->
-> 変更手順に関して、Google 社の[マイグレーション手順](https://developer.android.com/jetpack/androidx/migrate)をご参照ください。
+常に新しいバージョンを使用することを推奨します。<br />4.0.0 から、Maven 座標が `jp.elestyle.androidapp` から `io.elepay.android` へ移行し、SDK は `elepay` / `elepay-core` / `elepay-checkout` に分割されました。`elepay-core` は `elepay` から推移的に解決されるため、単独で宣言する必要はありません。Checkout を利用する場合は、別途 `elepay-checkout` の追加が必要です。4.0.0 より前のバージョンは引き続き旧座標 `jp.elestyle.androidapp:elepay` を使用します。<br />gradle build tool 3.6.0 (Android Studio 3.6に対応)以降を利用する場合、Android SDK 1.7.0以降が必要となります。
+
+</Callout>
+
+<Callout type="warn" title="Android Support Library ご利用の方へ">
+
+**Android SDK** は [Android X](https://developer.android.com/jetpack/androidx/) のみ対応しています。<br />Google 社は2018年以降 [Android support library](https://developer.android.com/topic/libraries/support-library/) の[開発を停止](https://android-developers.googleblog.com/2018/05/hello-world-androidx.html)しますので、<br />[Android support library](https://developer.android.com/topic/libraries/support-library/) をご利用する場合は、[Android X](https://developer.android.com/jetpack/androidx/) に変更するのはお勧めです。
+
+変更手順に関して、Google 社の[マイグレーション手順](https://developer.android.com/jetpack/androidx/migrate)をご参照ください。
+
+</Callout>
 
 # 実装
 
@@ -48,9 +52,11 @@ implementation 'io.elepay.android:elepay-checkout:(latest-version)'
 
 UnionPay や Alipay を利用するには、以下のパーミッションを `AndroidManifest.xml` に追加する必要があります。
 
-> 📘
->
-> 全てのパーミッションではなく、利用状況に応じて追加してください。<br />例：カードをスキャンする仕様がなければ、カメラに関するパーミッションは不要です。
+<Callout type="info">
+
+全てのパーミッションではなく、利用状況に応じて追加してください。<br />例：カードをスキャンする仕様がなければ、カメラに関するパーミッションは不要です。
+
+</Callout>
 
 ```
     <uses-permission android:name="android.permission.INTERNET" />
@@ -86,9 +92,11 @@ ElepayConfiguration config = new ElepayConfiguration(appKey);
 
 `appKey` を申請するためには、stera smart one アカウントが必要となります。<br />詳しくは[API ガイド](/get-started/quickstart)をご参照ください。
 
-> 📘
->
-> 本配置処理はアプリの `Application` クラスまたはスタート `Activity` で行われるのが推薦します。
+<Callout type="info">
+
+本配置処理はアプリの `Application` クラスまたはスタート `Activity` で行われるのが推薦します。
+
+</Callout>
 
 ## 3. 支払いの処理
 
@@ -114,9 +122,11 @@ ElepayConfiguration config = new ElepayConfiguration(appKey);
 
 ### checkout 処理
 
-> 📘
->
-> checkout は Android SDK 1.9.0及びその以上のバージョンが必要となります。
+<Callout type="info">
+
+checkout は Android SDK 1.9.0及びその以上のバージョンが必要となります。
+
+</Callout>
 
 checkout のデータオブジェクト（サーバーにより作成されたもの、詳しくは[APIリファレンス](/openapi/charge/listCharges)をご参照ください。）は作成された後、下記のメソッドに渡されて、支払い処理を完了させます。<br />`Elepay.checkout(checkoutJsonData, fromActivity, resultHandler)`
 
@@ -126,9 +136,11 @@ checkout のデータオブジェクト（サーバーにより作成された�
 | fromActivity | 決済を行う際にUIを表示するために使われた `Activity` の実例となります。 |
 | resultHandler | 決済の結果を通知するコールバックです。 |
 
-> 📘
->
-> 引数の詳細は API ドキュメントをご参照ください。
+<Callout type="info">
+
+引数の詳細は API ドキュメントをご参照ください。
+
+</Callout>
 
 ## 4. 結果の処理
 
@@ -150,9 +162,11 @@ Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコ�
 </activity>
 ```
 
-> 🚧 必ずお忘れずに
->
-> 上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`はstera smart one専用URL Schemeに書き換えてください。取得方法は「[iOS / Android SDK用URL Schemeの取得](/guides/mobile/url-scheme)」までご参照ください。
+<Callout type="warn" title="必ずお忘れずに">
+
+上記コードの中、`<data android:scheme="ep1234567890abcdef" />`の`scheme`はstera smart one専用URL Schemeに書き換えてください。取得方法は「[iOS / Android SDK用URL Schemeの取得](/guides/mobile/url-scheme)」までご参照ください。
+
+</Callout>
 
 処理の結果は、上記の `resultHandler` コールバックの引数 `ElepayResult` に含まれます。<br />`ElepayResult` は `Succeeded` 、`Failed` と `Canceled` に別れますが、詳細は API のドキュメントをご参照ください。
 
@@ -240,10 +254,12 @@ Elepay.setup(configuration)
 Elepay.changeTheme(theme = ElepayTheme.Light)
 ```
 
-> 注意
->
-> 1. stera smart oneのテーマを指定すると、システムよりアプリのConfiguationデータは変更されるため、stera smart oneの支払い処理を呼び出すActivityは再起動される場合があります。<br />Activity再起動を回避するには、`AndroidManifest.xml`にstera smart oneの支払い処理を呼び出すActivityの`android:configChanges`に`uiMode`を追加する必要があります。
-> 2. `changeTheme`は支払い処理の前にコールするのみ有効です。
+<Callout type="warn" title="注意">
+
+1. stera smart oneのテーマを指定すると、システムよりアプリのConfiguationデータは変更されるため、stera smart oneの支払い処理を呼び出すActivityは再起動される場合があります。<br />Activity再起動を回避するには、`AndroidManifest.xml`にstera smart oneの支払い処理を呼び出すActivityの`android:configChanges`に`uiMode`を追加する必要があります。
+2. `changeTheme`は支払い処理の前にコールするのみ有効です。
+
+</Callout>
 
 ## 色のカスタマイズ
 
@@ -278,7 +294,15 @@ Elepay.changeTheme(theme = ElepayTheme.Light)
 
 ![3000](/docs/f726d1e-asdf.png)
 
-> 注意<br />`Light`テーマの色をカスタマイズする場合は、プロジェクトの`res/values/colors.xml`に上記の値を指定します。<br />`Dark`テーマの色をカスタマイズする場合は、プロジェクトの`res/values-night/colors.xml`に上記の値を指定します。<br />`ElepayTheme.System`をご利用する場合、`res/values/colors.xml`と`res/values-night/colors.xml`両方とも値を指定する可能性がありますので、実際の状況に応じてご使用ください。
+<Callout type="warn" title="注意">
+
+`Light`テーマの色をカスタマイズする場合は、プロジェクトの`res/values/colors.xml`に上記の値を指定します。
+
+`Dark`テーマの色をカスタマイズする場合は、プロジェクトの`res/values-night/colors.xml`に上記の値を指定します。
+
+`ElepayTheme.System`をご利用する場合、`res/values/colors.xml`と`res/values-night/colors.xml`両方とも値を指定する可能性がありますので、実際の状況に応じてご使用ください。
+
+</Callout>
 
 # 多言語
 
@@ -300,9 +324,11 @@ Elepay.setup(configuration)
 Elepay.changeLanguageKey(LangaugeKey.English)
 ```
 
-> 🚧 注意
->
-> `Elepay.changeLanguageKey`は、`Elepay.processPayment`の前にコールすることでしか効きませんので、言語を変更するタイミングをご注意ください。
+<Callout type="warn" title="注意">
+
+`Elepay.changeLanguageKey`は、`Elepay.processPayment`の前にコールすることでしか効きませんので、言語を変更するタイミングをご注意ください。
+
+</Callout>
 
 # 各支払方法の設定に関して
 

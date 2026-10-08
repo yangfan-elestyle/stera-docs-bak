@@ -19,11 +19,13 @@ elepay は CPM顧客提示型の決済機能を提供します。CPM顧客提示
 
 サーバー側の処理が elepay  の Charge 機能を呼び出し、支払いをリクエストします。
 
-> 📘 主なリクエスト項目説明
->
-> - **resource**: `cpm` を設定してください
-> - **paymentMethod**: 利用できる決済方法、あるいは `auto` を設定してください。 `auto` を設定した場合、elepay 自動的に決済方法を判断して response 中のpaymentMethod項目に実際の決済方法をセットします。
-> - **extra**: token は必須項目です。その他決済方法よって追加情報があります。具体的設定情報は「開発ガイド->[決済Extra情報設定](/guides/extra-setting#決済リソースは-cpm-の場合)」を参照してください。
+<Callout type="info" title="主なリクエスト項目説明">
+
+- **resource**: `cpm` を設定してください
+- **paymentMethod**: 利用できる決済方法、あるいは `auto` を設定してください。 `auto` を設定した場合、elepay 自動的に決済方法を判断して response 中のpaymentMethod項目に実際の決済方法をセットします。
+- **extra**: token は必須項目です。その他決済方法よって追加情報があります。具体的設定情報は「開発ガイド->[決済Extra情報設定](/guides/extra-setting#決済リソースは-cpm-の場合)」を参照してください。
+
+</Callout>
 
 ### 3. Charge オブジェクトの新規生成
 
