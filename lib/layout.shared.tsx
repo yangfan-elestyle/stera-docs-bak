@@ -6,12 +6,12 @@ import stera_logo_dark from '@/assets/stera-logo-dark.svg';
 import { i18n } from './i18n';
 import { SITE } from './site';
 
-// 顶部导航的几条主入口。落地页 (HomeLayout) 与文档页 (DocsLayout) 共用同一份,
-// 从落地页点进文档、再从文档点回落地页都走这里。
-const NAV_LINKS: Record<string, { docs: string; api: string; home: string }> = {
-  ja: { docs: 'ドキュメント', api: 'API リファレンス', home: 'ホーム' },
-  en: { docs: 'Documentation', api: 'API reference', home: 'Home' },
-  zh: { docs: '文档', api: 'API 参考', home: '首页' },
+// 落地页顶部导航的主入口 (type 'main')。回落地页走左上角 logo, 不另设「首页」;
+// 文档页侧边栏已有 tab 下拉切 文档/API, 由 DocsLayout 过滤掉这些 main 链接。
+const NAV_LINKS: Record<string, { docs: string; api: string }> = {
+  ja: { docs: 'ドキュメント', api: 'API リファレンス' },
+  en: { docs: 'Documentation', api: 'API reference' },
+  zh: { docs: '文档', api: 'API 参考' },
 };
 
 export function baseOptions(locale: string): BaseLayoutProps {
@@ -38,7 +38,6 @@ export function baseOptions(locale: string): BaseLayoutProps {
       ),
     },
     links: [
-      { type: 'main', text: labels.home, url: '/' },
       { type: 'main', text: labels.docs, url: '/overview' },
       { type: 'main', text: labels.api, url: '/openapi' },
       {
