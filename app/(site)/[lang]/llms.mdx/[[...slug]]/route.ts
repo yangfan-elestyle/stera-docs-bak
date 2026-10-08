@@ -1,5 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { getLLMText, getSiteTree, getSource } from '@/lib/source';
+import {
+  getLLMText,
+  getSiteTree,
+  getSource,
+  isHiddenPage,
+} from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import { getRequestHost } from '@/lib/request';
@@ -22,6 +27,8 @@ export async function GET(
       'Content-Type': 'text/markdown; charset=utf-8',
       // 正文内嵌按请求 Host 生成的绝对 URL,跨 Host 不可共享;明确 no-store。
       'Cache-Control': 'no-store',
+      // 纯文本没有 <meta robots>, hidden 页的 noindex 只能靠响应头
+      ...(isHiddenPage(page) ? { 'X-Robots-Tag': 'noindex' } : {}),
     },
   });
 }
