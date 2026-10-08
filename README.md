@@ -26,6 +26,7 @@ Next.js + Fumadocs + Bun。Docker 镜像 -> GHCR; 目标: ele-argocd-app 部署�
 ```bash
 bun run generate:data    # clone 后 / 改 openapi*.yaml 后必跑
 bun run import:seed      # seed/docs -> data/cms.db, 清空重灌
+bun run format:seed      # seed/docs 排版 (表格 / 列表符号 / 硬换行 / 空白), mdast 不变才写; --check 只查
 bun run test             # 隔离库回归 + 全量 seed 编译
 bun run scripts/verify-cms-http.ts stera-docs:local  # 自动创建/清理隔离 Docker 容器与卷, HTTP 验收
 ```

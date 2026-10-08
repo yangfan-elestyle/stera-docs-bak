@@ -8,6 +8,7 @@
     "test": "bun test tests",
     "generate:data": "bun run scripts/generate-openapi-json.ts && bun run scripts/generate-openapi.ts",
     "import:seed": "bun run scripts/import-seed.ts",
+    "format:seed": "bun run scripts/format-seed.ts",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
@@ -62,8 +63,13 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "postcss": "^8.5.14",
+    "remark-gfm": "^4.0.1",
+    "remark-mdx": "^3.1.1",
+    "remark-parse": "^11.0.0",
+    "string-width": "^7.2.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^5.9.3",
+    "unified": "^11.0.5",
     "vite": "^7.3.3"
   },
   "patchedDependencies": {

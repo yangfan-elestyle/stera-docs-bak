@@ -41,10 +41,10 @@ const elepay = await loadElepay('YOUR_PUBLISHABLE_KEY');
 
 **Elepay(publishableKey, options?)**
 
-| パラメータ          | 型      | 必須                     | 説明                                                                                |
-| :------------- | :----- | :--------------------- | :-------------------------------------------------------------------------------- |
-| publishableKey | string | true                   | 公開鍵                                                                               |
-| options        | object | false                  | 初期化オプション                                                                          |
+| パラメータ | 型 | 必須 | 説明 |
+| :-- | :-- | :-- | :-- |
+| publishableKey | string | true | 公開鍵 |
+| options | object | false | 初期化オプション |
 | options.locale | string | false<br />デフォルト: auto | ja：日本語<br />en：英語<br />zh-CN：簡体字中国語<br />zh-TW：繁体字中国語<br />auto：ブラウザのロケールに応じて自動設定 |
 
 ## 支払い処理
@@ -73,8 +73,8 @@ elepay.handleCharge(chargeObject).then(function(result) {
 
 **elepay.handleCharge(chargeObject)**
 
-| パラメータ        | 型      | 必須   | 説明                     |
-| :----------- | :----- | :--- | :--------------------- |
+| パラメータ | 型 | 必須 | 説明 |
+| :-- | :-- | :-- | :-- |
 | chargeObject | object | true | サーバーから作成したChargeオブジェクト |
 
 **frontUrl への遷移**

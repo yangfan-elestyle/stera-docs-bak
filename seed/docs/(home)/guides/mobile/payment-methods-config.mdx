@@ -10,22 +10,22 @@ title: 決済方法
 
 ## iOS 開発設置
 
-| Payment                                                               | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
-| :-------------------------------------------------------------------- | :--------- | :-------------------------- | :-------------------- |
-| [PayPay](/guides/mobile/payment-methods-config#paypay)                                                  | △          | ◯ \*1                       | ー                     |
-| [LinePay](/guides/mobile/payment-methods-config#line-pay)                                               | △          | ◯ \*1                       | ー                     |
-| [メルペイ](/guides/mobile/payment-methods-config#merpay)                                                    | △          | X                           | ー                     |
-| [d払い](/guides/mobile/payment-methods-config#docomo-payd払い) | X          | X                           | ー                     |
-| [au PAY](/guides/mobile/payment-methods-config#au-pay)                                                  | △          | ◯ \*1                       | ー                     |
-| [楽天ペイ](/guides/mobile/payment-methods-config#rakuten-pay)                                               | △          | ◯                           | ー                     |
-| [Paidy](/guides/mobile/payment-methods-config#paidy)                                                    | X          | X                           | ー                     |
-| [atone](/guides/mobile/payment-methods-config#atone)                                                    | X          | X                           | ー                     |
-| [WeChat Pay](/guides/mobile/payment-methods-config#wechatpay)                                           | ◯          | ◯                           | ー                     |
-| [Alipay](/guides/mobile/payment-methods-config#alipay)                                                  | △          | ◯                           | ー                     |
-| [Union Pay（銀聯雲閃付）](/guides/mobile/payment-methods-config#unionpay)                                      | △          | ◯                           | ◯                     |
-| [PayPal](/guides/mobile/payment-methods-config#paypal)                                                  | X          | ◯                           | ー                     |
-| [Apple Pay](/guides/mobile/payment-methods-config#apple-pay)                                            | X          | X                           | ◯                     |
-| [Credit Card](/guides/mobile/payment-methods-config#credit-card)                                        | X          | X                           | ー                     |
+| Payment | URL Scheme | LSApplicationQueriesSchemes | Apple Pay Merchant ID |
+| :-- | :-- | :-- | :-- |
+| [PayPay](/guides/mobile/payment-methods-config#paypay) | △ | ◯ \*1 | ー |
+| [LinePay](/guides/mobile/payment-methods-config#line-pay) | △ | ◯ \*1 | ー |
+| [メルペイ](/guides/mobile/payment-methods-config#merpay) | △ | X | ー |
+| [d払い](/guides/mobile/payment-methods-config#docomo-payd払い) | X | X | ー |
+| [au PAY](/guides/mobile/payment-methods-config#au-pay) | △ | ◯ \*1 | ー |
+| [楽天ペイ](/guides/mobile/payment-methods-config#rakuten-pay) | △ | ◯ | ー |
+| [Paidy](/guides/mobile/payment-methods-config#paidy) | X | X | ー |
+| [atone](/guides/mobile/payment-methods-config#atone) | X | X | ー |
+| [WeChat Pay](/guides/mobile/payment-methods-config#wechatpay) | ◯ | ◯ | ー |
+| [Alipay](/guides/mobile/payment-methods-config#alipay) | △ | ◯ | ー |
+| [Union Pay（銀聯雲閃付）](/guides/mobile/payment-methods-config#unionpay) | △ | ◯ | ◯ |
+| [PayPal](/guides/mobile/payment-methods-config#paypal) | X | ◯ | ー |
+| [Apple Pay](/guides/mobile/payment-methods-config#apple-pay) | X | X | ◯ |
+| [Credit Card](/guides/mobile/payment-methods-config#credit-card) | X | X | ー |
 
 \*1：SDK for iOS v3.2.1 から、各決済方法アプリの Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code-legacy) 「10110」が返信します。
 
@@ -62,22 +62,22 @@ GoAllpayをご利用する場合、プロジェクトの設定にGoAllpay SDKの
 
 ### 各決済方法の開発設定
 
-| Payment                                                               | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
-| :-------------------------------------------------------------------- | :------------------------------------- | :-------------------------------- |
-| [PayPay](/guides/mobile/payment-methods-config#paypay)                                                  | ◯                                      | X                                 |
-| [LinePay](/guides/mobile/payment-methods-config#line-pay)                                               | ◯                                      | X                                 |
-| [メルペイ](/guides/mobile/payment-methods-config#merpay)                                                    | ◯                                      | X                                 |
-| [d払い](/guides/mobile/payment-methods-config#docomo-payd払い) | X                                      | X                                 |
-| [au PAY](/guides/mobile/payment-methods-config#au-pay)                                                  | ◯                                      | X                                 |
-| [楽天ペイ](/guides/mobile/payment-methods-config#rakuten-pay)                                               | X                                      | ◯                                 |
-| [Paidy](/guides/mobile/payment-methods-config#paidy)                                                    | X                                      | X                                 |
-| [atone](/guides/mobile/payment-methods-config#atone)                                                    | X                                      | X                                 |
-| [WeChat Pay](/guides/mobile/payment-methods-config#wechatpay)                                           | ◯                                      | ◯                                 |
-| [Alipay](/guides/mobile/payment-methods-config#alipay)                                                  | X                                      | ◯                                 |
-| [Union Pay（銀聯雲閃付）](/guides/mobile/payment-methods-config#unionpay)                                      | X                                      | X                                 |
-| [PayPal](/guides/mobile/payment-methods-config#paypal)                                                  | X                                      | X                                 |
-| [Apple Pay](/guides/mobile/payment-methods-config#apple-pay)                                            | X                                      | X                                 |
-| [Credit Card](/guides/mobile/payment-methods-config#credit-card)                                        | X                                      | X                                 |
+| Payment | AndroidManifest.xml (Process Activity) | build.gradle (Library Dependency) |
+| :-- | :-- | :-- |
+| [PayPay](/guides/mobile/payment-methods-config#paypay) | ◯ | X |
+| [LinePay](/guides/mobile/payment-methods-config#line-pay) | ◯ | X |
+| [メルペイ](/guides/mobile/payment-methods-config#merpay) | ◯ | X |
+| [d払い](/guides/mobile/payment-methods-config#docomo-payd払い) | X | X |
+| [au PAY](/guides/mobile/payment-methods-config#au-pay) | ◯ | X |
+| [楽天ペイ](/guides/mobile/payment-methods-config#rakuten-pay) | X | ◯ |
+| [Paidy](/guides/mobile/payment-methods-config#paidy) | X | X |
+| [atone](/guides/mobile/payment-methods-config#atone) | X | X |
+| [WeChat Pay](/guides/mobile/payment-methods-config#wechatpay) | ◯ | ◯ |
+| [Alipay](/guides/mobile/payment-methods-config#alipay) | X | ◯ |
+| [Union Pay（銀聯雲閃付）](/guides/mobile/payment-methods-config#unionpay) | X | X |
+| [PayPal](/guides/mobile/payment-methods-config#paypal) | X | X |
+| [Apple Pay](/guides/mobile/payment-methods-config#apple-pay) | X | X |
+| [Credit Card](/guides/mobile/payment-methods-config#credit-card) | X | X |
 
 Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコールバックActivityは、下記のようにひとつにまとめることができます。また、1.7.1までの支払い方法ごとの設定方法はサポート停止になりますので、1.8.0以降のバージョンをご利用の際に`ElepayCallbackActivity`をご使用ください。
 
@@ -526,8 +526,8 @@ stera smart one デフォルト *URL Scheme* については、[こちら](/guid
 
 ##### 支払い方法（paymentMethod）
 
-* コンビニ支払い：paymentMethod = konbini
-* 銀行振込：paymentMethod = banktransfer
+- コンビニ支払い：paymentMethod = konbini
+- 銀行振込：paymentMethod = banktransfer
 
 ユーザーはシステムによって指定の画面にリダイレクトされ、以降の支払い手続きを完了します。
 
@@ -543,8 +543,8 @@ stera smart one デフォルト *URL Scheme* については、[こちら](/guid
 
 ##### 支払い期限と制限事項
 
-* コンビニ支払いの支払い待機期間：最大 60日間
-* 銀行振込の支払い待機期間：最大 365日間
+- コンビニ支払いの支払い待機期間：最大 60日間
+- 銀行振込の支払い待機期間：最大 365日間
 
 この間はユーザーの支払いをシステム側で待機し続け、revoke操作は非対応（Easy Checkoutは無効化できず、請求書はキャンセル不可）となります。
 
