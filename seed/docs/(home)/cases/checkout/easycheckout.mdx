@@ -1,22 +1,8 @@
 ---
 title: EasyCheckout
-excerpt: ''
-deprecated: false
 hidden: true
-metadata:
-  title: ''
-  description: ''
-  robots: index
-next:
-  description: ''
-  pages:
-    - type: basic
-      slug: api-reference
-      title: API Reference
-    - type: basic
-      slug: js-sdk
-      title: JavaScript SDK
 ---
+
 # EasyCheckoutの概要
 
 EasyCheckoutは stera smart one が提供しているMPM型の動的QRコード機能です。主に下記の利用シーンで動的にQRコードを表示し、お客様がQRコードを読み取ってお支払いする利用シーンに使われます。
@@ -34,9 +20,9 @@ EasyCheckoutは stera smart one が提供しているMPM型の動的QRコード�
 ### 1\. Codeオブジェクトの新規生成
 
 stera smart one サーバーがコードリクエストに対して Code オブジェクトを新規生成し、サーバー側に返します。\
-APIについて、APIリファレンスの[EasyCheckout](https://guides.sterasmartone.com/reference/createcode)をご参照してください。
+APIについて、APIリファレンスの[EasyCheckout](/openapi/code/createCode)をご参照してください。
 
-```curl
+```shell
 curl --request POST 'https://api.elepay.io/codes' \
 -u [秘密鍵]: \
 --header 'Content-Type: application/json' \
@@ -77,44 +63,9 @@ Javascript SDKを利用して、支払い画面へ遷移します。Javascript S
 
 「1」で設定したfrontUrlへ遷移します。frontUrlのquery stringに下記ような結果ステータスが含まれます。
 
-<Table align={["left","left","left"]}>
-  <thead>
-    <tr>
-      <th>
-        名前
-      </th>
-
-      <th>
-        タイプ
-      </th>
-
-      <th>
-        説明
-      </th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <tr>
-      <td>
-        status
-      </td>
-
-      <td>
-        string
-      </td>
-
-      <td>
-        結果ステータス\
-        captured: 支払完了\
-        cancelled: 支払キャンセル\
-        failure: 支払失敗  
-
-        * frontUrlの結果ステータスを信頼しないでください。正確な支払結果はWebhookを利用して受信してください。
-      </td>
-    </tr>
-  </tbody>
-</Table>
+| 名前 | タイプ | 説明 |
+| --- | --- | --- |
+| status | string | 結果ステータス<br />captured: 支払完了<br />cancelled: 支払キャンセル<br />failure: 支払失敗<br />・frontUrlの結果ステータスを信頼しないでください。正確な支払結果はWebhookを利用して受信してください。 |
 
 ### 5\. Webhook イベントの受信
 
@@ -123,9 +74,9 @@ Javascript SDKを利用して、支払い画面へ遷移します。Javascript S
 # iOS App で Checkout の利用（エンドユーザー向けのApp）
 
 下記リンクへ参照してください：\
-[iOS SDK - Checkout 機能](ios-sdk#checkout-%E6%A9%9F%E8%83%BD)
+[iOS SDK - Checkout 機能](/guides/mobile/ios#checkout-機能)
 
 # Android App で Checkout の利用（エンドユーザー向けのApp）
 
 下記リンクへ参照してください：\
-[Android SDK - Checkout 処理](android-sdk#checkout-処理)
+[Android SDK - Checkout 処理](/guides/mobile/android#checkout-処理)

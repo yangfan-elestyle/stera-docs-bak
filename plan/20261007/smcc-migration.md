@@ -6,7 +6,8 @@
 
 - 结构 = seed 现有定义 (slug / 分组 / 分隔符); 正文 = SMCC ja 原文; 无 seed 对应页 -> 在同分组下新建。
 - en / zh = 仅 frontmatter `title` (ja) 的空页, 待统一翻译; 导航 `meta.{en,zh}.json` 保留既有译名, `pages` 与 ja 一致。
-- 转换: ReadMe 单换行 = `<br>` -> 行尾 `\`; `<Image>` / `<Table>` / `<HTMLBlock>` -> Markdown; `<TutorialTile>` -> 对应 Recipe 页链接; `excerpt` -> `description`。
+- hidden: ReadMe `hidden: true` -> frontmatter `hidden: true` (ja / en / zh 同); 页面仍列入所在 `meta*.json` 的 `pages` (admin 树可见); 前台 = 不进侧边栏 / 搜索 / `llms.txt`, 直链 200 + `noindex`。
+- 转换: ReadMe 单换行 = `<br>` -> 行尾 `\`; `<Image>` / `<Table>` / `<HTMLBlock>` -> Markdown; `<TutorialTile>` -> 对应 Recipe 页链接; `<Callout>` -> `> 📘 标题` 引用块; `excerpt` -> `description`。
 - Recipes -> `cases/checkout/{create-easyqr,return-url,widget-ui}` 普通页; 交互式代码行高亮 -> 「参照コード行」列表。
 - 链接: ReadMe / `developer.elepay.io` 文档链接 -> 下表新 URL; `/reference/*` -> `/openapi/*`。
 - 错误码表: 全部语言数据与 `https://api.elepay.io/error-codes` 的 `items` 一致，改用 `<ErrorCodeTable>` (`error-codes.json`); 删除 API 未列出的 `M002008`，新增 `M008000`，同步 `U002001-3` 的全部语言文案。
@@ -14,6 +15,8 @@
 - 相对 SMCC 原文的修正:
   - 口座名義 FAQ「数字（全角）」示例 -> `０１２３４５６７８９` (原文半角, 与字段要求矛盾)。
   - Recipes 代码: Ruby header 下标闭合 / curl header 行续接 / Widget 示例 SDK 地址 `stg-js.elepay.io` -> `js.elepay.io`。
+  - hidden 页语法崩坏: `elepay-sdk-for-ios` 代码块围栏嵌套 (现网 2 段代码合成 1 段) -> 拆回 3 段 / `cpm` curl `--user` 行续接与带说明 `<Image>` / `easyqr` 代码外层 ReadMe JSON 包装 / `お申込マニュアル` 行内断词「お願いいたしま\nす」。
+  - 失效链接: `easyqr` 的 `doc:javascript-sdkリファレンス` -> `/guides/javascript/api-reference`; `cpm` 的 `extra-setting#決済リソースは-offline-の場合` -> `#決済リソースは-cpm-の場合`; `error-code` 页「旧エラーコード一覧」`developer.elepay.io` 外链 -> 站内 `/get-started/error-code-legacy`。
   - 删除原文残留: `qrwidget` 的「ChatGPT сказал:」/ 入金・手数料 页的 `Untitled-1` `Untitled-2` / Recipes 占位 `{"success":true}` 与 `<<user>>`。
 
 ## 旧 URL -> 新 URL
@@ -22,6 +25,7 @@
 | ReadMe | stera-docs |
 |---|---|
 | `/docs/加盟店申請マニュアル` | `/smcc/guide/stera-smart-one-app-manual` |
+| `/docs/stera-smart-oneお申込マニュアル` (hidden) | `/smcc/guide/application-manual-saas` |
 | `/docs/店舗追加マニュアルsaasサービス` | `/smcc/guide/add-store-saas` |
 | `/docs/店舗追加マニュアル決済モジュール` | `/smcc/guide/add-store-payment-module` |
 | `/docs/クイックスタートガイド` | `/smcc/guide/quick-start-guide` |
@@ -72,6 +76,11 @@
 | `/docs/custom` | `/cases/customer` |
 | `/docs/api-guide` | `/guides/api-guide` |
 | `/docs/copy-of-エラーコード` | `/get-started/error-code` |
+| `/docs/error-code` (hidden) | `/get-started/error-code-legacy` |
+| `/docs/testing` (hidden) | `/get-started/testing` |
+| `/docs/cpm` (hidden) | `/cases/cpm` |
+| `/docs/easycheckout` (hidden) | `/cases/checkout/easycheckout` |
+| `/docs/easyqr` (hidden) | `/cases/checkout/easyqr` |
 | `/docs/extra-setting` | `/guides/extra-setting` |
 | `/docs/webhook` | `/guides/webhook` |
 | `/docs/checkout` | `/cases/checkout` |
@@ -81,6 +90,7 @@
 | `/docs/server-sdk` | `/guides/server` |
 | `/docs/ios-sdk` | `/guides/mobile/ios` |
 | `/docs/app-clips` | `/guides/mobile/ios/app-clips` |
+| `/docs/elepay-sdk-for-ios` (hidden) | `/guides/mobile/ios/elepay-sdk-for-ios` |
 | `/docs/android-sdk` | `/guides/mobile/android` |
 | `/docs/js-sdk` | `/guides/javascript` |
 | `/docs/react-native-sdk` | `/guides/other-sdk` |
@@ -116,16 +126,14 @@
 
 ## 删除
 
-- seed (无 SMCC 来源): `cases/(practices)/*` / `faq/faq-server` / `faq/faq-android` / `get-started/error-code-legacy` / `smcc/guide/easy-payment-function` (= `regarding-invoice-payment` 旧版)。
+- seed (无 SMCC 来源): `cases/(practices)/*` / `faq/faq-server` / `faq/faq-android` / `get-started/error-code-legacy` (elepay 版, 同路径改由 SMCC `error-code` 生成) / `smcc/guide/easy-payment-function` (= `regarding-invoice-payment` 旧版)。
 - 导航: iOS / Android SDK 的 elepay Docs 下载项 (`public/docs/resources/ElepaySDK-*.zip` 文件保留, 已无引用)。
 - raw: 空页 / 测试页 (`店舗/*` / `2-テスト`) / ReadMe 配置页 (`reference/ReadMeConfig`) / `reference/**/*.md` (= `/openapi` 生成页)。
 
-## 待讨论 (raw 保留)
+## 待讨论
 
-- hidden 页 (现网直链 200 + `noindex`, 不在侧边栏): `stera-smart-oneお申込マニュアル` / `cpm` / `easycheckout` / `easyqr` / `testing` / `error-code` / `elepay-sdk-for-ios`; 待 `/admin` hidden 功能。
-  - `stera-smart-oneお申込マニュアル`: 现网可见页 `加盟店申請マニュアル` 仅嵌 Scribe iframe; 本页为图文改写版 (updatedAt 2026-06-11, 晚于前者 2026-01-30)。
-  - `error-code` (変更前): 现网 6 处可见链接指向本页 (iOS / Android / `summary` / PayPay / LINE Pay / au PAY), 本页含 SDK 错误码 (如 `10110`); seed 现指向 `/get-started/error-code` (仅 API 错误码)。
-- `reference/elepay-client-sdk.yaml` = 现网 API Reference (51 个 operation + 71 个 schema 逐项一致)。`openapi.yaml` 与其差异:
+- SDK 页 (iOS / Android / `payment-methods-config` ×4) 的「エラーコード」链接按现网指向 hidden `/get-started/error-code-legacy` (含 SDK 错误码 `10110` 等); 可见页 `/get-started/error-code` 仅 API 错误码, 是否补 SDK 错误码待定。
+- `reference/elepay-client-sdk.yaml` (raw 保留) = 现网 API Reference (51 个 operation + 71 个 schema 逐项一致)。`openapi.yaml` 与其差异:
   - `createInvoice` / `createReader` / `createSubscription`: 本仓 `200`, 现网 `201` (elepay-docs DEV-10733 修正)。
   - `ChargeReq`: 现网 `locationId` 必填。
   - `CodeReq`: 现网有 `shouldCreateSource` 条件说明, 无 `required: [amount, orderNo]` / `sourceId` (elepay-docs `eb64a89` 以 prod 未上线为由回退)。
@@ -134,9 +142,9 @@
 
 ## 验收
 
-- 映射: raw 172 个 md = 90 个 -> 73 页 (69 单页 + 18 个 summary 合 1 页 + 3 个 Recipe) / 6 个目录 index -> `meta.json` title / 4 个空页与测试页删除 / 7 个 hidden 保留 / 65 个 `reference` -> `/openapi`。
-- 规模: 74 个 ja 页 (73 + `overview`) + 148 个 en/zh 页; 每页有 `updated-at` 记录。
-- 图片: 339 处 `/docs/*` 引用, 多重集合与来源一致。
-- 代码块: 来源 85 个; 删 3 个 Recipes 占位 Response Example, 补 3 个 (错误码响应 JSON / GoAllpay `build.gradle` ×2, 原文为纯文本)。
+- 映射: raw 172 个 md = 97 个 -> 80 页 (69 单页 + 7 个 hidden 页 + 18 个 summary 合 1 页 + 3 个 Recipe) / 6 个目录 index -> `meta.json` title / 4 个空页与测试页删除 / 65 个 `reference` -> `/openapi`。
+- 规模: 81 个 ja 页 (80 + `overview`, 其中 7 个 hidden) + 162 个 en/zh 页; 每页有 `updated-at` 记录。
+- 图片: 369 处 `/docs/*` 引用, 多重集合与来源一致。
+- 代码块: 来源 93 个; 删 3 个 Recipes 占位 Response Example, 补 3 个 (错误码响应 JSON / GoAllpay `build.gradle` ×2, 原文为纯文本), `elepay-sdk-for-ios` 1 个拆 2 个。
 - API: ReadMe 的 51 个 operationId 均存在于 `openapi.yaml`; 与现网逐项比对的差异见待讨论。
-- 验证: `bun test` 11/11; 222 页全部 200, 438 处站内链接 / 资源 / 锚点无错误; Docker build + `verify-cms-http` 867 条 assertions 通过。
+- 验证: `bun test` 14/14; 243 页全部 200, 473 处站内链接 / 资源 / 锚点无错误; hidden 页不进侧边栏 / 搜索 / `llms.txt` 且带 `noindex`; Docker build + `verify-cms-http` 867 条 assertions 通过。

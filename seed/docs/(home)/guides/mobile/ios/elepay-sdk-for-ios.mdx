@@ -1,15 +1,8 @@
 ---
 title: Integration Guide for iOS
-excerpt: ''
-deprecated: false
 hidden: true
-metadata:
-  title: ''
-  description: ''
-  robots: noindex
-next:
-  description: ''
 ---
+
 The elepay iOS SDK makes it easy to build a stable and secure multi-channel payment experience in your iOS app. We provide powerful SDK to support multi-payment methods like Credit Card, LINE Pay, Paidly, PayPal, Alipay, WeChat Pay, etc. All you need to do is install it once, then you can satisfy your customers's cashless payment requirement coming from all around the world.   
 
 ### Features
@@ -40,8 +33,9 @@ You can add elepay SDK into your App in only 7 setps:
 
 4. In `application(_:didFinishLaunchingWithOptions:)` add init code  
 
-````swift
-ElePay.initApp(key: "pk_live_a08b8863f6a964d9241b6", scheme: "a08b8863f6a964d9241b6")```
+```swift
+ElePay.initApp(key: "pk_live_a08b8863f6a964d9241b6", scheme: "a08b8863f6a964d9241b6")
+```
 
 5. In `application(_:open:options:) -> Bool` function, add the OpenURL handle code  
 
@@ -56,7 +50,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
     // for no payment URL handle it in your own code here.
     return false;
 }
-````
+```
 
 6. Use your server to make a charge requirement with **elepay** API `/api/charges`. Since the API requires security key for authorization.\
    For security reason, you should **NEVER** save the key in you App but always put it on the server site.

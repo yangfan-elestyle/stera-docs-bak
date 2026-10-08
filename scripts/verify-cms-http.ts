@@ -141,8 +141,8 @@ try {
     ),
   );
   check(
-    rows('SELECT count(*) AS n FROM docs')[0].n === 222,
-    'empty volume seeds 222 documents',
+    rows('SELECT count(*) AS n FROM docs')[0].n === 243,
+    'empty volume seeds 243 documents',
   );
   check(
     rows('SELECT count(*) AS n FROM navigation')[0].n === 36,

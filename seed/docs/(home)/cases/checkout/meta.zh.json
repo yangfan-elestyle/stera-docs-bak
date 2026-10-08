@@ -6,6 +6,8 @@
     "qrwidget",
     "create-easyqr",
     "return-url",
-    "widget-ui"
+    "widget-ui",
+    "easycheckout",
+    "easyqr"
   ]
 }

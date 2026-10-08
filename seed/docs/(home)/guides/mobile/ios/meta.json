@@ -1,5 +1,5 @@
 {
   "title": "iOS SDK",
   "defaultOpen": false,
-  "pages": ["app-clips"]
+  "pages": ["app-clips", "elepay-sdk-for-ios"]
 }

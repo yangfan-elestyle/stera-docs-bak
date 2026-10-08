@@ -87,8 +87,8 @@ test('corrupt YAML and navigation JSON cannot poison the loader', async () => {
 
 test('seed scope, migrations and initialized marker persist', () => {
   const db = database.getDb();
-  expect(database.countDocs(db)).toBe(222);
-  expect(cms.listSlugs()).toHaveLength(74);
+  expect(database.countDocs(db)).toBe(243);
+  expect(cms.listSlugs()).toHaveLength(81);
   expect(cms.listNav()).toHaveLength(36);
   database.migrate(db);
   expect(db.prepare('PRAGMA user_version').get()?.user_version).toBe(4);

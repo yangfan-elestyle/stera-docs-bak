@@ -1,23 +1,14 @@
 ---
 title: CPM顧客提示型支払い処理
-excerpt: ''
-deprecated: false
 hidden: true
-metadata:
-  title: ''
-  description: ''
-  robots: noindex
-next:
-  description: ''
 ---
+
 elepay は CPM顧客提示型の決済機能を提供します。\
 CPM顧客提示型決済とは、ユーザーは各決済アプリの支払用バーコードもしくは QR コードを提示し、店員が決済端末等を用いてスキャンし、 決済処理を行います。
 
 支払いの流れのイメージ
 
-<Image title="cpm.jpg" alt={522} src="/docs/4c8ff76-cpm.jpg">
-  Payment Flow
-</Image>
+![Payment Flow](/docs/4c8ff76-cpm.jpg)
 
 # 支払い処理
 
@@ -34,16 +25,16 @@ CPM顧客提示型決済とは、ユーザーは各決済アプリの支払用�
 > **resource**: `cpm` を設定してください\
 > **paymentMethod**: 利用できる決済方法、あるいは `auto` を設定してください。 `auto` を設定した場合、elepay 自動的に決済方法を判断して response 中のpaymentMethod項目に実際の決済方法をセットします。\
 > **extra**: token は必須項目です。その他決済方法よって追加情報があります。\
-> 具体的設定情報は「開発ガイド->[決済Extra情報設定](https://developer.elepay.io/docs/extra-setting#%E6%B1%BA%E6%B8%88%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%81%AF-offline-%E3%81%AE%E5%A0%B4%E5%90%88)」を参照してください。
+> 具体的設定情報は「開発ガイド->[決済Extra情報設定](/guides/extra-setting#決済リソースは-cpm-の場合)」を参照してください。
 
 ### 3. Charge オブジェクトの新規生成
 
 elepay Server SDKを利用して、あるいは直接Charge 機能のAPIを呼び出し、Charge オブジェクトを新規生成します。
 
-```curl
+```shell
 curl --request POST \
 --url https://api.elepay.io/charges \
---user sk_live_xxxxxxxxxxxxxxxxx:
+--user sk_live_xxxxxxxxxxxxxxxxx: \
 --header 'Content-Type: application/json' \
 --data '{
 	"amount": 金額,
@@ -56,7 +47,7 @@ curl --request POST \
 }'
 ```
 
-APIの詳細について、[APIリファレンス](https://developer.elepay.io/reference#createcharge)をご参考してください。
+APIの詳細について、[APIリファレンス](/openapi/charge/createCharge)をご参考してください。
 
 ### 4. Charge オブジェクトのステータスをチェックして、支払い結果を表示
 
@@ -71,17 +62,15 @@ Charge オブジェクトのステータスは `captured` の場合は、決済�
 Charge オブジェクトの取得APIを利用してステータスの確認ができます。\
 支払いが成功するかタイムアウトになるまで継続的に呼び出す必要があります（推奨タイムアウト時間は60秒、呼び出し頻度は10秒1回です）。
 
-```curl
+```shell
 curl \
 --url https://api.elepay.io/charges/ch_xxxxxxxxxxxxxxxxxxxxxxxxx \
 --user sk_live_xxxxxxxxxxxxxxxxx:
 ```
 
-<Image title="cpm_status_check.jpg" alt={561} src="/docs/5cfb07d-cpm_status_check.jpg">
-  支払いステータス取得の流れ
-</Image>
+![支払いステータス取得の流れ](/docs/5cfb07d-cpm_status_check.jpg)
 
 # 管理画面での確認
 
 管理画面の「支払い管理 / 支払い一覧 」にて支払いレコードを確認することができます。\
-返金について&#x306F;*[返金処理](https://docs.elepay.io/docs/refunds)*&#x3092;ご覧ください。
+返金について&#x306F;*[返金処理](/get-started/refunds)*&#x3092;ご覧ください。

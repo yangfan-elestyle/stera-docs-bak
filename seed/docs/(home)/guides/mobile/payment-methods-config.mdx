@@ -27,7 +27,7 @@ title: 決済方法
 | [Apple Pay](/guides/mobile/payment-methods-config#apple-pay)                                            | X          | X                           | ◯                     |
 | [Credit Card](/guides/mobile/payment-methods-config#credit-card)                                        | X          | X                           | ー                     |
 
-\*1：SDK for iOS v3.2.1 から、各決済方法アプリの Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
+\*1：SDK for iOS v3.2.1 から、各決済方法アプリの Scheme を LSApplicationQueriesSchemes に追加しなくでも利用可能になります。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code-legacy) 「10110」が返信します。
 
 ## Android 開発設定
 
@@ -109,7 +109,7 @@ Android SDK 1.8.0 以降、`AndroidManifest.xml`ファイルに指定するコ�
 
 ##### iOS 9 及び以降のシステムについて
 
-ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
+ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code-legacy) 「10110」が返信します。
 
 ElepaySDK for iOS v3.2.1 以前の場合、LINE アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
@@ -153,7 +153,7 @@ scheme より起動される Activity をカスタマイズする場合は、`jp
 
 ##### iOS 9 及び以降のシステムについて
 
-ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
+ElepaySDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code-legacy) 「10110」が返信します。
 
 ElepaySDK for iOS v3.2.1 以前の場合、PayPay アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 
@@ -230,7 +230,7 @@ Merpay を使うために、stera smart one アカウントの「アプリ設定
 
 ##### iOS 9 及び以降のシステムについて
 
-SDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code) 「10110」が返信します。
+SDK for iOS v3.2.1 から、下記 Scheme を LSApplicationQueriesSchemes に追加しなくでも利用できます。実際に決済アプリがインストールされてない場合は、SDK から [エラーコード](/get-started/error-code-legacy) 「10110」が返信します。
 
 SDK for iOS v3.2.1 以前の場合、au PAY アプリに遷移するために、Xcode の **PROJECT** → **TARGETS** にある **Info**タグ（或いは `Info.plist`）で、`LSApplicationQueriesSchemes` Key を追加してください。
 

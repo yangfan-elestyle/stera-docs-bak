@@ -6,7 +6,9 @@
     "set-up",
     "process",
     "test-card",
+    "testing",
     "refunds",
-    "error-code"
+    "error-code",
+    "error-code-legacy"
   ]
 }
