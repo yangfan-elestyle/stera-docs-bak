@@ -1,0 +1,729 @@
+{
+  "_comment": {
+    "_note": "说明用字段，程序处理时忽略以 _ 开头的 key",
+    "source": "Scribe 工作区中 SMCC 文件夹的 URL",
+    "folder": "Scribe 中的文件夹路径",
+    "exported_at": "导出日期",
+    "export_method": "导出方式：Share > Export > Markdown > Copy Code，内容取自系统剪贴板",
+    "count": "文档数量",
+    "documents[]": {
+      "index": "在 Scribe 列表中的顺序（从 1 开始），也是文件名前缀 NN",
+      "title": "Scribe 文档标题",
+      "filename": "本目录下的 md 文件名",
+      "url": "点击 item 的 Copy link 复制出来的链接（原样保留 ?referrer=documents）",
+      "viewer_url": "Scribe 查看页 URL（已去掉查询参数）；链接里标题部分会随 Scribe 改标题而变化",
+      "chars": "导出 markdown 的字符数",
+      "note": "可选；特殊情况说明（如 Scribe 原文没有步骤）",
+      "scribe_id": "Scribe 文档的唯一 ID（URL 末尾 __ 之后的 22 位）；与 ReadMe iframe 做匹配时以它为准，不比对链接里的标题部分",
+      "readme_refs[]": "ReadMe 导出 (sterasmartone-v1.0-...) 中通过 iframe 嵌入此文档的位置；为空表示 ReadMe 中没有引用",
+      "readme_refs[].md": "嵌入此文档的 ReadMe md 路径（相对 raw-smcc-documents/）",
+      "readme_refs[].embed_url": "ReadMe iframe 的原始 src（embed 或 viewer 链接，带 as/removeLogo/skipIntro 等参数）",
+      "md_urls": "导出 md 正文中出现的全部 URL，供整合时迁移资源或改写链接",
+      "md_urls.images[]": "图片 URL（Scribe 截图，托管在 colony-recorder S3），按正文顺序排列且去重；整合时建议下载到本地",
+      "md_urls.links[]": "普通链接 {text, url, url_decoded?}；url_decoded 只在 url 含百分号编码时出现"
+    }
+  },
+  "source": "https://scribehow.com/workspace#documents__jYUkw341S2mEMGt5dJSXPA",
+  "folder": "Shared / SMCC",
+  "exported_at": "2026-10-08",
+  "export_method": "Share > Export > Markdown > Copy Code",
+  "count": 21,
+  "documents": [
+    {
+      "index": 1,
+      "title": "クイックスタートガイド",
+      "filename": "01-クイックスタートガイド.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__t1o15yxGTeKkWk3kaHfKlQ?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__t1o15yxGTeKkWk3kaHfKlQ",
+      "chars": 8619,
+      "scribe_id": "t1o15yxGTeKkWk3kaHfKlQ",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/クイックスタートガイド.md",
+          "embed_url": "https://scribehow.com/embed/__t1o15yxGTeKkWk3kaHfKlQ?as=scrollable&removeLogo=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/0fde211f-49f3-4c2a-a844-e2ce87b79e93/user_cropped_screenshot_6796add74d684067857f8329eac4e6d7_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-08/eb3da57c-c8cb-435e-aa8a-2c076fdcc9d6/user_cropped_screenshot_e0c274810bdc4ccbaa68898433d4f142_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-07-04/7859e62e-cc4f-4727-aa4c-e3cfc8324d95/user_cropped_screenshot_7f9e5b36508c408db41cb0457c14cbd1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-07-04/c523bc28-c884-4f1a-9751-bd35cc11acdf/user_cropped_screenshot_93b65990e1424f9cacb6488cf366197b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/47dc865e-67d9-4315-921d-bc6b78048fc5/user_cropped_screenshot_2fcfe8d05f034fc798d0c8bee05a1519_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/da1f7d0c-4504-468a-9cca-6a02571e9de6/ascreenshot_c10d476bdfe64759b90e974b84ca1b85_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/92944da7-76bf-41a7-b06f-8f1251368bad/ascreenshot_6fd7c6b774b64abb8704e68247434e36_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/90c37765-ac2e-45a8-bdf3-f195edc320c4/ascreenshot_b828442eb20344df8f6d649a24c7794c_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/295288d2-12ed-4799-9c10-60b0ac927a98/ascreenshot_8db715f522a240a28add74976fc53130_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/e07d7871-3fa4-48a0-b801-3976b57891a9/ascreenshot_7c1a77e8297b4bbfa51eb518777b9135_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/c69d14ba-c42f-45c9-a1dc-0e18e4b11c54/ascreenshot_f67d136bb12c4475aac0b50f63083547_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/396db347-67ec-4dd9-af22-423bdce1dc5e/user_cropped_screenshot_c3841cff3ed9452e8a94e55d72f65db6_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/4435eeea-59b4-49f2-b6f2-199f428f98ae/ascreenshot_1c8a4a57f4224d13bb12d420f0b7047e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/0e80130b-ef02-4ef5-bc20-dd3c4c8168ca/ascreenshot_fdb7c0a9bd0b42089b0bed3d3719e543_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/d1519b0c-044e-4525-b5c4-a6b10c26cf48/ascreenshot_9cb76f4bf4ee4a78914f20f2700d109f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-07-04/267ed512-7a8d-49b5-8635-6c14b6a52edc/user_cropped_screenshot_54606a6508a340ffac180bf39579d790_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/20b1b9ab-05e9-4d43-8b80-d5f2d7979611/ascreenshot_3f0ede638fca4ccf84c319a4afd5ec0a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/1f8ad417-61ec-4e41-91ff-6845131b4758/ascreenshot_f937398878ae4d65bd9bea6cf19e967b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/111711a9-9468-4986-accf-a426909a8584/ascreenshot_ffabaa7d3e41499c8b1724c482d23b33_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/765beda8-8bac-4834-a185-c3e083252f12/ascreenshot_cb6af4334bfe435289ab2be957f1fd86_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/bd404859-e921-4bff-8b2d-11071b40e08c/ascreenshot_c660634a141c4728b385f2e5a1f60d54_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/7b54b68e-e075-4a4b-a79a-7c075e675bd4/user_cropped_screenshot_d48401ce43dc458084d44a9bff472541_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/c576fb4e-f55c-4de8-96dd-43f7acbe2549/ascreenshot_319beafca12d4fffa6c3f26f97b26193_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/e3d3a5ca-35e6-4c91-b238-bd0a5313a92c/user_cropped_screenshot_0e1de88a7e644f9086917177d5e51c7f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-07-04/6f81d5df-0370-417b-be30-32ab41f3238d/user_cropped_screenshot_ce89ce91d7a0471cbea704f474df449e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/5e6eea8e-82a2-4c5e-abd9-55adc92bf1a8/user_cropped_screenshot_de8f88fa337a42c3b84ef930f5301361_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-07-04/398e3e37-232a-4ebf-b4ca-325d82b1eb66/user_cropped_screenshot_2e65139fa9b64a94829a3595d5da2267_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/75d5c160-aa8e-49dc-ba67-aa7833f2d0e9/ascreenshot_1dbb705505a746de9c04f3ab53e40de9_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/86a8bd1b-cf72-4e52-92d2-685c8a677bcf/ascreenshot_f9da9865e1f94ab29038fd3c1232faee_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-07-04/22792f00-2703-4995-90e5-bbd19fd27262/user_cropped_screenshot_22e08478d04343f893816176788bc648_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/33fa3e74-32ca-4644-8649-348bfc8eecbf/ascreenshot_29b279119a9b4203a2802c24dd2146c4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/1e802405-766a-4835-9237-99241a909c2a/ascreenshot_87e5d900dfba4d43abc5e1af9486a264_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/a7c7dc98-a238-44a5-a3a7-795948480751/ascreenshot_77da0975d4074bea8bb9ae4eaf88fa08_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/d0f4a4a3-562d-49a3-b78d-4ebe31b2beed/ascreenshot_7ff98eadeb464296adc2211b62b77bc1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/03945c1e-2578-4329-8275-e33ec82ac091/user_cropped_screenshot_3d2100e564a54e7d87ee7a318906f78a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/a49e4e9f-aa9c-4dc7-bdbc-579038b08739/ascreenshot_975030dd2d7f4ebfb44ff048fd7004e9_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/ba26350d-12b8-4ad9-bc96-c6f6973e1cee/ascreenshot_fc4df80e9c174441a94631c1e8438498_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-06/9cf24e95-18e4-4afd-bdbd-c143999834ad/ascreenshot_1191a94f57e6469c82959ab991662b6a_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 2,
+      "title": "商品編集について",
+      "filename": "02-商品編集について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__HGbnt64xR5iGIGXw3AMbhQ?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__HGbnt64xR5iGIGXw3AMbhQ",
+      "chars": 8610,
+      "scribe_id": "HGbnt64xR5iGIGXw3AMbhQ",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/アカウント作成/商品編集について.md",
+          "embed_url": "https://scribehow.com/embed/__HGbnt64xR5iGIGXw3AMbhQ?as=scrollable&removeLogo=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/4aaa0b68-2614-454f-8e51-a6a8c921236b/user_cropped_screenshot_2142e897e3f6410387efd3d81e33550e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/ba034568-04de-47e0-9e7c-df0d35533b9c/user_cropped_screenshot_632e5a9e767d4a668e5e2ba9a1aba35e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/c71ccae1-0954-46e5-a1a4-caf0356b9bd9/ascreenshot_8a151e338a7e445481fbd7f91bdcd56d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/a11f0126-3146-4a8f-b92b-ed1eb2c12d94/user_cropped_screenshot_e6d8ba8ea3e74a7ba6786892da5ad5d5_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/fafd97ee-cd4c-475b-8851-8b9858f016f6/user_cropped_screenshot_98c8ff7e91e34f19b047d3b59ce6a195_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/3b209d7a-2f4d-468e-a893-37122df6008c/ascreenshot_e102f2544d864085a4b6527341978d5a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/51a6c4ff-1e13-4adb-aa37-72bffb2c8095/ascreenshot_c6a9f0e014124e01991da0afda12db79_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/0e82f5a6-a7a7-4968-b363-5bdefa8058a7/ascreenshot_09d7855f377c4e8faf211d8b10712961_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/1fc346cd-0d70-4170-86d9-4356cafe576e/user_cropped_screenshot_9b049ba72c91426e8e4349cc9883258d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/5c04ae77-0e12-40c5-bd92-34f2fd4bb1f5/ascreenshot_6ece3e5537274858ba0078eaddff4d3d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/069ece8a-06c9-4989-ba42-990c8e241efa/user_cropped_screenshot_ace823d4ce5d49278a147743d0b34b44_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/d9ca15ee-0f7c-4335-9092-ab708c5aea4d/ascreenshot_61424166a55441af89d2995e0767018b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/cc8caba6-6624-46f9-ad7c-8011360f3b6a/user_cropped_screenshot_571f954b07374fe1ae59aecf85f975fa_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/a0194ee9-95f2-4a12-b3ba-e7167202dccc/user_cropped_screenshot_f86e272831234d0199c1c63791c15fc6_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/a7530300-de36-4871-a625-3287148553b0/user_cropped_screenshot_74d58ea59daa4d2fab380d2008da9d87_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/edcbcbe8-8433-43d9-b1fd-ae56c07a241e/user_cropped_screenshot_83e6555b2a6d4f40bde66ce4ba4ca2b2_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/1f52e2df-4aa6-4d87-8e5c-6d07790d548b/ascreenshot_2a68150051bb4cb8b9a682f88813e8f2_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/78c21c1c-cb33-4a60-8aae-2ffb695daafd/user_cropped_screenshot_143121e87e254322989181718ecbcf8a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/b17d9258-7f4d-4ea2-b698-59198ac99572/ascreenshot_9cca9eeb8f384ae88ac432e87d4ab2bf_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/70a13364-3b26-49e4-a6f0-ecc2d4b60982/ascreenshot_a3efaa066cec468bb673411ae39171d4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/cb0368a0-41d7-43f5-9b3f-fb615aaf3637/ascreenshot_6765e6b98aac4fa6b4dc1dd371be1228_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/2f9d0f9f-0af9-4cdd-91f9-071c32b0f202/user_cropped_screenshot_d7f2fa4339654cbda262b609c1557fc1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/5d6bc541-f696-4beb-b690-947fbf910876/ascreenshot_0bbfd65d176c44f9a33a77c712f26b21_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/8241e8d2-f5bd-4840-b241-d8dba8f18b22/ascreenshot_9f3109ca23ce4caea3831958d49608c5_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/b223fc4a-b83e-4b6a-b63e-2ccb050c6f6a/ascreenshot_b18a9135cdd044cda6e9ca98ff17e369_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/afb9b09e-9328-4a00-ab2e-09e5afca35d3/user_cropped_screenshot_292be05eec0c468ca01cb5f4445c8843_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-29/5ce16221-a88f-47ee-9e94-722808836234/user_cropped_screenshot_870a889bda04482397c1c6a4004840c6_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/78ce14a9-d297-4a56-81bb-5964e6991e78/user_cropped_screenshot_18b439dcf6b94d3bbcb31c81306e63d1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/aef36b70-6041-4a45-acea-74ee45346499/user_cropped_screenshot_2bb46fe342524ad399e5b11dd2c59c71_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/82159856-348d-4c33-9997-f53337668f2e/user_cropped_screenshot_0a9cc7e134fa49b48b2e8d3282a63b6e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/27f4e786-20f0-4e14-bf59-4b6e42d34623/user_cropped_screenshot_8395155a839143f1826bcc1509c20d08_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-29/a9bb9cef-dd43-4442-9bd4-74e377fb04c2/user_cropped_screenshot_2b82f70e620e43aca4857c13fd6db3db_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/6a2017e1-e53c-4639-a7ae-c5425cd3de9e/user_cropped_screenshot_43aa241928744c41862a55b8bf21afd8_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/9b25fdf2-aabf-4bcf-a055-90477a4049eb/ascreenshot_57417199c6b948c6acfd6ece126f0ef3_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-22/d41956f8-f781-41b5-a778-3c6772bb3512/user_cropped_screenshot_8b9ff15266494805a7c441dbe871edb3_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-22/dbe74af4-eab3-4ca6-82a1-52dfa160995b/user_cropped_screenshot_cb14a9a8a03845b795c5355530d313eb_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-22/ae6f62d5-8f0e-4374-9e93-e08df2620b6d/user_cropped_screenshot_eca73ea13d414225a5be85719d90790f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-22/beda424e-70de-4a9e-88eb-aa3db507761f/user_cropped_screenshot_9e34d802a526413899fab4546fed05be_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 3,
+      "title": "注文・返金処理について",
+      "filename": "03-注文・返金処理について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__b-k1Om6sRz6gla10ZYJ4-Q?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__b-k1Om6sRz6gla10ZYJ4-Q",
+      "chars": 2187,
+      "scribe_id": "b-k1Om6sRz6gla10ZYJ4-Q",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/アカウント作成/注文返金処理について.md",
+          "embed_url": "https://scribehow.com/embed/__b-k1Om6sRz6gla10ZYJ4-Q?as=scrollable"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/e02cec5a-62f6-4633-8601-b07d9d214051/user_cropped_screenshot_12e85485c20b4527adb9b400db5a8472_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/60974c3f-89c4-4d04-a472-50a07fa2a030/ascreenshot_62aa8525ed024d9189eb834a56e22ad1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/994ade9c-b8ab-4341-a626-1edc54d18820/ascreenshot_550bf0c1344549e58f1b2164a5dc54d3_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/49fe51be-a9da-45f5-9295-639fd0ba5132/ascreenshot_19ac262ab5a044f2818e998a07488412_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/a086495e-8102-44ee-a6af-1fe603e55d28/ascreenshot_597f67e4831044668d264c700246b731_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2026-06-11/c798f6e2-ee94-4ef2-b1c7-837591f2e22e/user_cropped_screenshot_4232f2ed32ad47d58a3929e4e0bc6227_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/0ae9861c-8a92-4987-9eec-6589f43b310e/user_cropped_screenshot_735a030292de4165ad754cafc0b4a985_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/cbcad9ae-373a-44a8-9bf6-ce4bb7db5285/ascreenshot_aa42d307720241ca955205dce6a6b41d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/8a953453-fb3f-4ea5-afa2-52445bcc0586/user_cropped_screenshot_f40b6b44a07543379d145ff74e91e4dc_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-22/7a44b019-28d6-4f3e-8c74-60d0316bb599/user_cropped_screenshot_af9de74473fe479787778eda9e929643_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 4,
+      "title": "stera smart oneお申込マニュアル",
+      "filename": "04-stera_smart_oneお申込マニュアル.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/stera_smart_one__xYUq7CjER1udwyNGv8h-Qg?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/stera_smart_one__xYUq7CjER1udwyNGv8h-Qg",
+      "chars": 8001,
+      "scribe_id": "xYUq7CjER1udwyNGv8h-Qg",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/加盟店申請マニュアル.md",
+          "embed_url": "https://scribehow.com/embed/__xYUq7CjER1udwyNGv8h-Qg?as=scrollable&removeLogo=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/14f613b2-2a75-4d2a-b2c6-10d53bdf125e/ascreenshot_193a60458e504f738608cdb3ae171659_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/8dae3937-2473-4c11-bc01-3fcbb4cc278a/user_cropped_screenshot_d5489bb95b2f4ec09faddff2333f4c24_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/5c7d065b-3c47-4460-ab7c-98cf9216626f/ascreenshot_59a7281e061948909859d7f1a74e6186_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/c3c38967-75eb-41b0-a2bb-f0621d121830/user_cropped_screenshot_4217d84262cc4db0ad4ec6eb51ba70b2_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/3f3c5da3-6610-4411-8327-fd940e5b5705/ascreenshot_2d0f721ae923478fa071753ae8e692e9_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/c51d2a74-a60d-430e-98d0-5d103fa3dc7c/ascreenshot_e4b293dd2e0240b287ff7a29533dc893_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/e57c410b-bd5c-4f35-92aa-352cdc6ce1d7/ascreenshot_b3ff0f5e4fcb4a248310864041e0aac5_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/172a1b93-81db-4629-9f8a-170aaee80afd/ascreenshot_b85dd8bfccb1449c96b922600d60382b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-23/027605f9-d235-418b-a655-f94b1c22c544/user_cropped_screenshot_b07a181179b946d79e37fd7bca789b78_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-23/e5df852e-5853-4406-b044-fcc12a703300/user_cropped_screenshot_639c2984ea7044339ecf83be0c26df7e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-23/37a029a1-ff1b-40f4-bfd9-15fb955337c9/user_cropped_screenshot_aa524555a741423c909cd57ca4bf36e9_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-23/9ec4cc4a-72a6-4da1-9921-a31f20fbaab9/user_cropped_screenshot_d6bc3f1f1d0d4538956bdd0524615db4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/a8e51fcf-bc59-4b6a-8d0e-12874f189532/ascreenshot_75221dccf4864aba99dc21b4b6a863e0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/0a6f40fa-944e-4904-a14d-b77dfd8d5d9e/ascreenshot_490aff31bc1042d484590b33762fcc16_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-22/95b9f9a3-43d4-44e2-b9f2-50a0a0ae8d6f/user_cropped_screenshot_4822079657314012b5e2b8f9589a2d40_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/2a98fc50-a1ca-4a63-896f-8608fcec1419/ascreenshot_bf75a00ff7634403b135e640a723871f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/7223b397-dedb-4096-a920-52889212fd8c/ascreenshot_839feecba49d416bb108a1908251c298_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/fd409ef6-e5dc-4eb9-918e-9cc6f0786b3f/ascreenshot_a9987685fc7b45c8a3799400f8526d73_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/e111ded3-9f16-4e51-9cf0-908a611e78d5/user_cropped_screenshot_304325a0ee3440f1be29c52dc67aef80_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/ebf01534-5516-4c70-abf8-cd39b3956c13/user_cropped_screenshot_0a446bcbaf1d4981b6c3e26fea2d8d1d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/14a94919-cd91-486f-b0bf-f65a7c47a0b5/ascreenshot_f62928b7389b42919f42b48f4f24fca5_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/da7db987-b8aa-4e01-8510-d1fd5928b0cf/ascreenshot_2bd4609d2e834b4386c2421107b103aa_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/e5096a78-d64e-43ca-8ecb-123a49b4c183/ascreenshot_612b68675b0a41ac8357e02639790d45_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/44015cb1-eee6-4bfa-933f-70a0ff02e673/ascreenshot_4249f86f659445ee8142582ae86535d6_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/ec3adec0-f4b5-4adf-a7f4-af07f10985f2/ascreenshot_ad77c3e5936d40669d553123a253275f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/78852ab9-131e-4d7e-84f1-1ef2f004abf6/user_cropped_screenshot_9cf4c9a07d81455e88a4cb338a093c61_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/4b031c82-2e76-4f39-b476-27152a1a76db/user_cropped_screenshot_f7ed476d73194e11b4543b3e4a1fb983_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/63c5c413-9e6e-4046-a1fb-96caee29f518/user_cropped_screenshot_a964ff77c22e4324a37f680216cc614d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/d1bcd10f-47aa-4281-aaac-9ddc39a1a3b4/ascreenshot_de6489a298054b2ca899d2f30eb883ce_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/b2040a1b-dfb5-4672-a8ef-b9a07bce4083/ascreenshot_33d32381951749658fdecdb892ccb4ee_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/2c471919-0ab6-4fe3-99c2-145dc9e421f9/ascreenshot_b61d34f92f0340eab4b1e0cbba2e38e8_text_export.jpeg"
+        ],
+        "links": [
+          {
+            "text": "どんな画像を用意すればよいですか？",
+            "url": "https://guides.sterasmartone.com/docs/%E3%81%A9%E3%82%93%E3%81%AA%E7%94%BB%E5%83%8F%E3%82%92%E7%94%A8%E6%84%8F%E3%81%99%E3%82%8B%E3%81%A8%E3%81%84%E3%81%84%E3%81%AE%E3%81%A7%E3%81%99%E3%81%8B",
+            "url_decoded": "https://guides.sterasmartone.com/docs/どんな画像を用意するといいのですか"
+          }
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "title": "決済機能の請求書決済について",
+      "filename": "05-決済機能の請求書決済について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__un4w6L3yQk-6DhQ1C45fiA?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__un4w6L3yQk-6DhQ1C45fiA",
+      "chars": 3321,
+      "scribe_id": "un4w6L3yQk-6DhQ1C45fiA",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/決済機能の請求書決済について.md",
+          "embed_url": "https://scribehow.com/embed/__un4w6L3yQk-6DhQ1C45fiA?as=scrollable"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-22/eb927193-8e8e-4be8-8646-cbd84adfe474/user_cropped_screenshot_d364e35bb7254808a61741fe89aada77_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/838178db-f404-4b4d-b426-5251188dfbcc/ascreenshot_60d0b60673854754969fd310d9640370_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/712a5a85-26a3-4c94-98b9-3b37578f5b54/ascreenshot_8a188e48f4a4410f8d58ede5f9229b11_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/8bfd3b96-e8bc-4f60-a75f-d900cf7e5d0b/user_cropped_screenshot_87caa7e104914104932b63c8dc34d59b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/802dea4d-1740-44ad-9197-33aeb164ef3f/user_cropped_screenshot_fe62c64eb43343cba0466344c5f7f1a2_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/0ab8b446-28c8-494e-8cb9-9f6afee60ea0/user_cropped_screenshot_e3872ebe235e4db4b4aabaff9426fcf2_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/78b8cded-76cb-48d9-8710-e88e3e845cf9/user_cropped_screenshot_c7cf23e69f4c4c9dbdcf9a4831dddfb0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/e76c2eda-f889-4273-8cd2-3fe73f32f102/screenshot_3d7867aa10394a7da0fdc80e972aa18f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/5c89fd03-71e0-4ec7-b488-ae42f649cb23/ascreenshot_9d1e819b95ff4895bb580018919a955f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/0f52b1e4-4aac-424f-895e-68e3a27e1320/user_cropped_screenshot_4d6bb894c62e4b7a860e5599435db81a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/0f035abd-a3b8-4c2d-987d-c7f519ba4afc/user_cropped_screenshot_f9481edc39644ee9bfeaa206d99b2e6d_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 6,
+      "title": "消費税設定(Optional)について",
+      "filename": "06-消費税設定(Optional)について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__nR4vc1c8S0-NLZdovdvGyA?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__nR4vc1c8S0-NLZdovdvGyA",
+      "chars": 2354,
+      "scribe_id": "nR4vc1c8S0-NLZdovdvGyA",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/消費税設定optionalについて.md",
+          "embed_url": "https://scribehow.com/embed/Optional__nR4vc1c8S0-NLZdovdvGyA?as=scrollable&skipIntro=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-11-13/c4d33edb-b46b-4fbb-99d6-c6f8032252cf/user_cropped_screenshot_6045c61ce3894ddea6d70a46d36af8c5_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/4b75413d-12cb-4b3c-8e5c-f5a3fea2a7ec/ascreenshot_1871aa6a1eb94bf5b7b130c9646b9bc8_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/0282de7a-5d79-4220-a7b1-5bb0e674729b/user_cropped_screenshot_a459c508af1c44f29aba07f0d4a17fc0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/86ed9e23-a382-4399-b955-9a7f7203265a/ascreenshot_24e9fc79ced24479b99005ada374e982_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/6615e1f3-f3bc-41ca-8893-599cf79876e9/ascreenshot_fc953d08bd0843eda246e9107086b1fd_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/5b929ee3-b49f-4ef9-ad29-2de3bc916945/ascreenshot_4347f5540c584df8aa849b44257c2067_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/c10ff73f-b2bf-485c-adeb-e14e804c40a9/screenshot_dec30c301364410cb0d530f56a83ddf1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/2e462159-5cd0-4854-b087-503911f097e0/user_cropped_screenshot_987c6d14daf64cfa9bf5c9db8a87d62f_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 7,
+      "title": "クーポンコードの発行について",
+      "filename": "07-クーポンコードの発行について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__D7OR0jvAR0-9icwTxsyWDg?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__D7OR0jvAR0-9icwTxsyWDg",
+      "chars": 3931,
+      "scribe_id": "D7OR0jvAR0-9icwTxsyWDg",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/クーポンコードについて-1.md",
+          "embed_url": "https://scribehow.com/embed/Optional__D7OR0jvAR0-9icwTxsyWDg?as=scrollable&removeLogo=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/b75f9e5a-471a-4a71-9ded-cd94c927f358/ascreenshot_ce765b104e29481780214ab4c3987313_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/5628f0fb-55b9-40a4-997f-85c9e03d688e/user_cropped_screenshot_f540b41a2081464aaa95e25f66bb75d4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/32cc5a86-0170-45c3-be03-5156093cc20d/ascreenshot_21fe97b222ee4e2caef450b20a8ef4bf_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/3da4083a-2732-49d1-93a2-726b4f5d6abb/ascreenshot_9d5e18f2f1cf42d98f3c0dd4486e7a25_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/68b1bd0f-7565-49e7-9fc7-ac33ef494f5b/ascreenshot_f9fc5b4cdaf54f2fbe0cd4a3c2e27ad4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/aa5d3fee-b9cd-447e-9545-bcbdb66f6e00/ascreenshot_f049fa696b1344069ebc7b1679f82172_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/aa010382-f1c1-410c-82d1-95d42dec7246/ascreenshot_10d4a4418fab47cf94b810e802625847_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/d59e2cba-6e9e-43a9-9b7f-69c13162fd01/user_cropped_screenshot_ef163759776a4e6b88c36a58dd4d8f6e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/9e8e6f96-525c-4547-b8fc-1e3dc88a710c/user_cropped_screenshot_f98fa47128394273aaeb2424502ff045_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/15c08383-4a5a-4efc-a84f-6415436c42e8/user_cropped_screenshot_bb79612fe3fa487598dbc37d44434d97_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/350d9abc-413f-4784-a5d4-45cccb08eac5/ascreenshot_49d71739e7f943908ded00eb3edd3f91_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/99c098e8-c7b0-43e9-90ff-c532795c05be/user_cropped_screenshot_f4a7154173f547ed92ac8c9aca055523_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/32b5e611-12ec-4cc1-850d-8f9759c37410/user_cropped_screenshot_a28b053af2644b6a8bcee4be35572a50_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/39d28435-5619-4fdf-a0b1-c27bb909cdd4/screenshot_a57740e753b94200973f5554e580600b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/8e08e9f1-ab25-4414-a251-b3dba828c244/screenshot_2f5cdbac0a19450b84d78c585b6411d4_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 8,
+      "title": "キャンペーン設定について",
+      "filename": "08-キャンペーン設定について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__LzhIEH7tQyyqVtXLewsjjQ?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__LzhIEH7tQyyqVtXLewsjjQ",
+      "chars": 3744,
+      "scribe_id": "LzhIEH7tQyyqVtXLewsjjQ",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/キャンペーン設定について.md",
+          "embed_url": "https://scribehow.com/embed/__LzhIEH7tQyyqVtXLewsjjQ?as=scrollable&skipIntro=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/67fa5bc4-00ac-41f5-8d02-484cd8e20e3d/user_cropped_screenshot_b5cd28b9491a40cabd7a8e9c843bb682_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/3acc810c-a79d-4b98-9b2e-b6634b53b835/user_cropped_screenshot_79714eb469074b3d992dee4571ab94d8_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/726b0f01-3e23-4b3f-a802-3390b7c2df3e/user_cropped_screenshot_2bcbecd3ae3b462a95b4be6a14903699_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/41412f81-7945-45a5-a043-8f55f8af0a7e/ascreenshot_dfa8dcbfb9144239ae47b9ac32fc1f8a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/5373ef79-ee23-4228-b862-5d2be65dbfa2/ascreenshot_5fe9b4f8932646b68e1491d6fc032b51_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/dfaaded9-7d1b-4ad5-911a-78f7426f6767/screenshot_f905ea01388f4611898186d5429d33df_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/0943f78e-a348-4a97-acb6-75bc2d7ff5cf/ascreenshot_e04b100a7d8949748666e7f2e2efb81d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/cc5de21e-f0c4-40bc-bd2a-0e3bf35358ff/ascreenshot_34cd76e32ab345218963a9b92c2fadca_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/373c5465-ebc5-4a39-a918-4e1c9841a3b3/ascreenshot_60ad8f93a74f4b68bc110a65b9205c07_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/999aaaca-b179-47cc-ad50-dea3bf0439ee/ascreenshot_87d5460c4eff4b8cadd6c967044d68e3_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/fa3aadf9-f10c-4c91-be50-d3d86e6bb246/ascreenshot_37257f33789c44a2a2a8f3124ccc369d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/d5100452-e10f-46b2-8a81-5883cf928489/ascreenshot_b7c86b54c9a849dabe4f022e832e3d7e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/514fbc44-7d14-4f35-b6db-faaca2b05fde/screenshot_374c4f822f604bc9abd17e3f93849231_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/d62381d8-6678-4c63-b1cb-6015ba8eaf8b/ascreenshot_c3b79650a3b64504932ddfbe3219a20d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/f3ea348a-e130-4556-b769-40f6c34a079f/ascreenshot_e39b9755ed0841fbadb2901fa045c07a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/41ce1534-f4df-4fe7-af6c-867c0e008d97/ascreenshot_618f751ff0c749c3a0d1a58abe5f93cb_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 9,
+      "title": "smart one Shopのキオスクモード解除について",
+      "filename": "09-smart_one_Shopのキオスクモード解除について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_Shop__qs7ODx8TT3W5m8wFTlYj4w?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_Shop__qs7ODx8TT3W5m8wFTlYj4w",
+      "chars": 1125,
+      "scribe_id": "qs7ODx8TT3W5m8wFTlYj4w",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/端末アプリの設定/smart-one-shopのキオスクモード解除について.md",
+          "embed_url": "https://scribehow.com/embed/smart_one_Shop__qs7ODx8TT3W5m8wFTlYj4w?as=scrollable"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/0948b816-09f1-40a1-89f5-af3f28218f3d/screenshot_cbaa11783dcc48d5ae12960adbee3187_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/979b7d0c-2b1f-4b5e-8e6e-cd9912f116a8/screenshot_6bc053f2a32d443e92c83e4945cd76e7_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/e4c7b08e-d7d4-4292-8846-23fd8a2571d0/screenshot_b8cd66c6dcea44f5b04da97637057ecf_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 10,
+      "title": "注文メモ機能について",
+      "filename": "10-注文メモ機能について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__uP1JsTH9RJePyfnc5w0riw?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__uP1JsTH9RJePyfnc5w0riw",
+      "chars": 1907,
+      "scribe_id": "uP1JsTH9RJePyfnc5w0riw",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/注文メモ機能について.md",
+          "embed_url": "https://scribehow.com/embed/__uP1JsTH9RJePyfnc5w0riw?as=scrollable&skipIntro=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-11-13/8017b893-53e0-4f5e-87aa-864fe6594ffc/user_cropped_screenshot_7eea07c7aaae4394bf53040c1e629aa1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/fa589819-de6a-4b6c-8e33-b6a8a3e0d4dd/ascreenshot_06beec89be084ccaad1f03982114d9ec_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/c324dad4-fd4e-4fb3-b4f2-0b868ef6fa5d/user_cropped_screenshot_f108df00fad741d49d406e3fc5593c23_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/805d25b1-193d-4164-a4e4-c783b56d26bf/ascreenshot_98f4d40418f549d1a84c4fb7b2b96fd8_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/5dfca674-b3e0-4a5c-9859-93499e2d6db8/ascreenshot_388c02a55e5a4f5497f1546c219455bd_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/07090de8-b4e9-459b-b067-9f328bc890f0/user_cropped_screenshot_9dcf327c5165459da648775f882dc1d1_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/e8c961fa-bbf5-4ae8-a23a-75b3c2f728ac/user_cropped_screenshot_2ae719ecf2c14f9cb17754d53bf93ef1_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 11,
+      "title": "領収書発行(Optional)について",
+      "filename": "11-領収書発行(Optional)について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__sX_vN1UQSAWPCG2CUUCAxA?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__sX_vN1UQSAWPCG2CUUCAxA",
+      "chars": 2854,
+      "scribe_id": "sX_vN1UQSAWPCG2CUUCAxA",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/領収書発行optionalについて.md",
+          "embed_url": "https://scribehow.com/embed/Optional__sX_vN1UQSAWPCG2CUUCAxA?as=scrollable&skipIntro=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-11-13/f75bc5f5-bf28-4946-b3c8-1318ec90688a/user_cropped_screenshot_8111bf107b924a1cbfb31b7cd734d22f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/c74c7c1c-4b02-4465-bf3f-0ccc2c0eb4e3/ascreenshot_83577131b0c2461a93ebe1b7bf11df00_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/7ab4856b-eb19-4dff-9ee9-529486e5f429/user_cropped_screenshot_123e7630c08b454eb0499d169be14659_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/12bdde0e-c3bc-4a64-abfa-46f0a9079ab1/ascreenshot_6507594a49bb439a9af7d0de9d2d3f3a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/b01dda7a-9cd6-4483-9ecf-6a21ff4ba5aa/ascreenshot_252d281e36da42f2bddcee180470b9ec_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/bf55a99c-faa0-4bc9-9307-d92f91b0489f/screenshot_de95fd46ae634c38bc46c7059daf5cde_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/d9a5eb44-9bba-4d4b-b5e6-b4757dc93efd/user_cropped_screenshot_4f348e06c3b14d1aa9dc9039c958a9a0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/8b35d2fd-09a1-4c28-9982-7b2988fdc480/user_cropped_screenshot_25686e6e87f24bf19435d444e21cdad0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/8af9ae1a-c702-46d4-ada3-ee5293bb3994/screenshot_5520c94e26ab42a18c894b8826e882ef_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/f0a66423-ddee-445f-88c4-904fe9f42047/user_cropped_screenshot_8bcd8c208c034a3c8f78d86fb7c53efc_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/5d7c736f-e38a-42a1-ab68-67b96d6ef428/screenshot_628e8183a1234ab584cad1f17b6477e5_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/8b0c7af2-c56b-4dab-a555-016a6500f929/user_cropped_screenshot_39382539f34f493ba50cb7a53168931e_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 12,
+      "title": "在庫管理(Optional)について",
+      "filename": "12-在庫管理(Optional)について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__ORA9cbBFSGqbJoB20YOxKA?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__ORA9cbBFSGqbJoB20YOxKA",
+      "chars": 3373,
+      "scribe_id": "ORA9cbBFSGqbJoB20YOxKA",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/在庫管理optionalについて.md",
+          "embed_url": "https://scribehow.com/viewer/Optional__ORA9cbBFSGqbJoB20YOxKA?as=scrollable&skipIntro=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/219c1140-cee8-4d0c-af76-23116d63e205/user_cropped_screenshot_1600c75e673448f18594d8dcf3176c32_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/f081d462-fbb5-460a-8030-20991a14e9df/ascreenshot_11468e2fd56f49ada8a6f9d18c46dc5e_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/23e8f0d3-ecec-4157-a6e7-41a93bc28525/ascreenshot_fc372c7716274e91995e7c6490d19720_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/4e62f2c6-4a9f-4762-827b-a980f3730604/user_cropped_screenshot_6e40eaef93a843f1afdc2ca454a062f4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/02d56827-9610-4926-ae99-811a093fb212/ascreenshot_1ecbc8e0a1684282bae34a09a03481ea_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/59576cae-582b-46d9-9873-9756ee739337/ascreenshot_118c472ad86341f5ad1ccdac56a13e3f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/133ff887-e509-469d-a41b-3c8f1e4f0824/user_cropped_screenshot_9172887c027244e685c7c5600de88c18_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/8379594c-aa81-44dc-bcb4-c26f2943b777/user_cropped_screenshot_865841d038ea4254af59c3a360fc12b4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/df1644d4-133a-431f-8049-2137202c8193/user_cropped_screenshot_55e09a2dbe4c449c9b7956f888a105fe_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/7fd81a3b-c91c-48fb-adac-8ffec426a0ea/ascreenshot_9c7b40bdebbc44ed99c912975175454d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/caf9bebe-0319-4518-93b0-aa84233ab0c4/user_cropped_screenshot_250a284a1b814ecab97b1536bf8d8c41_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/896f0d12-56cb-467d-acf4-70a9778ebe4c/ascreenshot_3c14658c856547189211067bd99a040d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/5587ea4b-ca9c-4726-a847-8fd9a9cd7513/user_cropped_screenshot_5e64eb73cb3c4f4a91f6857699207c85_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/3ffe8f97-61c6-4a56-8c37-782fea310959/ascreenshot_e5178d6ea2cf41718bac43746c6df4c1_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 13,
+      "title": "プロモーション(Optional)について",
+      "filename": "13-プロモーション(Optional)について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__BXbVAg_FQP270RacCcquDg?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Optional__BXbVAg_FQP270RacCcquDg",
+      "chars": 2083,
+      "scribe_id": "BXbVAg_FQP270RacCcquDg",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/オプション機能の設定/プロモーションoptionalについて.md",
+          "embed_url": "https://scribehow.com/embed/Optional__BXbVAg_FQP270RacCcquDg?as=scrollable&skipIntro=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/295febca-07b5-4aea-84ed-e6d82426eddf/ascreenshot_7231379a16a1440fa49f02d5f2238940_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/8a21dc9a-1926-4831-9d04-84865867dfde/user_cropped_screenshot_e032c3e5cef9487eafaf13e037b7de51_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/6994ec3b-a356-419b-b335-3c2004909fa2/user_cropped_screenshot_87c3d1c300af415587c51f0b3e21fc33_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/7eea2547-5f65-45a0-9019-f75f08073037/ascreenshot_8a457ce32fc94aa990b7cf8c5aa0e9f3_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/952c86d0-4a93-468f-9e0d-967856641e00/ascreenshot_302fac40b8c942b29549f212bdfb3d2a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/d867c301-7370-435a-8b6f-36055646fabc/ascreenshot_1e8911fe7fd4431a805107f79e603282_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/0d5801fa-1258-4e32-8654-759b9e04ef77/ascreenshot_2c8ce00fae6043bb9f9bd5401ce96678_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/6ea386c3-c89b-4e4d-bb53-42947876942d/ascreenshot_6dd93eb52d1348feabd6b59430aeba6a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-25/4c8c8f32-7f3a-4a92-ae01-98942fda4141/ascreenshot_26ef0b8be6644be6a79f7f65b4b35de4_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 14,
+      "title": "商品やカテゴリーの表示順序変更について",
+      "filename": "14-商品やカテゴリーの表示順序変更について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__DBSk0MJDRhOWECnnihR53Q?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__DBSk0MJDRhOWECnnihR53Q",
+      "chars": 2464,
+      "scribe_id": "DBSk0MJDRhOWECnnihR53Q",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/アカウント作成/店舗商品やカテゴリーの表示順序の変更について.md",
+          "embed_url": "https://scribehow.com/embed/__DBSk0MJDRhOWECnnihR53Q?as=scrollable&removeLogo=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/c54c19a2-1c1c-4f51-986d-79bdee746a18/user_cropped_screenshot_3ad656d9267441bf87bc8cd7705ee97a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/12789e61-1b51-4371-9be0-8d4a92905d30/ascreenshot_fae62b5b76de4cb5a88c1e3d4dd05ebc_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/ade45af0-f4db-48de-a195-bf9f515b0f32/user_cropped_screenshot_c04db53273ba4f00ba926ba36bae30fa_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/f8c3fad4-b8b3-4bb2-8595-b0fa8e601376/user_cropped_screenshot_ea6e6cecb2ca4b8fbdb06d95f895b6ee_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/6d61cb6d-cbc2-43e4-bab7-1194ebff8e08/ascreenshot_8293caf080584facb47449c39ecc99e3_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/87f06370-99d4-4468-8902-83b1b606049b/user_cropped_screenshot_f6a714384cb8447b8810a4807a88d51f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/7c593ab3-1c59-4205-82ec-a7db1b4eafb7/user_cropped_screenshot_af17ef92ce2f421eb354075db7d11924_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/c9633159-e946-4510-8aa0-a41b1380d058/ascreenshot_27810a3f27f1428b9eb494b2e0eef1da_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/f64febfe-63db-4b9c-9f23-bfd7c8acb038/user_cropped_screenshot_9a5631de8a23402c9bbae478f58f587f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/77b354b5-533d-45b8-bc4c-f69b8c491094/ascreenshot_409a28f70d434d5f8c08a29ed2fc138a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-24/3c778e78-2dff-4fe5-bc1d-bf823f61c490/user_cropped_screenshot_dc64249d8c794b74b121e846d57937a9_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 15,
+      "title": "アカウント管理マニュアル",
+      "filename": "15-アカウント管理マニュアル.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__s_Dy7IvhQLuy4SViA48WDQ?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__s_Dy7IvhQLuy4SViA48WDQ",
+      "chars": 3609,
+      "scribe_id": "s_Dy7IvhQLuy4SViA48WDQ",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/アカウント管理マニュアル.md",
+          "embed_url": "https://scribehow.com/embed/__s_Dy7IvhQLuy4SViA48WDQ?as=scrollable"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-20/758da5fd-f5e2-4349-acb6-a5af263738ac/user_cropped_screenshot_652456711a6d42428ab3ed31d2509c7c_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/791ffe04-a65d-4a2d-991b-c239fc514e8b/user_cropped_screenshot_69bab68fcba94b1bb92162c5f411cf76_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/5041236f-ae44-4ef3-a378-47e3b01db6d1/user_cropped_screenshot_040fdc7f344949d9850c4a9b77722182_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/e47254b2-de10-43c9-8fff-2c4593cbc101/user_cropped_screenshot_824469b72a004aceb2be9cfcf9236c4a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-07-10/3ca5801c-70d8-4072-8822-1968e7834506/user_cropped_screenshot_7c81b3b79021449d917344f2e6b9f7ee_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/0e50a909-2b9e-4f65-9062-ee79b2ab06a6/user_cropped_screenshot_9c4c0907bb174034bbbb7c376e1d47ac_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/e56ca212-f626-443a-9e65-d1381c16239f/user_cropped_screenshot_377e4f62bd9143ef9700d5b7a6a9dc06_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/603aedc4-9d81-420f-9321-bbf1279d2ee7/ascreenshot_9ab8caa1f895487c9e638ea07ab59370_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/d221cf07-f2f8-40c6-9d92-1e622c18c04a/user_cropped_screenshot_7124b6d1dfe94c839e24546ce81d110a_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/71eaf5cf-b2ce-4fa4-9872-fd57d689b4a3/ascreenshot_38f5a04ffd0444b8b9479a26a9a2b9e0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/8678b92d-6c3d-457d-8c00-9c0142a33ee6/user_cropped_screenshot_5ac9839385f14d658be5c29fb3582644_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/f358121f-f159-4a1e-b8c4-cc77ff963fef/ascreenshot_fedf5307f4d64dac80ec16c51ea11c21_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-29/9ea60b99-612c-426f-9bd0-ea4fa33202d9/user_cropped_screenshot_d75028ae3ab7481a993ba9e825886dc0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/30c9b21a-7f87-4d8f-a682-3607082bf20b/screenshot_72971b11e6044f5aad3e153d00e21e06_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 16,
+      "title": "smart oneの端末紐付けについて",
+      "filename": "16-smart_oneの端末紐付けについて.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one__NUyWQBDRSQuym5l9IDekAA?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one__NUyWQBDRSQuym5l9IDekAA",
+      "chars": 2440,
+      "scribe_id": "NUyWQBDRSQuym5l9IDekAA",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/端末アプリの設定/端末紐付けについて.md",
+          "embed_url": "https://scribehow.com/embed/smart_one__NUyWQBDRSQuym5l9IDekAA?as=scrollable&removeLogo=true"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-21/17a64375-f8c1-4cff-98e7-4ad17c1a65a5/user_cropped_screenshot_0b7e2a4bc6664a7ba74e8b0859a39385_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-21/1ac5e8b5-289b-464e-8833-0b78f8a3195f/user_cropped_screenshot_8107d6ba1cce4a54af69d5691d7b2609_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-21/4f9c3fbc-bece-4206-be56-72366e6e462b/user_cropped_screenshot_0dd3e15ed6974a30b87820ef73e3b599_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-21/000ae03a-87ea-4e7f-b797-ed3667345d24/user_cropped_screenshot_feedf83386b04a629d47f550c7f6a41f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/c80da2d1-eca7-45ca-a18a-a152b9f95a0b/screenshot_a65ddf5c8c884e98b1b7df4003afa12d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/546f8e38-7a17-4728-8977-87c0f2f29f0d/screenshot_3e5b5f41bfa145e18bfe2a247f937f72_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/9185402a-7794-4f3f-ae0c-597c3ff6a381/screenshot_4100d8d0929c4f7ebe6e54e65d3c0c2b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/61d94026-0763-4a5a-810a-83fa4d6791aa/screenshot_fb91eec8e3ab47fca0f0b69ab66a29d4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/8a8912e3-28bc-41f1-a349-62f9373e321b/screenshot_b2496827e3ce45ddb7dec36d0e2e87ad_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/361786de-90f4-4bd4-ae5e-295e19e96a67/screenshot_85084a1b325e4cc4b4cc41c1f0c5915b_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 17,
+      "title": "smart one KDS・Waitの設定について",
+      "filename": "17-smart_one_KDS・Waitの設定について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_KDSWait__GkZoUO-WR9-BjQe0KdNHSQ?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_KDSWait__GkZoUO-WR9-BjQe0KdNHSQ",
+      "chars": 2693,
+      "scribe_id": "GkZoUO-WR9-BjQe0KdNHSQ",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/端末アプリの設定/smart-one-kdswaitの設定について.md",
+          "embed_url": "https://scribehow.com/embed/smart_one_KDSWait__GkZoUO-WR9-BjQe0KdNHSQ?as=scrollable"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/038f7ca9-5390-4ced-9d11-4bad04167c27/user_cropped_screenshot_059531fd0aaf441ea416206b4f4f730d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/860cc1e1-1596-46bd-8e50-c7053234f166/user_cropped_screenshot_7162836b832141a6bfe563fcec09b7e4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/3908dafe-7ebe-4339-bbd1-f38d2167686c/user_cropped_screenshot_a371e80b78854dcdaa999c78c54229e6_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/9fd6d9c5-97ea-44fb-aa28-b241ad634f3e/user_cropped_screenshot_a78983ce81d74fda9e32b8a0536f9031_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/e5e4b38a-0b85-45bc-9276-d0340da6436f/user_cropped_screenshot_d15eac1bc9b14491ad95cefb9e51eea4_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/42dd954c-792e-4f4d-8362-6e8ad5beeaf2/ascreenshot_75bb9fad1e0249ea96cd4d30ca5d5663_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/7b088afe-4b74-4bb0-9620-eb4679ff4bd3/ascreenshot_b48af396e9a741f783f8ff576c6abb54_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/77934274-3133-45b4-9e50-ddf8c5e30358/user_cropped_screenshot_77f3495c1c5a4e4898ac2ee379fab641_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-05-17/e545d9f5-4d40-41cd-8c61-77d579f4784f/user_cropped_screenshot_2a370694ad504ce6af29483f2daabf7b_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/4288ad45-04cb-41ca-a8f3-a70be76ca541/ascreenshot_fcbcc48affc343b7882a935e8da5d3ba_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/c10ef420-3c59-41f1-bc5a-18bf6c643517/ascreenshot_5aee1119161c4c188d7461178c898e7a_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 18,
+      "title": "smart one Shopのアプリ設定について",
+      "filename": "18-smart_one_Shopのアプリ設定について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_Shop__Nxew3TS7TAOCaXlVljDkWw?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_Shop__Nxew3TS7TAOCaXlVljDkWw",
+      "chars": 1117,
+      "scribe_id": "Nxew3TS7TAOCaXlVljDkWw",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/端末アプリの設定/smart-one-shopのアプリ設定について.md",
+          "embed_url": "https://scribehow.com/embed/smart_one_Shop__Nxew3TS7TAOCaXlVljDkWw?as=scrollable"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/9252c73f-3e9b-4216-b123-7db14b52bff3/screenshot_858f4fb52e2c44c189e6e182bfd34b65_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/056904bf-042e-469a-ab5f-0799e6046365/screenshot_dc0f4608968247bbad43272b946239a6_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/ee9d27ba-a447-4af3-95d5-9122e49a1766/screenshot_6c37775b207342819355091a2347eee3_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 19,
+      "title": "smart one Shopのインストールについて",
+      "filename": "19-smart_one_Shopのインストールについて.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_Shop__-hEA7zj1QF6CW12vD5EwCw?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/smart_one_Shop__-hEA7zj1QF6CW12vD5EwCw",
+      "chars": 445,
+      "scribe_id": "-hEA7zj1QF6CW12vD5EwCw",
+      "readme_refs": [
+        {
+          "md": "sterasmartone-v1.0-2026-10-07T10-15-41_bb38409/docs/SaaS Guides/端末アプリの設定/smart-one-shopのインストールについて.md",
+          "embed_url": "https://scribehow.com/embed/smart_one_Shop__-hEA7zj1QF6CW12vD5EwCw?as=scrollable"
+        }
+      ],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/b3a6bd8c-ec7b-4d84-9f1e-65d98d894f7d/screenshot_d5363606dc5e47d39cf8452492d91599_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 20,
+      "title": "Easy決済機能の請求書決済について",
+      "filename": "20-Easy決済機能の請求書決済について.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Easy__bYpec8X8SFGcRd-5Er31NA?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/Easy__bYpec8X8SFGcRd-5Er31NA",
+      "chars": 2897,
+      "scribe_id": "bYpec8X8SFGcRd-5Er31NA",
+      "readme_refs": [],
+      "md_urls": {
+        "images": [
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/cfaf118f-38e3-4999-a131-20edf9c438e6/ascreenshot_7b4dff66f660445f8c6d380f7c693804_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/003de0fa-ff47-484c-92cb-b8c9e51422c8/ascreenshot_0988b2ea32cf462799eb7eac9de43173_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/a0466aff-4372-4bdd-993a-efde3e022221/ascreenshot_5dce412210f2448ebfc11c6828a98e8c_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/6cd48af5-142f-4fb7-9744-7a16c8138ae3/ascreenshot_e50c0b5ee02643e8a919d7df7d9dcb41_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/e41474f7-9d69-49d3-81c5-7df2a6269090/screenshot_97361c008c6441d98f60f395abf4592c_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/d034a8d8-8638-44de-b1c5-d009cb33188c/screenshot_1d4d570068374d3fa79dc95bb361091d_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/421fc84d-727c-472d-830e-3ed2544e1491/ascreenshot_19f5aef742b14d76ae27a7a10b061a6f_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/05cd2215-e310-4f19-a916-ec2940bc1172/ascreenshot_04cabb50a5504769aee874e7a7373c74_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/9fb8eaa4-3582-4602-b022-1fcf9f43acbb/ascreenshot_baf9e7ad41e04b08bc980951e9818d39_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/c46441c2-3332-4667-a400-6dd6163f5171/ascreenshot_63b04714965345bdbb67aaab6f40bb39_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/6a7daa04-811c-4cf4-977d-b45b026d089b/ascreenshot_af44494165ea4c69894b321857e105f0_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/be768f1f-8642-4e99-bb04-86240e83b9cf/ascreenshot_66cb53af8fd344fdadf9926461f0f155_text_export.jpeg",
+          "https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/b8664c80-a629-4d60-9cac-2a90b75337bc/ascreenshot_c9c9498b453c49268dee85d6e6c9cd6f_text_export.jpeg"
+        ],
+        "links": []
+      }
+    },
+    {
+      "index": 21,
+      "title": "ダッシュボード | OneQR | stera smart one",
+      "filename": "21-ダッシュボード_OneQR_stera_smart_one.md",
+      "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/_or_OneQR_or_stera_smart_one__z21L7D0TStiZ1FiDi-xsCw?referrer=documents",
+      "viewer_url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/_or_OneQR_or_stera_smart_one__z21L7D0TStiZ1FiDi-xsCw",
+      "chars": 191,
+      "note": "Scribe has no steps (title only)",
+      "scribe_id": "z21L7D0TStiZ1FiDi-xsCw",
+      "readme_refs": [],
+      "md_urls": {
+        "images": [],
+        "links": [
+          {
+            "text": "Made by 力鑚 / PU.LF / URA.RH 浦 with Scribe",
+            "url": "https://scribehow.com/o/Ynmx1xxOQ161AFl4ROh--A/viewer/__OneQR__stera_smart_one__z21L7D0TStiZ1FiDi-xsCw"
+          }
+        ]
+      }
+    }
+  ]
+}

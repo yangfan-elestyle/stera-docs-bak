@@ -1,0 +1,8 @@
+- listsubscriptions
+- createsubscription
+- retrievesubscription
+- updatesubscription
+- startsubscription
+- resumesubscription
+- cancelsubscription
+- listsubscriptionperiods

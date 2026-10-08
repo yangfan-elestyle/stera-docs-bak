@@ -1,0 +1,92 @@
+---
+title: EC-CUBE Plugin
+excerpt: ''
+deprecated: false
+hidden: false
+metadata:
+  title: ''
+  description: ''
+  robots: index
+next:
+  description: ''
+---
+## 概要
+
+stera smart oneはEC-CUBE専用のPluginを提供しています。
+
+現時点では、「EC-CUBEダウンロード版」にのみ対応しています。\
+「EC-CUBEクラウド版」の対応時期は未定です。
+
+## プラグインのインストール
+
+stera smart one for EC-CUBE pluginのインストール方法を紹介します。
+
+1. Plugin のダウンロード\
+   以下のリリースページから、最新のpluginをzip方式でダウンロードしてください。\
+   [elepay for EC-CUBE v4](https://github.com/elestyle/elepay-eccube4-plugin/releases)　（4.2まで）\
+   [elepay for EC-CUBE v3](https://github.com/elestyle/elepay-eccube3-plugin/releases)  
+
+> 📘 ご注意
+>
+> ダウンロード済みのzipファイルを解凍しないでください。
+>
+> v4.2 はまだ対応しておりませんので、最新の v4.1.x をご利用ください。
+
+2. EC-CUBEの管理画面に、管理者権限でログインしてください。\
+   「オーナーズストア」→「プラグイン一覧」→「ユーザー独自プラグイン」→「アップロードして新規追加」ボタンをクリックしてください。  
+
+![](https://files.readme.io/127bc35-image-20200503-030214.png "image-20200503-030214.png")
+
+3. 「新規プラグインのアップロード画面」にて、STEP 1でダウンロードしたzipファイルをアップロードしてください。
+
+![](https://files.readme.io/0352534-image-20200503-030342.png "image-20200503-030342.png")
+
+4. インストール済みのプラグイン「elepay eccube plugin」を「▶︎」ボタンをクリックして、有効化してください。
+
+![](https://files.readme.io/3cfce70-image-20200503-083844.png "image-20200503-083844.png")
+
+5. プラグインの「ステータス」が「有効」に表示されましたら、利用可能な状態になります。  
+
+![](https://files.readme.io/c3c0abb-image-20200503-083916.png "image-20200503-083916.png")
+
+以上でプラグインのインストールが完成しました。
+
+## プラグインの初期設定
+
+プラグインの初期設定方法をご紹介します。  
+
+1. EC-CUBEの管理画面に、管理者権限でログインしてください。\
+   「オーナーズストア」→「プラグイン一覧」→「elepay eccube plugin」→「⚙」をクリックしてください。  
+
+![](https://files.readme.io/d71b394-image-20200503-083957.png "image-20200503-083957.png")
+
+2. 「パブリックキー」と「シークレットキー」に、stera smart one管理画面から取得した開発キーを入力してください。  
+
+   stera smart one開発キーの入手方法は「 [概要](doc:quick-start) 」へご参照ください。  
+
+> ❗️
+>
+> ご注意：テスト環境の開発キー（pk*test*、sk*test*から始まるキー）をご利用の場合は、実際に決済が行いないため、注文状況に「支払い済み」が表示されていても、絶対に商品を発送しないてください！
+
+![](https://files.readme.io/95be5f1-image-20210406-042557.png "image-20210406-042557.png")
+
+3. Webhookリンクをコピーしてください。
+
+![](https://files.readme.io/0e0b3d7-image-20210405-085539.png "image-20210405-085539.png")
+
+4. stera smart one管理画面の「開発設定」→「Webhook」にて、「新規」ボタンをクリックしてください。
+
+![](https://files.readme.io/9ad476a-image-20210405-084536.png "image-20210405-084536.png")
+
+5. STEP 3 にてコピーしたWebhookリンクを「URL」にペーストして、下の「イベントタイプ」にある「支払成功」をチェックしてから、「OK」をクリックしてください。
+
+![](https://files.readme.io/bac37d4-image-20210405-085341.png "image-20210405-085341.png")
+
+以上で全ての設定が完了しました。\
+購入者様のEC-CUBEのお支払い方法選択画面から、stera smart oneの決済方法一覧が見れます。
+
+> 📘
+>
+> stera smart oneに有効の決済方法のみ表示されます。ブラウザーやデバイスに対応していない決済方法は自動で非表示になります。
+
+![](https://files.readme.io/fb43665-image-20200503-085731.png "image-20200503-085731.png")

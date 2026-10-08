@@ -1,0 +1,77 @@
+---
+title: Integration Guide for iOS
+excerpt: ''
+deprecated: false
+hidden: true
+metadata:
+  title: ''
+  description: ''
+  robots: noindex
+next:
+  description: ''
+---
+The elepay iOS SDK makes it easy to build a stable and secure multi-channel payment experience in your iOS app. We provide powerful SDK to support multi-payment methods like Credit Card, LINE Pay, Paidly, PayPal, Alipay, WeChat Pay, etc. All you need to do is install it once, then you can satisfy your customers's cashless payment requirement coming from all around the world.   
+
+### Features
+
+**Simplified Security**: We make it simple for you to collect sensitive data such as credit card numbers by tokenizing payment information. This means the sensitive data is sent directly to payment provider instead of passing through your server or elepay's server.
+
+**Apple Pay**: We provide a seamless integration with Apple Pay that will allow your customers to pay using payment methods from their Wallet.
+
+**One Stop Solution**: We provide one-stop develop experience so that you can get started quickly to support lots of payment methods without having to think about dealing each SDK and API of them.
+
+**Card Scanning**: We support card scanning capabilities using card.io. See our [Card IO](#card-io) section.
+
+## How to install elepay SDK for iOS by Cocoapod
+
+1. add pod 'ELEPaySDK' in PodFile
+
+2. `pod install`
+
+## Install elepay SDK for iOS manually
+
+You can add elepay SDK into your App in only 7 setps:
+
+1. Download and extract ELEPaySDK.zip
+
+2. Drag ELEPay.framework into your project (check `Copy itmes if needed` if needed)
+
+3. Make Sure in Targets settings, add `ElePay.framework` into Embedded Binaries
+
+4. In `application(_:didFinishLaunchingWithOptions:)` add init code  
+
+````swift
+ElePay.initApp(key: "pk_live_a08b8863f6a964d9241b6", scheme: "a08b8863f6a964d9241b6")```
+
+5. In `application(_:open:options:) -> Bool` function, add the OpenURL handle code  
+
+```swift
+func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+    // Let elepay Handle Result Callback from 3rd party payment Apps first.
+    if (ElePay.handleOpenURL(url)) {
+        // When ELEPay has already handled the URL, make sure your code returns here.
+        return true;
+    }
+
+    // for no payment URL handle it in your own code here.
+    return false;
+}
+````
+
+6. Use your server to make a charge requirement with **elepay** API `/api/charges`. Since the API requires security key for authorization.\
+   For security reason, you should **NEVER** save the key in you App but always put it on the server site.
+
+7. After get the charge payload from **elepay**'s charge API, pass it directly into the SDK  
+
+```swift
+_ = ElePay.handlePayment(chargeData: result!, viewController: viewController) { paymentResult in
+    switch (paymentResult) {
+    case .succeeded(_):
+        // your code for handling successful situation
+    case let .canceled(paymentId):
+        // your code for handling canceled by user
+    case let .failed(_, error):
+        // your code for handling failure situation
+    }
+}
+```

@@ -1,0 +1,10 @@
+- listcustomers
+- createcustomer
+- retrievecustomer
+- updatecustomer
+- deletecustomer
+- listsources
+- createsource
+- retrievesource
+- deletesource
+- retrievesourcestatus

@@ -1,0 +1,44 @@
+---
+title: 店舗追加マニュアル（SaaSサービス）
+deprecated: false
+hidden: false
+metadata:
+  robots: index
+---
+１．	管理画面にログインします。
+２．	【アプリ管理】から対象アプリの「SaaSサービス」をクリックします。
+
+![](https://files.readme.io/b4f75db2945c62b94f6cd894efed95daea5c29081f796f4a7791b240077874b3-image.png)
+
+３．	「店舗」＞「店舗追加」をクリックし、画面右上の「＋新規」をクリックします。
+
+![](https://files.readme.io/ae24b2498cb04f13e45bd3522ffb692ee2e6963be50a69b894859bf472e57c06-image.png)
+
+＜単一店舗追加の場合＞
+４．店舗情報（店舗名や住所など）を入力します。
+　　店舗名　　　　　　　　　　　：ご利用になる店舗名を入力
+　　店舗郵便番号　　　　　　　　：ご利用になる店舗の郵便番号を入力
+　　店舗住所　　　　　　　　　　：ご利用になる店舗の住所を入力
+　　店舗電話番号　　　　　　　　：ご利用になる店舗の電話番号を入力
+　　クレジット(VM)取扱区分情報 ：ご契約のある取扱区分を選択
+
+![](https://files.readme.io/f9354381bf62985b22d7c6519526abece647b26961c918896d034d0f47279be5-image.png)
+
+５．JCB/AMEX/DINERSとご契約がある場合は、ボタンをクリックして項目を入力します。
+
+![](https://files.readme.io/d053de0a92d937a05e19cdd9e88a71cc422daea001d707a85d9ee61ee1a1bb46-image.png)
+
+![](https://files.readme.io/4aa1c4a5bcf77ac71eb5a040682189dcda50a59877b91346d3febdd6755cc5da-image.png)
+
+＜複数店舗追加の場合＞
+４．	「複数店舗」を選択し、テンプレートのダウンロードを行います。
+
+![](https://files.readme.io/8d4b4e28a9860670f36c55f1722d50e2efb88829496b841e361bed6a748878ab-image.png)
+
+５．	記入したファイルのアップロードを行います。
+
+![](https://files.readme.io/7373b75a23694c3edea84f06b8e06fcc7f2f2a2bfeea028f683f0337fc503499-image.png)
+
+６．「次へ」をクリックし、入力内容を確認のうえ「提出」ボタンをクリックします。
+７．店舗追加申請は完了となります。
+※利用可能になった際は登録済のメールアドレス宛にご連絡いたします。

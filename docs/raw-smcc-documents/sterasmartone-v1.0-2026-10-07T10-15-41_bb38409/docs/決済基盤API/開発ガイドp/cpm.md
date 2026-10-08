@@ -1,0 +1,87 @@
+---
+title: CPM顧客提示型支払い処理
+excerpt: ''
+deprecated: false
+hidden: true
+metadata:
+  title: ''
+  description: ''
+  robots: noindex
+next:
+  description: ''
+---
+elepay は CPM顧客提示型の決済機能を提供します。\
+CPM顧客提示型決済とは、ユーザーは各決済アプリの支払用バーコードもしくは QR コードを提示し、店員が決済端末等を用いてスキャンし、 決済処理を行います。
+
+支払いの流れのイメージ
+
+<Image title="cpm.jpg" alt={522} src="https://files.readme.io/4c8ff76-cpm.jpg">
+  Payment Flow
+</Image>
+
+# 支払い処理
+
+### 1. 各決済アプリの支払用バーコードもしくは QR コードをスキャン
+
+支払用バーコードもしくは QR コードをスキャンして、サーバー側に渡します。
+
+### 2. 支払いリクエスト
+
+サーバー側の処理が elepay  の Charge 機能を呼び出し、支払いをリクエストします。
+
+> 📘 主なリクエスト項目説明
+>
+> **resource**: `cpm` を設定してください\
+> **paymentMethod**: 利用できる決済方法、あるいは `auto` を設定してください。 `auto` を設定した場合、elepay 自動的に決済方法を判断して response 中のpaymentMethod項目に実際の決済方法をセットします。\
+> **extra**: token は必須項目です。その他決済方法よって追加情報があります。\
+> 具体的設定情報は「開発ガイド->[決済Extra情報設定](https://developer.elepay.io/docs/extra-setting#%E6%B1%BA%E6%B8%88%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%81%AF-offline-%E3%81%AE%E5%A0%B4%E5%90%88)」を参照してください。
+
+### 3. Charge オブジェクトの新規生成
+
+elepay Server SDKを利用して、あるいは直接Charge 機能のAPIを呼び出し、Charge オブジェクトを新規生成します。
+
+```curl
+curl --request POST \
+--url https://api.elepay.io/charges \
+--user sk_live_xxxxxxxxxxxxxxxxx:
+--header 'Content-Type: application/json' \
+--data '{
+	"amount": 金額,
+	"orderNo": "注文番号",
+	"paymentMethod": "決済方法",
+	"resource": "cpm",
+	"extra": {
+    "token": "支払用バーコードもしくは QR コード"
+  }
+}'
+```
+
+APIの詳細について、[APIリファレンス](https://developer.elepay.io/reference#createcharge)をご参考してください。
+
+### 4. Charge オブジェクトのステータスをチェックして、支払い結果を表示
+
+Charge オブジェクトのステータスは `captured` の場合は、決済成功となります。\
+一定の条件下において、支払の際にユーザーに対してパスワードの入力を求めます。その時、ステータスは `pending` になります。下記の二つ方法で、決済結果を確認することができます。
+
+**1. Webhook イベントの受信**\
+支払いが成功した場合、elepay は Webhook に設定された URL に `charge.captured` イベントの通知を送信します。\
+支払いが失敗した場合、elepay は Webhook に設定された URL に `charge.revoked` イベントの通知を送信します。
+
+**2. 支払いステータスの取得**\
+Charge オブジェクトの取得APIを利用してステータスの確認ができます。\
+支払いが成功するかタイムアウトになるまで継続的に呼び出す必要があります（推奨タイムアウト時間は60秒、呼び出し頻度は10秒1回です）。
+
+```curl
+curl \
+--url https://api.elepay.io/charges/ch_xxxxxxxxxxxxxxxxxxxxxxxxx \
+--user sk_live_xxxxxxxxxxxxxxxxx:
+```
+
+<Image title="cpm_status_check.jpg" alt={561} src="https://files.readme.io/5cfb07d-cpm_status_check.jpg">
+  支払いステータス取得の流れ
+</Image>
+
+# 管理画面での確認
+
+管理画面の「支払い管理 / 支払い一覧 」にて支払いレコードを確認することができます。\
+返金について&#x306F;*[返金処理](https://docs.elepay.io/docs/refunds)*&#x3092;ご覧ください。
