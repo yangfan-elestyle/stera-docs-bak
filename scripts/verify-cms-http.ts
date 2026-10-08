@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { resolveLegacyRedirect } from '../lib/legacy-redirects';
 
 // 仅操作本脚本创建的本机容器/卷; 不读取现有 data/cms.db。
 const name = `stera-cms-test-${randomUUID().slice(0, 8)}`;
@@ -117,6 +119,52 @@ async function ready() {
   throw new Error('Container did not become ready');
 }
 
+async function verifyLegacyRedirects() {
+  const readme = readFileSync(
+    new URL('../tests/fixtures/readme-urls.txt', import.meta.url),
+    'utf-8',
+  )
+    .split('\n')
+    .filter((line) => line && !line.startsWith('#'));
+  const pages = new Map<string, { status: number; html: string }>();
+  for (const path of [
+    ...readme,
+    '/docs',
+    '/reference',
+    '/reference/charge',
+    '/v1.0',
+    '/page',
+  ]) {
+    const response = await request(path);
+    const location = decodeURI(response.headers.get('location') ?? '');
+    check(
+      response.status === 301 && location === resolveLegacyRedirect(path),
+      `legacy ${path} -> 301 ${location}`,
+    );
+    const [target, anchor] = location.split('#');
+    if (!pages.has(target)) {
+      const page = await request(target);
+      pages.set(target, { status: page.status, html: await page.text() });
+    }
+    const page = pages.get(target)!;
+    check(page.status === 200, `legacy target ${target} 200`);
+    if (anchor)
+      check(page.html.includes(`id="${anchor}"`), `anchor ${location}`);
+  }
+  // 新站路由 / public/docs 静态资源 / 未知旧页: 不跳
+  for (const [path, status] of [
+    ['/', 200],
+    ['/get-started/introduction', 200],
+    ['/docs/00396bce-ascreenshot.jpeg', 200],
+    ['/docs/unknown', 404],
+  ] as const) {
+    check(
+      (await request(path)).status === status,
+      `no legacy redirect ${path}`,
+    );
+  }
+}
+
 try {
   docker(
     'run',
@@ -168,6 +216,7 @@ try {
   ]) {
     check((await request(path)).status === 200, `smoke ${path}`);
   }
+  await verifyLegacyRedirects();
   check(
     (await request('/admin')).status === 307,
     'anonymous admin requires login',

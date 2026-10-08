@@ -1,7 +1,27 @@
 import { createI18nMiddleware } from 'fumadocs-core/i18n/middleware';
+import {
+  NextResponse,
+  type NextFetchEvent,
+  type NextRequest,
+} from 'next/server';
 import { i18n } from '@/lib/i18n';
+import { resolveLegacyRedirect } from '@/lib/legacy-redirects';
 
-export default createI18nMiddleware(i18n);
+const i18nMiddleware = createI18nMiddleware(i18n);
+
+export default function middleware(
+  request: NextRequest,
+  event: NextFetchEvent,
+) {
+  // 旧 ReadMe URL 须在 i18n rewrite 之前拦下, 否则落进 [...slug] 404 -> 首页。
+  const target = resolveLegacyRedirect(request.nextUrl.pathname);
+  if (target) {
+    const url = new URL(target, request.nextUrl);
+    url.search = request.nextUrl.search;
+    return NextResponse.redirect(url, 301);
+  }
+  return i18nMiddleware(request, event);
+}
 
 export const config = {
   // Middleware 先于 filesystem 路由执行,i18n 会把裸路径 rewrite 成 /{locale}/...,

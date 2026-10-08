@@ -37,6 +37,7 @@ bun run scripts/verify-cms-http.ts stera-docs:local  # 自动创建/清理隔离
 - 站点出口 (侧边栏 / 首页 / 页脚 / 搜索 / `llms*.txt` / EHome) MUST 走 `getSiteTree()` / `getSitePages()`, 否则 frontmatter `hidden: true` 页泄露; `/admin` 树与链接解析用原始树。
 - `next build` MUST NOT 读 db -> 页面路由 MUST NOT 加 `generateStaticParams`。
 - 新增静态资源路径 MUST 加进 `middleware.ts` matcher 排除, 否则 404。
+- 旧 ReadMe URL 301 = `lib/legacy-redirects.ts` 精确查表; MUST NOT 通配 `/docs/*` (与 `public/docs` 同前缀); 目标页改 slug MUST 同步该表。
 - 文档页 MUST NOT 放 `/docs/*` (属 `public/docs` 静态资源); 站内链接 MUST NOT 带 `/ja` `/en` `/zh`。
 - 上传文件 MUST 写 `data/uploads/`, MUST NOT 写 `public/`。
 - 编辑权限 = 受信 MDX 代码执行权限; 账号只授予受信编辑人员。
