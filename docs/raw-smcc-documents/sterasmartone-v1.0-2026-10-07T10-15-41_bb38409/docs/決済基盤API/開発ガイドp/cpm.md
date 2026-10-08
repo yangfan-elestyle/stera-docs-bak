@@ -15,7 +15,7 @@ CPM顧客提示型決済とは、ユーザーは各決済アプリの支払用�
 
 支払いの流れのイメージ
 
-<Image title="cpm.jpg" alt={522} src="https://files.readme.io/4c8ff76-cpm.jpg">
+<Image title="cpm.jpg" alt={522} src="/docs/4c8ff76-cpm.jpg">
   Payment Flow
 </Image>
 
@@ -77,7 +77,7 @@ curl \
 --user sk_live_xxxxxxxxxxxxxxxxx:
 ```
 
-<Image title="cpm_status_check.jpg" alt={561} src="https://files.readme.io/5cfb07d-cpm_status_check.jpg">
+<Image title="cpm_status_check.jpg" alt={561} src="/docs/5cfb07d-cpm_status_check.jpg">
   支払いステータス取得の流れ
 </Image>
 

@@ -18,7 +18,7 @@ next:
 
 ## 利用の申し込み
 
-![](https://files.readme.io/82a235464b775e86b80eaba21ef55d31ca3bdc3ac45177f83a6fe4f6058755a6-image.png)
+![](/docs/82a235464b775e86b80eaba21ef55d31ca3bdc3ac45177f83a6fe4f6058755a6-image.png)
 
 stera smart one（各決済方法を含む）を申込みには、ご運営のサービスの実態が確認できる資料が必要になります。
 
@@ -36,7 +36,7 @@ stera smart one（各決済方法を含む）を申込みには、ご運営の�
 
 ご案内された stera smart one の管理画面にユーザ名、パスワードでログインできます。
 
-<Image align="center" src="https://files.readme.io/84bf450-SCR-20240430-juxf-2.png" />
+<Image align="center" src="/docs/84bf450-SCR-20240430-juxf-2.png" />
 
 ## API キー
 
@@ -49,7 +49,7 @@ stera smart one 管理画面の左側のメニューから "開発設定" を選
 >
 > 公開鍵、秘密鍵とも Test モードと Live モードでは異なる値となります。Test モードから Live モードに切り替えた場合は、鍵も Liveモードのものを使うようにしてください。
 
-![](https://files.readme.io/c54cfdc35da13157cb8b03a9bdaadb6bc312043795a41581764fa1a733a8c3f5-_2024-11-13_14.50.03.png)
+![](/docs/c54cfdc35da13157cb8b03a9bdaadb6bc312043795a41581764fa1a733a8c3f5-_2024-11-13_14.50.03.png)
 
 ## 動作確認
 

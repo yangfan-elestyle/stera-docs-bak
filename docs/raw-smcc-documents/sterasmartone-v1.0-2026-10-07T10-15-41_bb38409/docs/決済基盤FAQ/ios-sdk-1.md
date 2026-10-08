@@ -34,10 +34,10 @@ iOS SDK v2.3.4 からサポートできます。ただし、アプリ間遷移�
 
 3. Xcode の設定に、Apple Pay が有効している事を確認の上、[Apple Pay 証明書](https://guides.sterasmartone.com/docs/apple-pay) を stera smart one 管理画面へアップロードしたことを確認してください。
 
-![](https://files.readme.io/d3028f3-ELEPayExample_xcodeproj.jpg "ELEPayExample_xcodeproj.jpg")
+![](/docs/d3028f3-ELEPayExample_xcodeproj.jpg "ELEPayExample_xcodeproj.jpg")
 
 4. Objective-C のプロジェクトで SDK for iOS を**手動導入する場合**、必要なシステム Frameworks を自動で導入出来ない事があるため、上記懸念点をクリアしでも問題が続く場合は、「PassKit.framework」を手動導入して再度試してください。
 
-![](https://files.readme.io/81e5331-ELEPayExample_xcodeproj.jpg "ELEPayExample_xcodeproj.jpg")
+![](/docs/81e5331-ELEPayExample_xcodeproj.jpg "ELEPayExample_xcodeproj.jpg")
 
 <br />

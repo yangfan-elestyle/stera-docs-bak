@@ -24,7 +24,7 @@ stera smart one の Charge 機能を利用して支払いプロセスを安全�
 
 支払いの流れのイメージ
 
-<Image align="center" src="https://files.readme.io/1f1dd0acb0c83bf0b915e120d36338ea1f366f69f12d0ff9b05a6d946b7dab75-charge.png" />
+<Image align="center" src="/docs/1f1dd0acb0c83bf0b915e120d36338ea1f366f69f12d0ff9b05a6d946b7dab75-charge.png" />
 
 # API を利用して支払い
 
@@ -65,4 +65,4 @@ stera smart one サーバーが支払いリクエストに対して Charge オ�
 管理画面の「支払い管理 / 支払い一覧 」にて支払いレコードを確認することができます。\
 返金については [返金処理](https://guides.sterasmartone.com/reference/createrefund) をご覧ください。
 
-![](https://files.readme.io/9f610ab14e047590965b725fdfa74c900a33a262030e23608c81ba6fe6853be2-_2024-11-19_11.25.41.png)
+![](/docs/9f610ab14e047590965b725fdfa74c900a33a262030e23608c81ba6fe6853be2-_2024-11-19_11.25.41.png)

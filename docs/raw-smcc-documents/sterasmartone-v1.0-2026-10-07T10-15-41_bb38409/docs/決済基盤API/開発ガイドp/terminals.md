@@ -25,11 +25,11 @@ Terminalを利用して、クレジットカードとデビットカードなど
 
 支払いできるまで処理流れのイメージ
 
-![](https://files.readme.io/b4420688e524eb751324c498563c40a2b4cec63f0cfa75113de111ab66caba39-image.png)
+![](/docs/b4420688e524eb751324c498563c40a2b4cec63f0cfa75113de111ab66caba39-image.png)
 
 支払いの流れのイメージ
 
-![](https://files.readme.io/a7d367fddf38643802a381b88bcb7bb96634c3745faa118de09a8502f9a0a6ec-image.png)
+![](/docs/a7d367fddf38643802a381b88bcb7bb96634c3745faa118de09a8502f9a0a6ec-image.png)
 
 # 支払い処理
 

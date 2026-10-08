@@ -298,7 +298,7 @@ Elepay.changeTheme(theme = ElepayTheme.Light)
 - elepayColorDivider：区切り線となるUI部品の色。
 
 
-<Image src="https://files.readme.io/f726d1e-asdf.png" alt="3000" align="center" />
+<Image src="/docs/f726d1e-asdf.png" alt="3000" align="center" />
 
 
 > 注意<br />`Light`テーマの色をカスタマイズする場合は、プロジェクトの`res/values/colors.xml`に上記の値を指定します。<br />`Dark`テーマの色をカスタマイズする場合は、プロジェクトの`res/values-night/colors.xml`に上記の値を指定します。<br />`ElepayTheme.System`をご利用する場合、`res/values/colors.xml`と`res/values-night/colors.xml`両方とも値を指定する可能性がありますので、実際の状況に応じてご使用ください。

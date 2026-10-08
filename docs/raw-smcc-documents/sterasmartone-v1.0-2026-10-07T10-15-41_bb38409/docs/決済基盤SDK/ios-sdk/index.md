@@ -117,7 +117,7 @@ Xcode で、**PROJECT** ＞ **TARGETS** 項目＞ **Info** タグにある **URL
 
 stera smart one 専用の URL Scheme の取得方法は「[iOS / Android SDK用URL Schemeの取得](doc:ios-android-sdk-url-scheme)」へご参照ください。
 
-![](https://files.readme.io/96b54e2-ELEPayExample_xcodeproj.jpg "ELEPayExample_xcodeproj.jpg")
+![](/docs/96b54e2-ELEPayExample_xcodeproj.jpg "ELEPayExample_xcodeproj.jpg")
 
 ### URL Scheme のテスト
 
@@ -344,7 +344,7 @@ Checkout 機能を利用すると、決済方法選択画面の開発を省く�
 
 決済方法のイメージは下のスクリーンショットにて確認できます。ダークモードにも対応しています。
 
-![](https://files.readme.io/5fb78ae-Untitled__November_10__2_36_57_PM.jpg "Untitled_—_November_10__2_36_57_PM.jpg")
+![](/docs/5fb78ae-Untitled__November_10__2_36_57_PM.jpg "Untitled_—_November_10__2_36_57_PM.jpg")
 
 ## サーバー側処理
 
@@ -470,7 +470,7 @@ case let .failed(let codeId, let error):
 
 1. Apple Pay を実装するときは、Xcode の **PROJECT** → **TARGETS** にある **Capabilities** タグをクリックして、Apple Pay を「ON」に設定してください。
 
-![](https://files.readme.io/159aef2-3d0b638-ELEPayExample_xcodeproj.jpg "3d0b638-ELEPayExample_xcodeproj.jpg")
+![](/docs/159aef2-3d0b638-ELEPayExample_xcodeproj.jpg "3d0b638-ELEPayExample_xcodeproj.jpg")
 
 2. Apple Pay の証明書を[「stera smart one 管理画面」-「開発設定」-「Apple Pay」](https://dashboard.sterasmartone.com)にアップロードしてください。<br />証明書の作成方法は[こちらのドキュメント](https://developer.elepay.io/docs/apple-pay#section-ios-)でご参照ください。
 

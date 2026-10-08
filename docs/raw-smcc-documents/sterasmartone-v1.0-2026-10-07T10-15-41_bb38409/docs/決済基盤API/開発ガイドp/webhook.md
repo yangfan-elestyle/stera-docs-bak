@@ -22,7 +22,7 @@ next:
 
 Webhook とは、あるサービスで発生したイベントの通知を、HTTP 経由の外部 URL で受け取る仕組みのことです。 
 
-![](https://files.readme.io/8680fb443dd69793104695f73631015e20360f025ba770318bcf81617340fac8-image.png)
+![](/docs/8680fb443dd69793104695f73631015e20360f025ba770318bcf81617340fac8-image.png)
 
 # 利用ガイド
 
@@ -35,13 +35,13 @@ Webhook を使うと、例えば下記のような stera smart one で起きた�
 
 stera smart one の管理画面から送信先 URL を追加するだけで、上記のようなイベントが自動的に通知されるようになります。
 
-![](https://files.readme.io/d26c84e4b6933c49de04b98ed81a6b12eb3419f6c87021065ca4a352c2fd989a-_2024-11-19_11.51.14.png)
+![](/docs/d26c84e4b6933c49de04b98ed81a6b12eb3419f6c87021065ca4a352c2fd989a-_2024-11-19_11.51.14.png)
 
 ## 利用の設定
 
 stera smart one の管理画面にログインして、下記の管理画面から Webhook の送信先を追加できます。URL を入力し、イベントタイプを選択し、最後に追加を押せば完了です。Webhook 送信先は複数追加することが可能です。
 
-![](https://files.readme.io/bc5025c-123123123.png "123123123.png")
+![](/docs/bc5025c-123123123.png "123123123.png")
 
 ### 1\. Webhook URL
 
@@ -131,7 +131,7 @@ elepay-signature: t=1581064080,sign=100dcc3d839c89cd91ecdd23d7305b2fdb8ae73b498c
 この値にタイムスタンプと署名 チェック用秘密鍵を使って、HMAC-SHA256 署名アルゴリズムで暗号化されています。\
 チェック用秘密鍵は管理画面の Webhook 詳細画面で確認できます。再作成もできます。
 
-<Image align="center" src="https://files.readme.io/192cf1e-SCR-20240430-jyox.png" />
+<Image align="center" src="/docs/192cf1e-SCR-20240430-jyox.png" />
 
 1. ヘッダーからタイムスタンプと署名値を取り出します。
 2. リクエストからボディデータを取り出します。

@@ -135,7 +135,7 @@ ChatGPT сказал:
 
 | 縦向き | 横向き | 決済方法を表示しない | QRコードのみ |
 | :--- | :--- | :--- | --- |
-| ![](https://files.readme.io/98b430a38db9c5c25fb8ba2637bb8c3bf10caf40e8c174101735f3cc02228ca8-CleanShot_2025-01-31_at_17.22.532x.png) | ![](https://files.readme.io/15bfcfb72d1557761c07eb9db21b08fffe2b7c07f72b3db9d131a587073fab2d-CleanShot_2025-01-31_at_17.23.152x.png) | ![](https://files.readme.io/50903d3f7bc013db627a75ab494db46fba157cef96d70ebb1c0368d3448cbbac-CleanShot_2025-01-31_at_17.24.272x.png) | ![](https://files.readme.io/e0378caa12e4675e18e78ea1c804e796cf39cfbd48771e461ef8163d4121a8a6-CleanShot_2025-01-31_at_17.25.242x.png) |
+| ![](/docs/98b430a38db9c5c25fb8ba2637bb8c3bf10caf40e8c174101735f3cc02228ca8-CleanShot_2025-01-31_at_17.22.532x.png) | ![](/docs/15bfcfb72d1557761c07eb9db21b08fffe2b7c07f72b3db9d131a587073fab2d-CleanShot_2025-01-31_at_17.23.152x.png) | ![](/docs/50903d3f7bc013db627a75ab494db46fba157cef96d70ebb1c0368d3448cbbac-CleanShot_2025-01-31_at_17.24.272x.png) | ![](/docs/e0378caa12e4675e18e78ea1c804e796cf39cfbd48771e461ef8163d4121a8a6-CleanShot_2025-01-31_at_17.25.242x.png) |
 
 ### ステップ3：お客様が支払いを完了し、支払い状況を処理
 

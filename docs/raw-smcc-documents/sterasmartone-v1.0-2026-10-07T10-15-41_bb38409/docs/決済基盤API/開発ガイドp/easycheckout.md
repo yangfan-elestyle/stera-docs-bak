@@ -27,7 +27,7 @@ EasyCheckoutは stera smart one が提供しているMPM型の動的QRコード�
 * 券売機
 * 自動販売機
 
-  ![](https://files.readme.io/7debf55b9ddcc1cd1b1f68ef7ee94fc9a1e9a7e9d3b6bcf11fa67662007ab8a2-image.png)
+  ![](/docs/7debf55b9ddcc1cd1b1f68ef7ee94fc9a1e9a7e9d3b6bcf11fa67662007ab8a2-image.png)
 
 # EasyCheckout利用流れ
 

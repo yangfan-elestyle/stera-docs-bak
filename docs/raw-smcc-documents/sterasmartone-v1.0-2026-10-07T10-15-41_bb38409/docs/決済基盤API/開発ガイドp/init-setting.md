@@ -32,4 +32,4 @@ stera smart one は Test モードと Live モード二つの環境を開発者�
 
 Test モードとLive モードの Key について、stera smart one 管理画面で管理されています。管理画面左側の「開発設定/ API」をクリックすれば、apiキーを確認できます。
 
-![](https://files.readme.io/2dc1e0dc49cec8a19d68d41b894f9345bfd8cf47451ab563daaf8e01190c13a7-_2024-11-13_14.50.03.png)
+![](/docs/2dc1e0dc49cec8a19d68d41b894f9345bfd8cf47451ab563daaf8e01190c13a7-_2024-11-13_14.50.03.png)

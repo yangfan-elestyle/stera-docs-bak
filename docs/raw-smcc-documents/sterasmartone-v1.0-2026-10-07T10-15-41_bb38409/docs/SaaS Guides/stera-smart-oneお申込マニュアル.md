@@ -11,7 +11,7 @@ metadata:
 
 1　メール内の「登録開始」をクリックし、申請手続きを開始します。
 
-<Image align="center" alt="登録開始" border={false} src="https://files.readme.io/96dfcd103a6f816c8819a047652a6e8822803ecc6f4a40a5aecca71933a5fb29-image-1768781960753.png" />
+<Image align="center" alt="登録開始" border={false} src="/docs/96dfcd103a6f816c8819a047652a6e8822803ecc6f4a40a5aecca71933a5fb29-image-1768781960753.png" />
 
 <Callout icon="📘">
   必要書類の準備
@@ -39,7 +39,7 @@ metadata:
 
 ご入力後、「次へ」をクリックしてください。
 
-<Image align="center" alt="利用規約" border={false} src="https://files.readme.io/6b32c134085de18825ec83d376ef8b4ac8195512f9e07a13caa5fa8cb48df674-image-1768791570818.png" />
+<Image align="center" alt="利用規約" border={false} src="/docs/6b32c134085de18825ec83d376ef8b4ac8195512f9e07a13caa5fa8cb48df674-image-1768791570818.png" />
 
 <br />
 
@@ -47,7 +47,7 @@ metadata:
 
 事業形態を確認し「次へ」をクリックしてください。
 
-<Image align="center" alt="事業形態" border={false} src="https://files.readme.io/bd622eeef68dbe3996571c466abfe0d2691a29440f800012df478108c2efad06-image-1769508056907.png" />
+<Image align="center" alt="事業形態" border={false} src="/docs/bd622eeef68dbe3996571c466abfe0d2691a29440f800012df478108c2efad06-image-1769508056907.png" />
 
 <br />
 
@@ -61,13 +61,13 @@ metadata:
 
 ご不明な点等ございましたら弊社営業担当へご連絡ください。
 
-<Image align="center" alt="サービス内容" border={false} src="https://files.readme.io/8150bc6593ac6e4c2243e612aba036c32533c9f28ef45367e960b23b0646fc35-2.png" />
+<Image align="center" alt="サービス内容" border={false} src="/docs/8150bc6593ac6e4c2243e612aba036c32533c9f28ef45367e960b23b0646fc35-2.png" />
 
 <br />
 
 5　導入可能な決済手段、料金プラン、前払い式取引の提供有無、特定商材の取扱有無をお確かめの上、「次へ」をクリックしてください。
 
-<Image align="center" alt="決済手段" border={false} src="https://files.readme.io/b4b2e828cb6a17ad6dc6c173c88e7f7a58de32071a37a3c81e3dcbadaa7758b8-3.png" />
+<Image align="center" alt="決済手段" border={false} src="/docs/b4b2e828cb6a17ad6dc6c173c88e7f7a58de32071a37a3c81e3dcbadaa7758b8-3.png" />
 
 <br />
 
@@ -83,7 +83,7 @@ metadata:
 ・1つの事業者に複数の店舗でご利用いただく場合  
 ・申込を行う事業者と店子を運営する事業者が異なる場合（単一店舗であっても必要です）
 
-<Image align="center" alt="サービス詳細" border={false} src="https://files.readme.io/ffcebac8bfa44840bd10cc7c60b5a5642c5bc1899acac91766be424d254fd55d-4.png" />
+<Image align="center" alt="サービス詳細" border={false} src="/docs/ffcebac8bfa44840bd10cc7c60b5a5642c5bc1899acac91766be424d254fd55d-4.png" />
 
 <br />
 
@@ -99,13 +99,13 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
 　代わりに製品・サービスのWebサイトのURLが求められますので、包括元または代表加盟店の情報を記入してくださ  
 　い。
 
-<Image align="center" alt="電話番号" border={false} src="https://files.readme.io/0bbbca108b92ada48333e7fb3c58f18d20927d2944896868acea451b42d2faba-5.png" />
+<Image align="center" alt="電話番号" border={false} src="/docs/0bbbca108b92ada48333e7fb3c58f18d20927d2944896868acea451b42d2faba-5.png" />
 
 <br />
 
 8　アップロードする写真は右側のポイントを留意しながら写真選択を行なってください。
 
-<Image align="center" alt="写真選択" border={false} src="https://files.readme.io/c951625affe5297028975a63acb60341b2f924d01af45fa372877a404a00a96a-image-1769132266729.png" />
+<Image align="center" alt="写真選択" border={false} src="/docs/c951625affe5297028975a63acb60341b2f924d01af45fa372877a404a00a96a-image-1769132266729.png" />
 
 <br />
 
@@ -113,13 +113,13 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
 
 　[どんな画像を用意すればいいですか？](https://guides.sterasmartone.com/docs/%E3%81%A9%E3%82%93%E3%81%AA%E7%94%BB%E5%83%8F%E3%82%92%E7%94%A8%E6%84%8F%E3%81%99%E3%82%8B%E3%81%A8%E3%81%84%E3%81%84%E3%81%AE%E3%81%A7%E3%81%99%E3%81%8B)
 
-<Image align="center" alt="ポイント" border={false} src="https://files.readme.io/836a769eb00be0a32e1aa5620d85b70c41ca2b496d99a689203b8d00fc8072d4-image-1769138750238.png" />
+<Image align="center" alt="ポイント" border={false} src="/docs/836a769eb00be0a32e1aa5620d85b70c41ca2b496d99a689203b8d00fc8072d4-image-1769138750238.png" />
 
 <br />
 
 10　「次へ」をクリックしてください。
 
-<Image align="center" alt="次へ" border={false} src="https://files.readme.io/f3fc0f14ff4e7239b8afed869bc6985292d21fbfcb253fffa49a339465f1e08d-image-1769144449499.png" />
+<Image align="center" alt="次へ" border={false} src="/docs/f3fc0f14ff4e7239b8afed869bc6985292d21fbfcb253fffa49a339465f1e08d-image-1769144449499.png" />
 
 <br />
 
@@ -131,7 +131,7 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
   ※包括契約の場合、包括元事業者の情報を記入してください。
 </Callout>
 
-<Image align="center" alt="会社事業者情報" border={false} src="https://files.readme.io/7ff2b774276556145c0b0b8e614e371be704adb1703399ef8ddeee6d413f1ba8-6.jpg" />
+<Image align="center" alt="会社事業者情報" border={false} src="/docs/7ff2b774276556145c0b0b8e614e371be704adb1703399ef8ddeee6d413f1ba8-6.jpg" />
 
 <br />
 
@@ -142,7 +142,7 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
   または訪問販売、電話勧誘販売、連鎖販売、業務提供誘因販売に該当していない場合は「はい」にチェックをし、「次へ」をクリックしてください。
 </Callout>
 
-<Image align="center" alt="電話番号" border={false} src="https://files.readme.io/7ba395677687c1da0fb8e32acbee368aaa5064f15ee732b85a4dd270b206cc53-7.jpg" />
+<Image align="center" alt="電話番号" border={false} src="/docs/7ba395677687c1da0fb8e32acbee368aaa5064f15ee732b85a4dd270b206cc53-7.jpg" />
 
 <br />
 
@@ -167,13 +167,13 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
 包括契約の場合、包括元の情報を記入してください。  
 決済時に顧客に表示される情報は別途ご提出いただいた店子情報が表示されます。
 
-<Image align="center" alt="公開情報の登録" border={false} src="https://files.readme.io/d99572b49efb0fc748a9a9b8f6cd83911f16a3f94bfa3d49d6c6f5b8d0536785-image-1769147878450.png" />
+<Image align="center" alt="公開情報の登録" border={false} src="/docs/d99572b49efb0fc748a9a9b8f6cd83911f16a3f94bfa3d49d6c6f5b8d0536785-image-1769147878450.png" />
 
 <br />
 
 14　「次へ」をクリックしてください。
 
-<Image align="center" alt="屋号サービス" border={false} src="https://files.readme.io/05992bf4560a406d1e7f4e174762e03929d3ecb08e9731ae0b1f2fc92748715e-8.jpg" />
+<Image align="center" alt="屋号サービス" border={false} src="/docs/05992bf4560a406d1e7f4e174762e03929d3ecb08e9731ae0b1f2fc92748715e-8.jpg" />
 
 <br />
 
@@ -183,25 +183,25 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
   包括契約の場合、包括元事業者の代表者／担当者の情報を記入してください。
 </Callout>
 
-<Image align="center" alt="代表者担当者情報" border={false} src="https://files.readme.io/bcfee7e6260686158252cd97c58edf61aec73231235e90b298410d45afe7646b-image-1769149105583.png" />
+<Image align="center" alt="代表者担当者情報" border={false} src="/docs/bcfee7e6260686158252cd97c58edf61aec73231235e90b298410d45afe7646b-image-1769149105583.png" />
 
 <br />
 
 16　生年月日、性別、電話番号を入力してください。
 
-<Image align="center" alt="生年月日" border={false} src="https://files.readme.io/480f49c89ade055224637a73d8cf6adfbbcf224b85db48005efd556cae7b87dc-image-1769149146419.png" />
+<Image align="center" alt="生年月日" border={false} src="/docs/480f49c89ade055224637a73d8cf6adfbbcf224b85db48005efd556cae7b87dc-image-1769149146419.png" />
 
 <br />
 
 17　ご担当社様は代表者情報と同一の場合は、「代表者情報と同一」をクリックして下さい。
 
-<Image align="center" alt="代表者担当者情報" border={false} src="https://files.readme.io/6204b082a3be8a960044cca107cd025fa37372919c6ea6787b4b02edd8fb1abc-image-1769148988605.png" />
+<Image align="center" alt="代表者担当者情報" border={false} src="/docs/6204b082a3be8a960044cca107cd025fa37372919c6ea6787b4b02edd8fb1abc-image-1769148988605.png" />
 
 <br />
 
 18　メールアドレスをご入力後、「次へ」をクリックしてください。
 
-<Image align="center" alt="メールアドレス" border={false} src="https://files.readme.io/ebba1a908738c6769a4b940135b25e5d3ef2cca87192acda8be3a05b101dc874-image-1769153557148.png" />
+<Image align="center" alt="メールアドレス" border={false} src="/docs/ebba1a908738c6769a4b940135b25e5d3ef2cca87192acda8be3a05b101dc874-image-1769153557148.png" />
 
 <br />
 
@@ -210,19 +210,19 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
 営業するにあたり許可証が必要な業種の場合は、各種許可証のアップロードもお願いいたします。  
 各種許可証は提出必須ではありませんが、コード決済ブランドの審査の際に求められる場合がございます。
 
-<Image align="center" alt="提出書類" border={false} src="https://files.readme.io/5a7da87b5b5112b32945083235dc874f6783cef6a08f0dcad31c4a00cafd6e4b-image-1769155074282.png" />
+<Image align="center" alt="提出書類" border={false} src="/docs/5a7da87b5b5112b32945083235dc874f6783cef6a08f0dcad31c4a00cafd6e4b-image-1769155074282.png" />
 
 <br />
 
 20　問合わせ時間、回収料金の内容、平均単価、最大単価を記入してください。
 
-<Image align="center" alt="その他情報" border={false} src="https://files.readme.io/ff8551c3c736e9766f5c5ac1c9c56b0c00635b0d7af42d8d3f085baf2201055c-9.jpg" />
+<Image align="center" alt="その他情報" border={false} src="/docs/ff8551c3c736e9766f5c5ac1c9c56b0c00635b0d7af42d8d3f085baf2201055c-9.jpg" />
 
 <br />
 
 21　「次へ」をクリックしてください。
 
-<Image align="center" alt="次へ" border={false} src="https://files.readme.io/d5e2ee66fdeb67ae7387ebc5f6f63faebec1e0e4924a1368f326b51eb5789f57-image-1769155442901.png" />
+<Image align="center" alt="次へ" border={false} src="/docs/d5e2ee66fdeb67ae7387ebc5f6f63faebec1e0e4924a1368f326b51eb5789f57-image-1769155442901.png" />
 
 <br />
 
@@ -231,13 +231,13 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
 お売上代金のご入金先となります。  
 口座情報（金融機関名・支店名・口座種別・口座名義）を入力してください。
 
-<Image align="center" alt="口座情報" border={false} src="https://files.readme.io/c59a98f253d14647d6048bd78351e7537eef3e3a6cd54a4abf5038ac56f55959-image-1769506504939.png" />
+<Image align="center" alt="口座情報" border={false} src="/docs/c59a98f253d14647d6048bd78351e7537eef3e3a6cd54a4abf5038ac56f55959-image-1769506504939.png" />
 
 <br />
 
 23　口座番号をご入力後、「次へ」をクリックしてください。
 
-<Image align="center" alt="次へ" border={false} src="https://files.readme.io/1f1fec59990428674e0fdf3f9ba521e53165001b46a1e32efb88dc678c99ce56-image-1769506696137.png" />
+<Image align="center" alt="次へ" border={false} src="/docs/1f1fec59990428674e0fdf3f9ba521e53165001b46a1e32efb88dc678c99ce56-image-1769506696137.png" />
 
 <br />
 
@@ -245,13 +245,13 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
 
 今までご入力いただいた情報の最終確認画面が表示されます。内容にお間違いがないかご確認をお願いいたします。
 
-<Image align="center" alt="申請担当者の確認" border={false} src="https://files.readme.io/55132b2790f5ebbd9871dc18821f54c5308e1d26117c0fc6f7c5520fd6baa7dd-image-1769506939461.png" />
+<Image align="center" alt="申請担当者の確認" border={false} src="/docs/55132b2790f5ebbd9871dc18821f54c5308e1d26117c0fc6f7c5520fd6baa7dd-image-1769506939461.png" />
 
 <br />
 
 25　問題がなければ、「提出」をクリックしてください。
 
-<Image align="center" alt="提出" border={false} src="https://files.readme.io/b7f08ae06d75fc886d423d91692c3bf652990666d1a0d59c54836c746baa89d1-image-1769507255475.png" />
+<Image align="center" alt="提出" border={false} src="/docs/b7f08ae06d75fc886d423d91692c3bf652990666d1a0d59c54836c746baa89d1-image-1769507255475.png" />
 
 <br />
 
@@ -260,4 +260,4 @@ JCB様と直接契約をし、JCB／AMEX／DINERSを利用予定で、申し込�
 審査結果は一番初めにご入力いただいたメールアドレス宛にご連絡いたします。  
 審査には約1か月程度を要する場合がございますので、何卒ご理解とご了承を賜りますようお願い申し上げます
 
-<Image align="center" alt="申請完了" border={false} src="https://files.readme.io/717679743f8e1b431fb17e75b1f8e54e77b36924a8a928a56238ddd07d6b0b22-image-1769507355127.png" />
+<Image align="center" alt="申請完了" border={false} src="/docs/717679743f8e1b431fb17e75b1f8e54e77b36924a8a928a56238ddd07d6b0b22-image-1769507355127.png" />

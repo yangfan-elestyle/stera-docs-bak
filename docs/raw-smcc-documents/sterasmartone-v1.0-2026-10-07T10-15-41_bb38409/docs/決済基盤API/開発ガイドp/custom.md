@@ -14,7 +14,7 @@ stera smart one の Customer 機能を利用して顧客を作成することで
 
 顧客作成の流れのイメージ
 
-![](https://files.readme.io/fdec9495f93759873a7a7ccd9491a520b9c8067ab115bf1e2a03695c78f6f200-image.png)
+![](/docs/fdec9495f93759873a7a7ccd9491a520b9c8067ab115bf1e2a03695c78f6f200-image.png)
 
 # API を利用して顧客作成
 

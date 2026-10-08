@@ -16,14 +16,14 @@ smart one Shopは、決済をよりスムーズに、効率的に行うための
 
 ホーム画面の左下コーナーを6秒以上長押ししてください。その後、設定画面が表示されます。
 
-![](https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/9252c73f-3e9b-4216-b123-7db14b52bff3/screenshot_858f4fb52e2c44c189e6e182bfd34b65_text_export.jpeg)
+![](/docs/17171b6f-screenshot.jpeg)
 
 
 2\. 各種設定:
 
 一度設定画面に入ると、以下のオプションが利用可能です。
 
-![](https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/056904bf-042e-469a-ab5f-0799e6046365/screenshot_dc0f4608968247bbad43272b946239a6_text_export.jpeg)
+![](/docs/d3912846-screenshot.jpeg)
 
 
 Tip: - **再読み込み**: アプリの情報をリロードします。
@@ -45,4 +45,4 @@ Tip: - **再読み込み**: アプリの情報をリロードします。
 
 注文履歴: これまでの取引や注文の履歴を確認できます。また、出力オプションを使用して、履歴をCSVやPDF形式で保存することも可能です。
 
-![](https://colony-recorder.s3.us-west-1.amazonaws.com/files/2024-04-26/ee9d27ba-a447-4af3-95d5-9122e49a1766/screenshot_6c37775b207342819355091a2347eee3_text_export.jpeg)
+![](/docs/611dcc31-screenshot.jpeg)

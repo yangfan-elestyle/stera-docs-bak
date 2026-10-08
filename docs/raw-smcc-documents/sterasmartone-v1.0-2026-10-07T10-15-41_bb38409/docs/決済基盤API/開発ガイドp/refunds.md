@@ -35,9 +35,9 @@ stera smart one サーバーは、返金リクエストに対して Refund オ�
 
 「支払い管理 / 支払い一覧 」にて指定された支払いレコードを返金することができます。
 
-![](https://files.readme.io/da769c4d38430af6c8648c499c595b1c872eae13a2b0092153db10ee07770c53-_2024-11-19_11.25.41.png)
+![](/docs/da769c4d38430af6c8648c499c595b1c872eae13a2b0092153db10ee07770c53-_2024-11-19_11.25.41.png)
 
-<Image align="center" src="https://files.readme.io/0c0592c-SCR-20240430-jxmn.png" />
+<Image align="center" src="/docs/0c0592c-SCR-20240430-jxmn.png" />
 
 > 📘 返金可能な期限
 >

@@ -28,7 +28,7 @@ EasyCheckoutはstera smart oneが提供しているMPM型の動的QRコード機
 * 券売機
 * 自動販売機
 
-![](https://files.readme.io/99db5342ab4fb12bab717470e9df68f0658f60d57a9bd18779f4fcd4c987086a-image.png)
+![](/docs/99db5342ab4fb12bab717470e9df68f0658f60d57a9bd18779f4fcd4c987086a-image.png)
 
 ### 導入方法
 
@@ -48,11 +48,11 @@ EasyCheckoutはstera smart oneが提供しているMPM型の動的QRコード機
   <tbody>
     <tr>
       <td>
-        ![](https://files.readme.io/1549a376af48980f8a7225dfc3f20da5f9391d18b3fd9936a162debeac85aeca-image.png)
+        ![](/docs/1549a376af48980f8a7225dfc3f20da5f9391d18b3fd9936a162debeac85aeca-image.png)
       </td>
 
       <td>
-        ![](https://files.readme.io/1bbf18acef17ee812b911805f01a046a6b306db5b8483eb1f370eb5e62651277-image.png)
+        ![](/docs/1bbf18acef17ee812b911805f01a046a6b306db5b8483eb1f370eb5e62651277-image.png)
       </td>
     </tr>
 
@@ -74,4 +74,4 @@ EasyCheckoutはstera smart oneが提供しているMPM型の動的QRコード機
 
 ### フロー
 
-<Image align="center" src="https://files.readme.io/e13e00aa210c4ec76df5e0ed9fe49266a4db06bfaa82aa651344f36fd3433d5e-easyqr.png" />
+<Image align="center" src="/docs/e13e00aa210c4ec76df5e0ed9fe49266a4db06bfaa82aa651344f36fd3433d5e-easyqr.png" />

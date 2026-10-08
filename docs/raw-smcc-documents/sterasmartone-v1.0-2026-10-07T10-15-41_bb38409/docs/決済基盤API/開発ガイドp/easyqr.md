@@ -21,7 +21,7 @@ next:
 
 EasyQRはelepayが提供しているMPM型の動的QRコード機能です。主にウェブサイト、タブレット、券売機、精算機などの画面で動的にQRコードを表示し、お客様がQRコードを読み取ってお支払いする利用シーンに使われます。
 
-![868](https://files.readme.io/599156a-easyqr-processing.png "easyqr-processing.png")
+![868](/docs/599156a-easyqr-processing.png "easyqr-processing.png")
 
 # EasyQR利用流れ
 

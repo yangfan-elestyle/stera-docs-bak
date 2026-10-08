@@ -12,7 +12,7 @@ next:
 ---
 ### 撮影見本
 
-![](https://files.readme.io/0bb9a3b-image.png)
+![](/docs/0bb9a3b-image.png)
 
 ### 撮影時の注意点
 
