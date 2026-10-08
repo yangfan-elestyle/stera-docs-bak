@@ -6,20 +6,20 @@
 ## 指令路由（MUST）
 
 - 【MUST】代码 / 架构 / 命令 / 结构 / 硬约束 / Fumadocs 约定 → [README.md](./README.md)
-- 【MUST】调试 / 版本 / changelog / git commit+push / 预部署+发布 → [workflow.md](./workflow.md)
+- 【MUST】调试 / 版本 / changelog / git commit / 发布 → [workflow.md](./workflow.md)
 
 ## 工作模式 (MUST、AI-only)
 
 - 【MUST】运行稳定 + 长久可持续 = 第一优先级；MUST NOT 引入随时间劣化的隐患（资源泄漏 / 硬编码时效值 / 未释放连接 / ...）
-- 【MUST】代码 / 测试 / 构建 / 部署 / 发布 全部由 AI(Claude Code、Codex、...) 执行，人类输入需求或咨询，AI 自主完成后续工作
-- 【MUST】workflow.md 中的所有操作（git push / deploy / publish 等）已预授权，AI 直接执行，MUST NOT 等待人类确认
+- 【MUST】代码 / 测试 / 构建 / commit 全部由 AI(Claude Code、Codex、...) 执行，人类输入需求或咨询，AI 自主完成后续工作；git push 由人类执行
+- 【MUST】workflow.md 中的所有操作（git commit / docker build / 写版本 等）已预授权，AI 直接执行，MUST NOT 等待人类确认；MUST NOT git push
 - 【MUST】决策 (架构 / 选型 / 命名 / 依赖 / ...) 需 AI 自行抉择, MUST NOT 拉人类进设计回路，MUST NOT 反问人类
 - 【MUST】决策前通过各种方式（本工程检索、在线检索、其他途径）获取项目/需求事实，根据事实进行最优决策
 
 ## 工作流程
 
 1. **分流**：判断人类输入是否涉及行为或交付物变更（feature / fix / config / 行为逻辑变更 = 需求变更）；纯咨询 / 纯文案·注释·md 内容调整（不改变运行行为或交付物）→ 直接响应或编辑，跳过后续步骤
-2. AI 抉择并执行后续工作；走 [workflow.md#调试](./workflow.md) 本地验证变更 = 默认交付终点
+2. AI 抉择并执行后续工作；走 [workflow.md#调试](./workflow.md) 本地验证 -> [workflow.md#提交](./workflow.md) 本地 commit = 默认交付终点
 3. 发布流程仅在人类明确发布指令时执行 [workflow.md#发布](./workflow.md) 完整流程；MUST NOT 自行发起发布
 
 ## 文档编写规范

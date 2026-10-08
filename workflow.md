@@ -55,9 +55,19 @@ bun run scripts/verify-cms-http.ts stera-docs:local
 
 HTTP 验收脚本自动创建与清理自己的容器/卷, 不操作 `data/cms.db` 或 `stera-data`。
 
+# 提交
+
+需求变更本机验收后执行 (= 默认交付终点):
+
+```bash
+git commit -m "<type>(<scope>): <description>"   # Conventional Commits
+```
+
+> 不执行 `git push`; push 由人类执行。
+
 # 发布
 
-代码变更完成 + 本机验收后执行 (= 需求交付最后环节)。
+仅人类明确发布指令时执行; 产出本地 release commit, push 由人类执行。
 
 ## TL;DR
 
@@ -65,7 +75,7 @@ HTTP 验收脚本自动创建与清理自己的容器/卷, 不操作 `data/cms.d
 
 1. 验证: `bun run types:check` + `docker build`
 2. 写版本: `package.json#version` + `CHANGELOG.md` + `CHANGELOG.dev.md` 同步编辑
-3. 推 origin: 本地 commit + `git push origin develop`
+3. 提交: 本地 commit `release: vX.Y.Z`, 不 push
 
 ## 1. 验证
 
@@ -82,10 +92,11 @@ docker build -t stera-docs:local .
 - 版本号: 默认递增 PATCH (第三位); 新功能 → MINOR; 不兼容改动 → MAJOR。
 - `package.json#version` + `CHANGELOG.md` (用户向) + `CHANGELOG.dev.md` (镜像 + 技术子项) 三者同步编辑, 版本号一致。
 
-## 3. 推 origin
+## 3. 提交
 
 ```bash
 git add <...>
 git commit -m "release: vX.Y.Z"
-git push origin develop
 ```
+
+> 不执行 `git push`; push 由人类执行。
